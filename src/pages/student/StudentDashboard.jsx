@@ -2,21 +2,29 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_11_LEVELS } from '../../lib/constants'
-import { Lock, ChevronRight, LogOut, History } from 'lucide-react'
+import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
+import { Lock, ChevronRight, LogOut, History, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function StudentDashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [showUnit11, setShowUnit11] = useState(false)
+
   const [progress, setProgress] = useState(null)
   const [attempts, setAttempts] = useState([])
-  const [questionCounts, setQuestionCounts] = useState({}) // level → count; 9 → total
   const [loading, setLoading] = useState(true)
+
+  // unitId → array of { level, topic, count } sorted by level
+  const [unitLevels, setUnitLevels] = useState({})
+  // Set of unit ids that have at least one question
+  const [activeUnitIds, setActiveUnitIds] = useState(new Set())
+
+  // Currently selected unit (for drill-down view)
+  const [selectedUnit, setSelectedUnit] = useState(null)
 
   useEffect(() => {
     async function load() {
+      // 1. Student progress + attempts
       const [{ data: p }, { data: a }] = await Promise.all([
         supabase.from('student_progress').select('*').eq('student_id', user.id).single(),
         supabase.from('test_attempts').select('*').eq('student_id', user.id).eq('submitted', true),
@@ -28,26 +36,46 @@ export default function StudentDashboard() {
         setProgress(p)
       }
       setAttempts(a || [])
-      setLoading(false)
 
-      // Fetch question counts separately — this query needs the RLS policy to allow anon reads.
-      // If the query fails (old RLS policy still active), counts stay at their defaults (shown as '…').
-      // Fix in Supabase SQL editor:
-      //   drop policy if exists "Questions readable by all authenticated" on questions;
-      //   create policy "Questions readable by all" on questions for select using (true);
-      const { data: qLevels, error: qErr } = await supabase.from('questions').select('level')
-      if (!qErr && qLevels) {
-        const counts = {}
-        for (const row of qLevels) {
-          const lv = row.level
-          if (lv !== null && lv !== undefined) counts[lv] = (counts[lv] || 0) + 1
+      // 2. All active questions: unit, level, topic — to know which units/levels exist
+      const { data: qRows, error: qErr } = await supabase
+        .from('questions')
+        .select('unit, level, topic')
+        .eq('is_active', true)
+
+      if (!qErr && qRows) {
+        // Build map: unitId → Map<level, count>
+        // The `unit` column is stored as "Unit 11 - d- and f-Block Elements"
+        // Extract the unit number from the prefix "Unit N -"
+        const byUnitId = {}
+        for (const row of qRows) {
+          const match = (row.unit || '').match(/^Unit\s+(\d+)\s*-/i)
+          if (!match) continue
+          const uid = Number(match[1])
+          if (!byUnitId[uid]) byUnitId[uid] = {}
+          const lv = row.level ?? 1
+          if (!byUnitId[uid][lv]) byUnitId[uid][lv] = { topic: row.topic || `Level ${lv}`, count: 0 }
+          byUnitId[uid][lv].count++
         }
-        // Level 9 = Complete Chapter Test = sum of all levels 1-8
-        counts[9] = Object.entries(counts)
-          .filter(([lv]) => Number(lv) >= 1 && Number(lv) <= 8)
-          .reduce((sum, [, c]) => sum + c, 0)
-        setQuestionCounts(counts)
+
+        const idToLevels = {}
+        const activeIds = new Set()
+
+        for (const [uid, levels] of Object.entries(byUnitId)) {
+          const unitId = Number(uid)
+          if (Object.keys(levels).length > 0) {
+            activeIds.add(unitId)
+            idToLevels[unitId] = Object.entries(levels)
+              .map(([lv, { topic, count }]) => ({ level: Number(lv), topic, count }))
+              .sort((a, b) => a.level - b.level)
+          }
+        }
+
+        setActiveUnitIds(activeIds)
+        setUnitLevels(idToLevels)
       }
+
+      setLoading(false)
     }
     load()
   }, [user.id])
@@ -57,13 +85,16 @@ export default function StudentDashboard() {
     navigate('/')
   }
 
-  function startTest(levelId) {
+  function startTest(unitId, levelId) {
+    const levelDefs = UNIT_LEVELS[unitId] || []
+    const lastLevelId = levelDefs.length > 0 ? levelDefs[levelDefs.length - 1].id : null
+    const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
     const unlockedLevels = progress?.unlocked_levels || [1]
-    if (!unlockedLevels.includes(levelId)) {
+    if (!alwaysUnlocked && !unlockedLevels.includes(levelId)) {
       toast.error('Complete previous levels to unlock this one')
       return
     }
-    navigate(`/student/test/${levelId}`)
+    navigate(`/student/test/${unitId}/${levelId}`)
   }
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
@@ -75,6 +106,90 @@ export default function StudentDashboard() {
     attemptsByLevel[a.level].push(a)
   }
 
+  // ── Level drill-down view ──
+  if (selectedUnit) {
+    const levelDefs = UNIT_LEVELS[selectedUnit.id] || []
+    const dbLevels = unitLevels[selectedUnit.id] || []   // question counts from DB
+    const countByLevel = Object.fromEntries(dbLevels.map(l => [l.level, l.count]))
+    const lastLevelId = levelDefs.length > 0 ? levelDefs[levelDefs.length - 1].id : null
+    // CCT total = sum of all non-CCT levels
+    const cctTotal = dbLevels.filter(l => l.level !== lastLevelId).reduce((s, l) => s + l.count, 0)
+
+    return (
+      <div className="dashboard">
+        <header className="topbar">
+          <div className="topbar-brand">NEETCBT</div>
+          <div className="topbar-nav" style={{ alignItems: 'center', gap: '1rem' }}>
+            <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.875rem' }}>
+              {user.name} ({user.roll_number})
+            </span>
+            <button onClick={handleLogout} title="Logout" style={{ color: 'rgba(255,255,255,0.85)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem' }}>
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
+        </header>
+        <div className="page-content">
+          <button className="back-btn" onClick={() => setSelectedUnit(null)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
+            <ArrowLeft size={15} /> Back to Syllabus
+          </button>
+          <h3 style={{ fontWeight: 700, marginBottom: '0.25rem', color: 'var(--gray-700)' }}>
+            Unit {selectedUnit.id}: {selectedUnit.name}
+          </h3>
+          <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+            {levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and Level {lastLevelId} always unlocked
+          </p>
+          <div className="levels-grid">
+            {levelDefs.map(({ id: levelId, name: levelName }) => {
+              // Level 1 and last level are always unlocked
+              const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
+              const isUnlocked = alwaysUnlocked || unlockedLevels.includes(levelId)
+              const lvlAttempts = attemptsByLevel[levelId] || []
+              const totalQAttempted = lvlAttempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
+              const qCount = levelId === lastLevelId ? cctTotal : (countByLevel[levelId] ?? 0)
+              return (
+                <div
+                  key={levelId}
+                  className={`level-card ${isUnlocked ? 'unlocked' : 'locked'}`}
+                  onClick={() => isUnlocked && startTest(selectedUnit.id, levelId)}
+                >
+                  <div className="level-num" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    Level {levelId}
+                    <span title={levelName || 'No topic mapped to this level'}
+                      style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'var(--gray-300)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
+                      i
+                    </span>
+                  </div>
+                  <h4>{levelName}</h4>
+                  <div className="level-stats">
+                    <div>Total questions: {qCount > 0 ? qCount : '—'}</div>
+                    {lvlAttempts.length > 0 && (
+                      <>
+                        <div style={{ marginTop: '0.25rem' }}>Attempts: <strong>{lvlAttempts.length}</strong></div>
+                        <div>Questions done: <strong>{totalQAttempted}</strong></div>
+                      </>
+                    )}
+                  </div>
+                  {!isUnlocked && <div className="lock-icon"><Lock size={18} /></div>}
+                  {isUnlocked && lvlAttempts.length === 0 && (
+                    <div style={{ marginTop: '0.75rem' }}>
+                      <span className="badge badge-green">Start</span>
+                    </div>
+                  )}
+                  {isUnlocked && lvlAttempts.length > 0 && (
+                    <div style={{ marginTop: '0.75rem' }}>
+                      <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>Continue</span>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Syllabus view ──
   return (
     <div className="dashboard">
       <header className="topbar">
@@ -92,79 +207,33 @@ export default function StudentDashboard() {
       <div className="page-content">
         <div className="page-header">
           <h2>Chemistry Syllabus</h2>
-          <div className="text-muted">NEET 2025 — Unit 11 Active</div>
+          <div className="text-muted">
+            {activeUnitIds.size} unit{activeUnitIds.size !== 1 ? 's' : ''} active
+          </div>
         </div>
 
-        {showUnit11 ? (
-          <>
-            <button className="back-btn" onClick={() => setShowUnit11(false)}>
-              ← Back to Syllabus
-            </button>
-            <h3 style={{ fontWeight: 700, marginBottom: '1.25rem', color: 'var(--gray-700)' }}>
-              Unit 11: d and f Block Elements — Levels
-            </h3>
-            <div className="levels-grid">
-              {UNIT_11_LEVELS.map(level => {
-                const isUnlocked = unlockedLevels.includes(level.id)
-                const lvlAttempts = attemptsByLevel[level.id] || []
-                const totalQAttempted = lvlAttempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
-
+        {NEET_CHEMISTRY_SYLLABUS.map(section => (
+          <div className="syllabus-section" key={section.section}>
+            <h3>{section.section}</h3>
+            <div className="unit-grid">
+              {section.units.map(unit => {
+                const isActive = activeUnitIds.has(unit.id)
                 return (
                   <div
-                    key={level.id}
-                    className={`level-card ${isUnlocked ? 'unlocked' : 'locked'}`}
-                    onClick={() => isUnlocked && startTest(level.id)}
+                    key={unit.id}
+                    className={`unit-card ${isActive ? 'active' : 'locked'}`}
+                    onClick={() => isActive && setSelectedUnit(unit)}
                   >
-                    <div className="level-num">Level {level.id}</div>
-                    <h4>{level.name}</h4>
-                    <div className="level-stats">
-                      <div>Total questions: {questionCounts[level.id] ?? '…'}</div>
-                      {lvlAttempts.length > 0 && (
-                        <>
-                          <div style={{ marginTop: '0.25rem' }}>Attempts: <strong>{lvlAttempts.length}</strong></div>
-                          <div>Questions done: <strong>{totalQAttempted}</strong></div>
-                        </>
-                      )}
-                    </div>
-                    {!isUnlocked && (
-                      <div className="lock-icon"><Lock size={18} /></div>
-                    )}
-                    {isUnlocked && lvlAttempts.length === 0 && (
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <span className="badge badge-green">Start</span>
-                      </div>
-                    )}
-                    {isUnlocked && lvlAttempts.length > 0 && (
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>Continue</span>
-                      </div>
-                    )}
+                    <div className="unit-num">{unit.id}</div>
+                    <span>{unit.name}</span>
+                    {isActive && <ChevronRight size={16} style={{ marginLeft: 'auto', color: 'var(--primary)' }} />}
+                    {!isActive && <Lock size={14} style={{ marginLeft: 'auto', color: 'var(--gray-300)' }} />}
                   </div>
                 )
               })}
             </div>
-          </>
-        ) : (
-          NEET_CHEMISTRY_SYLLABUS.map(section => (
-            <div className="syllabus-section" key={section.section}>
-              <h3>{section.section}</h3>
-              <div className="unit-grid">
-                {section.units.map(unit => (
-                  <div
-                    key={unit.id}
-                    className={`unit-card ${unit.active ? 'active' : 'locked'}`}
-                    onClick={() => unit.active && setShowUnit11(true)}
-                  >
-                    <div className="unit-num">{unit.id}</div>
-                    <span>{unit.name}</span>
-                    {unit.active && <ChevronRight size={16} style={{ marginLeft: 'auto', color: 'var(--primary)' }} />}
-                    {!unit.active && <Lock size={14} style={{ marginLeft: 'auto', color: 'var(--gray-300)' }} />}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        )}
+          </div>
+        ))}
 
         {/* Attempt History */}
         {attempts.length > 0 && (
@@ -189,7 +258,10 @@ export default function StudentDashboard() {
                   {[...attempts]
                     .sort((a, b) => new Date(b.submitted_at || b.started_at) - new Date(a.submitted_at || a.started_at))
                     .map(att => {
-                      const lvlInfo = UNIT_11_LEVELS.find(l => l.id === att.level)
+                      // Find level name from UNIT_LEVELS definitions
+                      const topicName = Object.values(UNIT_LEVELS)
+                        .flat()
+                        .find(l => l.id === att.level)?.name || ''
                       const date = new Date(att.submitted_at || att.started_at)
                       const dateStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                       const timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
@@ -203,7 +275,7 @@ export default function StudentDashboard() {
                           </td>
                           <td style={{ padding: '0.625rem 0.75rem', color: 'var(--gray-700)' }}>
                             <div style={{ fontWeight: 600 }}>Level {att.level}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{lvlInfo?.name || ''}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{topicName}</div>
                           </td>
                           <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', fontWeight: 700, color: att.score >= 0 ? 'var(--green)' : 'var(--red)' }}>
                             {att.score}

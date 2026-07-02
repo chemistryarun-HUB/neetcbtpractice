@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_11_LEVELS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
 import toast from 'react-hot-toast'
 
 function shuffle(arr) {
@@ -15,7 +15,8 @@ function shuffle(arr) {
 }
 
 export default function TestPage() {
-  const { level } = useParams()
+  const { unitId, level } = useParams()
+  const unitNum = Number(unitId)
   const levelNum = Number(level)
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -36,37 +37,48 @@ export default function TestPage() {
 
   async function loadQuestions() {
     try {
-      // Get already-used question IDs for this student at this level
+      // Get already-used question IDs for this student at this level (within this unit)
       const { data: used } = await supabase
         .from('used_questions')
         .select('question_id, status')
         .eq('student_id', user.id)
         .eq('level', levelNum)
+        .eq('unit_id', unitNum)
 
       const usedIds = new Set((used || []).map(u => u.question_id))
       const wrongOrSkipped = (used || []).filter(u => u.status === 'wrong' || u.status === 'skipped').map(u => u.question_id)
 
-      // Level 9 = Complete Chapter Test: draw from ALL levels
-      const isChapterTest = levelNum === 9
+      // Last level of this unit = Complete Chapter Test: draw from ALL levels of this unit
+      const unitLevelDefs = UNIT_LEVELS[unitNum] || []
+      const lastLevelId = unitLevelDefs.length > 0 ? unitLevelDefs[unitLevelDefs.length - 1].id : null
+      const isChapterTest = levelNum === lastLevelId
 
-      // Get fresh (unused) questions
+      // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry"
+      const unitPrefix = `Unit ${unitNum} -`
+
+      // Get fresh (unused) questions — always filtered to this unit
       let allQQuery = supabase.from('questions').select('*')
+        .ilike('unit', `${unitPrefix}%`)
+        .eq('is_active', true)
       if (!isChapterTest) allQQuery = allQQuery.eq('level', levelNum)
       const { data: allQ } = await allQQuery
 
       const fresh = (allQ || []).filter(q => !usedIds.has(q.id))
       let pool = shuffle(fresh)
 
-      // If not enough fresh, pad with wrong/skipped
+      // If not enough fresh, pad with wrong/skipped from this unit
       if (pool.length < QUESTIONS_PER_ATTEMPT && wrongOrSkipped.length > 0) {
-        let fbQuery = supabase.from('questions').select('*').in('id', wrongOrSkipped)
+        let fbQuery = supabase.from('questions').select('*')
+          .in('id', wrongOrSkipped)
+          .ilike('unit', `${unitPrefix}%`)
+          .eq('is_active', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)
         const { data: fallback } = await fbQuery
         pool = [...pool, ...shuffle(fallback || [])]
       }
 
-      // Defensive: for non-chapter-test levels, strip questions from wrong levels
-      if (!isChapterTest) pool = pool.filter(q => q.level === levelNum)
+      // Defensive strip — ensure no questions from other units slip through
+      pool = pool.filter(q => (q.unit || '').startsWith(unitPrefix))
 
       if (pool.length === 0) {
         toast.error('No questions available for this level yet.')
@@ -94,6 +106,7 @@ export default function TestPage() {
       // Create attempt record
       const { data: attempt, error } = await supabase.from('test_attempts').insert({
         student_id: user.id,
+        unit_id: unitNum,
         level: levelNum,
         attempt_number: (count || 0) + 1,
         question_ids: prepared.map(q => q.id),
@@ -134,15 +147,15 @@ export default function TestPage() {
         if (!selected) {
           skipped++
           skippedIds.push(q.id)
-          usedRecords.push({ student_id: user.id, level: levelNum, question_id: q.id, status: 'skipped' })
+          usedRecords.push({ student_id: user.id, unit_id: unitNum, level: levelNum, question_id: q.id, status: 'skipped' })
         } else if (selected === q.correct_option) {
           correct++
           correctIds.push(q.id)
-          usedRecords.push({ student_id: user.id, level: levelNum, question_id: q.id, status: 'correct' })
+          usedRecords.push({ student_id: user.id, unit_id: unitNum, level: levelNum, question_id: q.id, status: 'correct' })
         } else {
           wrong++
           wrongIds.push(q.id)
-          usedRecords.push({ student_id: user.id, level: levelNum, question_id: q.id, status: 'wrong' })
+          usedRecords.push({ student_id: user.id, unit_id: unitNum, level: levelNum, question_id: q.id, status: 'wrong' })
         }
       }
 
@@ -233,7 +246,7 @@ export default function TestPage() {
   const current = questions[currentIdx]
   const mins = Math.floor(elapsed / 60).toString().padStart(2, '0')
   const secs = (elapsed % 60).toString().padStart(2, '0')
-  const levelInfo = UNIT_11_LEVELS.find(l => l.id === levelNum)
+  const levelInfo = (UNIT_LEVELS[unitNum] || []).find(l => l.id === levelNum)
   const isLastQ = currentIdx === questions.length - 1
   const answeredCount = Object.keys(answers).length
 
@@ -241,7 +254,13 @@ export default function TestPage() {
     <div className="test-layout">
       <div className="test-header">
         <div>
-          <div style={{ fontWeight: 700, fontSize: '1rem' }}>Level {levelNum}: {levelInfo?.name}</div>
+          <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            Level {levelNum}: {levelInfo?.name}
+            <span title={levelInfo?.name || 'No topic mapped to this level'}
+              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
+              i
+            </span>
+          </div>
           <div style={{ fontSize: '0.8rem', opacity: 0.8 }} className="q-counter">
             Question {currentIdx + 1} of {questions.length} · {answeredCount} answered
           </div>

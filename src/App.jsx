@@ -56,7 +56,7 @@ function AppRoutes() {
 
       <Route path="/student/change-password" element={<ProtectedRoute allowedRoles={['student']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
-      <Route path="/student/test/:level" element={<ProtectedRoute allowedRoles={['student']}><TestPage /></ProtectedRoute>} />
+      <Route path="/student/test/:unitId/:level" element={<ProtectedRoute allowedRoles={['student']}><TestPage /></ProtectedRoute>} />
       <Route path="/student/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><ResultPage /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />

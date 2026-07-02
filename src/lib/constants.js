@@ -20,7 +20,7 @@ export const NEET_CHEMISTRY_SYLLABUS = [
     units: [
       { id: 9,  name: 'Classification of Elements and Periodicity in Properties' },
       { id: 10, name: 'p-Block Elements' },
-      { id: 11, name: 'd- and f-Block Elements', active: true },
+      { id: 11, name: 'd & f Block Elements' },
       { id: 12, name: 'Coordination Compounds' },
     ],
   },
@@ -32,21 +32,48 @@ export const NEET_CHEMISTRY_SYLLABUS = [
       { id: 15, name: 'Hydrocarbons' },
       { id: 16, name: 'Organic Compounds Containing Halogens' },
       { id: 17, name: 'Organic Compounds Containing Oxygen' },
+      { id: 18, name: 'Organic Compounds Containing Nitrogen' },
+      { id: 19, name: 'Biomolecules' },
+      { id: 20, name: 'Principles Related to Practical Chemistry' },
     ],
   },
 ]
 
-export const UNIT_11_LEVELS = [
-  { id: 1, name: 'Transition Elements Intro' },
-  { id: 2, name: 'General Trends in Properties' },
-  { id: 3, name: 'Oxides and Oxoanions' },
-  { id: 4, name: 'KMnO₄' },
-  { id: 5, name: 'K₂Cr₂O₇' },
-  { id: 6, name: 'Lanthanoids' },
-  { id: 7, name: 'Actinoids' },
-  { id: 8, name: 'Miscellaneous' },
-  { id: 9, name: 'Complete Chapter Test' },
-]
+// ── Per-unit level definitions ────────────────────────────────────────────────
+// Each entry: { id: levelNumber, name: displayName, topic: exactTopicInExcel }
+// Level 1 and the last level are always unlocked for students automatically.
+// To add a new unit: copy an existing block and fill in the correct level names
+// and the EXACT topic strings as they appear in the "Topic" column of your Excel.
+// ─────────────────────────────────────────────────────────────────────────────
+export const UNIT_LEVELS = {
+  1: [
+    { id: 1, name: 'Basic Concept of Chemistry',  topic: 'Basic Concept of Chemistry' },
+    { id: 2, name: 'Mole Concept',                topic: 'Mole Concept' },
+    { id: 3, name: 'Stoichiometry',               topic: 'Stoichiometry' },
+    { id: 4, name: 'Concentration Terms',         topic: 'Concentration Terms' },
+    { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent Concept' },
+    { id: 6, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
+  ],
+  11: [
+    { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
+    { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
+    { id: 3, name: 'Oxides and Oxoanions',                             topic: 'Transition Elements: Oxides and Oxoanions of Metals' },
+    { id: 4, name: 'KMnO₄',                                           topic: 'Preparation, Properties and Uses of KMnO₄' },
+    { id: 5, name: 'K₂Cr₂O₇',                                        topic: 'Preparation, Properties and Uses of K₂Cr₂O₇' },
+    { id: 6, name: 'Lanthanoids',                                      topic: 'Lanthanoids: Electronic Configuration, Oxidation States and Lanthanoid Contraction' },
+    { id: 7, name: 'Actinoids',                                        topic: 'Actinoids: Electronic Configuration and Oxidation States' },
+    { id: 8, name: 'Miscellaneous',                                    topic: 'Miscellaneous' },
+    { id: 9, name: 'Complete Chapter Test',                            topic: 'Complete Chapter Test' },
+  ],
+  // Add more units here as you upload questions for them:
+  // 2: [
+  //   { id: 1, name: 'Bohr Model', topic: 'Bohr Model' },
+  //   ...
+  // ],
+}
+
+// Kept for backward-compat with any existing imports
+export const UNIT_11_LEVELS = UNIT_LEVELS[11]
 
 export const UNLOCK_THRESHOLDS = [
   { attempt: 1, score_pct: 60 },

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { ADMIN_EMAIL } from '../lib/constants'
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../lib/constants'
 
 const AuthContext = createContext(null)
 
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   function adminLogin(email, password) {
-    if (email === ADMIN_EMAIL && password === 'Admin@2025') {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       sessionStorage.setItem('neetcbt_role', 'admin')
       setRole('admin')
       setUser({ email: ADMIN_EMAIL })
