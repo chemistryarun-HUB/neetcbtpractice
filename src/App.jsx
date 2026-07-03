@@ -67,7 +67,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AppRoutes />
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       </BrowserRouter>
