@@ -1,16 +1,26 @@
-# React + Vite
+# NEETCBT
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+NEET Chemistry CBT practice platform — students practice unit-wise, level-based tests; faculty upload questions and track progress; admin manages students and question banks.
 
-Currently, two official plugins are available:
+**Stack:** React 19 + Vite 8 + Supabase (Postgres, Auth, Storage)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Deployment
 
-## React Compiler
+**GitHub Pages:** https://chemistryarun-hub.github.io/neetcbtpractice/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Deployed automatically via [GitHub Actions](.github/workflows/deploy.yml) on every push to `main` — builds the Vite app and publishes `dist/` to Pages. No manual deploy step needed.
 
-## Expanding the Oxlint configuration
+Requires two repository secrets (Settings → Secrets and variables → Actions):
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+> The previous Netlify deployment (`neetcbtpractice.netlify.app`) is deprecated and no longer maintained — Netlify's free build minutes ran out, so the project moved to GitHub Pages.
+
+## Local Development
+
+See [SETUP.md](SETUP.md) for full setup (Supabase project, schema, env vars, login credentials, Excel import formats).
+
+```bash
+npm install
+npm run dev
+```
