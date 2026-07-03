@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
+import { MARKS_CORRECT } from '../../lib/constants'
 import { Search, Upload, Download, Pencil, MessageCircle, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -13,7 +14,7 @@ const NAV = [
 ]
 
 const NEET_YEARS = ['2026', '2027', '2028', '2029']
-const LOGIN_URL = 'https://neetcbtpractice.netlify.app/'
+const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 
 function getTodayDDMM() {
   const d = new Date()
@@ -106,9 +107,12 @@ function StudentProgress({ student, onBack }) {
   const levelEntries = Object.entries(levels)
     .map(([lvl, rows]) => {
       const bestScore = Math.max(...rows.map(r => r.score ?? 0))
+      // "Accuracy" here is score-as-%-of-max-marks — matches the unlock-eligibility
+      // threshold in TestPage.jsx, not raw correct/attempted accuracy.
       const bestAcc = Math.max(...rows.map(r => {
         const total = (r.correct_count ?? 0) + (r.wrong_count ?? 0) + (r.skipped_count ?? 0)
-        return total > 0 ? (r.correct_count / total) * 100 : 0
+        const maxScore = total * MARKS_CORRECT
+        return maxScore > 0 ? ((r.score ?? 0) / maxScore) * 100 : 0
       }))
       const lastDate = rows.reduce((mx, r) => r.submitted_at > mx ? r.submitted_at : mx, '')
       return { level: Number(lvl), attempts: rows, bestScore, bestAcc, lastDate }
@@ -190,7 +194,7 @@ function StudentProgress({ student, onBack }) {
         {[
           { label: 'Levels Cleared', value: totalCleared, color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0' },
           { label: 'Total Attempts', value: attempts.length, color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe' },
-          { label: 'Best Accuracy', value: `${overallBestAcc.toFixed(1)}%`, color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' },
+          { label: 'Best Score %', value: `${overallBestAcc.toFixed(1)}%`, color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' },
           { label: 'Days Since Practice', value: daysAgo === null ? 'N/A' : daysAgo === 0 ? 'Today' : `${daysAgo}d`, color: daysAgo === null || daysAgo > 7 ? '#b91c1c' : '#92400e', bg: daysAgo === null || daysAgo > 7 ? '#fef2f2' : '#fefce8', border: daysAgo === null || daysAgo > 7 ? '#fecaca' : '#fde68a' },
         ].map(stat => (
           <div key={stat.label} style={{ padding: '0.875rem 1rem', borderRadius: 'var(--radius)', background: stat.bg, border: `1.5px solid ${stat.border}`, textAlign: 'center' }}>
@@ -215,7 +219,7 @@ function StudentProgress({ student, onBack }) {
                   <th style={{ width: '60px' }}>Level</th>
                   <th style={{ textAlign: 'center' }}>Attempts</th>
                   <th style={{ textAlign: 'center' }}>Best Score</th>
-                  <th style={{ textAlign: 'center' }}>Best Accuracy</th>
+                  <th style={{ textAlign: 'center' }}>Best Score %</th>
                   <th>Last Attempt</th>
                   <th style={{ width: '110px', textAlign: 'center' }}>Status</th>
                   <th style={{ width: '80px' }}></th>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT } from '../../lib/constants'
 import toast from 'react-hot-toast'
 
 function shuffle(arr) {
@@ -185,9 +185,10 @@ export default function TestPage() {
       // Record used questions (upsert to handle re-attempts)
       await supabase.from('used_questions').upsert(usedRecords, { onConflict: 'student_id,question_id' })
 
-      // Check unlock logic
+      // Check unlock logic — based on score as a % of max possible marks (not raw accuracy)
       const totalQ = questions.length
-      const pct = totalQ > 0 ? (correct / totalQ) * 100 : 0
+      const maxScore = totalQ * MARKS_CORRECT
+      const pct = maxScore > 0 ? (score / maxScore) * 100 : 0
 
       const { count: attemptCount } = await supabase
         .from('test_attempts')

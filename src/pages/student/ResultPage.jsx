@@ -55,8 +55,8 @@ export default function ResultPage() {
 
   const { correct_count: correct, wrong_count: wrong, skipped_count: skipped, score, level } = attempt
   const totalQ = correct + wrong + skipped
-  const pct = totalQ > 0 ? Math.round((correct / totalQ) * 100) : 0
   const maxScore = totalQ * 4
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0
 
   const levelInfo = UNIT_11_LEVELS.find(l => l.id === level)
 
@@ -110,7 +110,7 @@ export default function ResultPage() {
           <div style={{ fontSize: '3rem', fontWeight: 900, color: score >= 0 ? 'var(--green)' : 'var(--red)', lineHeight: 1 }}>
             {score}
           </div>
-          <div style={{ color: 'var(--gray-500)', marginTop: '0.25rem' }}>out of {maxScore} · {pct}% accuracy</div>
+          <div style={{ color: 'var(--gray-500)', marginTop: '0.25rem' }}>out of {maxScore} · {pct}% score</div>
           <div style={{ color: 'var(--gray-400)', fontSize: '0.8125rem', marginTop: '0.25rem' }}>
             Time: {mins}m {secs}s
           </div>
@@ -126,7 +126,7 @@ export default function ResultPage() {
           <div style={{ background: '#fef9c3', border: '1.5px solid #d97706', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
             <div style={{ fontWeight: 700, color: '#92400e' }}>Score more to unlock next level</div>
             <div style={{ color: '#b45309', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-              Need {threshold.score_pct}% accuracy on attempt #{threshold.attempt}. You got {pct}%.
+              Need {threshold.score_pct}% score on attempt #{threshold.attempt}. You got {pct}%.
             </div>
           </div>
         ) : null}
