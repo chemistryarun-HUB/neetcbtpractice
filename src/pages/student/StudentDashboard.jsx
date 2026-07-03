@@ -258,9 +258,8 @@ export default function StudentDashboard() {
                   {[...attempts]
                     .sort((a, b) => new Date(b.submitted_at || b.started_at) - new Date(a.submitted_at || a.started_at))
                     .map(att => {
-                      // Find level name from UNIT_LEVELS definitions
-                      const topicName = Object.values(UNIT_LEVELS)
-                        .flat()
+                      // Find level name from UNIT_LEVELS definitions, scoped to this attempt's unit
+                      const topicName = (UNIT_LEVELS[att.unit_id] || [])
                         .find(l => l.id === att.level)?.name || ''
                       const date = new Date(att.submitted_at || att.started_at)
                       const dateStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })

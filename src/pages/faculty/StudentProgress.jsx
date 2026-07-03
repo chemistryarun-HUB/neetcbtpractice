@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { UNIT_11_LEVELS } from '../../lib/constants'
+import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
 import { ArrowLeft } from 'lucide-react'
+
+const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+function unitName(unitId) {
+  return ALL_UNITS.find(u => u.id === unitId)?.name || `Unit ${unitId}`
+}
 
 const NAV = [
   { to: '/faculty/dashboard', label: 'Dashboard', end: true },
@@ -37,11 +42,15 @@ export default function StudentProgress() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
   if (!student) return <div className="loading-screen">Student not found</div>
 
+  // Group by unit + level — level numbers repeat across units, so grouping by
+  // level alone conflated a student's Unit 1 Level 3 with their Unit 11 Level 3.
   const levelMap = {}
   for (const a of attempts) {
-    if (!levelMap[a.level]) levelMap[a.level] = []
-    levelMap[a.level].push(a)
+    const key = `${a.unit_id}-${a.level}`
+    if (!levelMap[key]) levelMap[key] = []
+    levelMap[key].push(a)
   }
+  const attemptedUnitIds = [...new Set(attempts.map(a => a.unit_id).filter(Boolean))].sort((a, b) => a - b)
 
   const totalAttempted = attempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
 
@@ -77,30 +86,38 @@ export default function StudentProgress() {
           </div>
         </div>
 
-        <h3 style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--gray-700)' }}>Level-wise Performance</h3>
-        <div className="levels-grid">
-          {UNIT_11_LEVELS.map(level => {
-            const lvlAttempts = levelMap[level.id] || []
-            const unlocked = (progress?.unlocked_levels || [1]).includes(level.id)
-            const best = lvlAttempts.reduce((b, a) => (a.score || 0) > (b.score || 0) ? a : b, {})
-            return (
-              <div key={level.id} className={`level-card ${unlocked ? 'unlocked' : 'locked'}`}>
-                <div className="level-num">Level {level.id}</div>
-                <h4>{level.name}</h4>
-                <div className="level-stats">
-                  <div>Attempts: <strong>{lvlAttempts.length}</strong></div>
-                  {lvlAttempts.length > 0 && (
-                    <div>Best score: <strong>{best.score ?? '-'}</strong> / {(best.correct_count || 0) * 4 - (best.wrong_count || 0)}</div>
-                  )}
-                  {lvlAttempts.length > 0 && (
-                    <div>Correct / Wrong / Skip: <strong>{lvlAttempts[0]?.correct_count}</strong> / {lvlAttempts[0]?.wrong_count} / {lvlAttempts[0]?.skipped_count}</div>
-                  )}
-                </div>
-                {!unlocked && <div className="lock-icon">🔒</div>}
-              </div>
-            )
-          })}
-        </div>
+        {attemptedUnitIds.length === 0 ? (
+          <div className="empty-state">No attempts yet</div>
+        ) : attemptedUnitIds.map(unitId => (
+          <div key={unitId} style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--gray-700)' }}>
+              Unit {unitId}: {unitName(unitId)} — Level-wise Performance
+            </h3>
+            <div className="levels-grid">
+              {(UNIT_LEVELS[unitId] || []).map(level => {
+                const lvlAttempts = levelMap[`${unitId}-${level.id}`] || []
+                const unlocked = (progress?.unlocked_levels || [1]).includes(level.id)
+                const best = lvlAttempts.reduce((b, a) => (a.score || 0) > (b.score || 0) ? a : b, {})
+                return (
+                  <div key={level.id} className={`level-card ${unlocked ? 'unlocked' : 'locked'}`}>
+                    <div className="level-num">Level {level.id}</div>
+                    <h4>{level.name}</h4>
+                    <div className="level-stats">
+                      <div>Attempts: <strong>{lvlAttempts.length}</strong></div>
+                      {lvlAttempts.length > 0 && (
+                        <div>Best score: <strong>{best.score ?? '-'}</strong> / {(best.correct_count || 0) * 4 - (best.wrong_count || 0)}</div>
+                      )}
+                      {lvlAttempts.length > 0 && (
+                        <div>Correct / Wrong / Skip: <strong>{lvlAttempts[0]?.correct_count}</strong> / {lvlAttempts[0]?.wrong_count} / {lvlAttempts[0]?.skipped_count}</div>
+                      )}
+                    </div>
+                    {!unlocked && <div className="lock-icon">🔒</div>}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
 
         {attempts.length > 0 && (
           <>
@@ -110,6 +127,7 @@ export default function StudentProgress() {
                 <table>
                   <thead>
                     <tr>
+                      <th>Unit</th>
                       <th>Level</th>
                       <th>Attempt #</th>
                       <th>Score</th>
@@ -123,6 +141,7 @@ export default function StudentProgress() {
                   <tbody>
                     {attempts.map(a => (
                       <tr key={a.id}>
+                        <td>Unit {a.unit_id}</td>
                         <td>Level {a.level}</td>
                         <td>#{a.attempt_number}</td>
                         <td><strong>{a.score ?? '-'}</strong></td>

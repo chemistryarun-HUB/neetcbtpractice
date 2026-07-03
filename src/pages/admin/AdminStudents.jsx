@@ -2,7 +2,15 @@ import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { MARKS_CORRECT } from '../../lib/constants'
+import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+
+const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+function unitName(unitId) {
+  return ALL_UNITS.find(u => u.id === unitId)?.name || `Unit ${unitId}`
+}
+function levelName(unitId, level) {
+  return (UNIT_LEVELS[unitId] || []).find(l => l.id === level)?.name || ''
+}
 import { Search, Upload, Download, Pencil, MessageCircle, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -83,7 +91,7 @@ function StudentProgress({ student, onBack }) {
       setLoadingAttempts(true)
       const { data } = await supabase
         .from('test_attempts')
-        .select('id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at')
+        .select('id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at')
         .eq('student_id', student.id)
         .eq('submitted', true)
         .order('submitted_at', { ascending: false })
@@ -97,15 +105,18 @@ function StudentProgress({ student, onBack }) {
   const lastPractice = attempts.length > 0 ? attempts[0].submitted_at : null
   const daysAgo = daysSince(lastPractice)
 
-  // Group by level
+  // Group by unit + level — level numbers repeat across units, so grouping by
+  // level alone merged unrelated units' attempts into the same row.
   const levels = {}
   for (const a of attempts) {
+    const unitId = a.unit_id ?? 0
     const lvl = a.level ?? 0
-    if (!levels[lvl]) levels[lvl] = []
-    levels[lvl].push(a)
+    const key = `${unitId}-${lvl}`
+    if (!levels[key]) levels[key] = { unitId, level: lvl, rows: [] }
+    levels[key].rows.push(a)
   }
-  const levelEntries = Object.entries(levels)
-    .map(([lvl, rows]) => {
+  const levelEntries = Object.values(levels)
+    .map(({ unitId, level, rows }) => {
       const bestScore = Math.max(...rows.map(r => r.score ?? 0))
       // "Accuracy" here is score-as-%-of-max-marks — matches the unlock-eligibility
       // threshold in TestPage.jsx, not raw correct/attempted accuracy.
@@ -115,9 +126,9 @@ function StudentProgress({ student, onBack }) {
         return maxScore > 0 ? ((r.score ?? 0) / maxScore) * 100 : 0
       }))
       const lastDate = rows.reduce((mx, r) => r.submitted_at > mx ? r.submitted_at : mx, '')
-      return { level: Number(lvl), attempts: rows, bestScore, bestAcc, lastDate }
+      return { unitId, level, attempts: rows, bestScore, bestAcc, lastDate }
     })
-    .sort((a, b) => a.level - b.level)
+    .sort((a, b) => a.unitId - b.unitId || a.level - b.level)
 
   const totalCleared = levelEntries.filter(l => l.bestAcc >= 60).length
   const overallBestAcc = levelEntries.length > 0 ? Math.max(...levelEntries.map(l => l.bestAcc)) : 0
@@ -216,6 +227,7 @@ function StudentProgress({ student, onBack }) {
             <table>
               <thead>
                 <tr>
+                  <th>Unit</th>
                   <th style={{ width: '60px' }}>Level</th>
                   <th style={{ textAlign: 'center' }}>Attempts</th>
                   <th style={{ textAlign: 'center' }}>Best Score</th>
@@ -226,13 +238,18 @@ function StudentProgress({ student, onBack }) {
                 </tr>
               </thead>
               <tbody>
-                {levelEntries.map(({ level, attempts: lvlAttempts, bestScore, bestAcc, lastDate }) => {
+                {levelEntries.map(({ unitId, level, attempts: lvlAttempts, bestScore, bestAcc, lastDate }) => {
                   const cleared = bestAcc >= 60
-                  const isExpanded = expandedLevel === level
+                  const key = `${unitId}-${level}`
+                  const isExpanded = expandedLevel === key
                   return (
                     <>
-                      <tr key={level} style={{ background: cleared ? '#f0fdf4' : undefined }}>
-                        <td style={{ fontWeight: 700, color: 'var(--gray-700)' }}>Level {level}</td>
+                      <tr key={key} style={{ background: cleared ? '#f0fdf4' : undefined }}>
+                        <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>Unit {unitId}: {unitName(unitId)}</td>
+                        <td style={{ fontWeight: 700, color: 'var(--gray-700)' }}>
+                          Level {level}
+                          <div style={{ fontSize: '0.7rem', fontWeight: 400, color: 'var(--gray-400)' }}>{levelName(unitId, level)}</div>
+                        </td>
                         <td style={{ textAlign: 'center' }}>{lvlAttempts.length}</td>
                         <td style={{ textAlign: 'center', fontWeight: 600 }}>{bestScore}</td>
                         <td style={{ textAlign: 'center', fontWeight: 600, color: cleared ? '#15803d' : bestAcc > 0 ? '#92400e' : 'var(--gray-400)' }}>
@@ -250,7 +267,7 @@ function StudentProgress({ student, onBack }) {
                         <td>
                           <button className="btn btn-ghost btn-sm"
                             style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.75rem' }}
-                            onClick={() => setExpandedLevel(isExpanded ? null : level)}>
+                            onClick={() => setExpandedLevel(isExpanded ? null : key)}>
                             {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                             {isExpanded ? 'Hide' : 'History'}
                           </button>
@@ -259,11 +276,11 @@ function StudentProgress({ student, onBack }) {
 
                       {/* Attempt history rows */}
                       {isExpanded && (
-                        <tr key={`${level}-history`}>
-                          <td colSpan={7} style={{ padding: 0, borderTop: 'none' }}>
+                        <tr key={`${key}-history`}>
+                          <td colSpan={8} style={{ padding: 0, borderTop: 'none' }}>
                             <div style={{ background: '#f8faff', borderTop: '2px solid #bfdbfe', borderBottom: '1px solid var(--gray-200)', padding: '0.75rem 1rem' }}>
                               <div style={{ fontWeight: 600, fontSize: '0.75rem', color: '#1d4ed8', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Level {level} — All Attempts
+                                Unit {unitId} · Level {level} — All Attempts
                               </div>
                               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                                 <thead>
