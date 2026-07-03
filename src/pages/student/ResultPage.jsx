@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_11_LEVELS, UNLOCK_THRESHOLDS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
+import { UNIT_LEVELS, UNLOCK_THRESHOLDS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
 import { X } from 'lucide-react'
 
 export default function ResultPage() {
@@ -53,12 +53,12 @@ export default function ResultPage() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
   if (!attempt) return null
 
-  const { correct_count: correct, wrong_count: wrong, skipped_count: skipped, score, level } = attempt
+  const { correct_count: correct, wrong_count: wrong, skipped_count: skipped, score, level, unit_id: unitId } = attempt
   const totalQ = correct + wrong + skipped
   const maxScore = totalQ * 4
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0
 
-  const levelInfo = UNIT_11_LEVELS.find(l => l.id === level)
+  const levelInfo = (UNIT_LEVELS[unitId] || []).find(l => l.id === level)
 
   // Read pre-classified ID lists stored at submission time (new format)
   // Fall back to legacy re-classification if old attempt format
@@ -147,11 +147,11 @@ export default function ResultPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn btn-outline" onClick={() => navigate(`/student/test/${level}`)}>
+          <button className="btn btn-outline" onClick={() => navigate(`/student/test/${unitId}/${level}`)}>
             Practice More
           </button>
           {nextUnlocked && level < 9 && (
-            <button className="btn btn-primary" onClick={() => navigate(`/student/test/${level + 1}`)}>
+            <button className="btn btn-primary" onClick={() => navigate(`/student/test/${unitId}/${level + 1}`)}>
               Start Level {level + 1} →
             </button>
           )}
