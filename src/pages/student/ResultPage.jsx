@@ -36,6 +36,7 @@ export default function ResultPage() {
         supabase.from('test_attempts')
           .select('id', { count: 'exact', head: true })
           .eq('student_id', user.id)
+          .eq('unit_id', att.unit_id)
           .eq('level', att.level)
           .eq('submitted', true),
       ])
@@ -43,7 +44,7 @@ export default function ResultPage() {
       setAttemptsForLevel(count || 0)
 
       const nextLvl = att.level + 1
-      setNextUnlocked((prog?.unlocked_levels || []).includes(nextLvl) && nextLvl <= 9)
+      setNextUnlocked((prog?.unlocked_levels_by_unit?.[att.unit_id] || []).includes(nextLvl) && nextLvl <= 9)
 
       setLoading(false)
     }

@@ -30,8 +30,8 @@ export default function StudentDashboard() {
         supabase.from('test_attempts').select('*').eq('student_id', user.id).eq('submitted', true),
       ])
       if (!p) {
-        await supabase.from('student_progress').insert({ student_id: user.id, unlocked_levels: [1] })
-        setProgress({ unlocked_levels: [1], total_questions_attempted: 0 })
+        await supabase.from('student_progress').insert({ student_id: user.id })
+        setProgress({ unlocked_levels_by_unit: {}, total_questions_attempted: 0 })
       } else {
         setProgress(p)
       }
@@ -89,7 +89,7 @@ export default function StudentDashboard() {
     const levelDefs = UNIT_LEVELS[unitId] || []
     const lastLevelId = levelDefs.length > 0 ? levelDefs[levelDefs.length - 1].id : null
     const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
-    const unlockedLevels = progress?.unlocked_levels || [1]
+    const unlockedLevels = progress?.unlocked_levels_by_unit?.[unitId] || [1]
     if (!alwaysUnlocked && !unlockedLevels.includes(levelId)) {
       toast.error('Complete previous levels to unlock this one')
       return
@@ -99,15 +99,16 @@ export default function StudentDashboard() {
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
 
-  const unlockedLevels = progress?.unlocked_levels || [1]
-  const attemptsByLevel = {}
-  for (const a of attempts) {
-    if (!attemptsByLevel[a.level]) attemptsByLevel[a.level] = []
-    attemptsByLevel[a.level].push(a)
-  }
-
   // ── Level drill-down view ──
   if (selectedUnit) {
+    // Scoped to this unit — attempts and unlocks don't carry over between units.
+    const unlockedLevels = progress?.unlocked_levels_by_unit?.[selectedUnit.id] || [1]
+    const attemptsByLevel = {}
+    for (const a of attempts) {
+      if (a.unit_id !== selectedUnit.id) continue
+      if (!attemptsByLevel[a.level]) attemptsByLevel[a.level] = []
+      attemptsByLevel[a.level].push(a)
+    }
     const levelDefs = UNIT_LEVELS[selectedUnit.id] || []
     const dbLevels = unitLevels[selectedUnit.id] || []   // question counts from DB
     const countByLevel = Object.fromEntries(dbLevels.map(l => [l.level, l.count]))

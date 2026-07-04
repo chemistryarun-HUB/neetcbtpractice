@@ -27,7 +27,7 @@ export default function ChangePassword() {
       toast.success('Password changed successfully!')
 
       // Ensure progress row exists
-      await supabase.from('student_progress').upsert({ student_id: user.id, unlocked_levels: [1] }, { onConflict: 'student_id' })
+      await supabase.from('student_progress').upsert({ student_id: user.id }, { onConflict: 'student_id' })
 
       navigate('/student/dashboard')
     } catch (err) {

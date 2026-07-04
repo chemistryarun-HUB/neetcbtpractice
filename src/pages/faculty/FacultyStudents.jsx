@@ -72,7 +72,7 @@ export default function FacultyStudents() {
         const { data: newStudents } = await supabase.from('students')
           .select('id').in('roll_number', records.map(r => r.roll_number))
         for (const s of (newStudents || [])) {
-          await supabase.from('student_progress').upsert({ student_id: s.id, unlocked_levels: [1] }, { onConflict: 'student_id' })
+          await supabase.from('student_progress').upsert({ student_id: s.id }, { onConflict: 'student_id' })
         }
 
         toast.success(`${records.length} students imported!`)

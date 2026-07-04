@@ -194,6 +194,7 @@ export default function TestPage() {
         .from('test_attempts')
         .select('id', { count: 'exact', head: true })
         .eq('student_id', user.id)
+        .eq('unit_id', unitNum)
         .eq('level', levelNum)
         .eq('submitted', true)
 
@@ -204,22 +205,23 @@ export default function TestPage() {
       ]
 
       const threshold = thresholds.find(t => t.attempt === attemptCount)
+      const { data: prog } = await supabase.from('student_progress').select('*').eq('student_id', user.id).single()
+      const totalQuestionsAttempted = (prog?.total_questions_attempted || 0) + correct + wrong + skipped
+
       if (threshold && pct >= threshold.pct && levelNum < 9) {
-        const { data: prog } = await supabase.from('student_progress').select('*').eq('student_id', user.id).single()
-        const current = prog?.unlocked_levels || [1]
+        const byUnit = prog?.unlocked_levels_by_unit || {}
+        const current = byUnit[unitNum] || [1]
         const nextLevel = levelNum + 1
         if (!current.includes(nextLevel)) {
           await supabase.from('student_progress').update({
-            unlocked_levels: [...current, nextLevel],
-            total_questions_attempted: (prog?.total_questions_attempted || 0) + correct + wrong + skipped,
+            unlocked_levels_by_unit: { ...byUnit, [unitNum]: [...current, nextLevel] },
+            total_questions_attempted: totalQuestionsAttempted,
           }).eq('student_id', user.id)
+        } else {
+          await supabase.from('student_progress').update({ total_questions_attempted: totalQuestionsAttempted }).eq('student_id', user.id)
         }
       } else {
-        // Update total count only
-        const { data: prog } = await supabase.from('student_progress').select('*').eq('student_id', user.id).single()
-        await supabase.from('student_progress').update({
-          total_questions_attempted: (prog?.total_questions_attempted || 0) + correct + wrong + skipped,
-        }).eq('student_id', user.id)
+        await supabase.from('student_progress').update({ total_questions_attempted: totalQuestionsAttempted }).eq('student_id', user.id)
       }
 
       navigate(`/student/result/${attemptId}`)

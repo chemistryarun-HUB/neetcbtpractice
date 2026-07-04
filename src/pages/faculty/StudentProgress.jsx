@@ -69,8 +69,10 @@ export default function StudentProgress() {
 
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-value">{(progress?.unlocked_levels || [1]).length}</div>
-            <div className="stat-label">Levels Unlocked</div>
+            <div className="stat-value">
+              {Object.values(progress?.unlocked_levels_by_unit || {}).reduce((s, arr) => s + arr.length, 0)}
+            </div>
+            <div className="stat-label">Levels Unlocked (across units)</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">{attempts.length}</div>
@@ -96,7 +98,7 @@ export default function StudentProgress() {
             <div className="levels-grid">
               {(UNIT_LEVELS[unitId] || []).map(level => {
                 const lvlAttempts = levelMap[`${unitId}-${level.id}`] || []
-                const unlocked = (progress?.unlocked_levels || [1]).includes(level.id)
+                const unlocked = (progress?.unlocked_levels_by_unit?.[unitId] || [1]).includes(level.id)
                 const best = lvlAttempts.reduce((b, a) => (a.score || 0) > (b.score || 0) ? a : b, {})
                 return (
                   <div key={level.id} className={`level-card ${unlocked ? 'unlocked' : 'locked'}`}>
