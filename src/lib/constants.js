@@ -54,6 +54,13 @@ export const UNIT_LEVELS = {
     { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent Concept' },
     { id: 6, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
   ],
+  5: [
+    { id: 1, name: 'Types of Solutions',                topic: "Types of solutions, Expressing concentration of solutions." },
+    { id: 2, name: 'Solubility & Raoult\'s Law',         topic: "Solubility of a solid in a liquid and gas in a liquid (Henry-law), Vapour pressure of liquid solutions, Raoult's law for binary solutions. Ideal and non-ideal solutions" },
+    { id: 3, name: 'Colligative Properties',             topic: "Colligative properties and determination of molar mass : Relative lowering of vapour pressure, Elevation of boiling            point, depression of freezing point Osmosis, Osmotic pressure, reverse osmosis Abnormal molar masses and van’t Hoff factor" },
+    { id: 4, name: 'Miscellaneous',                      topic: 'Miscellaneous' },
+    { id: 5, name: 'Complete Chapter Test',              topic: 'Complete Chapter Test' },
+  ],
   11: [
     { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
     { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
