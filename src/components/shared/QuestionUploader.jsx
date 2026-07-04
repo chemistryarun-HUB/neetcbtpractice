@@ -191,8 +191,7 @@ export default function QuestionUploader({ uploadedBy }) {
 
   const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
 
-  async function loadQuestions() {
-    setLoading(true)
+  function buildQuestionsQuery() {
     let q = supabase.from('questions').select('*').order('qid', { ascending: true })
     // Filter by unit — Unit 11 uses a loose match to handle "d and f" vs "d- and f-" variants
     if (unitFilter) {
@@ -207,8 +206,20 @@ export default function QuestionUploader({ uploadedBy }) {
     if (levelFilter) q = q.eq('level', Number(levelFilter))
     // Soft-delete: only show active questions unless showInactive is on
     if (!showInactive) q = q.eq('is_active', true)
-    const { data } = await q
-    setQuestions(data || [])
+    return q
+  }
+
+  async function loadQuestions() {
+    setLoading(true)
+    // Paginated — a single Supabase request caps at 1000 rows, which the bank
+    // has grown past, so an unfiltered/large result silently got truncated.
+    const all = []
+    for (let from = 0; ; from += 1000) {
+      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
+      all.push(...(page || []))
+      if (!page || page.length < 1000) break
+    }
+    setQuestions(all)
     setLoading(false)
   }
 
@@ -315,11 +326,21 @@ export default function QuestionUploader({ uploadedBy }) {
 
   async function loadDuplicates() {
     setDupeLoading(true)
-    const { data, error } = await supabase.from('questions').select('id, qid, question, level, source, is_active').order('qid', { ascending: true })
-    if (error) { toast.error(error.message); setDupeLoading(false); return }
+    // Paginated — same 1000-row cap as loadQuestions, and missing rows here
+    // means missed duplicates rather than just an undercount.
+    const data = []
+    for (let from = 0; ; from += 1000) {
+      const { data: page, error } = await supabase.from('questions')
+        .select('id, qid, question, level, source, is_active')
+        .order('qid', { ascending: true })
+        .range(from, from + 999)
+      if (error) { toast.error(error.message); setDupeLoading(false); return }
+      data.push(...(page || []))
+      if (!page || page.length < 1000) break
+    }
     // Group by first 80 chars of question text (trimmed, lowercased for comparison)
     const groups = {}
-    for (const q of (data || [])) {
+    for (const q of data) {
       const key = (q.question || '').trim().substring(0, 80).toLowerCase()
       if (!groups[key]) groups[key] = []
       groups[key].push(q)

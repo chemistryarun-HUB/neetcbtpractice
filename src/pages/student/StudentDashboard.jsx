@@ -38,12 +38,22 @@ export default function StudentDashboard() {
       setAttempts(a || [])
 
       // 2. All active questions: unit, level, topic — to know which units/levels exist
-      const { data: qRows, error: qErr } = await supabase
-        .from('questions')
-        .select('unit, level, topic')
-        .eq('is_active', true)
+      // Paginated — Supabase caps a single request at 1000 rows, and the question
+      // bank has already grown past that, which was silently truncating counts.
+      const qRows = []
+      let qErr = null
+      for (let from = 0; ; from += 1000) {
+        const { data: page, error } = await supabase
+          .from('questions')
+          .select('unit, level, topic')
+          .eq('is_active', true)
+          .range(from, from + 999)
+        if (error) { qErr = error; break }
+        qRows.push(...(page || []))
+        if (!page || page.length < 1000) break
+      }
 
-      if (!qErr && qRows) {
+      if (!qErr) {
         // Build map: unitId → Map<level, count>
         // The `unit` column is stored as "Unit 11 - d- and f-Block Elements"
         // Extract the unit number from the prefix "Unit N -"
