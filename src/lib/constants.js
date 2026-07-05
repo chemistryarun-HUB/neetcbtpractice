@@ -61,6 +61,16 @@ export const UNIT_LEVELS = {
     { id: 4, name: 'Miscellaneous',                      topic: 'Miscellaneous' },
     { id: 5, name: 'Complete Chapter Test',              topic: 'Complete Chapter Test' },
   ],
+  7: [
+    { id: 1, name: 'Redox Reactions',                    topic: "Redox Reactions" },
+    { id: 2, name: 'Electrochemical Cells',               topic: "Electrochemical cells - Electrolytic and Galvanic cells, different types of electrodes, electrode potentials including standard electrode potential, half-cell and cell reactions, emf of a Galvanic cell and its measurement." },
+    { id: 3, name: 'Nernst Equation',                     topic: "Nernst equation and its applications; Relationship between cell potential and Gibbs' energy change." },
+    { id: 4, name: 'Electrolysis & Faraday\'s Laws',      topic: "Electrolytic Cells and Electrolysis, Qualitative Aspects of Electrolysis, Quantitative Aspects of Electrolysis (Faradays Laws)" },
+    { id: 5, name: 'Conductance & Kohlrausch\'s Law',     topic: "Electrolytic and metallic conduction, conductance in electrolytic solutions, molar conductivities and their variation with concentration: Kohlrausch’s law and its applications" },
+    { id: 6, name: 'Cells, Batteries & Corrosion',        topic: "Cells and Batteries and Fuel Cell and Corrosion" },
+    { id: 7, name: 'Miscellaneous',                       topic: 'Miscellaneous' },
+    { id: 8, name: 'Complete Chapter Test',               topic: 'Complete Chapter Test' },
+  ],
   11: [
     { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
     { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
