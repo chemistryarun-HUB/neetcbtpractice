@@ -46,7 +46,14 @@ export default function TestPage() {
         .eq('unit_id', unitNum)
 
       const usedIds = new Set((used || []).map(u => u.question_id))
-      const wrongOrSkipped = (used || []).filter(u => u.status === 'wrong' || u.status === 'skipped').map(u => u.question_id)
+      // Fallback priority when fresh questions run out: wrong answers first, then
+      // skipped, then — only as a last resort, once both of those are exhausted —
+      // previously-correct questions. Without the "correct" tier, a student who
+      // clears most of a small pool ends up with a test that shrinks to just the
+      // one or two questions still marked wrong, repeating every single attempt.
+      const wrongIds = (used || []).filter(u => u.status === 'wrong').map(u => u.question_id)
+      const skippedIds = (used || []).filter(u => u.status === 'skipped').map(u => u.question_id)
+      const correctIds = (used || []).filter(u => u.status === 'correct').map(u => u.question_id)
 
       // Last level of this unit = Complete Chapter Test: draw from ALL levels of this unit
       const unitLevelDefs = UNIT_LEVELS[unitNum] || []
@@ -66,16 +73,22 @@ export default function TestPage() {
       const fresh = (allQ || []).filter(q => !usedIds.has(q.id))
       let pool = shuffle(fresh)
 
-      // If not enough fresh, pad with wrong/skipped from this unit
-      if (pool.length < QUESTIONS_PER_ATTEMPT && wrongOrSkipped.length > 0) {
+      async function fetchByIds(ids) {
+        if (ids.length === 0) return []
         let fbQuery = supabase.from('questions').select('*')
-          .in('id', wrongOrSkipped)
+          .in('id', ids)
           .ilike('unit', `${unitPrefix}%`)
           .eq('is_active', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)
-        const { data: fallback } = await fbQuery
-        pool = [...pool, ...shuffle(fallback || [])]
+        const { data } = await fbQuery
+        return shuffle(data || [])
       }
+
+      // Tier 2: wrong, then skipped
+      if (pool.length < QUESTIONS_PER_ATTEMPT) pool = [...pool, ...await fetchByIds(wrongIds)]
+      if (pool.length < QUESTIONS_PER_ATTEMPT) pool = [...pool, ...await fetchByIds(skippedIds)]
+      // Tier 3: last resort, re-serve already-correct questions
+      if (pool.length < QUESTIONS_PER_ATTEMPT) pool = [...pool, ...await fetchByIds(correctIds)]
 
       // Defensive strip — ensure no questions from other units slip through
       pool = pool.filter(q => (q.unit || '').startsWith(unitPrefix))
@@ -101,6 +114,7 @@ export default function TestPage() {
         .from('test_attempts')
         .select('id', { count: 'exact', head: true })
         .eq('student_id', user.id)
+        .eq('unit_id', unitNum)
         .eq('level', levelNum)
 
       // Create attempt record
