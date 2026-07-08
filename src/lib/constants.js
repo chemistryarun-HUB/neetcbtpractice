@@ -54,6 +54,16 @@ export const UNIT_LEVELS = {
     { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent Concept' },
     { id: 6, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
   ],
+  2: [
+    { id: 1, name: 'Sub-atomic Particles',                topic: "Sub-atomic particles : Discovery of electron, Charge to mass ratio of electron, Charge on electron, Discovery of proton and neutron. Thomson model of atom, Rutherford's nuclear model of atom, Atomic and Mass number, Isobars and isotopes." },
+    { id: 2, name: 'Electromagnetic Radiation',           topic: "Particle nature of electromagnetic radiation : Planck's quantum theory, Photoelectric effect, Dual behaviour of electromagnetic radiation." },
+    { id: 3, name: 'Bohr\'s Model',                        topic: "Emission and absorption spectra, Line spectrum of hydrogen, Bohr's model for hydrogen atom, Explanation of Bohr's model." },
+    { id: 4, name: 'Heisenberg\'s Uncertainty Principle',  topic: "Dual behaviour of matter, Heisenberg's uncertainty principle, Significance of uncertainty principle, Reason for the failure of the Bohr model." },
+    { id: 5, name: 'Quantum Mechanics & Orbitals',         topic: "Quantum mechanics, Hydrogen atom and the Schrodinger equation, Orbitals and Quantum numbers, Shapes of atomic orbitals." },
+    { id: 6, name: 'Electronic Configuration',             topic: "Energies of atomic orbitals, Filling of orbitals in atom : Aufbau principle, Pauli's exclusion principle, Hund's rule of maximum multiplicity,Electronic configuration of atoms, Causes of Stability of completely filled and half filled sub-shells." },
+    { id: 7, name: 'Miscellaneous',                        topic: 'Miscellaneous' },
+    { id: 8, name: 'Complete Chapter Test',                topic: 'Complete Chapter Test' },
+  ],
   5: [
     { id: 1, name: 'Types of Solutions',                topic: "Types of solutions, Expressing concentration of solutions." },
     { id: 2, name: 'Solubility & Raoult\'s Law',         topic: "Solubility of a solid in a liquid and gas in a liquid (Henry-law), Vapour pressure of liquid solutions, Raoult's law for binary solutions. Ideal and non-ideal solutions" },
