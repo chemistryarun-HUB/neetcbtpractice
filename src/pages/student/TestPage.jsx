@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT } from '../../lib/constants'
+import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import toast from 'react-hot-toast'
 
 function shuffle(arr) {
@@ -101,9 +102,11 @@ export default function TestPage() {
 
       const selected = pool.slice(0, QUESTIONS_PER_ATTEMPT)
 
-      // Shuffle options for each question, keeping track of correct answer
+      // Shuffle options for each question. Options are tracked by key
+      // ('option1'..'option4'), not text — image-only options have no text to
+      // key off, and identical/blank text must not be treated as the same answer.
       const prepared = selected.map(q => {
-        const opts = shuffle([q.option1, q.option2, q.option3, q.option4])
+        const opts = shuffle(optionEntries(q))
         return { ...q, shuffledOptions: opts }
       })
 
@@ -140,9 +143,9 @@ export default function TestPage() {
     }
   }
 
-  function selectOption(option) {
+  function selectOption(optionKey) {
     const qId = questions[currentIdx].id
-    setAnswers(prev => ({ ...prev, [qId]: option }))
+    setAnswers(prev => ({ ...prev, [qId]: optionKey }))
   }
 
   const handleSubmit = useCallback(async () => {
@@ -162,7 +165,7 @@ export default function TestPage() {
           skipped++
           skippedIds.push(q.id)
           usedRecords.push({ student_id: user.id, unit_id: unitNum, level: levelNum, question_id: q.id, status: 'skipped' })
-        } else if (selected === q.correct_option) {
+        } else if (selected === correctOptionKey(q)) {
           correct++
           correctIds.push(q.id)
           usedRecords.push({ student_id: user.id, unit_id: unitNum, level: levelNum, question_id: q.id, status: 'correct' })
@@ -304,16 +307,24 @@ export default function TestPage() {
             <span style={{ color: 'var(--gray-400)', marginRight: '0.5rem', fontSize: '0.875rem' }}>Q{currentIdx + 1}.</span>
             <span style={{ whiteSpace: 'pre-wrap' }}>{current.question}</span>
           </div>
+          {current.question_image && (
+            <div style={{ margin: '0.75rem 0' }}>
+              <img src={current.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 280, borderRadius: 8, border: '1px solid var(--gray-200)' }} />
+            </div>
+          )}
 
           <ul className="options-list">
             {current.shuffledOptions.map((opt, i) => (
               <li
-                key={i}
-                className={`option-item ${answers[current.id] === opt ? 'selected' : ''}`}
-                onClick={() => selectOption(opt)}
+                key={opt.key}
+                className={`option-item ${answers[current.id] === opt.key ? 'selected' : ''}`}
+                onClick={() => selectOption(opt.key)}
               >
                 <div className="option-circle">{String.fromCharCode(65 + i)}</div>
-                <span style={{ whiteSpace: 'pre-wrap' }}>{opt}</span>
+                <div>
+                  {opt.text && <span style={{ whiteSpace: 'pre-wrap' }}>{opt.text}</span>}
+                  {opt.image && <img src={opt.image} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 160, marginTop: opt.text ? '0.5rem' : 0, display: 'block', borderRadius: 6 }} />}
+                </div>
               </li>
             ))}
           </ul>

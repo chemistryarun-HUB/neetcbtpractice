@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus } from 'lucide-react'
 import { UNIT_LEVELS, UNIT_11_LEVELS } from '../../lib/constants'
+import { correctOptionKey } from '../../lib/questionOptions'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
@@ -119,13 +120,18 @@ function topicToLevel(unitId, topic) {
 
 // Resolve "Option 1"/"Option 2"/... to the actual option text
 function resolveCorrectOption(label, option1, option2, option3, option4) {
-  const map = {
+  const textMap = {
     'option 1': option1,
     'option 2': option2,
     'option 3': option3,
     'option 4': option4,
   }
-  return map[(label || '').trim().toLowerCase()] || label || ''
+  // Image-only options have no text — fall back to a stable 'option1'..'option4'
+  // sentinel so the correct answer isn't lost as an empty string (see
+  // questionOptions.js for where this is resolved back).
+  const keyMap = { 'option 1': 'option1', 'option 2': 'option2', 'option 3': 'option3', 'option 4': 'option4' }
+  const norm = (label || '').trim().toLowerCase()
+  return textMap[norm] || keyMap[norm] || label || ''
 }
 
 const PAGE_SIZE = 50
@@ -292,7 +298,9 @@ export default function QuestionUploader({ uploadedBy }) {
   async function handleEditSave(qId) {
     setEditSaving(true)
     try {
-      const resolvedCorrect = editForm[editForm.correct_option_key] || ''
+      // Fall back to the option-key sentinel when that option has no text
+      // (image-only option) — see questionOptions.js.
+      const resolvedCorrect = editForm[editForm.correct_option_key] || editForm.correct_option_key
       const patch = {
         question:        editForm.question,
         option1:         editForm.option1,
@@ -830,7 +838,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                     )}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                                       {opts.map((opt, i) => {
-                                        const isCorrect = opt === q.correct_option
+                                        const isCorrect = `option${i + 1}` === correctOptionKey(q)
                                         const optImgKey = `option${i + 1}_image`
                                         return (
                                           <div key={i} style={{ padding: '0.45rem 0.75rem', borderRadius: '6px', fontSize: '0.875rem', fontWeight: isCorrect ? 700 : 400, background: isCorrect ? '#dcfce7' : 'var(--gray-100)', color: isCorrect ? '#15803d' : 'var(--gray-700)', border: isCorrect ? '1.5px solid #86efac' : '1px solid transparent' }}>

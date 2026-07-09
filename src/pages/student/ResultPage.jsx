@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, UNLOCK_THRESHOLDS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
+import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { X } from 'lucide-react'
 
 export default function ResultPage() {
@@ -27,7 +28,7 @@ export default function ResultPage() {
       // Fetch ALL question objects for this attempt using question_ids array
       const { data: qs } = await supabase
         .from('questions')
-        .select('id, qid, question, option1, option2, option3, option4, correct_option, difficulty_level, question_tag, topic')
+        .select('id, qid, question, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, topic')
         .in('id', att.question_ids)
       setQuestions(qs || [])
 
@@ -176,8 +177,12 @@ export default function ResultPage() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {questionsForModal.map(q => {
-                    const opts = [q.option1, q.option2, q.option3, q.option4]
+                    const opts = optionEntries(q)
+                    const correctKey = correctOptionKey(q)
                     const selected = responses[q.id]
+                    // Attempts submitted before the key-based fix stored the raw
+                    // selected option text instead of its key — match either form.
+                    const isSelected = (opt) => selected === opt.key || (opt.text !== '' && selected === opt.text)
                     return (
                       <div key={q.id} style={{ padding: '0.875rem', background: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
                         {/* Meta row — no topic chip to save space */}
@@ -189,38 +194,49 @@ export default function ResultPage() {
 
                         {/* Question text */}
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-700)', whiteSpace: 'pre-wrap', marginBottom: '0.6rem' }}>{q.question}</div>
+                        {q.question_image && (
+                          <div style={{ marginBottom: '0.6rem' }}>
+                            <img src={q.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, border: '1px solid var(--gray-200)' }} />
+                          </div>
+                        )}
 
                         {modal === 'correct' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                            {opts.map((opt, i) => (
-                              <div key={i} style={{
-                                padding: '0.4rem 0.65rem',
-                                borderRadius: '6px',
-                                fontSize: '0.8125rem',
-                                whiteSpace: 'pre-wrap',
-                                background: opt === q.correct_option ? '#dcfce7' : 'transparent',
-                                color: opt === q.correct_option ? '#15803d' : 'var(--gray-600)',
-                                fontWeight: opt === q.correct_option ? 600 : 400,
-                                border: opt === q.correct_option ? '1px solid #86efac' : '1px solid transparent',
-                              }}>
-                                {String.fromCharCode(65 + i)}. {opt}
-                                {opt === q.correct_option && ' ✓'}
-                              </div>
-                            ))}
+                            {opts.map((opt, i) => {
+                              const isCorrect = opt.key === correctKey
+                              return (
+                                <div key={opt.key} style={{
+                                  padding: '0.4rem 0.65rem',
+                                  borderRadius: '6px',
+                                  fontSize: '0.8125rem',
+                                  whiteSpace: 'pre-wrap',
+                                  background: isCorrect ? '#dcfce7' : 'transparent',
+                                  color: isCorrect ? '#15803d' : 'var(--gray-600)',
+                                  fontWeight: isCorrect ? 600 : 400,
+                                  border: isCorrect ? '1px solid #86efac' : '1px solid transparent',
+                                }}>
+                                  {String.fromCharCode(65 + i)}. {opt.text}
+                                  {opt.image && <img src={opt.image} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 120, marginTop: '0.3rem', display: 'block', borderRadius: 4 }} />}
+                                  {isCorrect && ' ✓'}
+                                </div>
+                              )
+                            })}
                           </div>
                         )}
 
                         {(modal === 'wrong' || modal === 'skipped') && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                             {opts.map((opt, i) => {
-                              const isCorrect  = opt === q.correct_option
-                              const isSelected = opt === selected
+                              const isCorrect  = opt.key === correctKey
+                              const selectedHere = isSelected(opt)
                               let bg = 'transparent', color = 'var(--gray-600)', border = '1px solid transparent', fw = 400, suffix = ''
                               if (isCorrect) { bg = '#dcfce7'; color = '#15803d'; border = '1px solid #86efac'; fw = 600; suffix = ' ✓' }
-                              if (isSelected && !isCorrect) { bg = '#fee2e2'; color = '#b91c1c'; border = '1px solid #fca5a5'; fw = 600; suffix = ' ✗' }
+                              if (selectedHere && !isCorrect) { bg = '#fee2e2'; color = '#b91c1c'; border = '1px solid #fca5a5'; fw = 600; suffix = ' ✗' }
                               return (
-                                <div key={i} style={{ padding: '0.4rem 0.65rem', borderRadius: '6px', fontSize: '0.8125rem', whiteSpace: 'pre-wrap', background: bg, color, fontWeight: fw, border }}>
-                                  {String.fromCharCode(65 + i)}. {opt}{suffix}
+                                <div key={opt.key} style={{ padding: '0.4rem 0.65rem', borderRadius: '6px', fontSize: '0.8125rem', whiteSpace: 'pre-wrap', background: bg, color, fontWeight: fw, border }}>
+                                  {String.fromCharCode(65 + i)}. {opt.text}
+                                  {opt.image && <img src={opt.image} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 120, marginTop: '0.3rem', display: 'block', borderRadius: 4 }} />}
+                                  {suffix}
                                 </div>
                               )
                             })}
