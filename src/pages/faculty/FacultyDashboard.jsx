@@ -3,13 +3,12 @@ import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { Users, FileQuestion, User, BarChart3 } from 'lucide-react'
+import { Users, FileQuestion, User } from 'lucide-react'
 
 const NAV = [
   { to: '/faculty/dashboard', label: 'Dashboard', end: true },
   { to: '/faculty/students', label: 'Students' },
   { to: '/faculty/questions', label: 'Questions' },
-  { to: '/faculty/performance', label: 'Performance' },
   { to: '/faculty/profile', label: 'Profile' },
 ]
 
@@ -58,12 +57,6 @@ export default function FacultyDashboard() {
             <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
               <FileQuestion size={32} color="var(--primary)" />
               <div><div style={{ fontWeight: 700 }}>Upload Questions</div><div className="text-muted">Add to question bank</div></div>
-            </div>
-          </Link>
-          <Link to="/faculty/performance" style={{ textDecoration: 'none' }}>
-            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
-              <BarChart3 size={32} color="var(--primary)" />
-              <div><div style={{ fontWeight: 700 }}>Student Performance</div><div className="text-muted">Browse & review attempts</div></div>
             </div>
           </Link>
           <Link to="/faculty/profile" style={{ textDecoration: 'none' }}>

@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { Users, BookOpen, FileQuestion } from 'lucide-react'
+import { Users, BookOpen, FileQuestion, BarChart3 } from 'lucide-react'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/students', label: 'Students' },
   { to: '/admin/faculty', label: 'Faculty' },
   { to: '/admin/questions', label: 'Questions' },
+  { to: '/admin/performance', label: 'Performance' },
 ]
 
 export default function AdminDashboard() {
@@ -74,6 +75,15 @@ export default function AdminDashboard() {
               <div>
                 <div style={{ fontWeight: 700 }}>Question Bank</div>
                 <div className="text-muted">Upload & manage questions</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/performance" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
+              <BarChart3 size={32} color="var(--primary)" />
+              <div>
+                <div style={{ fontWeight: 700 }}>Student Performance</div>
+                <div className="text-muted">Browse & review attempts</div>
               </div>
             </div>
           </Link>

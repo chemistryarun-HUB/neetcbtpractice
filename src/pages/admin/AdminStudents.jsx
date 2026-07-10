@@ -19,6 +19,7 @@ const NAV = [
   { to: '/admin/students', label: 'Students' },
   { to: '/admin/faculty', label: 'Faculty' },
   { to: '/admin/questions', label: 'Questions' },
+  { to: '/admin/performance', label: 'Performance' },
 ]
 
 const NEET_YEARS = ['2026', '2027', '2028', '2029']

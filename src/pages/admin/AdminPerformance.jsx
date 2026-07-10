@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Menu } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
-import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import StudentSidebar from './performance/StudentSidebar'
 import StudentProfile from './performance/StudentProfile'
@@ -9,17 +8,16 @@ import ClassLeaderboard from './performance/ClassLeaderboard'
 import AttemptReviewModal from './performance/AttemptReviewModal'
 
 const NAV = [
-  { to: '/faculty/dashboard', label: 'Dashboard', end: true },
-  { to: '/faculty/students', label: 'Students' },
-  { to: '/faculty/questions', label: 'Questions' },
-  { to: '/faculty/performance', label: 'Performance' },
-  { to: '/faculty/profile', label: 'Profile' },
+  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin/students', label: 'Students' },
+  { to: '/admin/faculty', label: 'Faculty' },
+  { to: '/admin/questions', label: 'Questions' },
+  { to: '/admin/performance', label: 'Performance' },
 ]
 
 const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'
 
-export default function FacultyPerformance() {
-  const { user } = useAuth()
+export default function AdminPerformance() {
   const [students, setStudents] = useState([])
   const [attempts, setAttempts] = useState([])
   const [progressByStudent, setProgressByStudent] = useState({})
@@ -33,10 +31,12 @@ export default function FacultyPerformance() {
 
   useEffect(() => {
     async function load() {
-      if (!user?.id) return
       setLoading(true)
+      // Admin manages every student directly (faculty accounts aren't in
+      // active use yet), so this page isn't scoped by added_by — it shows
+      // everyone.
       const { data: studentRows } = await supabase
-        .from('students').select('*').eq('added_by', user.id).order('name')
+        .from('students').select('*').order('name')
       const rows = studentRows || []
       setStudents(rows)
 
@@ -57,14 +57,20 @@ export default function FacultyPerformance() {
       }
       setAttempts(allAttempts)
 
-      const { data: progressRows } = await supabase.from('student_progress').select('*').in('student_id', ids)
-      setProgressByStudent(Object.fromEntries((progressRows || []).map(p => [p.student_id, p])))
+      const progress = []
+      for (let from = 0; ; from += 1000) {
+        const { data: page } = await supabase
+          .from('student_progress').select('*').in('student_id', ids).range(from, from + 999)
+        progress.push(...(page || []))
+        if (!page || page.length < 1000) break
+      }
+      setProgressByStudent(Object.fromEntries(progress.map(p => [p.student_id, p])))
 
       setSelectedStudentId(prev => prev || rows[0]?.id || null)
       setLoading(false)
     }
     load()
-  }, [user?.id])
+  }, [])
 
   const attemptsByStudent = useMemo(() => {
     const map = {}
@@ -111,7 +117,7 @@ export default function FacultyPerformance() {
                 <Menu size={18} />
               </button>
               <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', margin: 0 }}>
-                <strong style={{ color: 'var(--gray-600)' }}>Faculty</strong> / Students
+                <strong style={{ color: 'var(--gray-600)' }}>Admin</strong> / Students
                 {view === 'profile' && selectedStudent && <> / <strong style={{ color: 'var(--gray-600)' }}>{selectedStudent.name}</strong></>}
                 {view === 'leaderboard' && <> / <strong style={{ color: 'var(--gray-600)' }}>Leaderboard</strong></>}
               </p>

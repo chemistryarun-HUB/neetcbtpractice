@@ -10,6 +10,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
 import AdminFaculty from './pages/admin/AdminFaculty'
 import AdminQuestions from './pages/admin/AdminQuestions'
+import AdminPerformance from './pages/admin/AdminPerformance'
 
 import FacultyDashboard from './pages/faculty/FacultyDashboard'
 import FacultyStudents from './pages/faculty/FacultyStudents'
@@ -17,7 +18,6 @@ import FacultyUploadQuestions from './pages/faculty/FacultyUploadQuestions'
 import FacultyProfile from './pages/faculty/FacultyProfile'
 import FacultySetup from './pages/faculty/FacultySetup'
 import StudentProgress from './pages/faculty/StudentProgress'
-import FacultyPerformance from './pages/faculty/FacultyPerformance'
 
 import StudentDashboard from './pages/student/StudentDashboard'
 import TestPage from './pages/student/TestPage'
@@ -47,6 +47,7 @@ function AppRoutes() {
       <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />
       <Route path="/admin/faculty" element={<ProtectedRoute allowedRoles={['admin']}><AdminFaculty /></ProtectedRoute>} />
       <Route path="/admin/questions" element={<ProtectedRoute allowedRoles={['admin']}><AdminQuestions /></ProtectedRoute>} />
+      <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />
 
       <Route path="/faculty/setup" element={<FacultySetup />} />
       <Route path="/faculty/dashboard" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyDashboard /></ProtectedRoute>} />
@@ -54,7 +55,6 @@ function AppRoutes() {
       <Route path="/faculty/questions" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyUploadQuestions /></ProtectedRoute>} />
       <Route path="/faculty/profile" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyProfile /></ProtectedRoute>} />
       <Route path="/faculty/student/:studentId" element={<ProtectedRoute allowedRoles={['faculty']}><StudentProgress /></ProtectedRoute>} />
-      <Route path="/faculty/performance" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyPerformance /></ProtectedRoute>} />
 
       <Route path="/student/change-password" element={<ProtectedRoute allowedRoles={['student']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
