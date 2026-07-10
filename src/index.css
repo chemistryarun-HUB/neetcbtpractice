@@ -82,6 +82,13 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
 .page-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--gray-800); }
 
+/* Profile-style header: avatar + name/meta on the left, action buttons on the right */
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.identity { display: flex; gap: 0.875rem; align-items: center; }
+.identity h1 { font-size: 1.25rem; margin: 0 0 0.25rem; color: var(--gray-800); }
+.identity .meta { display: flex; flex-wrap: wrap; gap: 0.5rem 0.875rem; font-size: 0.8125rem; color: var(--gray-500); }
+.header-actions { display: flex; gap: 0.625rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+
 .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--gray-200); }
 .card-body { padding: 1.5rem; }
 .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); font-weight: 600; font-size: 1rem; }
@@ -215,3 +222,75 @@ tbody tr:hover td { background: var(--gray-50); }
   .grid-2 { grid-template-columns: 1fr; }
   .unit-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Chips / section headers (generic, reusable) ───────────────────────── */
+.section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0 0.875rem; }
+.chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chip { font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; padding: 0.4rem 0.85rem; border-radius: 999px; border: 1.5px solid var(--gray-200); background: #fff; color: var(--gray-500); transition: all 0.15s; }
+.chip:hover { border-color: var(--gray-400); color: var(--gray-700); }
+.chip.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary-dark); }
+
+/* ── Faculty Performance dashboard ─────────────────────────────────────── */
+.perf-shell { display: flex; align-items: flex-start; flex: 1; min-height: 0; }
+.perf-main { flex: 1; min-width: 0; }
+
+.perf-sidebar { width: 0; min-width: 0; flex-shrink: 0; overflow: hidden; background: #fff; border-right: 1px solid transparent; transition: width 0.2s ease, border-color 0.2s ease; align-self: stretch; }
+.perf-sidebar.open { width: 272px; border-right-color: var(--gray-200); }
+.perf-sidebar-inner { width: 272px; position: sticky; top: 60px; max-height: calc(100vh - 60px); overflow-y: auto; padding-bottom: 1rem; }
+.perf-sidebar-head { padding: 1rem 0.875rem 0.5rem; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-400); }
+
+.perf-class-row { display: flex; align-items: center; gap: 0.15rem; padding: 0.2rem 0.5rem; }
+.perf-chev-btn { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: var(--gray-400); border-radius: 6px; }
+.perf-chev-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+.perf-class-label { flex: 1; min-width: 0; display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; font: inherit; color: var(--gray-800); padding: 0.5rem; border-radius: 6px; text-align: left; }
+.perf-class-label:hover { background: var(--gray-100); }
+.perf-class-label.active { background: var(--primary-light); }
+.perf-class-name { font-weight: 700; font-size: 0.84375rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.perf-class-count { font-size: 0.6875rem; font-weight: 700; color: var(--gray-500); background: var(--gray-100); border-radius: 999px; padding: 0.1rem 0.5rem; flex-shrink: 0; }
+.perf-class-label.active .perf-class-count { background: var(--primary); color: #fff; }
+
+.perf-student-list { display: flex; flex-direction: column; gap: 0.125rem; padding: 0.125rem 0.5rem 0.5rem; }
+.perf-student-item { display: flex; align-items: center; gap: 0.625rem; width: 100%; background: none; border: 1px solid transparent; border-radius: 8px; cursor: pointer; padding: 0.4rem 0.5rem; font: inherit; color: var(--gray-800); text-align: left; }
+.perf-student-item:hover { background: var(--gray-100); }
+.perf-student-item.active { background: var(--primary-light); border-color: var(--primary); }
+.perf-s-avatar { width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0; background: var(--gray-100); color: var(--gray-500); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; }
+.perf-student-item.active .perf-s-avatar { background: var(--primary); color: #fff; }
+.perf-s-info { display: flex; flex-direction: column; min-width: 0; }
+.perf-s-name { font-size: 0.8125rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.perf-s-roll { font-size: 0.6875rem; color: var(--gray-400); }
+
+.perf-scrim { display: none; }
+
+@media (max-width: 900px) {
+  .perf-sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: 280px; transform: translateX(-100%); box-shadow: var(--shadow-lg); z-index: 60; transition: transform 0.2s ease; background: #fff; }
+  .perf-sidebar.open { width: 280px; transform: translateX(0); border-right-color: var(--gray-200); }
+  .perf-sidebar-inner { width: 280px; top: 0; max-height: 100vh; }
+  .perf-scrim { display: block; position: fixed; inset: 0; background: rgba(17,24,39,0.4); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 55; }
+  .perf-scrim.open { opacity: 1; pointer-events: auto; }
+}
+
+.perf-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1rem; margin-bottom: 1.5rem; align-items: stretch; }
+@media (max-width: 900px) { .perf-split { grid-template-columns: 1fr; } }
+
+.perf-clickable-card { cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+.perf-clickable-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
+
+.perf-breakdown-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--gray-100); border: 1px solid var(--gray-200); }
+.perf-breakdown-bar span { height: 100%; }
+.perf-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 0.4rem; }
+
+.perf-bar-row { display: grid; grid-template-columns: 150px 1fr 42px; align-items: center; gap: 0.625rem; }
+.perf-bar-label { font-size: 0.8125rem; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.perf-bar-track { position: relative; height: 18px; background: var(--gray-100); border-radius: 6px; overflow: hidden; }
+.perf-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--primary); border-radius: 6px; }
+.perf-bar-value { font-size: 0.8125rem; text-align: right; color: var(--gray-700); font-weight: 600; }
+@media (max-width: 700px) { .perf-bar-row { grid-template-columns: 100px 1fr 38px; } }
+
+.perf-rank-badge { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; background: var(--gray-100); color: var(--gray-500); }
+.perf-rank-badge.r1 { background: #fde68a; color: #78350f; }
+.perf-rank-badge.r2 { background: #e5e7eb; color: #374151; }
+.perf-rank-badge.r3 { background: #fed7aa; color: #7c2d12; }
+
+.perf-lb-student { display: flex; align-items: center; gap: 0.625rem; cursor: pointer; background: none; border: none; font: inherit; color: inherit; padding: 0; text-align: left; }
+.perf-lb-student:hover .perf-s-name, .perf-lb-student:hover span > span:first-child { text-decoration: underline; }
+.perf-you-tag { font-size: 0.625rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em; margin-left: 0.4rem; }

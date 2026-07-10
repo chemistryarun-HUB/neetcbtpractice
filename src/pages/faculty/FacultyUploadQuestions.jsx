@@ -6,6 +6,7 @@ const NAV = [
   { to: '/faculty/dashboard', label: 'Dashboard', end: true },
   { to: '/faculty/students', label: 'Students' },
   { to: '/faculty/questions', label: 'Questions' },
+  { to: '/faculty/performance', label: 'Performance' },
   { to: '/faculty/profile', label: 'Profile' },
 ]
 
