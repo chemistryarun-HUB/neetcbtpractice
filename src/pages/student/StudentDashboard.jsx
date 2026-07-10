@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
 import { Lock, ChevronRight, LogOut, History, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
+import InfoTooltip from '../../components/shared/InfoTooltip'
 
 export default function StudentDashboard() {
   const { user, logout } = useAuth()
@@ -150,7 +151,7 @@ export default function StudentDashboard() {
             {levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and Level {lastLevelId} always unlocked
           </p>
           <div className="levels-grid">
-            {levelDefs.map(({ id: levelId, name: levelName }) => {
+            {levelDefs.map(({ id: levelId, name: levelName, topic: levelTopic }) => {
               // Level 1 and last level are always unlocked
               const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
               const isUnlocked = alwaysUnlocked || unlockedLevels.includes(levelId)
@@ -163,12 +164,9 @@ export default function StudentDashboard() {
                   className={`level-card ${isUnlocked ? 'unlocked' : 'locked'}`}
                   onClick={() => isUnlocked && startTest(selectedUnit.id, levelId)}
                 >
-                  <div className="level-num" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div className="level-num">
                     Level {levelId}
-                    <span title={levelName || 'No topic mapped to this level'}
-                      style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'var(--gray-300)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
-                      i
-                    </span>
+                    <InfoTooltip text={levelTopic || levelName} />
                   </div>
                   <h4>{levelName}</h4>
                   <div className="level-stats">

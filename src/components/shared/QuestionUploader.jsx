@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus } from 'lucide-react'
 import { UNIT_LEVELS, UNIT_11_LEVELS } from '../../lib/constants'
 import { correctOptionKey } from '../../lib/questionOptions'
+import InfoTooltip from './InfoTooltip'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
@@ -19,6 +20,15 @@ function deriveTopic(unitString, level) {
   const unitId = Number(match[1])
   const levelDefs = UNIT_LEVELS[unitId] || []
   return levelDefs.find(l => l.id === Number(level))?.name || ''
+}
+
+// Full syllabus text for a level (as opposed to deriveTopic's short display name) — shown in the "i" tooltip.
+function deriveFullTopic(unitString, level) {
+  const match = (unitString || '').match(/^Unit\s+(\d+)\s*-/i)
+  if (!match) return ''
+  const unitId = Number(match[1])
+  const levelDefs = UNIT_LEVELS[unitId] || []
+  return levelDefs.find(l => l.id === Number(level))?.topic || ''
 }
 
 // Standard Assertion-Reason options (NEET pattern)
@@ -742,10 +752,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>
                           <td style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                             {q.level}
-                            <span title={deriveTopic(q.unit, q.level) || q.topic || 'No topic mapped to this level'}
-                              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'var(--gray-300)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
-                              i
-                            </span>
+                            <InfoTooltip text={deriveFullTopic(q.unit, q.level) || q.topic} />
                           </td>
                           <td style={{ maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.875rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? 'var(--gray-400)' : undefined }}>{q.question}</td>
                           <td>
@@ -947,10 +954,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                   <div className="form-group" style={{ margin: 0 }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                                       Level
-                                      <span title={deriveTopic(editForm.unit, editForm.level) || 'No topic mapped to this level'}
-                                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'var(--gray-300)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
-                                        i
-                                      </span>
+                                      <InfoTooltip text={deriveFullTopic(editForm.unit, editForm.level)} align="left" />
                                     </label>
                                     <select className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={editForm.level}

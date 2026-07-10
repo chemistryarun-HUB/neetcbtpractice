@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import InfoTooltip from '../../components/shared/InfoTooltip'
 import toast from 'react-hot-toast'
 
 function shuffle(arr) {
@@ -274,12 +275,9 @@ export default function TestPage() {
     <div className="test-layout">
       <div className="test-header">
         <div>
-          <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             Level {levelNum}: {levelInfo?.name}
-            <span title={levelInfo?.name || 'No topic mapped to this level'}
-              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>
-              i
-            </span>
+            <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
           </div>
           <div style={{ fontSize: '0.8rem', opacity: 0.8 }} className="q-counter">
             Question {currentIdx + 1} of {questions.length} · {answeredCount} answered
