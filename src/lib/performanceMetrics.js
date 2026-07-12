@@ -81,11 +81,14 @@ export function clearedInfo(attemptsForLevel) {
   return { cleared: false }
 }
 
-export function trendLabel(attemptsForLevel) {
+// Trend as of a specific attempt (defaults to the latest) — lets a per-attempt
+// row show its own trend at that point in time, not just the group's overall one.
+export function trendLabel(attemptsForLevel, atAttemptNumber = null) {
   const sorted = [...attemptsForLevel].sort((a, b) => a.attempt_number - b.attempt_number)
-  if (sorted.length < 2) return 'needs-work'
-  const last = scorePct(sorted[sorted.length - 1])
-  const prev = scorePct(sorted[sorted.length - 2])
+  const idx = atAttemptNumber == null ? sorted.length - 1 : sorted.findIndex(a => a.attempt_number === atAttemptNumber)
+  if (idx < 1) return 'needs-work'
+  const last = scorePct(sorted[idx])
+  const prev = scorePct(sorted[idx - 1])
   if (last > prev + 2) return 'improving'
   if (last < prev - 2) return 'declining'
   return 'needs-work'

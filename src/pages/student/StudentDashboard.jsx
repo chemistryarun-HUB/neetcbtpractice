@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
-import { Lock, ChevronRight, LogOut, History, ArrowLeft, BarChart3 } from 'lucide-react'
+import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 
@@ -248,68 +248,6 @@ export default function StudentDashboard() {
             </div>
           </div>
         ))}
-
-        {/* Attempt History */}
-        {attempts.length > 0 && (
-          <div style={{ marginTop: '2.5rem' }}>
-            <h3 style={{ fontWeight: 700, marginBottom: '1rem', color: 'var(--gray-700)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <History size={18} /> Attempt History
-            </h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
-                <thead>
-                  <tr style={{ background: 'var(--gray-50)', borderBottom: '2px solid var(--gray-200)' }}>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'left', color: 'var(--gray-600)', fontWeight: 600 }}>Date</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'left', color: 'var(--gray-600)', fontWeight: 600 }}>Level</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--gray-600)', fontWeight: 600 }}>Score</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>✓</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>✗</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>–</th>
-                    <th style={{ padding: '0.625rem 0.75rem', textAlign: 'center', color: 'var(--gray-600)', fontWeight: 600 }}>Review</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...attempts]
-                    .sort((a, b) => new Date(b.submitted_at || b.started_at) - new Date(a.submitted_at || a.started_at))
-                    .map(att => {
-                      // Find level name from UNIT_LEVELS definitions, scoped to this attempt's unit
-                      const topicName = (UNIT_LEVELS[att.unit_id] || [])
-                        .find(l => l.id === att.level)?.name || ''
-                      const date = new Date(att.submitted_at || att.started_at)
-                      const dateStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-                      const timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
-                      const total = (att.correct_count || 0) + (att.wrong_count || 0) + (att.skipped_count || 0)
-                      const pct = total > 0 ? Math.round(((att.correct_count || 0) / total) * 100) : 0
-                      return (
-                        <tr key={att.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                          <td style={{ padding: '0.625rem 0.75rem', color: 'var(--gray-600)' }}>
-                            <div>{dateStr}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{timeStr}</div>
-                          </td>
-                          <td style={{ padding: '0.625rem 0.75rem', color: 'var(--gray-700)' }}>
-                            <div style={{ fontWeight: 600 }}>Level {att.level}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{topicName}</div>
-                          </td>
-                          <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', fontWeight: 700, color: att.score >= 0 ? 'var(--green)' : 'var(--red)' }}>
-                            {att.score}
-                            <div style={{ fontSize: '0.7rem', fontWeight: 400, color: 'var(--gray-400)' }}>{pct}%</div>
-                          </td>
-                          <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{att.correct_count || 0}</td>
-                          <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{att.wrong_count || 0}</td>
-                          <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>{att.skipped_count || 0}</td>
-                          <td style={{ padding: '0.625rem 0.75rem', textAlign: 'center' }}>
-                            <Link to={`/student/result/${att.id}`} className="btn btn-outline btn-sm" style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem' }}>
-                              View
-                            </Link>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
