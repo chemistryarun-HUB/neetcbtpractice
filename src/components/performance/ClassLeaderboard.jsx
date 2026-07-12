@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { computeStreak, aggregateAccuracy } from '../../../lib/performanceMetrics'
+import { computeStreak, aggregateAccuracy } from '../../lib/performanceMetrics'
 
 const SORT_TABS = [
   { key: 'attempts', label: 'Most Attempts' },

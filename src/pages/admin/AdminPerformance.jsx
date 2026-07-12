@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react'
 import { Menu } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import StudentSidebar from './performance/StudentSidebar'
-import StudentProfile from './performance/StudentProfile'
-import ClassLeaderboard from './performance/ClassLeaderboard'
-import AttemptReviewModal from './performance/AttemptReviewModal'
+import StudentSidebar from '../../components/performance/StudentSidebar'
+import StudentProfile from '../../components/performance/StudentProfile'
+import ClassLeaderboard from '../../components/performance/ClassLeaderboard'
+import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },

@@ -192,6 +192,9 @@ tbody tr:hover td { background: var(--gray-50); }
 .result-tile.wrong .tile-num { color: #dc2626; }
 .result-tile.skipped .tile-num { color: #d97706; }
 .result-tile .tile-label { font-size: 0.875rem; color: var(--gray-500); margin-top: 0.25rem; }
+.result-tile.correct.active { background: #f0fdf4; box-shadow: 0 0 0 2px #16a34a; }
+.result-tile.wrong.active { background: #fef2f2; box-shadow: 0 0 0 2px #dc2626; }
+.result-tile.skipped.active { background: #fffbeb; box-shadow: 0 0 0 2px #d97706; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 1rem; }
 .modal { background: #fff; border-radius: 12px; box-shadow: var(--shadow-lg); width: 100%; max-width: 560px; max-height: 85vh; overflow-y: auto; }

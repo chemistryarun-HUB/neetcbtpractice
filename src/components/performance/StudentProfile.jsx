@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
-import InfoTooltip from '../../../components/shared/InfoTooltip'
+import InfoTooltip from '../shared/InfoTooltip'
 import {
   unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
   computeStreak, clearedInfo, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
-} from '../../../lib/performanceMetrics'
+} from '../../lib/performanceMetrics'
 
 const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 function waLink(phone, message) {
@@ -18,7 +18,7 @@ function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
 }
 
-export default function StudentProfile({ student, progress, attempts, onOpenReview }) {
+export default function StudentProfile({ student, progress, attempts, onOpenReview, showContactActions = true }) {
   const [unitFilter, setUnitFilter] = useState('all')
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
@@ -78,22 +78,24 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             </div>
           </div>
         </div>
-        <div className="header-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {[
-            ['Student', student.phone_student],
-            ['Mother', student.phone_mother],
-            ['Father', student.phone_father],
-          ].map(([label, phone]) => {
-            const link = waLink(phone, `Hello, checking in on ${student.name}'s NEET CBT practice. Login: ${LOGIN_URL}`)
-            if (!link) return null
-            return (
-              <a key={label} href={link} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                <MessageCircle size={13} color="#25d366" /> {label}
-              </a>
-            )
-          })}
-        </div>
+        {showContactActions && (
+          <div className="header-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {[
+              ['Student', student.phone_student],
+              ['Mother', student.phone_mother],
+              ['Father', student.phone_father],
+            ].map(([label, phone]) => {
+              const link = waLink(phone, `Hello, checking in on ${student.name}'s NEET CBT practice. Login: ${LOGIN_URL}`)
+              if (!link) return null
+              return (
+                <a key={label} href={link} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <MessageCircle size={13} color="#25d366" /> {label}
+                </a>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       <div className="stats-grid">

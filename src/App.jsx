@@ -23,6 +23,7 @@ import StudentDashboard from './pages/student/StudentDashboard'
 import TestPage from './pages/student/TestPage'
 import ResultPage from './pages/student/ResultPage'
 import ChangePassword from './pages/student/ChangePassword'
+import StudentPerformance from './pages/student/StudentPerformance'
 
 import './index.css'
 
@@ -60,6 +61,7 @@ function AppRoutes() {
       <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
       <Route path="/student/test/:unitId/:level" element={<ProtectedRoute allowedRoles={['student']}><TestPage /></ProtectedRoute>} />
       <Route path="/student/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><ResultPage /></ProtectedRoute>} />
+      <Route path="/student/performance" element={<ProtectedRoute allowedRoles={['student']}><StudentPerformance /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

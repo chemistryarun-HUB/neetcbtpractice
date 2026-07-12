@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
-import { supabase } from '../../../lib/supabase'
-import { optionEntries, correctOptionKey } from '../../../lib/questionOptions'
-import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../../lib/performanceMetrics'
+import { supabase } from '../../lib/supabase'
+import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
 
-// Mirrors ResultPage.jsx's own review rendering — this is deliberately built
-// to look exactly like what the student saw on their post-test review screen.
+// Mirrors ResultPage.jsx's own review UI — same Correct/Wrong/Skipped tiles
+// the student sees on their own post-test screen (clicking a tile filters
+// the list below), so admin and student are looking at the same thing.
 export default function AttemptReviewModal({ attempt, studentName, onClose }) {
   const [questions, setQuestions] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState(null) // null (all) | 'correct' | 'wrong' | 'skipped'
 
   useEffect(() => {
     function handleKey(e) { if (e.key === 'Escape') onClose() }
@@ -66,6 +68,14 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
   const accuracy = accuracyOf(attempt)
   const lDef = levelDef(attempt.unit_id, attempt.level)
 
+  const visibleQuestions = (questions || []).filter(q => !filter || statusFor(q) === filter)
+  // Sorted by qid within a filtered category, matching ResultPage.jsx's own
+  // Correct/Wrong/Skipped modals; the unfiltered "all" view keeps the order
+  // the student actually saw the questions in.
+  const sortedVisible = filter
+    ? [...visibleQuestions].sort((a, b) => (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true, sensitivity: 'base' }))
+    : visibleQuestions
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
@@ -83,9 +93,6 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
           {[
             ['Score', attempt.score],
             ['Accuracy', `${accuracy.toFixed(0)}%`],
-            ['Correct', attempt.correct_count ?? 0],
-            ['Wrong', attempt.wrong_count ?? 0],
-            ['Skipped', attempt.skipped_count ?? 0],
             ['Time', fmtDuration(attempt.time_taken)],
           ].map(([label, value]) => (
             <div key={label} style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
@@ -101,13 +108,37 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
               <strong style={{ color: 'var(--gray-700)' }}>Syllabus:</strong> {lDef.topic}
             </div>
           )}
+
+          {/* Same Correct/Wrong/Skipped tiles as the student's own result screen —
+              click a tile to filter the list below to just that category, click it
+              again to go back to showing everything. */}
+          <div className="result-tiles" style={{ margin: '0 0 1.25rem' }}>
+            <div className={`result-tile correct ${filter === 'correct' ? 'active' : ''}`} onClick={() => setFilter(f => f === 'correct' ? null : 'correct')}>
+              <div className="tile-num">{attempt.correct_count ?? 0}</div>
+              <div className="tile-label">Correct</div>
+            </div>
+            <div className={`result-tile wrong ${filter === 'wrong' ? 'active' : ''}`} onClick={() => setFilter(f => f === 'wrong' ? null : 'wrong')}>
+              <div className="tile-num">{attempt.wrong_count ?? 0}</div>
+              <div className="tile-label">Wrong</div>
+            </div>
+            <div className={`result-tile skipped ${filter === 'skipped' ? 'active' : ''}`} onClick={() => setFilter(f => f === 'skipped' ? null : 'skipped')}>
+              <div className="tile-num">{attempt.skipped_count ?? 0}</div>
+              <div className="tile-label">Skipped</div>
+            </div>
+          </div>
+          {filter && (
+            <button className="btn btn-ghost btn-sm" style={{ marginBottom: '0.75rem' }} onClick={() => setFilter(null)}>
+              Showing {filter} only — click to show all
+            </button>
+          )}
+
           {loading ? (
             <div style={{ padding: '2rem', textAlign: 'center' }}>Loading…</div>
-          ) : questions.length === 0 ? (
-            <div className="empty-state">No questions found for this attempt</div>
+          ) : sortedVisible.length === 0 ? (
+            <div className="empty-state">{filter ? `No ${filter} questions` : 'No questions found for this attempt'}</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {questions.map((q, i) => {
+              {sortedVisible.map((q, i) => {
                 const status = statusFor(q)
                 const correctKey = correctOptionKey(q)
                 const opts = optionEntries(q)
