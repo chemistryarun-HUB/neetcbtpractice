@@ -614,10 +614,14 @@ export default function QuestionUploader({ uploadedBy }) {
             .upsert(fullRecords.slice(i, i + BATCH), { onConflict: 'qid' })
           if (error) throw error
         }
-        for (let i = 0; i < metadataOnlyRecords.length; i += BATCH) {
-          const { error } = await supabase
-            .from('questions')
-            .upsert(metadataOnlyRecords.slice(i, i + BATCH), { onConflict: 'qid' })
+        // Locked rows are guaranteed to already exist (that's how lockedQids was built),
+        // so this must be a plain UPDATE, not an upsert — Postgres checks NOT NULL
+        // constraints (question, option1-4, correct_option) against the INSERT branch
+        // of "ON CONFLICT DO UPDATE" before it even resolves the conflict, so omitting
+        // those columns from an upsert payload fails even though only a row that already
+        // satisfies them would ever be touched.
+        for (const { qid, ...fields } of metadataOnlyRecords) {
+          const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
           if (error) throw error
         }
 
