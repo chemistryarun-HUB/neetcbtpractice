@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus } from 'lucide-react'
+import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock } from 'lucide-react'
 import { UNIT_LEVELS, UNIT_11_LEVELS } from '../../lib/constants'
 import { correctOptionKey } from '../../lib/questionOptions'
 import InfoTooltip from './InfoTooltip'
@@ -279,6 +279,10 @@ export default function QuestionUploader({ uploadedBy }) {
       question_tag:      q.question_tag || '',
       source:            q.source || '',
       is_active:         q.is_active !== false,
+      // Editing here means "I've verified/fixed this by hand" — default to
+      // protecting it from a future Excel re-upload clobbering it back.
+      // Admin can uncheck if they genuinely want Excel to keep overriding this row.
+      content_locked:    true,
     })
     // Pre-populate image URLs from the existing DB record
     setEditImgUrls({
@@ -324,6 +328,7 @@ export default function QuestionUploader({ uploadedBy }) {
         question_tag:    editForm.question_tag || null,
         source:          editForm.source || null,
         is_active:       editForm.is_active,
+        content_locked:  editForm.content_locked,
         question_image:  editImgUrls.question_image ?? null,
         option1_image:   editImgUrls.option1_image  ?? null,
         option2_image:   editImgUrls.option2_image  ?? null,
@@ -579,18 +584,48 @@ export default function QuestionUploader({ uploadedBy }) {
           return
         }
 
+        // Questions manually fixed via the Edit panel (content_locked=true) must not
+        // have their question/options/correct_option reverted by a stale Excel source —
+        // that's the whole reason content_locked exists. Look up which incoming Q IDs
+        // are currently locked, then split into a full upsert vs. a metadata-only upsert.
+        const allQids = dedupedRecords.map(r => r.qid)
+        const lockedQids = new Set()
+        const LOOKUP_BATCH = 500
+        for (let i = 0; i < allQids.length; i += LOOKUP_BATCH) {
+          const { data: lockedRows, error: lookupErr } = await supabase
+            .from('questions')
+            .select('qid')
+            .in('qid', allQids.slice(i, i + LOOKUP_BATCH))
+            .eq('content_locked', true)
+          if (lookupErr) throw lookupErr
+          for (const row of lockedRows) lockedQids.add(row.qid)
+        }
+
+        const fullRecords = dedupedRecords.filter(r => !lockedQids.has(r.qid))
+        const metadataOnlyRecords = dedupedRecords
+          .filter(r => lockedQids.has(r.qid))
+          .map(({ qid, subject, unit, chapter_name, topic, level, difficulty_level, question_tag, source, uploaded_by }) =>
+            ({ qid, subject, unit, chapter_name, topic, level, difficulty_level, question_tag, source, uploaded_by }))
+
         const BATCH = 500
-        for (let i = 0; i < dedupedRecords.length; i += BATCH) {
+        for (let i = 0; i < fullRecords.length; i += BATCH) {
           const { error } = await supabase
             .from('questions')
-            .upsert(dedupedRecords.slice(i, i + BATCH), { onConflict: 'qid' })
+            .upsert(fullRecords.slice(i, i + BATCH), { onConflict: 'qid' })
+          if (error) throw error
+        }
+        for (let i = 0; i < metadataOnlyRecords.length; i += BATCH) {
+          const { error } = await supabase
+            .from('questions')
+            .upsert(metadataOnlyRecords.slice(i, i + BATCH), { onConflict: 'qid' })
           if (error) throw error
         }
 
         const parts = [`${dedupedRecords.length} questions uploaded successfully!`]
+        if (metadataOnlyRecords.length) parts.push(`${metadataOnlyRecords.length} were 🔒 locked — question/options/answer preserved, only metadata updated.`)
         if (skipped.length) parts.push(`${skipped.length} skipped (missing Q ID or Question).`)
         if (duplicateCount) parts.push(`${duplicateCount} duplicate Q ID(s) in file — kept last occurrence.`)
-        toast.success(parts.join(' '), { duration: 6000 })
+        toast.success(parts.join(' '), { duration: 8000 })
         loadQuestions()
       } catch (err) {
         console.error('Excel upload failed:', err)
@@ -747,6 +782,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
                             {isInactive && <span style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '3px', padding: '0 4px' }}>inactive</span>}
+                            {q.content_locked && <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title="Content locked — protected from Excel re-upload overwrites" />}
                           </td>
                           <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>
@@ -986,6 +1022,13 @@ export default function QuestionUploader({ uploadedBy }) {
                                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem' }}>
                                       <input type="checkbox" checked={editForm.is_active} onChange={e => setEditForm(f => ({ ...f, is_active: e.target.checked }))} />
                                       Is Active
+                                    </label>
+                                  </div>
+                                  <div className="form-group" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem' }}
+                                      title="When checked, re-uploading an Excel sheet with this Q ID will NOT overwrite the question text, options or correct answer — only metadata (topic, difficulty, tag, source) gets updated.">
+                                      <input type="checkbox" checked={editForm.content_locked} onChange={e => setEditForm(f => ({ ...f, content_locked: e.target.checked }))} />
+                                      <Lock size={13} /> Lock content from Excel re-upload
                                     </label>
                                   </div>
                                 </div>

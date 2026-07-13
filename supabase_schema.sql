@@ -78,7 +78,12 @@ create table if not exists questions (
   question_tag text,
   source text,
   uploaded_by uuid,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  -- Set true when an admin manually fixes this row via the Edit panel (e.g. uploading
+  -- real images to replace "[Image]" placeholders). Excel re-uploads must not silently
+  -- revert that fix, so handleExcelUpload() in QuestionUploader.jsx skips overwriting
+  -- question/options/correct_option/question_image for locked rows.
+  content_locked boolean not null default false
 );
 
 alter table questions enable row level security;
