@@ -47,11 +47,11 @@ export const NEET_CHEMISTRY_SYLLABUS = [
 // ─────────────────────────────────────────────────────────────────────────────
 export const UNIT_LEVELS = {
   1: [
-    { id: 1, name: 'Basic Concept of Chemistry',  topic: 'Basic Concept of Chemistry' },
-    { id: 2, name: 'Mole Concept',                topic: 'Mole Concept' },
-    { id: 3, name: 'Stoichiometry',               topic: 'Stoichiometry' },
-    { id: 4, name: 'Concentration Terms',         topic: 'Concentration Terms' },
-    { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent Concept' },
+    { id: 1, name: 'Basic Concept of Chemistry',  topic: "Law of conservation of mass, Law of definite proportions, Law of multiple proportions, Gay Lussac's law of gaseous volumes, Avogadro law, Dalton's atomic theory." },
+    { id: 2, name: 'Mole Concept',                topic: 'Atomic mass, Average atomic mass, Molecular mass, Formula mass, Mole concept, Molar mass, Percentage composition, Empirical formula' },
+    { id: 3, name: 'Stoichiometry',               topic: 'Stoichiometry and Stoichiometric calculations, limiting reagents, Percentage purity, Percentage yield.' },
+    { id: 4, name: 'Concentration Terms',         topic: 'Molarity, Molality, Mole-fraction, Mass percentage or weight percentage, weight by volume percentage, volume by volume percentage, ppm, Strength' },
+    { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent mass, Normality, Law of chemical equivalence, Mixing of solutions, Dilution of solutions.' },
     { id: 6, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
   ],
   2: [
