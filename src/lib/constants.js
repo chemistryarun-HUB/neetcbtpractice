@@ -81,6 +81,13 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Miscellaneous',                       topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',               topic: 'Complete Chapter Test' },
   ],
+  9: [
+    { id: 1, name: 'Periodic Classification & Configuration', topic: "Genesis of periodic classification, Modern periodic law and the present form of the periodic table. Nomenclature of elements with atomic numbers > 100, Electronic configurations in periods, Groupwise electronic configuration, s, p, d & f-block elements, Metals, Non-metals and metalloids" },
+    { id: 2, name: 'Periodic Trends - Physical Properties',   topic: "Periodic Trends in physical properties : Atomic radii, Ionisation enthalpy, Electron gain enthalpy, Electronegativity." },
+    { id: 3, name: 'Periodic Trends - Chemical Properties',   topic: "Periodic trends in chemical properties : chemical reactivity, Oxidation states, Anomalous properties of second period elements." },
+    { id: 4, name: 'Miscellaneous',                           topic: 'Miscellaneous' },
+    { id: 5, name: 'Complete Chapter Test',                   topic: 'Complete Chapter Test' },
+  ],
   11: [
     { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
     { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
