@@ -185,9 +185,9 @@ export default function ResultPage() {
                     const isSelected = (opt) => selected === opt.key || (opt.text !== '' && selected === opt.text)
                     return (
                       <div key={q.id} style={{ padding: '0.875rem', background: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
-                        {/* Meta row — no topic chip to save space */}
-                        <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '0.35rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                          <code>{q.qid}</code>
+                        {/* Meta row — kept in sync with AttemptReviewModal.jsx's meta row */}
+                        <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginBottom: '0.35rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                          <span><span style={{ fontWeight: 600 }}>Q ID:</span> <code style={{ color: 'var(--primary)', fontWeight: 600 }}>{q.qid}</code></span>
                           <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                           {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
                         </div>

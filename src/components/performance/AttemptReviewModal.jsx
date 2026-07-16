@@ -145,9 +145,10 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
                 return (
                   <div key={q.id} style={{ padding: '0.875rem', background: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <code>{q.qid}</code>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span><span style={{ fontWeight: 600 }}>Q ID:</span> <code style={{ color: 'var(--primary)', fontWeight: 600 }}>{q.qid}</code></span>
                         <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
+                        {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
                       </div>
                       <span className={`badge ${status === 'correct' ? 'badge-easy' : status === 'wrong' ? 'badge-hard' : 'badge-locked'}`}>
                         {status === 'correct' ? 'Correct' : status === 'wrong' ? 'Wrong' : 'Skipped'}
