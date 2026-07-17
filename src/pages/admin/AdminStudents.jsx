@@ -494,7 +494,7 @@ export default function AdminStudents() {
   }
 
   function openEdit(s) {
-    setEditForm({ name: s.name, phone: s.phone_student || '', phone_mother: s.phone_mother || '', phone_father: s.phone_father || '' })
+    setEditForm({ name: s.name, phone: s.phone_student || '', phone_mother: s.phone_mother || '', phone_father: s.phone_father || '', cls: s.class || '', neetYear: s.neet_year || '' })
     setEditId(s.id)
   }
 
@@ -504,13 +504,21 @@ export default function AdminStudents() {
     const pf = editForm.phone_father.replace(/\D/g, '')
     if (pm && pm.length !== 10) { toast.error('Mother phone must be 10 digits'); return }
     if (pf && pf.length !== 10) { toast.error('Father phone must be 10 digits'); return }
+    if (!editForm.cls) { toast.error('Select a class'); return }
+    if (!editForm.neetYear) { toast.error('Select a NEET year'); return }
     setEditSaving(true)
     try {
+      // Note: roll_number is left untouched on purpose — it's already the student's
+      // login username, and regenerating it here would silently break credentials
+      // that may already have been shared. Class/NEET year changes only affect
+      // filtering/display, not login.
       const { error } = await supabase.from('students').update({
         name: editForm.name.trim(),
         phone_student: editForm.phone.replace(/\D/g, '') || null,
         phone_mother:  pm || null,
         phone_father:  pf || null,
+        class:         editForm.cls,
+        neet_year:     editForm.neetYear,
       }).eq('id', s.id)
       if (error) throw error
       toast.success('Student updated!')
@@ -1084,6 +1092,27 @@ export default function AdminStudents() {
                                           <input className="form-control" value={editForm.phone_father} maxLength={10} placeholder="optional"
                                             onChange={e => setEditForm(f => ({ ...f, phone_father: e.target.value.replace(/\D/g, '') }))} />
                                         </div>
+                                        <div className="form-group" style={{ margin: 0, minWidth: '150px' }}>
+                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Class *</label>
+                                          <select className="form-control" value={editForm.cls}
+                                            onChange={e => setEditForm(f => ({ ...f, cls: e.target.value }))}>
+                                            <option value="">— Select —</option>
+                                            <option>Class 11</option>
+                                            <option>Class 12</option>
+                                            <option>Class 13 (Repeater)</option>
+                                          </select>
+                                        </div>
+                                        <div className="form-group" style={{ margin: 0, minWidth: '140px' }}>
+                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>NEET Year *</label>
+                                          <select className="form-control" value={editForm.neetYear}
+                                            onChange={e => setEditForm(f => ({ ...f, neetYear: e.target.value }))}>
+                                            <option value="">— Select —</option>
+                                            {NEET_YEARS.map(y => <option key={y}>{y}</option>)}
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div style={{ fontSize: '0.7rem', color: '#b45309', marginBottom: '0.5rem' }}>
+                                        Note: the roll number stays the same even if you change class/year — it's already the student's login, so it won't be regenerated.
                                       </div>
                                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                                         <button className="btn btn-primary btn-sm" disabled={editSaving} onClick={() => handleEditSave(s)}>
