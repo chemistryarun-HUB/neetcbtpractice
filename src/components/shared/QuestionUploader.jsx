@@ -322,6 +322,7 @@ export default function QuestionUploader({ uploadedBy }) {
         option3:         editForm.option3,
         option4:         editForm.option4,
         correct_option:  resolvedCorrect,
+        unit:            editForm.unit,
         level:           Number(editForm.level),
         topic:           deriveTopic(editForm.unit, editForm.level),
         difficulty_level: editForm.difficulty_level,
@@ -991,6 +992,20 @@ export default function QuestionUploader({ uploadedBy }) {
 
                                 {/* Metadata row */}
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '0.625rem', marginBottom: '0.75rem' }}>
+                                  <div className="form-group" style={{ margin: 0 }}>
+                                    <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Unit</label>
+                                    <select className="form-control" style={{ fontSize: '0.8125rem' }}
+                                      value={(editForm.unit || '').match(/^Unit\s+(\d+)/i)?.[1] || ''}
+                                      onChange={e => {
+                                        const unit = CHEMISTRY_UNITS.find(u => u.id === Number(e.target.value))
+                                        // Moving to a different unit means the old level number
+                                        // almost certainly doesn't map to the same topic there —
+                                        // reset to Level 1 so it doesn't silently point at the wrong syllabus.
+                                        setEditForm(f => ({ ...f, unit: unit ? `Unit ${unit.id} - ${unit.name}` : '', level: 1 }))
+                                      }}>
+                                      {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+                                    </select>
+                                  </div>
                                   <div className="form-group" style={{ margin: 0 }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                                       Level
