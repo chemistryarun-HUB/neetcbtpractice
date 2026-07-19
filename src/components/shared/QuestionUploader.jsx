@@ -991,8 +991,8 @@ export default function QuestionUploader({ uploadedBy }) {
                                 </div>
 
                                 {/* Metadata row */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '0.625rem', marginBottom: '0.75rem' }}>
-                                  <div className="form-group" style={{ margin: 0 }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.625rem', marginBottom: '0.75rem' }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '1.4 1 190px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Unit</label>
                                     <select className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={(editForm.unit || '').match(/^Unit\s+(\d+)/i)?.[1] || ''}
@@ -1006,7 +1006,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                       {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
                                     </select>
                                   </div>
-                                  <div className="form-group" style={{ margin: 0 }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                                       Level
                                       <InfoTooltip text={deriveFullTopic(editForm.unit, editForm.level)} align="left" />
@@ -1017,7 +1017,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                       {[1,2,3,4,5,6,7,8,9].map(l => <option key={l} value={l}>Level {l}</option>)}
                                     </select>
                                   </div>
-                                  <div className="form-group" style={{ margin: 0 }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Difficulty</label>
                                     <select className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={editForm.difficulty_level}
@@ -1025,26 +1025,26 @@ export default function QuestionUploader({ uploadedBy }) {
                                       <option>Easy</option><option>Medium</option><option>Hard</option>
                                     </select>
                                   </div>
-                                  <div className="form-group" style={{ margin: 0 }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Question Tag</label>
                                     <input className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={editForm.question_tag}
                                       onChange={e => setEditForm(f => ({ ...f, question_tag: e.target.value }))} />
                                   </div>
-                                  <div className="form-group" style={{ margin: 0 }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Source</label>
                                     <input className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={editForm.source}
                                       onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))} />
                                   </div>
-                                  <div className="form-group" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem' }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}>
                                       <input type="checkbox" checked={editForm.is_active} onChange={e => setEditForm(f => ({ ...f, is_active: e.target.checked }))} />
                                       Is Active
                                     </label>
                                   </div>
-                                  <div className="form-group" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem' }}
+                                  <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}
                                       title="When checked, re-uploading an Excel sheet with this Q ID will NOT overwrite the question text, options or correct answer — only metadata (topic, difficulty, tag, source) gets updated.">
                                       <input type="checkbox" checked={editForm.content_locked} onChange={e => setEditForm(f => ({ ...f, content_locked: e.target.checked }))} />
                                       <Lock size={13} /> Lock content from Excel re-upload
