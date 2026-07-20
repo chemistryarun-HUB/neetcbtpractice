@@ -128,18 +128,23 @@ function topicToLevel(unitId, topic) {
   return match ? match.id : 1
 }
 
-// Resolve "Option 1"/"Option 2"/... to the actual option text
+// Resolve "Option 1"/"Option 2"/.../"1"/"2"/... to the actual option text
 function resolveCorrectOption(label, option1, option2, option3, option4) {
   const textMap = {
-    'option 1': option1,
-    'option 2': option2,
-    'option 3': option3,
-    'option 4': option4,
+    'option 1': option1, '1': option1,
+    'option 2': option2, '2': option2,
+    'option 3': option3, '3': option3,
+    'option 4': option4, '4': option4,
   }
   // Image-only options have no text — fall back to a stable 'option1'..'option4'
   // sentinel so the correct answer isn't lost as an empty string (see
   // questionOptions.js for where this is resolved back).
-  const keyMap = { 'option 1': 'option1', 'option 2': 'option2', 'option 3': 'option3', 'option 4': 'option4' }
+  const keyMap = {
+    'option 1': 'option1', '1': 'option1',
+    'option 2': 'option2', '2': 'option2',
+    'option 3': 'option3', '3': 'option3',
+    'option 4': 'option4', '4': 'option4',
+  }
   const norm = (label || '').trim().toLowerCase()
   return textMap[norm] || keyMap[norm] || label || ''
 }
