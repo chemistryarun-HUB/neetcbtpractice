@@ -52,7 +52,8 @@ export const UNIT_LEVELS = {
     { id: 3, name: 'Stoichiometry',               topic: 'Stoichiometry and Stoichiometric calculations, limiting reagents, Percentage purity, Percentage yield.' },
     { id: 4, name: 'Concentration Terms',         topic: 'Molarity, Molality, Mole-fraction, Mass percentage or weight percentage, weight by volume percentage, volume by volume percentage, ppm, Strength' },
     { id: 5, name: 'Equivalent Concept',          topic: 'Equivalent mass, Normality, Law of chemical equivalence, Mixing of solutions, Dilution of solutions.' },
-    { id: 6, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
+    { id: 6, name: 'Miscellaneous',               topic: 'Miscellaneous' },
+    { id: 7, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
   ],
   2: [
     { id: 1, name: 'Sub-atomic Particles',                topic: "Sub-atomic particles : Discovery of electron, Charge to mass ratio of electron, Charge on electron, Discovery of proton and neutron. Thomson model of atom, Rutherford's nuclear model of atom, Atomic and Mass number, Isobars and isotopes." },
