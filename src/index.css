@@ -98,9 +98,16 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .stat-card .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
 .stat-card .stat-label { font-size: 0.8125rem; color: var(--gray-500); margin-top: 0.25rem; }
 
-.table-wrap { overflow-x: auto; }
+/* Browsers force overflow-y to a computed "auto" whenever overflow-x isn't
+   visible (per the CSS overflow spec) — declaring overflow-y: visible
+   explicitly does NOT override this, so .table-wrap always ends up being a
+   scroll container regardless. Rather than fight that, lean into it: give
+   the table its own capped-height scroll box (like a spreadsheet's frozen
+   header row) so the sticky thead below sticks within .table-wrap's own
+   scroll, instead of trying to track page-level scroll. */
+.table-wrap { overflow: auto; max-height: 70vh; }
 table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-thead th { background: var(--gray-50); padding: 0.75rem 1rem; text-align: left; font-weight: 600; color: var(--gray-600); border-bottom: 2px solid var(--gray-200); white-space: nowrap; }
+thead th { background: var(--gray-50); padding: 0.75rem 1rem; text-align: left; font-weight: 600; color: var(--gray-600); border-bottom: 2px solid var(--gray-200); white-space: nowrap; position: sticky; top: 0; z-index: 10; }
 tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--gray-50); }
