@@ -113,13 +113,17 @@ export default function TestPage() {
 
       setQuestions(prepared)
 
-      // Count existing attempts for this level
+      // Count existing SUBMITTED attempts for this level — an abandoned/never-submitted
+      // session must not consume a number slot, since only submitted attempts ever
+      // show up in attempt history (Performance pages filter to submitted=true), so
+      // counting unsubmitted rows here would silently create gaps in the displayed sequence.
       const { count } = await supabase
         .from('test_attempts')
         .select('id', { count: 'exact', head: true })
         .eq('student_id', user.id)
         .eq('unit_id', unitNum)
         .eq('level', levelNum)
+        .eq('submitted', true)
 
       // Create attempt record
       const { data: attempt, error } = await supabase.from('test_attempts').insert({

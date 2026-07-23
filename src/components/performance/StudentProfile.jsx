@@ -185,7 +185,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
         <table>
           <thead>
             <tr>
-              <th>Unit / Level</th>
+              <th style={{ width: '200px' }}>Unit / Level</th>
               <th>Attempt</th>
               <th>Submitted</th>
               <th style={{ textAlign: 'right' }}>Score</th>
@@ -204,7 +204,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                 return (
                   <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview(a)}>
                     {i === 0 && (
-                      <td rowSpan={g.attemptsInfo.length} style={{ verticalAlign: 'top', borderRight: '1px solid var(--gray-100)' }}>
+                      <td rowSpan={g.attemptsInfo.length} style={{ verticalAlign: 'top', borderRight: '1px solid var(--gray-100)', width: '200px', maxWidth: '200px' }}>
                         <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(g.unitId).padStart(2, '0')}</div>
                         <div style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', fontWeight: 600, marginBottom: '0.35rem' }}>{unitName(g.unitId)}</div>
                         <div onClick={e => e.stopPropagation()} style={{ fontWeight: 700 }}>
