@@ -187,12 +187,12 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             <tr>
               <th style={{ width: '200px' }}>Unit / Level</th>
               <th>Attempt</th>
-              <th>Submitted</th>
               <th style={{ textAlign: 'right' }}>Score</th>
               <th style={{ textAlign: 'right' }}>Correct</th>
               <th style={{ textAlign: 'right' }}>Wrong</th>
               <th style={{ textAlign: 'right' }}>Skipped</th>
               <th>Status</th>
+              <th>Submitted</th>
             </tr>
           </thead>
           <tbody>
@@ -214,7 +214,6 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                       </td>
                     )}
                     <td style={{ fontWeight: 700 }}>#{a.attempt_number}</td>
-                    <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{when.day}, {when.time}</td>
                     <td style={{ textAlign: 'right', fontWeight: 700 }}>{a.score}</td>
                     <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
                     <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
@@ -228,6 +227,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                         </span>
                       )}
                     </td>
+                    <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{when.day}, {when.time}</td>
                   </tr>
                 )
               })
