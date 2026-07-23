@@ -22,38 +22,33 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   const [unitFilter, setUnitFilter] = useState('all')
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
+  // Most-recently-attempted level group first, so whatever the student is
+  // actively working on right now surfaces at the top instead of always
+  // Unit 1 / Level 1.
   const groupEntries = useMemo(() => Object.entries(groups).map(([key, rows]) => {
     const [unitId, level] = key.split('-').map(Number)
     const recent = mostRecent(rows)
     return { key, unitId, level, rows, recent }
-  }).sort((a, b) => a.unitId - b.unitId || a.level - b.level), [groups])
+  }).sort((a, b) => (b.recent?.submitted_at || '').localeCompare(a.recent?.submitted_at || '')), [groups])
 
   const distinctUnits = useMemo(() => [...new Set(attempts.map(a => a.unit_id).filter(id => id != null))].sort((a, b) => a - b), [attempts])
 
-  // One row per attempt (not just the latest per level) — once a level is
-  // cleared on any attempt, every attempt from that point on (including
-  // later "more practice" ones) is still shown as cleared, since the level
-  // itself doesn't become un-cleared by practicing more.
-  const attemptRows = useMemo(() => {
-    const rows = []
-    for (const g of groupEntries) {
-      const sorted = [...g.rows].sort((a, b) => a.attempt_number - b.attempt_number)
+  // Each group's own attempts, most recent attempt first (matches the group
+  // ordering above), with cleared/trend precomputed per attempt. Attempt
+  // numbers themselves are already scoped to (unit, level) at creation time
+  // in TestPage.jsx — this only controls display order, not the numbering.
+  const visibleGroups = useMemo(() => {
+    const filtered = unitFilter === 'all' ? groupEntries : groupEntries.filter(g => g.unitId === Number(unitFilter))
+    return filtered.map(g => {
       const cleared = clearedInfo(g.rows)
-      for (const a of sorted) {
+      const sorted = [...g.rows].sort((a, b) => b.attempt_number - a.attempt_number)
+      const attemptsInfo = sorted.map(a => {
         const isCleared = cleared.cleared && a.attempt_number >= cleared.attemptNumber
-        rows.push({
-          key: `${g.key}-${a.id}`,
-          unitId: g.unitId,
-          level: g.level,
-          attempt: a,
-          cleared: isCleared,
-          trend: isCleared ? null : trendLabel(g.rows, a.attempt_number),
-        })
-      }
-    }
-    return rows
-  }, [groupEntries])
-  const visibleRows = unitFilter === 'all' ? attemptRows : attemptRows.filter(r => r.unitId === Number(unitFilter))
+        return { attempt: a, cleared: isCleared, trend: isCleared ? null : trendLabel(g.rows, a.attempt_number) }
+      })
+      return { ...g, attemptsInfo }
+    })
+  }, [groupEntries, unitFilter])
 
   // Attempts predating the unit_id column can't show a unit — excluded from
   // the Last Attempt card specifically, but still count toward the raw
@@ -190,8 +185,9 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
         <table>
           <thead>
             <tr>
-              <th>Unit</th>
-              <th>Level</th>
+              <th>Unit / Level</th>
+              <th>Attempt</th>
+              <th>Submitted</th>
               <th style={{ textAlign: 'right' }}>Score</th>
               <th style={{ textAlign: 'right' }}>Correct</th>
               <th style={{ textAlign: 'right' }}>Wrong</th>
@@ -200,37 +196,44 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             </tr>
           </thead>
           <tbody>
-            {visibleRows.map(r => {
-              const a = r.attempt
-              const lDef = levelDef(r.unitId, r.level)
-              return (
-                <tr key={r.key} style={{ cursor: 'pointer' }} onClick={() => onOpenReview(a)}>
-                  <td>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(r.unitId).padStart(2, '0')}</div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', fontWeight: 600 }}>{unitName(r.unitId)}</div>
-                  </td>
-                  <td onClick={e => e.stopPropagation()}>
-                    <span style={{ fontWeight: 700 }}>Level {String(r.level).padStart(2, '0')} Attempt #{a.attempt_number}</span>
-                    <InfoTooltip text={lDef?.topic} align="left" />
-                  </td>
-                  <td style={{ textAlign: 'right', fontWeight: 700 }}>{a.score}</td>
-                  <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
-                  <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
-                  <td style={{ textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>{a.skipped_count ?? 0}</td>
-                  <td>
-                    {r.cleared ? (
-                      <span className="badge badge-easy">Level cleared</span>
-                    ) : (
-                      <span className={`badge ${r.trend === 'declining' ? 'badge-hard' : 'badge-medium'}`}>
-                        {r.trend === 'improving' ? 'Improving' : r.trend === 'declining' ? 'Declining' : 'Needs work'}
-                      </span>
+            {visibleGroups.map(g => {
+              const lDef = levelDef(g.unitId, g.level)
+              return g.attemptsInfo.map((info, i) => {
+                const a = info.attempt
+                const when = fmtWhen(a.submitted_at)
+                return (
+                  <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview(a)}>
+                    {i === 0 && (
+                      <td rowSpan={g.attemptsInfo.length} style={{ verticalAlign: 'top', borderRight: '1px solid var(--gray-100)' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(g.unitId).padStart(2, '0')}</div>
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', fontWeight: 600, marginBottom: '0.35rem' }}>{unitName(g.unitId)}</div>
+                        <div onClick={e => e.stopPropagation()} style={{ fontWeight: 700 }}>
+                          Level {String(g.level).padStart(2, '0')}
+                          <InfoTooltip text={lDef?.topic} align="left" />
+                        </div>
+                      </td>
                     )}
-                  </td>
-                </tr>
-              )
+                    <td style={{ fontWeight: 700 }}>#{a.attempt_number}</td>
+                    <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{when.day}, {when.time}</td>
+                    <td style={{ textAlign: 'right', fontWeight: 700 }}>{a.score}</td>
+                    <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
+                    <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
+                    <td style={{ textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>{a.skipped_count ?? 0}</td>
+                    <td>
+                      {info.cleared ? (
+                        <span className="badge badge-easy">Level cleared</span>
+                      ) : (
+                        <span className={`badge ${info.trend === 'declining' ? 'badge-hard' : 'badge-medium'}`}>
+                          {info.trend === 'improving' ? 'Improving' : info.trend === 'declining' ? 'Declining' : 'Needs work'}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })
             })}
-            {visibleRows.length === 0 && (
-              <tr><td colSpan={7} className="empty-state">No attempts for this filter</td></tr>
+            {visibleGroups.length === 0 && (
+              <tr><td colSpan={8} className="empty-state">No attempts for this filter</td></tr>
             )}
           </tbody>
         </table>
