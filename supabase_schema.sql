@@ -164,6 +164,53 @@ create policy "Used questions accessible by all" on used_questions
   for all using (true);
 
 -- ============================================================
+-- PRACTICE PAPERS (offline/PDF papers — answer key + student self-scoring)
+-- ============================================================
+create table if not exists practice_papers (
+  id uuid primary key default uuid_generate_v4(),
+  name text unique not null,
+  physics_count integer not null default 45,
+  chemistry_count integer not null default 45,
+  botany_count integer not null default 45,
+  zoology_count integer not null default 45,
+  syllabus_physics text,
+  syllabus_chemistry text,
+  syllabus_botany text,
+  syllabus_zoology text,
+  answer_key jsonb not null default '{}'::jsonb,
+  is_active boolean not null default false,
+  created_at timestamptz default now()
+);
+
+alter table practice_papers enable row level security;
+
+create policy "Practice papers readable by all" on practice_papers
+  for select using (true);
+create policy "Practice papers writable by admin" on practice_papers
+  for insert with check (true);
+create policy "Practice papers updatable by admin" on practice_papers
+  for update using (true);
+
+create table if not exists practice_paper_attempts (
+  id uuid primary key default uuid_generate_v4(),
+  paper_id uuid references practice_papers(id) on delete cascade,
+  student_id uuid references students(id) on delete cascade,
+  responses jsonb not null default '{}'::jsonb,
+  correct_count integer not null default 0,
+  wrong_count integer not null default 0,
+  skipped_count integer not null default 0,
+  score integer not null default 0,
+  subject_breakdown jsonb not null default '{}'::jsonb,
+  submitted_at timestamptz default now(),
+  unique(paper_id, student_id)
+);
+
+alter table practice_paper_attempts enable row level security;
+
+create policy "Practice paper attempts accessible by all" on practice_paper_attempts
+  for all using (true);
+
+-- ============================================================
 -- INDEXES
 -- ============================================================
 create index if not exists idx_questions_level on questions(level);

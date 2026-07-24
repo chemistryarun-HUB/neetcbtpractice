@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
-import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3 } from 'lucide-react'
+import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 
@@ -222,6 +222,9 @@ export default function StudentDashboard() {
             </div>
             <Link to="/student/performance" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <BarChart3 size={15} /> My Performance
+            </Link>
+            <Link to="/student/practice-papers" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+              <FileText size={15} /> Practice Papers
             </Link>
           </div>
         </div>

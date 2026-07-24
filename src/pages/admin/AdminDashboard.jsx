@@ -10,6 +10,7 @@ const NAV = [
   { to: '/admin/faculty', label: 'Faculty' },
   { to: '/admin/questions', label: 'Questions' },
   { to: '/admin/performance', label: 'Performance' },
+  { to: '/admin/practice-papers', label: 'Practice Papers' },
 ]
 
 export default function AdminDashboard() {

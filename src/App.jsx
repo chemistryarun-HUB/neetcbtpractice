@@ -11,6 +11,7 @@ import AdminStudents from './pages/admin/AdminStudents'
 import AdminFaculty from './pages/admin/AdminFaculty'
 import AdminQuestions from './pages/admin/AdminQuestions'
 import AdminPerformance from './pages/admin/AdminPerformance'
+import AdminPracticePapers from './pages/admin/AdminPracticePapers'
 
 import FacultyDashboard from './pages/faculty/FacultyDashboard'
 import FacultyStudents from './pages/faculty/FacultyStudents'
@@ -24,6 +25,7 @@ import TestPage from './pages/student/TestPage'
 import ResultPage from './pages/student/ResultPage'
 import ChangePassword from './pages/student/ChangePassword'
 import StudentPerformance from './pages/student/StudentPerformance'
+import StudentPracticePapers from './pages/student/StudentPracticePapers'
 
 import './index.css'
 
@@ -49,6 +51,7 @@ function AppRoutes() {
       <Route path="/admin/faculty" element={<ProtectedRoute allowedRoles={['admin']}><AdminFaculty /></ProtectedRoute>} />
       <Route path="/admin/questions" element={<ProtectedRoute allowedRoles={['admin']}><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />
+      <Route path="/admin/practice-papers" element={<ProtectedRoute allowedRoles={['admin']}><AdminPracticePapers /></ProtectedRoute>} />
 
       <Route path="/faculty/setup" element={<FacultySetup />} />
       <Route path="/faculty/dashboard" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyDashboard /></ProtectedRoute>} />
@@ -62,6 +65,7 @@ function AppRoutes() {
       <Route path="/student/test/:unitId/:level" element={<ProtectedRoute allowedRoles={['student']}><TestPage /></ProtectedRoute>} />
       <Route path="/student/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><ResultPage /></ProtectedRoute>} />
       <Route path="/student/performance" element={<ProtectedRoute allowedRoles={['student']}><StudentPerformance /></ProtectedRoute>} />
+      <Route path="/student/practice-papers" element={<ProtectedRoute allowedRoles={['student']}><StudentPracticePapers /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

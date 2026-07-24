@@ -13,6 +13,7 @@ const NAV = [
   { to: '/admin/faculty', label: 'Faculty' },
   { to: '/admin/questions', label: 'Questions' },
   { to: '/admin/performance', label: 'Performance' },
+  { to: '/admin/practice-papers', label: 'Practice Papers' },
 ]
 
 const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'
