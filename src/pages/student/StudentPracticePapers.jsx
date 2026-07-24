@@ -1,11 +1,28 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { LogOut, ArrowLeft } from 'lucide-react'
+import { LogOut, ArrowLeft, CheckCircle2, PlayCircle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import AnswerGrid from '../../components/shared/AnswerGrid'
-import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions, scorePaper } from '../../lib/practicePapers'
+import InfoTooltip from '../../components/shared/InfoTooltip'
+import { SUBJECTS, SUBJECT_LABELS, SUBJECT_COLORS, subjectRanges, totalQuestions, scorePaper } from '../../lib/practicePapers'
+
+// The syllabus preview shown inside the "i" popover on a paper's card — all
+// four subjects at a glance, so a student can judge whether a paper is worth
+// attempting before committing to it.
+function SyllabusPreview({ paper }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+      {SUBJECTS.map(s => paper[`syllabus_${s}`] ? (
+        <div key={s}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: SUBJECT_COLORS[s].color, opacity: 0.9 }}>{SUBJECT_LABELS[s]}</div>
+          <div style={{ fontSize: '0.8125rem', lineHeight: 1.5 }}>{paper[`syllabus_${s}`]}</div>
+        </div>
+      ) : null)}
+    </div>
+  )
+}
 
 export default function StudentPracticePapers() {
   const { user, logout } = useAuth()
@@ -125,14 +142,14 @@ export default function StudentPracticePapers() {
                 <div className="card card-body" style={{ marginBottom: '1.5rem' }}>
                   {SUBJECTS.map(s => selected[`syllabus_${s}`] ? (
                     <div key={s} style={{ marginBottom: '0.75rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--gray-400)' }}>{SUBJECT_LABELS[s]}</div>
+                      <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: SUBJECT_COLORS[s].color }}>{SUBJECT_LABELS[s]}</div>
                       <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}>{selected[`syllabus_${s}`]}</div>
                     </div>
                   ) : null)}
                 </div>
               )}
               <AnswerGrid subjects={subjectRanges(selected)} values={responses} onChange={(q, letter) => setResponses(prev => { const next = { ...prev }; if (letter) next[q] = letter; else delete next[q]; return next })} />
-              <button className="btn btn-primary" style={{ marginTop: '1rem' }} disabled={submitting} onClick={handleSubmit}>
+              <button className="btn btn-primary" style={{ marginTop: '1rem', width: '100%' }} disabled={submitting} onClick={handleSubmit}>
                 {submitting ? 'Scoring…' : `Submit & Score (${Object.keys(responses).length}/${total} answered)`}
               </button>
             </>
@@ -168,17 +185,38 @@ export default function StudentPracticePapers() {
             {papers.map(paper => {
               const attempt = attempts[paper.id]
               const total = totalQuestions(paper)
+              const hasSyllabus = SUBJECTS.some(s => paper[`syllabus_${s}`])
               return (
-                <div key={paper.id} className="card perf-clickable-card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', cursor: 'pointer' }}
+                <div key={paper.id} className="card perf-clickable-card" style={{ padding: '1rem 1.25rem', cursor: 'pointer' }}
                   onClick={() => openPaper(paper)}>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{paper.name}</div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{total} questions</div>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem' }}>
+                    <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      {paper.name}
+                      {hasSyllabus && (
+                        <span onClick={e => e.stopPropagation()}>
+                          <InfoTooltip content={<SyllabusPreview paper={paper} />} align="left" wide size="lg" />
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', whiteSpace: 'nowrap', flexShrink: 0 }}>{total} Qs · {total * 4} marks</div>
                   </div>
+
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', margin: '0.6rem 0' }}>
+                    {subjectRanges(paper).filter(r => r.count > 0).map(r => (
+                      <span key={r.subject} style={{ fontSize: '0.7rem', fontWeight: 600, padding: '0.15rem 0.55rem', borderRadius: '999px', background: SUBJECT_COLORS[r.subject].bg, color: SUBJECT_COLORS[r.subject].color }}>
+                        {SUBJECT_LABELS[r.subject]} {r.count}
+                      </span>
+                    ))}
+                  </div>
+
                   {attempt ? (
-                    <span className="badge badge-easy">Scored: {attempt.score} — tap to review</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius)', background: '#f0fdf4', color: '#15803d', fontWeight: 600, fontSize: '0.875rem' }}>
+                      <CheckCircle2 size={16} /> Scored {attempt.score} / {total * 4} — tap to review
+                    </div>
                   ) : (
-                    <span className="badge badge-medium">Not attempted — tap to start</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius)', background: 'var(--primary-light, #eff6ff)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.875rem' }}>
+                      <PlayCircle size={16} /> Not attempted — tap to start
+                    </div>
                   )}
                 </div>
               )

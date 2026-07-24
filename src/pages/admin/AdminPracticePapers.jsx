@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Plus, ChevronDown, ChevronUp } from 'lucide-react'
+import { Plus, ChevronDown, ChevronUp, Pencil } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import AnswerGrid from '../../components/shared/AnswerGrid'
 import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions } from '../../lib/practicePapers'
@@ -30,6 +30,9 @@ export default function AdminPracticePapers() {
   const [expandedId, setExpandedId] = useState(null)
   const [submissions, setSubmissions] = useState({}) // paperId -> rows
   const [savingKey, setSavingKey] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [editForm, setEditForm] = useState(BLANK_FORM)
+  const [editSaving, setEditSaving] = useState(false)
   const saveTimers = useRef({})  // paperId -> setTimeout handle, for debounced key autosave
   const pendingKeys = useRef({}) // paperId -> latest answer_key not yet confirmed saved
 
@@ -130,6 +133,51 @@ export default function AdminPracticePapers() {
     if (!submissions[paper.id]) loadSubmissions(paper.id)
   }
 
+  function openEdit(paper) {
+    setEditForm({
+      name: paper.name,
+      physics_count: paper.physics_count, chemistry_count: paper.chemistry_count,
+      botany_count: paper.botany_count, zoology_count: paper.zoology_count,
+      syllabus_physics: paper.syllabus_physics || '', syllabus_chemistry: paper.syllabus_chemistry || '',
+      syllabus_botany: paper.syllabus_botany || '', syllabus_zoology: paper.syllabus_zoology || '',
+    })
+    setEditingId(paper.id)
+    if (expandedId !== paper.id) { setExpandedId(paper.id); if (!submissions[paper.id]) loadSubmissions(paper.id) }
+  }
+
+  async function handleEditSave(paper) {
+    if (!editForm.name.trim()) { toast.error('Paper name is required'); return }
+    const countChanged = SUBJECTS.some(s => Number(editForm[`${s}_count`]) !== paper[`${s}_count`])
+    if (countChanged && Object.keys(paper.answer_key || {}).length > 0) {
+      const ok = window.confirm('Changing question counts shifts question numbering for later subjects, which would misalign the existing answer key. The answer key will be cleared — you\'ll need to re-enter it. Continue?')
+      if (!ok) return
+    }
+    setEditSaving(true)
+    try {
+      const record = {
+        name: editForm.name.trim(),
+        physics_count: Number(editForm.physics_count) || 0,
+        chemistry_count: Number(editForm.chemistry_count) || 0,
+        botany_count: Number(editForm.botany_count) || 0,
+        zoology_count: Number(editForm.zoology_count) || 0,
+        syllabus_physics: editForm.syllabus_physics,
+        syllabus_chemistry: editForm.syllabus_chemistry,
+        syllabus_botany: editForm.syllabus_botany,
+        syllabus_zoology: editForm.syllabus_zoology,
+        ...(countChanged ? { answer_key: {} } : {}),
+      }
+      const { error } = await supabase.from('practice_papers').update(record).eq('id', paper.id)
+      if (error) throw error
+      toast.success('Paper updated!')
+      setEditingId(null)
+      loadPapers()
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setEditSaving(false)
+    }
+  }
+
   return (
     <div className="dashboard">
       <Topbar links={NAV} />
@@ -195,13 +243,43 @@ export default function AdminPracticePapers() {
                       <span className={`badge ${paper.is_active ? 'badge-easy' : 'badge-locked'}`} style={{ cursor: 'pointer' }} onClick={() => toggleActive(paper)}>
                         {paper.is_active ? 'Active' : 'Inactive — click to activate'}
                       </span>
+                      <button className="btn btn-outline btn-sm" title="Edit paper" onClick={() => openEdit(paper)}>
+                        <Pencil size={14} />
+                      </button>
                       <button className="btn btn-outline btn-sm" onClick={() => openPaper(paper)}>
                         {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                       </button>
                     </div>
                   </div>
 
-                  {isOpen && (
+                  {isOpen && editingId === paper.id && (
+                    <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid var(--gray-100)', background: '#fffbeb' }}>
+                      <div className="form-group">
+                        <label style={{ fontWeight: 600 }}>Paper Name *</label>
+                        <input className="form-control" value={editForm.name}
+                          onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                        {SUBJECTS.map(s => (
+                          <div key={s} className="form-group" style={{ margin: 0 }}>
+                            <label style={{ fontWeight: 600 }}>{SUBJECT_LABELS[s]}</label>
+                            <input type="number" min={0} className="form-control" style={{ marginBottom: '0.5rem' }}
+                              value={editForm[`${s}_count`]}
+                              onChange={e => setEditForm(f => ({ ...f, [`${s}_count`]: e.target.value }))} placeholder="Question count" />
+                            <textarea className="form-control" rows={3} placeholder={`${SUBJECT_LABELS[s]} syllabus`}
+                              value={editForm[`syllabus_${s}`]}
+                              onChange={e => setEditForm(f => ({ ...f, [`syllabus_${s}`]: e.target.value }))} />
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                        <button className="btn btn-primary btn-sm" disabled={editSaving} onClick={() => handleEditSave(paper)}>{editSaving ? 'Saving…' : 'Save Changes'}</button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {isOpen && editingId !== paper.id && (
                     <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid var(--gray-100)' }}>
                       <h3 style={{ fontSize: '0.9rem', margin: '1rem 0 0.5rem' }}>Answer Key {savingKey && <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>(saving…)</span>}</h3>
                       <AnswerGrid

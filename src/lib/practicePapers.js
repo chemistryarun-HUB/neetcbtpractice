@@ -4,6 +4,13 @@
 // never stored redundantly on the paper row.
 export const SUBJECTS = ['physics', 'chemistry', 'botany', 'zoology']
 export const SUBJECT_LABELS = { physics: 'Physics', chemistry: 'Chemistry', botany: 'Botany', zoology: 'Zoology' }
+// One accent color per subject, reused for chips/badges anywhere subjects need quick visual scanning.
+export const SUBJECT_COLORS = {
+  physics: { bg: '#eff6ff', color: '#1d4ed8' },
+  chemistry: { bg: '#f0fdf4', color: '#15803d' },
+  botany: { bg: '#faf5ff', color: '#7e22ce' },
+  zoology: { bg: '#fff7ed', color: '#c2410c' },
+}
 
 export function subjectRanges(paper) {
   let from = 1
