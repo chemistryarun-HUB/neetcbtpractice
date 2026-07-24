@@ -18,7 +18,10 @@ export default function AnswerGrid({ subjects, values, onChange, correctKey }) {
       {subjects.map(r => (
         <div key={r.subject} className="syllabus-section" style={{ marginBottom: '1.5rem' }}>
           <h3>{r.label} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({r.count} questions)</span></h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: '0.5rem' }}>
+          {/* Each cell holds 4 buttons (34px) + gaps + padding ≈ 164px minimum —
+              a narrower track wraps the button row and it bleeds into the next
+              cell instead of clipping, since CSS grid tracks don't clip overflow. */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(172px, 1fr))', gap: '0.5rem' }}>
             {Array.from({ length: r.count }, (_, i) => r.from + i).map(q => {
               const given = values[q]
               const correct = reviewing ? correctKey[q] : null
