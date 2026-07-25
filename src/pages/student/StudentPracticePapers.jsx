@@ -38,19 +38,27 @@ export default function StudentPracticePapers() {
 
   async function load() {
     setLoading(true)
-    const { data: paperRows, error } = await supabase.from('practice_papers').select('*').eq('is_active', true).order('created_at', { ascending: false })
-    if (error) { toast.error(error.message); setLoading(false); return }
-    setPapers(paperRows || [])
-
-    const { data: attemptRows } = await supabase
-      .from('practice_paper_attempts').select('*').eq('student_id', user.id)
-    const byPaper = Object.fromEntries((attemptRows || []).map(a => [a.paper_id, a]))
+    // The two queries are independent — run them together instead of one
+    // after the other, since each round-trip costs ~250-350ms on its own.
+    // The list view also never needs answer_key (only the opened paper
+    // does, fetched fresh in openPaper below), so it's left out here —
+    // it's the single largest field on a full paper (up to ~2KB for a
+    // 180-question key) and pointless to pull for every card up front.
+    const [papersRes, attemptsRes] = await Promise.all([
+      supabase.from('practice_papers')
+        .select('id, name, physics_count, chemistry_count, botany_count, zoology_count, syllabus_physics, syllabus_chemistry, syllabus_botany, syllabus_zoology, is_active, created_at')
+        .eq('is_active', true).order('created_at', { ascending: false }),
+      supabase.from('practice_paper_attempts').select('*').eq('student_id', user.id),
+    ])
+    if (papersRes.error) { toast.error(papersRes.error.message); setLoading(false); return }
+    setPapers(papersRes.data || [])
+    const byPaper = Object.fromEntries((attemptsRes.data || []).map(a => [a.paper_id, a]))
     setAttempts(byPaper)
     setLoading(false)
   }
 
-  function openPaper(paper) {
-    setSelected(paper)
+  async function openPaper(paper) {
+    setSelected(paper) // show syllabus/title immediately — everything but the key is already in hand
     const existing = attempts[paper.id]
     if (existing) {
       setResponses(existing.responses || {})
@@ -59,6 +67,10 @@ export default function StudentPracticePapers() {
       setResponses({})
       setMode('answering')
     }
+    // answer_key was intentionally left out of the list query — fetch this
+    // one paper's full row now that the student has actually opened it.
+    const { data } = await supabase.from('practice_papers').select('*').eq('id', paper.id).single()
+    if (data) setSelected(data)
   }
 
   async function handleSubmit() {
