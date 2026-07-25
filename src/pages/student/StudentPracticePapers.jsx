@@ -33,6 +33,7 @@ export default function StudentPracticePapers() {
   const [mode, setMode] = useState('answering') // 'answering' | 'result'
   const [responses, setResponses] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const [resultFilter, setResultFilter] = useState(null) // null | 'correct' | 'wrong' | 'skipped'
 
   useEffect(() => { load() }, [])
 
@@ -59,6 +60,7 @@ export default function StudentPracticePapers() {
 
   async function openPaper(paper) {
     setSelected(paper) // show syllabus/title immediately — everything but the key is already in hand
+    setResultFilter(null)
     const existing = attempts[paper.id]
     if (existing) {
       setResponses(existing.responses || {})
@@ -91,6 +93,7 @@ export default function StudentPracticePapers() {
       if (error) throw error
       setAttempts(prev => ({ ...prev, [selected.id]: record }))
       setMode('result')
+      setResultFilter(null)
       toast.success('Scored!')
     } catch (err) {
       toast.error(err.message)
@@ -128,9 +131,15 @@ export default function StudentPracticePapers() {
           {mode === 'result' && attempt ? (
             <>
               <div className="result-tiles">
-                <div className="result-tile correct"><div className="tile-num">{attempt.correct_count}</div><div className="tile-label">Correct</div></div>
-                <div className="result-tile wrong"><div className="tile-num">{attempt.wrong_count}</div><div className="tile-label">Wrong</div></div>
-                <div className="result-tile skipped"><div className="tile-num">{attempt.skipped_count}</div><div className="tile-label">Skipped</div></div>
+                <div className={`result-tile correct ${resultFilter === 'correct' ? 'active' : ''}`} onClick={() => setResultFilter(f => f === 'correct' ? null : 'correct')}>
+                  <div className="tile-num">{attempt.correct_count}</div><div className="tile-label">Correct</div>
+                </div>
+                <div className={`result-tile wrong ${resultFilter === 'wrong' ? 'active' : ''}`} onClick={() => setResultFilter(f => f === 'wrong' ? null : 'wrong')}>
+                  <div className="tile-num">{attempt.wrong_count}</div><div className="tile-label">Wrong</div>
+                </div>
+                <div className={`result-tile skipped ${resultFilter === 'skipped' ? 'active' : ''}`} onClick={() => setResultFilter(f => f === 'skipped' ? null : 'skipped')}>
+                  <div className="tile-num">{attempt.skipped_count}</div><div className="tile-label">Skipped</div>
+                </div>
               </div>
               <div className="card card-body" style={{ marginBottom: '1.5rem', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                 <div><div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>Score</div><div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{attempt.score}</div></div>
@@ -145,8 +154,15 @@ export default function StudentPracticePapers() {
                   )
                 })}
               </div>
-              <button className="btn btn-outline btn-sm" style={{ marginBottom: '1rem' }} onClick={() => setMode('answering')}>Redo my answers</button>
-              <AnswerGrid subjects={subjectRanges(selected)} values={responses} correctKey={selected.answer_key || {}} />
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                <button className="btn btn-outline btn-sm" onClick={() => setMode('answering')}>Redo my answers</button>
+                {resultFilter && (
+                  <button className="btn btn-ghost btn-sm" onClick={() => setResultFilter(null)}>
+                    Showing {resultFilter} only — click to show all
+                  </button>
+                )}
+              </div>
+              <AnswerGrid subjects={subjectRanges(selected)} values={responses} correctKey={selected.answer_key || {}} filterStatus={resultFilter} />
             </>
           ) : (
             <>

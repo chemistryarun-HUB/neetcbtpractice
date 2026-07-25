@@ -9,20 +9,34 @@ const OPTIONS = ['1', '2', '3', '4']
 // - Editable (key entry or answering): pass `onChange`, omit `correctKey`.
 // - Review (post-submit): pass `correctKey`, omit `onChange` — cells color
 //   green (correct), red (wrong), or stay neutral (skipped / not yet keyed).
-export default function AnswerGrid({ subjects, values, onChange, correctKey }) {
+//   Pass `filterStatus` ('correct'|'wrong'|'skipped') to show only those
+//   questions — e.g. wired to the Correct/Wrong/Skipped tiles above it, so
+//   a student can jump straight to just their wrong/skipped questions
+//   instead of scanning all 180.
+function statusOf(q, given, correct) {
+  if (!correct) return 'unscored'
+  if (!given) return 'skipped'
+  return given === correct ? 'correct' : 'wrong'
+}
+
+export default function AnswerGrid({ subjects, values, onChange, correctKey, filterStatus }) {
   const editable = typeof onChange === 'function'
   const reviewing = !!correctKey
 
   return (
     <div>
-      {subjects.map(r => (
+      {subjects.map(r => {
+        const questionNums = Array.from({ length: r.count }, (_, i) => r.from + i)
+          .filter(q => !filterStatus || statusOf(q, values[q], reviewing ? correctKey[q] : null) === filterStatus)
+        if (filterStatus && questionNums.length === 0) return null
+        return (
         <div key={r.subject} className="syllabus-section" style={{ marginBottom: '1.5rem' }}>
-          <h3>{r.label} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({r.count} questions)</span></h3>
+          <h3>{r.label} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({questionNums.length} question{questionNums.length !== 1 ? 's' : ''})</span></h3>
           {/* Each cell holds 4 buttons (34px) + gaps + padding ≈ 164px minimum —
               a narrower track wraps the button row and it bleeds into the next
               cell instead of clipping, since CSS grid tracks don't clip overflow. */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(172px, 1fr))', gap: '0.5rem' }}>
-            {Array.from({ length: r.count }, (_, i) => r.from + i).map(q => {
+            {questionNums.map(q => {
               const given = values[q]
               const correct = reviewing ? correctKey[q] : null
               let cellBg = 'var(--gray-50)', cellBorder = 'var(--gray-200)'
@@ -67,7 +81,8 @@ export default function AnswerGrid({ subjects, values, onChange, correctKey }) {
             })}
           </div>
         </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
