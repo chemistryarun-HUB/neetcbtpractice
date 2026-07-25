@@ -1,10 +1,38 @@
 import { useState, useEffect, useRef } from 'react'
+import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Plus, ChevronDown, ChevronUp, Pencil } from 'lucide-react'
+import { Plus, ChevronDown, ChevronUp, Pencil, Upload } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import AnswerGrid from '../../components/shared/AnswerGrid'
 import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions } from '../../lib/practicePapers'
+
+// Reads the first sheet of an uploaded workbook. Tolerant of header-name
+// variations ("Q No" / "Q.No" / "Question No" / "Q", "Answer" / "Ans" /
+// "Correct Answer" / "Key") and of answers written as "1", "(1)", "Option 1",
+// etc — extracts the first digit 1-4 out of whatever's in the cell.
+function parseKeyFile(arrayBuffer, totalQ) {
+  const wb = XLSX.read(arrayBuffer, { type: 'array' })
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
+  const qKeys = ['Q No', 'Q.No', 'QNo', 'Question No', 'Question Number', 'Q']
+  const aKeys = ['Answer', 'Ans', 'Correct Answer', 'Key', 'Correct Option']
+
+  const key = {}
+  const skipped = []
+  for (const row of rows) {
+    const norm = {}
+    for (const [k, v] of Object.entries(row)) norm[k.trim().toLowerCase()] = v
+    const qRaw = qKeys.map(k => norm[k.toLowerCase()]).find(v => v !== undefined && v !== '')
+    const aRaw = aKeys.map(k => norm[k.toLowerCase()]).find(v => v !== undefined && v !== '')
+    if (qRaw === undefined) continue // blank/header-only row
+    const qNum = parseInt(String(qRaw).trim(), 10)
+    const digitMatch = String(aRaw ?? '').match(/[1-4]/)
+    if (!qNum || qNum < 1 || qNum > totalQ) { skipped.push(`Q${qRaw} (out of range 1-${totalQ})`); continue }
+    if (!digitMatch) { skipped.push(`Q${qNum} (no valid 1-4 answer found in "${aRaw}")`); continue }
+    key[qNum] = digitMatch[0]
+  }
+  return { key, skipped, rowCount: rows.length }
+}
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -69,6 +97,34 @@ export default function AdminPracticePapers() {
       saveTimers.current[paperId] = setTimeout(() => flushSave(paperId), 400)
       return { ...p, answer_key: newKey }
     }))
+  }
+
+  async function handleKeyFileUpload(paper, e) {
+    const file = e.target.files[0]
+    e.target.value = ''
+    if (!file) return
+    const buf = await file.arrayBuffer()
+    let parsed
+    try {
+      parsed = parseKeyFile(buf, totalQuestions(paper))
+    } catch (err) {
+      toast.error('Could not read that file: ' + err.message)
+      return
+    }
+    if (Object.keys(parsed.key).length === 0) {
+      toast.error(`No valid answers found. Expected columns "Q No" and "Answer" — found: ${parsed.rowCount ? 'unrecognized headers' : 'empty sheet'}`, { duration: 8000 })
+      return
+    }
+    clearTimeout(saveTimers.current[paper.id]) // an upload supersedes any pending tap-entry save
+    const mergedKey = { ...(paper.answer_key || {}), ...parsed.key }
+    setPapers(prev => prev.map(p => p.id === paper.id ? { ...p, answer_key: mergedKey } : p))
+    setSavingKey(true)
+    const { error } = await supabase.from('practice_papers').update({ answer_key: mergedKey }).eq('id', paper.id)
+    setSavingKey(false)
+    if (error) { toast.error(error.message); return }
+    const parts = [`Uploaded ${Object.keys(parsed.key).length} answers.`]
+    if (parsed.skipped.length) parts.push(`Skipped ${parsed.skipped.length} invalid row(s): ${parsed.skipped.slice(0, 5).join(', ')}${parsed.skipped.length > 5 ? '…' : ''}`)
+    toast.success(parts.join(' '), { duration: 8000 })
   }
 
   async function loadPapers() {
@@ -281,7 +337,13 @@ export default function AdminPracticePapers() {
 
                   {isOpen && editingId !== paper.id && (
                     <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid var(--gray-100)' }}>
-                      <h3 style={{ fontSize: '0.9rem', margin: '1rem 0 0.5rem' }}>Answer Key {savingKey && <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>(saving…)</span>}</h3>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0 0.5rem' }}>
+                        <h3 style={{ fontSize: '0.9rem', margin: 0 }}>Answer Key {savingKey && <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>(saving…)</span>}</h3>
+                        <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', margin: 0 }}>
+                          <Upload size={14} /> Upload Key (Excel)
+                          <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={e => handleKeyFileUpload(paper, e)} />
+                        </label>
+                      </div>
                       <AnswerGrid
                         subjects={subjectRanges(paper)}
                         values={paper.answer_key || {}}
