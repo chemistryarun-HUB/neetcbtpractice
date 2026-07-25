@@ -7,27 +7,44 @@ import Topbar from '../../components/shared/Topbar'
 import AnswerGrid from '../../components/shared/AnswerGrid'
 import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions } from '../../lib/practicePapers'
 
-// Reads the first sheet of an uploaded workbook. Tolerant of header-name
-// variations ("Q No" / "Q.No" / "Question No" / "Q", "Answer" / "Ans" /
-// "Correct Answer" / "Key") and of answers written as "1", "(1)", "Option 1",
-// etc — extracts the first digit 1-4 out of whatever's in the cell.
+const Q_HEADER_KEYS = ['q no', 'q.no', 'qno', 'question no', 'question number', 'q']
+const A_HEADER_KEYS = ['answer', 'ans', 'correct answer', 'key', 'correct option']
+
+// Reads an uploaded workbook. Tolerant of header-name variations ("Q No" /
+// "Q.No" / "Question No" / "Q", "Answer" / "Ans" / "Correct Answer" / "Key")
+// and of answers written as "1", "(1)", "Option 1", etc — extracts the first
+// digit 1-4 out of whatever's in the cell. A blank Answer cell just means
+// that question hasn't been keyed yet, not an error — only a genuinely
+// unparseable non-blank value or an out-of-range Q No gets flagged.
 function parseKeyFile(arrayBuffer, totalQ) {
   const wb = XLSX.read(arrayBuffer, { type: 'array' })
-  const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
-  const qKeys = ['Q No', 'Q.No', 'QNo', 'Question No', 'Question Number', 'Q']
-  const aKeys = ['Answer', 'Ans', 'Correct Answer', 'Key', 'Correct Option']
+
+  // Prefer the first sheet, but fall back to any other sheet that actually
+  // has recognizable "Q No"/"Answer" headers with data — handles workbooks
+  // with a leading instructions/title sheet (like our own sample template).
+  let rows = []
+  for (const name of wb.SheetNames) {
+    const candidateRows = XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: '' })
+    const hasHeaders = candidateRows.some(r => {
+      const keys = Object.keys(r).map(k => k.trim().toLowerCase())
+      return Q_HEADER_KEYS.some(qk => keys.includes(qk)) && A_HEADER_KEYS.some(ak => keys.includes(ak))
+    })
+    if (hasHeaders) { rows = candidateRows; break }
+    if (rows.length === 0) rows = candidateRows // keep first sheet as fallback for error reporting
+  }
 
   const key = {}
   const skipped = []
   for (const row of rows) {
     const norm = {}
     for (const [k, v] of Object.entries(row)) norm[k.trim().toLowerCase()] = v
-    const qRaw = qKeys.map(k => norm[k.toLowerCase()]).find(v => v !== undefined && v !== '')
-    const aRaw = aKeys.map(k => norm[k.toLowerCase()]).find(v => v !== undefined && v !== '')
+    const qRaw = Q_HEADER_KEYS.map(k => norm[k]).find(v => v !== undefined && v !== '')
+    const aRaw = A_HEADER_KEYS.map(k => norm[k]).find(v => v !== undefined && v !== '')
     if (qRaw === undefined) continue // blank/header-only row
     const qNum = parseInt(String(qRaw).trim(), 10)
-    const digitMatch = String(aRaw ?? '').match(/[1-4]/)
     if (!qNum || qNum < 1 || qNum > totalQ) { skipped.push(`Q${qRaw} (out of range 1-${totalQ})`); continue }
+    if (aRaw === undefined) continue // no answer keyed for this question yet — not an error
+    const digitMatch = String(aRaw).match(/[1-4]/)
     if (!digitMatch) { skipped.push(`Q${qNum} (no valid 1-4 answer found in "${aRaw}")`); continue }
     key[qNum] = digitMatch[0]
   }
