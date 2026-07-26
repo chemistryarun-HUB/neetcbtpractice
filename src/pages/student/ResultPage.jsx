@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, UNLOCK_THRESHOLDS, QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { X } from 'lucide-react'
 
@@ -89,8 +89,8 @@ export default function ResultPage() {
 
   const questionsForModal = modal === 'correct' ? correctQs : modal === 'wrong' ? wrongQs : skippedQs
 
-  const threshold = UNLOCK_THRESHOLDS.find(t => t.attempt === attemptsForLevel)
-  const passed = threshold ? pct >= threshold.score_pct : false
+  const requiredPct = thresholdPctFor(attemptsForLevel)
+  const passed = requiredPct != null && pct >= requiredPct
 
   const mins = Math.floor((attempt.time_taken || 0) / 60)
   const secs = (attempt.time_taken || 0) % 60

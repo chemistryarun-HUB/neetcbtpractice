@@ -139,6 +139,18 @@ export const UNLOCK_THRESHOLDS = [
   { attempt: 3, score_pct: 40 },
 ]
 
+// The bar gets easier through attempt 3, then holds there — attempt 4, 5,
+// 100, etc. all still need to clear the same 40% as attempt 3. Attempts
+// past the last defined entry used to fall through with no threshold at
+// all, meaning a student who didn't clear in their first 3 tries could
+// never unlock the next level again no matter how well they later scored.
+export function thresholdPctFor(attemptNumber) {
+  const exact = UNLOCK_THRESHOLDS.find(t => t.attempt === attemptNumber)
+  if (exact) return exact.score_pct
+  const last = UNLOCK_THRESHOLDS[UNLOCK_THRESHOLDS.length - 1]
+  return attemptNumber > last.attempt ? last.score_pct : null
+}
+
 export const QUESTIONS_PER_ATTEMPT = 25
 export const MARKS_CORRECT = 4
 export const MARKS_WRONG = -1

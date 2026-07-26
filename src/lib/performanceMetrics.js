@@ -1,4 +1,4 @@
-import { UNLOCK_THRESHOLDS, MARKS_CORRECT, NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from './constants'
+import { MARKS_CORRECT, NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, thresholdPctFor } from './constants'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
 
@@ -65,16 +65,15 @@ export function computeStreak(attempts) {
   return streak
 }
 
-// "Cleared" = the first attempt (1-3) whose score crosses that attempt
-// number's real unlock threshold (UNLOCK_THRESHOLDS) — i.e. the exact attempt
-// where the student actually unlocked the next level in the app. Attempts
-// beyond #3 never retroactively count, matching TestPage.jsx (which never
-// re-checks the unlock condition after attempt 3 either).
+// "Cleared" = the first attempt whose score crosses that attempt number's
+// real unlock threshold (thresholdPctFor) — i.e. the exact attempt where the
+// student actually unlocked the next level in the app. Attempt 4 onward
+// keeps using the same bar as attempt 3, matching TestPage.jsx.
 export function clearedInfo(attemptsForLevel) {
   const sorted = [...attemptsForLevel].sort((a, b) => a.attempt_number - b.attempt_number)
   for (const a of sorted) {
-    const threshold = UNLOCK_THRESHOLDS.find(t => t.attempt === a.attempt_number)
-    if (threshold && scorePct(a) >= threshold.score_pct) {
+    const requiredPct = thresholdPctFor(a.attempt_number)
+    if (requiredPct != null && scorePct(a) >= requiredPct) {
       return { cleared: true, attemptNumber: a.attempt_number }
     }
   }

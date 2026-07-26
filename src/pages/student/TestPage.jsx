@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import toast from 'react-hot-toast'
@@ -220,17 +220,11 @@ export default function TestPage() {
         .eq('level', levelNum)
         .eq('submitted', true)
 
-      const thresholds = [
-        { attempt: 1, pct: 60 },
-        { attempt: 2, pct: 50 },
-        { attempt: 3, pct: 40 },
-      ]
-
-      const threshold = thresholds.find(t => t.attempt === attemptCount)
+      const requiredPct = thresholdPctFor(attemptCount)
       const { data: prog } = await supabase.from('student_progress').select('*').eq('student_id', user.id).single()
       const totalQuestionsAttempted = (prog?.total_questions_attempted || 0) + correct + wrong + skipped
 
-      if (threshold && pct >= threshold.pct && levelNum < 9) {
+      if (requiredPct != null && pct >= requiredPct && levelNum < 9) {
         const byUnit = prog?.unlocked_levels_by_unit || {}
         const current = byUnit[unitNum] || [1]
         const nextLevel = levelNum + 1
