@@ -89,10 +89,18 @@ function SubjectCountFields({ form, setForm }) {
           const included = Number(form[`${s}_count`]) > 0
           return (
             <div key={s} className="form-group" style={{ margin: 0, opacity: included ? 1 : 0.55, transition: 'opacity 0.15s' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, cursor: 'pointer' }}>
-                <input type="checkbox" checked={included} onChange={e => toggleSubject(s, e.target.checked)} />
-                {SUBJECT_LABELS[s]}
-              </label>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={included} onChange={e => toggleSubject(s, e.target.checked)} />
+                  {SUBJECT_LABELS[s]}
+                </label>
+                {included && form[`syllabus_${s}`] && (
+                  <button type="button" className="btn btn-ghost btn-sm" style={{ padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}
+                    onClick={() => setForm(f => ({ ...f, [`syllabus_${s}`]: '' }))}>
+                    Clear
+                  </button>
+                )}
+              </div>
               <input type="number" min={1} className="form-control" style={{ marginBottom: '0.5rem', marginTop: '0.4rem' }}
                 value={form[`${s}_count`]} disabled={!included}
                 onChange={e => setForm(f => ({ ...f, [`${s}_count`]: e.target.value }))} placeholder="Question count" />
