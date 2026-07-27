@@ -14,7 +14,7 @@ import { SUBJECTS, SUBJECT_LABELS, SUBJECT_COLORS, subjectRanges, totalQuestions
 function SyllabusPreview({ paper }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-      {SUBJECTS.map(s => paper[`syllabus_${s}`] ? (
+      {SUBJECTS.map(s => (paper[`${s}_count`] > 0 && paper[`syllabus_${s}`]) ? (
         <div key={s}>
           <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: SUBJECT_COLORS[s].color, opacity: 0.9 }}>{SUBJECT_LABELS[s]}</div>
           <div style={{ fontSize: '0.8125rem', lineHeight: 1.5 }}>{paper[`syllabus_${s}`]}</div>
@@ -166,9 +166,9 @@ export default function StudentPracticePapers() {
             </>
           ) : (
             <>
-              {SUBJECTS.some(s => selected[`syllabus_${s}`]) && (
+              {SUBJECTS.some(s => selected[`${s}_count`] > 0 && selected[`syllabus_${s}`]) && (
                 <div className="card card-body" style={{ marginBottom: '1.5rem' }}>
-                  {SUBJECTS.map(s => selected[`syllabus_${s}`] ? (
+                  {SUBJECTS.map(s => (selected[`${s}_count`] > 0 && selected[`syllabus_${s}`]) ? (
                     <div key={s} style={{ marginBottom: '0.75rem' }}>
                       <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: SUBJECT_COLORS[s].color }}>{SUBJECT_LABELS[s]}</div>
                       <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}>{selected[`syllabus_${s}`]}</div>
@@ -213,7 +213,7 @@ export default function StudentPracticePapers() {
             {papers.map(paper => {
               const attempt = attempts[paper.id]
               const total = totalQuestions(paper)
-              const hasSyllabus = SUBJECTS.some(s => paper[`syllabus_${s}`])
+              const hasSyllabus = SUBJECTS.some(s => paper[`${s}_count`] > 0 && paper[`syllabus_${s}`])
               return (
                 <div key={paper.id} className="card perf-clickable-card" style={{ padding: '1rem 1.25rem', cursor: 'pointer' }}
                   onClick={() => openPaper(paper)}>

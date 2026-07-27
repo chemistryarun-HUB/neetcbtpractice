@@ -37,6 +37,7 @@ export function scorePaper(paper, responses) {
   let correct = 0, wrong = 0, skipped = 0
 
   for (const r of ranges) {
+    if (r.count === 0) continue // subject not included in this paper — no entry, not a zeroed one
     let sCorrect = 0, sWrong = 0, sSkipped = 0
     for (let q = r.from; q <= r.to; q++) {
       const correctAnswer = key[q]

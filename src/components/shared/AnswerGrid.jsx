@@ -28,7 +28,9 @@ export default function AnswerGrid({ subjects, values, onChange, correctKey, fil
       {subjects.map(r => {
         const questionNums = Array.from({ length: r.count }, (_, i) => r.from + i)
           .filter(q => !filterStatus || statusOf(q, values[q], reviewing ? correctKey[q] : null) === filterStatus)
-        if (filterStatus && questionNums.length === 0) return null
+        // Covers both a subject excluded from the paper entirely (r.count === 0)
+        // and a filter that happens to match nothing for an included subject.
+        if (questionNums.length === 0) return null
         return (
         <div key={r.subject} className="syllabus-section" style={{ marginBottom: '1.5rem' }}>
           <h3>{r.label} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({questionNums.length} question{questionNums.length !== 1 ? 's' : ''})</span></h3>

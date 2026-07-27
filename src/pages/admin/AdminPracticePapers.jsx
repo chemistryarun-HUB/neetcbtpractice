@@ -51,6 +51,62 @@ function parseKeyFile(arrayBuffer, totalQ) {
   return { key, skipped, rowCount: rows.length }
 }
 
+// Per-subject question count + syllabus, with an include/exclude toggle so
+// a Physics+Chemistry-only paper (or a Biology-only one) doesn't need the
+// admin to know that typing "0" into a count field is how you'd do that —
+// unchecking a subject visibly greys it out and zeroes its count, and
+// re-checking restores a sensible default. Shared between the Add and Edit
+// forms, which are otherwise identical, so the two can't drift apart.
+function SubjectCountFields({ form, setForm }) {
+  const [quickFill, setQuickFill] = useState('')
+
+  function toggleSubject(s, include) {
+    setForm(f => ({ ...f, [`${s}_count`]: include ? 45 : 0 }))
+  }
+
+  function applyQuickFill() {
+    const n = Number(quickFill)
+    if (!n || n < 1) { toast.error('Enter a valid question count first'); return }
+    setForm(f => {
+      const next = { ...f }
+      for (const s of SUBJECTS) if (Number(f[`${s}_count`]) > 0) next[`${s}_count`] = n
+      return next
+    })
+  }
+
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+        <div className="form-group" style={{ margin: 0 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.8125rem' }}>Quick fill</label>
+          <input type="number" min={1} className="form-control" style={{ width: '110px' }} placeholder="e.g. 40"
+            value={quickFill} onChange={e => setQuickFill(e.target.value)} />
+        </div>
+        <button type="button" className="btn btn-outline btn-sm" onClick={applyQuickFill}>Apply to all included sections</button>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+        {SUBJECTS.map(s => {
+          const included = Number(form[`${s}_count`]) > 0
+          return (
+            <div key={s} className="form-group" style={{ margin: 0, opacity: included ? 1 : 0.55, transition: 'opacity 0.15s' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, cursor: 'pointer' }}>
+                <input type="checkbox" checked={included} onChange={e => toggleSubject(s, e.target.checked)} />
+                {SUBJECT_LABELS[s]}
+              </label>
+              <input type="number" min={1} className="form-control" style={{ marginBottom: '0.5rem', marginTop: '0.4rem' }}
+                value={form[`${s}_count`]} disabled={!included}
+                onChange={e => setForm(f => ({ ...f, [`${s}_count`]: e.target.value }))} placeholder="Question count" />
+              <textarea className="form-control" rows={3} placeholder={`${SUBJECT_LABELS[s]} syllabus`}
+                value={form[`syllabus_${s}`]} disabled={!included}
+                onChange={e => setForm(f => ({ ...f, [`syllabus_${s}`]: e.target.value }))} />
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/students', label: 'Students' },
@@ -270,18 +326,8 @@ export default function AdminPracticePapers() {
                 <input className="form-control" placeholder="e.g. PPP-1201_A" value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-                {SUBJECTS.map(s => (
-                  <div key={s} className="form-group" style={{ margin: 0 }}>
-                    <label style={{ fontWeight: 600 }}>{SUBJECT_LABELS[s]}</label>
-                    <input type="number" min={0} className="form-control" style={{ marginBottom: '0.5rem' }}
-                      value={form[`${s}_count`]}
-                      onChange={e => setForm(f => ({ ...f, [`${s}_count`]: e.target.value }))} placeholder="Question count" />
-                    <textarea className="form-control" rows={3} placeholder={`${SUBJECT_LABELS[s]} syllabus`}
-                      value={form[`syllabus_${s}`]}
-                      onChange={e => setForm(f => ({ ...f, [`syllabus_${s}`]: e.target.value }))} />
-                  </div>
-                ))}
+              <div style={{ marginTop: '1rem' }}>
+                <SubjectCountFields form={form} setForm={setForm} />
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                 <button className="btn btn-primary btn-sm" disabled={saving}>{saving ? 'Saving…' : 'Create Paper'}</button>
@@ -332,18 +378,8 @@ export default function AdminPracticePapers() {
                         <input className="form-control" value={editForm.name}
                           onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} />
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-                        {SUBJECTS.map(s => (
-                          <div key={s} className="form-group" style={{ margin: 0 }}>
-                            <label style={{ fontWeight: 600 }}>{SUBJECT_LABELS[s]}</label>
-                            <input type="number" min={0} className="form-control" style={{ marginBottom: '0.5rem' }}
-                              value={editForm[`${s}_count`]}
-                              onChange={e => setEditForm(f => ({ ...f, [`${s}_count`]: e.target.value }))} placeholder="Question count" />
-                            <textarea className="form-control" rows={3} placeholder={`${SUBJECT_LABELS[s]} syllabus`}
-                              value={editForm[`syllabus_${s}`]}
-                              onChange={e => setEditForm(f => ({ ...f, [`syllabus_${s}`]: e.target.value }))} />
-                          </div>
-                        ))}
+                      <div style={{ marginTop: '1rem' }}>
+                        <SubjectCountFields form={editForm} setForm={setEditForm} />
                       </div>
                       <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                         <button className="btn btn-primary btn-sm" disabled={editSaving} onClick={() => handleEditSave(paper)}>{editSaving ? 'Saving…' : 'Save Changes'}</button>
