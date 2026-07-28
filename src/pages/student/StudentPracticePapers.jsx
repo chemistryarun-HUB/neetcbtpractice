@@ -112,7 +112,7 @@ export default function StudentPracticePapers() {
     return (
       <div className="dashboard">
         <header className="topbar">
-          <div className="topbar-brand">NEETCBT</div>
+          <Link to="/student/dashboard" className="topbar-brand" style={{ color: '#fff', textDecoration: 'none' }}>NEETCBT</Link>
           <div className="topbar-nav" style={{ alignItems: 'center', gap: '1rem' }}>
             <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.875rem' }}>{user.name} ({user.roll_number})</span>
             <button onClick={handleLogout} title="Logout" style={{ color: 'rgba(255,255,255,0.85)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem' }}>

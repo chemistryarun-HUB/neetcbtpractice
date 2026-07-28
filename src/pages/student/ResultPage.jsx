@@ -98,7 +98,7 @@ export default function ResultPage() {
   return (
     <div className="dashboard">
       <header className="topbar">
-        <div className="topbar-brand">NEETCBT — Result</div>
+        <Link to="/student/dashboard" className="topbar-brand" style={{ color: '#fff', textDecoration: 'none' }}>NEETCBT — Result</Link>
         <Link to="/student/dashboard" className="btn btn-outline btn-sm" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>
           Back to Syllabus
         </Link>

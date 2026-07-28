@@ -12,10 +12,11 @@ export default function Topbar({ links }) {
   }
 
   const displayName = role === 'admin' ? 'Admin' : (user?.name || user?.email || 'Faculty')
+  const homePath = role === 'admin' ? '/admin' : '/faculty/dashboard'
 
   return (
     <header className="topbar">
-      <div className="topbar-brand">NEETCBT</div>
+      <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate(homePath)}>NEETCBT</div>
       <nav className="topbar-nav">
         {links.map(l => (
           <NavLink key={l.to} to={l.to} end={l.end}>
