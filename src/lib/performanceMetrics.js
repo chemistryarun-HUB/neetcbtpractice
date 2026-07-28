@@ -130,3 +130,42 @@ export function fmtWhen(iso) {
   const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
   return { day, time }
 }
+
+export function daysSince(iso) {
+  if (!iso) return null
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
+}
+
+const PRACTICE_LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
+
+// Picks one of several warm, data-driven WhatsApp nudges instead of the same
+// generic line for every student — a "smart template" rather than a live AI
+// call, since it needs no backend, no API key, and has zero per-message cost
+// or latency, while still reading as genuinely personalized (name, streak,
+// days since last practice, accuracy, weakest topic — whatever's available).
+// Every param except `name` is optional; branches degrade gracefully when a
+// caller doesn't have richer data computed (e.g. AdminStudents.jsx's lighter
+// per-student view vs. the full StudentProfile.jsx).
+export function buildActivityMessage({ name, totalAttempts = 0, streak = 0, lastActiveIso, overallAccuracy = 0, weakestUnitName }) {
+  const first = (name || '').trim().split(/\s+/)[0] || 'there'
+  const daysAgo = daysSince(lastActiveIso)
+  const acc = Math.round(overallAccuracy)
+
+  if (!totalAttempts) {
+    return `Hi ${first}, your NEET Chemistry practice account is ready, but you haven't started yet. Even 10-15 minutes today builds a great habit — try your first level here: ${PRACTICE_LOGIN_URL}`
+  }
+  if (streak >= 3) {
+    return `Great going ${first}! You're on a ${streak}-day practice streak (${acc}% accuracy). Keep it up today: ${PRACTICE_LOGIN_URL}`
+  }
+  if (daysAgo != null && daysAgo <= 1) {
+    return `Hi ${first}, good to see you practicing regularly. A quick session today keeps the momentum going: ${PRACTICE_LOGIN_URL}`
+  }
+  if (daysAgo != null && daysAgo <= 4) {
+    const weakLine = weakestUnitName ? ` ${weakestUnitName} could use a bit more practice.` : ''
+    return `Hi ${first}, it's been ${daysAgo} day${daysAgo === 1 ? '' : 's'} since your last practice.${weakLine} A short session today keeps you on track: ${PRACTICE_LOGIN_URL}`
+  }
+  if (daysAgo != null && daysAgo <= 10) {
+    return `Hi ${first}, it's been over a week since your last practice. Even 15-20 minutes today will help you stay NEET-ready — login here: ${PRACTICE_LOGIN_URL}`
+  }
+  return `Hi ${first}, it's been a while (${daysAgo ?? 'many'} days) since we last saw you practice. Everything okay? Your progress is saved and ready whenever you're ready to jump back in: ${PRACTICE_LOGIN_URL}`
+}

@@ -4,9 +4,9 @@ import InfoTooltip from '../shared/InfoTooltip'
 import {
   unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
   computeStreak, clearedInfo, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
+  buildActivityMessage,
 } from '../../lib/performanceMetrics'
 
-const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 function waLink(phone, message) {
   if (!phone) return null
   const cleaned = String(phone).replace(/\D/g, '')
@@ -78,6 +78,18 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
 
   const unlockedUnitsCount = Object.keys(progress?.unlocked_levels_by_unit || {}).length
 
+  // Only worth naming a weak unit once there's enough attempts there to mean
+  // something — one unlucky attempt at a brand-new unit isn't "weak", it's noise.
+  const weakestUnit = unitAccuracyRows.length > 0 ? [...unitAccuracyRows].reverse().find(u => u.attempts >= 3) : null
+  const nudgeMessage = buildActivityMessage({
+    name: student.name,
+    totalAttempts: attempts.length,
+    streak,
+    lastActiveIso: mostRecentAny?.submitted_at,
+    overallAccuracy,
+    weakestUnitName: weakestUnit ? unitName(weakestUnit.unitId) : undefined,
+  })
+
   return (
     <div>
       <div className="header">
@@ -104,7 +116,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               ['Mother', student.phone_mother],
               ['Father', student.phone_father],
             ].map(([label, phone]) => {
-              const link = waLink(phone, `Hello, checking in on ${student.name}'s NEET CBT practice. Login: ${LOGIN_URL}`)
+              const link = waLink(phone, nudgeMessage)
               if (!link) return null
               return (
                 <a key={label} href={link} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm"

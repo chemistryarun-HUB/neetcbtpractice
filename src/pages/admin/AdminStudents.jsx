@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+import { computeStreak, aggregateAccuracy, buildActivityMessage } from '../../lib/performanceMetrics'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
 function unitName(unitId) {
@@ -57,11 +58,8 @@ function waUrl(phone, name, rollNumber, password) {
   return `https://wa.me/91${phone}?text=${text}`
 }
 
-function waPracticeUrl(phone, name) {
-  const text = encodeURIComponent(
-    `Hello ${name}, please practice today on NEET CBT. Login: ${LOGIN_URL}`
-  )
-  return `https://wa.me/91${phone}?text=${text}`
+function waPracticeUrl(phone, message) {
+  return `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`
 }
 
 function formatDate(iso) {
@@ -135,7 +133,14 @@ function StudentProgress({ student, onBack }) {
   const totalCleared = levelEntries.filter(l => l.bestAcc >= 60).length
   const overallBestAcc = levelEntries.length > 0 ? Math.max(...levelEntries.map(l => l.bestAcc)) : 0
 
-  const waReminderMsg = (phone) => waPracticeUrl(phone, student.name)
+  const nudgeMessage = buildActivityMessage({
+    name: student.name,
+    totalAttempts: attempts.length,
+    streak: computeStreak(attempts),
+    lastActiveIso: lastPractice,
+    overallAccuracy: aggregateAccuracy(attempts),
+  })
+  const waReminderMsg = (phone) => waPracticeUrl(phone, nudgeMessage)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
