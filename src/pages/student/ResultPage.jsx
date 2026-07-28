@@ -122,13 +122,13 @@ export default function ResultPage() {
         {nextUnlocked ? (
           <div style={{ background: '#dcfce7', border: '1.5px solid #16a34a', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
             <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem' }}>🎉 Level {level + 1} Unlocked!</div>
-            <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>Score ≥ {threshold?.score_pct}% — great work!</div>
+            <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>Score ≥ {requiredPct}% — great work!</div>
           </div>
-        ) : threshold && !passed ? (
+        ) : requiredPct != null && !passed ? (
           <div style={{ background: '#fef9c3', border: '1.5px solid #d97706', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
             <div style={{ fontWeight: 700, color: '#92400e' }}>Score more to unlock next level</div>
             <div style={{ color: '#b45309', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-              Need {threshold.score_pct}% score on attempt #{threshold.attempt}. You got {pct}%.
+              Need {requiredPct}% score on attempt #{attemptsForLevel}. You got {pct}%.
             </div>
           </div>
         ) : null}
