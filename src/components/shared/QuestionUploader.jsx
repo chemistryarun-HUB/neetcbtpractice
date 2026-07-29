@@ -213,7 +213,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
 
   function buildQuestionsQuery() {
-    let q = supabase.from('questions').select('*').order('qid', { ascending: true })
+    let q = supabase.from('questions').select('*')
     // Filter by unit — Unit 11 uses a loose match to handle "d and f" vs "d- and f-" variants
     if (unitFilter) {
       const uid = Number(unitFilter)
@@ -225,6 +225,10 @@ export default function QuestionUploader({ uploadedBy }) {
       }
     }
     if (levelFilter) q = q.eq('level', Number(levelFilter))
+    // Once a unit is picked, sort level-first so the admin can review a chapter
+    // level-by-level instead of questions from every level being interleaved
+    // by Q ID — that's the whole point of the Unit filter.
+    q = unitFilter ? q.order('level', { ascending: true }).order('qid', { ascending: true }) : q.order('qid', { ascending: true })
     // Soft-delete: only show active questions unless showInactive is on
     if (!showInactive) q = q.eq('is_active', true)
     return q
@@ -776,11 +780,16 @@ export default function QuestionUploader({ uploadedBy }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {visibleQuestions.map(q => {
+                  {(() => { let lastLevel = null; return visibleQuestions.map(q => {
                     const isOpen = expandedId === q.id
                     const isEditing = editId === q.id
                     const isInactive = q.is_active === false
                     const opts = [q.option1, q.option2, q.option3, q.option4]
+                    // Group by level once a unit is picked and no single level is
+                    // filtered — lets the admin scan a whole chapter level-by-level.
+                    const showLevelHeader = unitFilter && !levelFilter && q.level !== lastLevel
+                    if (showLevelHeader) lastLevel = q.level
+                    const levelCount = showLevelHeader ? filtered.filter(x => x.level === q.level).length : 0
                     const rowStyle = {
                       cursor: 'pointer',
                       opacity: isInactive ? 0.55 : 1,
@@ -788,6 +797,17 @@ export default function QuestionUploader({ uploadedBy }) {
                     }
                     return (
                       <>
+                        {showLevelHeader && (
+                          <tr key={`lvl-${q.level}`}>
+                            <td colSpan={8} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
+                                Level {q.level}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
+                                <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
+                                <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>· {levelCount} question{levelCount !== 1 ? 's' : ''}</span>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                         <tr key={q.id} style={rowStyle} onClick={() => { if (!isEditing) setExpandedId(isOpen ? null : q.id) }}>
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
@@ -1069,7 +1089,7 @@ export default function QuestionUploader({ uploadedBy }) {
                         )}
                       </>
                     )
-                  })}
+                  }) })()}
                 </tbody>
               </table>
             )}
