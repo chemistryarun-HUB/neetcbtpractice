@@ -95,6 +95,13 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Miscellaneous',                       topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',               topic: 'Complete Chapter Test' },
   ],
+  8: [
+    { id: 1, name: 'Rate of Reaction & Order',              topic: 'Rate of a chemical reaction, Factors influencing rate of reactions, Rate expression and rate constant, Order and molecularity of a reaction' },
+    { id: 2, name: 'Integrated Rate Equations',              topic: 'Integrated rate equations for zero and first order reactions, determination of order of reaction, Pseudo first order reaction.' },
+    { id: 3, name: 'Temperature Dependence & Catalysis',     topic: 'Temperature dependence of the rate of a reaction, Effect of catalyst, Collision theory of chemical reactions.' },
+    { id: 4, name: 'Miscellaneous',                          topic: 'Miscellaneous' },
+    { id: 5, name: 'Complete Chapter Test',                  topic: 'Complete Chapter Test' },
+  ],
   9: [
     { id: 1, name: 'Periodic Classification & Configuration', topic: "Genesis of periodic classification, Modern periodic law and the present form of the periodic table. Nomenclature of elements with atomic numbers > 100, Electronic configurations in periods, Groupwise electronic configuration, s, p, d & f-block elements, Metals, Non-metals and metalloids" },
     { id: 2, name: 'Periodic Trends - Physical Properties',   topic: "Periodic Trends in physical properties : Atomic radii, Ionisation enthalpy, Electron gain enthalpy, Electronegativity." },
