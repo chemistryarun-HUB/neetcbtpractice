@@ -772,8 +772,8 @@ export default function QuestionUploader({ uploadedBy }) {
                     <th style={{ width: '110px' }}>Q ID</th>
                     <th style={{ width: '120px' }}>Unit</th>
                     <th>Topic</th>
-                    <th style={{ width: '48px', textAlign: 'center' }}>Lvl</th>
-                    <th>Question</th>
+                    <th style={{ width: '64px', textAlign: 'center' }}>Level</th>
+                    <th style={{ textAlign: 'center' }}>Question</th>
                     <th style={{ width: '80px' }}>Difficulty</th>
                     <th>Tag</th>
                     <th style={{ width: '96px' }}></th>
@@ -820,7 +820,7 @@ export default function QuestionUploader({ uploadedBy }) {
                             {q.level}
                             <InfoTooltip text={deriveFullTopic(q.unit, q.level) || q.topic} />
                           </td>
-                          <td style={{ maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.875rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? 'var(--gray-400)' : undefined }}>{q.question}</td>
+                          <td style={{ maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.875rem', textAlign: 'center', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? 'var(--gray-400)' : undefined }}>{q.question}</td>
                           <td>
                             <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                           </td>
