@@ -137,6 +137,7 @@ export default function AdminPracticePapers() {
   const [form, setForm] = useState(BLANK_FORM)
   const [saving, setSaving] = useState(false)
   const [expandedId, setExpandedId] = useState(null)
+  const [keyOpenId, setKeyOpenId] = useState(null) // which paper's Answer Key grid is expanded (collapsed by default — admin opens a paper mainly to see submissions)
   const [submissions, setSubmissions] = useState({}) // paperId -> rows
   const [savingKey, setSavingKey] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -265,9 +266,15 @@ export default function AdminPracticePapers() {
 
   async function openPaper(paper) {
     if (expandedId) await flushSave(expandedId) // leaving a paper's key-entry panel
+    setKeyOpenId(null) // Answer Key grid always starts collapsed when a paper (re)opens
     if (expandedId === paper.id) { setExpandedId(null); return }
     setExpandedId(paper.id)
     if (!submissions[paper.id]) loadSubmissions(paper.id)
+  }
+
+  async function toggleKeySection(paperId) {
+    if (keyOpenId === paperId) { await flushSave(paperId); setKeyOpenId(null); return }
+    setKeyOpenId(paperId)
   }
 
   function openEdit(paper) {
@@ -398,20 +405,7 @@ export default function AdminPracticePapers() {
 
                   {isOpen && editingId !== paper.id && (
                     <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid var(--gray-100)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0 0.5rem' }}>
-                        <h3 style={{ fontSize: '0.9rem', margin: 0 }}>Answer Key {savingKey && <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>(saving…)</span>}</h3>
-                        <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', margin: 0 }}>
-                          <Upload size={14} /> Upload Key (Excel)
-                          <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={e => handleKeyFileUpload(paper, e)} />
-                        </label>
-                      </div>
-                      <AnswerGrid
-                        subjects={subjectRanges(paper)}
-                        values={paper.answer_key || {}}
-                        onChange={(q, letter) => tapKey(paper.id, q, letter)}
-                      />
-
-                      <h3 style={{ fontSize: '0.9rem', margin: '1.5rem 0 0.5rem' }}>Submissions</h3>
+                      <h3 style={{ fontSize: '0.9rem', margin: '1rem 0 0.5rem' }}>Submissions</h3>
                       {rows.length === 0 ? (
                         <div className="empty-state">No student submissions yet</div>
                       ) : (
@@ -443,6 +437,27 @@ export default function AdminPracticePapers() {
                             </tbody>
                           </table>
                         </div>
+                      )}
+
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', margin: '1.5rem 0 0.5rem' }}>
+                        <button className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                          onClick={() => toggleKeySection(paper.id)}>
+                          {keyOpenId === paper.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          Answer Key ({keyFilled}/{total} filled) {savingKey && keyOpenId === paper.id && <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>(saving…)</span>}
+                        </button>
+                        {keyOpenId === paper.id && (
+                          <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', margin: 0 }}>
+                            <Upload size={14} /> Upload Key (Excel)
+                            <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={e => handleKeyFileUpload(paper, e)} />
+                          </label>
+                        )}
+                      </div>
+                      {keyOpenId === paper.id && (
+                        <AnswerGrid
+                          subjects={subjectRanges(paper)}
+                          values={paper.answer_key || {}}
+                          onChange={(q, letter) => tapKey(paper.id, q, letter)}
+                        />
                       )}
                     </div>
                   )}
