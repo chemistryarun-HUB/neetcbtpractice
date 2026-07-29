@@ -691,7 +691,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 <Search size={16} />
                 <input
                   className="form-control"
-                  style={{ border: 'none', boxShadow: 'none', padding: '0' }}
+                  style={{ border: 'none', boxShadow: 'none', padding: '0', fontSize: '1.0625rem' }}
                   placeholder="Search by Q ID, question, tag or topic…"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -705,7 +705,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {/* Subject */}
               <select
                 className="form-control"
-                style={{ width: 'auto', minWidth: '130px' }}
+                style={{ width: '150px', flex: '0 0 150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                 value={subjectFilter}
                 onChange={e => setSubjectFilter(e.target.value)}
               >
@@ -719,7 +719,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {subjectFilter && (
                 <select
                   className="form-control"
-                  style={{ width: 'auto', minWidth: '220px' }}
+                  style={{ width: '240px', flex: '1 1 240px', maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={unitFilter}
                   onChange={e => setUnitFilter(e.target.value)}
                 >
@@ -734,7 +734,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {unitFilter && (
                 <select
                   className="form-control"
-                  style={{ width: 'auto', minWidth: '180px' }}
+                  style={{ width: '220px', flex: '1 1 220px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={levelFilter}
                   onChange={e => setLevelFilter(e.target.value)}
                 >
