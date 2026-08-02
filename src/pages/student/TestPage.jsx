@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import toast from 'react-hot-toast'
@@ -224,10 +224,12 @@ export default function TestPage() {
       const { data: prog } = await supabase.from('student_progress').select('*').eq('student_id', user.id).single()
       const totalQuestionsAttempted = (prog?.total_questions_attempted || 0) + correct + wrong + skipped
 
-      if (requiredPct != null && pct >= requiredPct && levelNum < 9) {
+      // Derived from this unit's own level list — a hardcoded `levelNum < 9` used
+      // to refuse every unlock past level 9, stranding students on longer units.
+      const nextLevel = nextLevelIdFor(unitNum, levelNum)
+      if (requiredPct != null && pct >= requiredPct && nextLevel != null) {
         const byUnit = prog?.unlocked_levels_by_unit || {}
         const current = byUnit[unitNum] || [1]
-        const nextLevel = levelNum + 1
         if (!current.includes(nextLevel)) {
           await supabase.from('student_progress').update({
             unlocked_levels_by_unit: { ...byUnit, [unitNum]: [...current, nextLevel] },

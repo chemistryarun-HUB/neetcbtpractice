@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock } from 'lucide-react'
-import { UNIT_LEVELS, UNIT_11_LEVELS } from '../../lib/constants'
+import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
 import { correctOptionKey } from '../../lib/questionOptions'
 import InfoTooltip from './InfoTooltip'
 
@@ -211,6 +211,25 @@ export default function QuestionUploader({ uploadedBy }) {
   const [manualLevel, setManualLevel] = useState('')
 
   const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
+
+  // Level choices for the Edit panel, driven by whichever unit the form currently
+  // points at — a hardcoded 1-9 list used to hide the real levels of any unit with
+  // more than nine (Unit 3 has 11, so "Miscellaneous" was unreachable).
+  const editUnitId = Number((editForm.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || null
+  const editLevelDefs = UNIT_LEVELS[editUnitId] || []
+  const editLevelOptions = (() => {
+    const opts = editLevelDefs.length > 0
+      ? editLevelDefs.map(l => ({ id: l.id, label: `Level ${l.id}: ${l.name}` }))
+      : levelIdsFor(editUnitId).map(id => ({ id, label: `Level ${id}` }))
+    // Keep whatever the row is already tagged with selectable even if it isn't a
+    // defined level, so merely opening the panel can't silently retag the question.
+    const current = Number(editForm.level)
+    if (current && !opts.some(o => o.id === current)) {
+      opts.push({ id: current, label: `Level ${current} (not defined for this unit)` })
+      opts.sort((a, b) => a.id - b.id)
+    }
+    return opts
+  })()
 
   function buildQuestionsQuery() {
     let q = supabase.from('questions').select('*')
@@ -1031,7 +1050,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                       {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
                                     </select>
                                   </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
+                                  <div className="form-group" style={{ margin: 0, flex: '1.2 1 200px' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                                       Level
                                       <InfoTooltip text={deriveFullTopic(editForm.unit, editForm.level)} align="left" />
@@ -1039,7 +1058,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                     <select className="form-control" style={{ fontSize: '0.8125rem' }}
                                       value={editForm.level}
                                       onChange={e => setEditForm(f => ({ ...f, level: e.target.value }))}>
-                                      {[1,2,3,4,5,6,7,8,9].map(l => <option key={l} value={l}>Level {l}</option>)}
+                                      {editLevelOptions.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
                                     </select>
                                   </div>
                                   <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
@@ -1163,10 +1182,15 @@ export default function QuestionUploader({ uploadedBy }) {
               {manualUnitId && (
                 <div className="form-group" style={{ margin: 0, minWidth: '175px' }}>
                   <label style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Level *</label>
-                  {Number(manualUnitId) === 11 ? (
+                  {/* Named levels for any unit that defines them (this used to be
+                      hardcoded to Unit 11, leaving every other unit with a bare
+                      1-9 number box). The unit's last level is always the Complete
+                      Chapter Test, which draws from the other levels rather than
+                      owning questions, so it's never an authoring target. */}
+                  {(UNIT_LEVELS[Number(manualUnitId)] || []).length > 0 ? (
                     <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualLevel} onChange={e => setManualLevel(e.target.value)} required>
                       <option value="">— choose —</option>
-                      {UNIT_11_LEVELS.filter(l => l.id < 9).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
+                      {UNIT_LEVELS[Number(manualUnitId)].slice(0, -1).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
                     </select>
                   ) : (
                     <input type="number" className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} min={1} max={9} placeholder="1 – 9"

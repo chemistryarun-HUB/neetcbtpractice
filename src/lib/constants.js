@@ -140,6 +140,31 @@ export const UNIT_LEVELS = {
 // Kept for backward-compat with any existing imports
 export const UNIT_11_LEVELS = UNIT_LEVELS[11]
 
+/**
+ * Level ids defined for a unit. Falls back to a generic 1-9 range only for units
+ * whose levels haven't been authored into UNIT_LEVELS yet, so an admin can still
+ * file a question somewhere rather than being handed an empty dropdown.
+ */
+export function levelIdsFor(unitId) {
+  const defs = UNIT_LEVELS[Number(unitId)] || []
+  return defs.length > 0 ? defs.map(l => l.id) : [1, 2, 3, 4, 5, 6, 7, 8, 9]
+}
+
+/**
+ * The level a student unlocks by clearing `levelId` in `unitId` — null when
+ * they've just cleared the unit's last level, so there's nothing left to open.
+ *
+ * Replaces the old hardcoded `level < 9` checks, which silently refused to
+ * unlock anything past level 9 and so stranded students on units with more
+ * levels than that (Unit 3 has 11).
+ */
+export function nextLevelIdFor(unitId, levelId) {
+  const defs = UNIT_LEVELS[Number(unitId)] || []
+  const idx = defs.findIndex(l => l.id === Number(levelId))
+  if (idx === -1) return null
+  return defs[idx + 1]?.id ?? null
+}
+
 export const UNLOCK_THRESHOLDS = [
   { attempt: 1, score_pct: 60 },
   { attempt: 2, score_pct: 50 },

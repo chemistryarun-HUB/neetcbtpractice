@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { X } from 'lucide-react'
 
@@ -18,6 +18,7 @@ export default function ResultPage() {
   const [loading, setLoading] = useState(true)
   const [attemptsForLevel, setAttemptsForLevel] = useState(0)
   const [nextUnlocked, setNextUnlocked] = useState(false)
+  const [nextLevelId, setNextLevelId] = useState(null)
 
   useEffect(() => {
     async function load() {
@@ -44,8 +45,11 @@ export default function ResultPage() {
       setProgress(prog)
       setAttemptsForLevel(count || 0)
 
-      const nextLvl = att.level + 1
-      setNextUnlocked((prog?.unlocked_levels_by_unit?.[att.unit_id] || []).includes(nextLvl) && nextLvl <= 9)
+      // Next level comes from this unit's level list, not `level + 1` capped at 9 —
+      // units with more than nine levels never showed the unlock banner past L9.
+      const nextLvl = nextLevelIdFor(att.unit_id, att.level)
+      setNextLevelId(nextLvl)
+      setNextUnlocked(nextLvl != null && (prog?.unlocked_levels_by_unit?.[att.unit_id] || []).includes(nextLvl))
 
       setLoading(false)
     }
@@ -121,7 +125,7 @@ export default function ResultPage() {
         {/* Status banner */}
         {nextUnlocked ? (
           <div style={{ background: '#dcfce7', border: '1.5px solid #16a34a', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem' }}>🎉 Level {level + 1} Unlocked!</div>
+            <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem' }}>🎉 Level {nextLevelId} Unlocked!</div>
             <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>Score ≥ {requiredPct}% — great work!</div>
           </div>
         ) : requiredPct != null && !passed ? (
@@ -152,9 +156,9 @@ export default function ResultPage() {
           <button className="btn btn-outline" onClick={() => navigate(`/student/test/${unitId}/${level}`)}>
             Practice More
           </button>
-          {nextUnlocked && level < 9 && (
-            <button className="btn btn-primary" onClick={() => navigate(`/student/test/${unitId}/${level + 1}`)}>
-              Start Level {level + 1} →
+          {nextUnlocked && nextLevelId != null && (
+            <button className="btn btn-primary" onClick={() => navigate(`/student/test/${unitId}/${nextLevelId}`)}>
+              Start Level {nextLevelId} →
             </button>
           )}
           <Link to="/student/dashboard" className="btn btn-ghost">
