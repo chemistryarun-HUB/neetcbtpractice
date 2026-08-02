@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
-import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText } from 'lucide-react'
+import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
+import LevelVideosModal from '../../components/shared/LevelVideosModal'
+import { groupVideosByUnitLevel } from '../../lib/youtube'
 
 export default function StudentDashboard() {
   const { user, logout } = useAuth()
@@ -23,13 +25,20 @@ export default function StudentDashboard() {
   // Currently selected unit (for drill-down view)
   const [selectedUnit, setSelectedUnit] = useState(null)
 
+  // unitId → level → videos[]  (lecture videos, see AdminVideos)
+  const [videosByUnit, setVideosByUnit] = useState({})
+  // { levelId, levelName, videos, canStartTest } while the lecture player is open
+  const [videoModal, setVideoModal] = useState(null)
+
   useEffect(() => {
     async function load() {
-      // 1. Student progress + attempts
-      const [{ data: p }, { data: a }] = await Promise.all([
+      // 1. Student progress + attempts + lecture videos
+      const [{ data: p }, { data: a }, { data: vids }] = await Promise.all([
         supabase.from('student_progress').select('*').eq('student_id', user.id).single(),
         supabase.from('test_attempts').select('*').eq('student_id', user.id).eq('submitted', true),
+        supabase.from('level_videos').select('*').eq('is_active', true).order('sort_order'),
       ])
+      setVideosByUnit(groupVideosByUnitLevel(vids))
       if (!p) {
         await supabase.from('student_progress').insert({ student_id: user.id })
         setProgress({ unlocked_levels_by_unit: {}, total_questions_attempted: 0 })
@@ -158,6 +167,7 @@ export default function StudentDashboard() {
               const lvlAttempts = attemptsByLevel[levelId] || []
               const totalQAttempted = lvlAttempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
               const qCount = levelId === lastLevelId ? cctTotal : (countByLevel[levelId] ?? 0)
+              const levelVideos = videosByUnit[selectedUnit.id]?.[levelId] || []
               return (
                 <div
                   key={levelId}
@@ -179,14 +189,28 @@ export default function StudentDashboard() {
                     )}
                   </div>
                   {!isUnlocked && <div className="lock-icon"><Lock size={18} /></div>}
-                  {isUnlocked && lvlAttempts.length === 0 && (
-                    <div style={{ marginTop: '0.75rem' }}>
-                      <span className="badge badge-green">Start</span>
-                    </div>
-                  )}
-                  {isUnlocked && lvlAttempts.length > 0 && (
-                    <div style={{ marginTop: '0.75rem' }}>
-                      <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>Continue</span>
+                  {(levelVideos.length > 0 || isUnlocked) && (
+                    <div className="level-card-actions">
+                      {/* Lectures stay watchable even on a locked level — they're the
+                          learning material, and gating them behind a score students
+                          can't yet earn is backwards. The test itself stays locked. */}
+                      {levelVideos.length > 0 && (
+                        <button
+                          className="level-video-btn"
+                          onClick={e => {
+                            e.stopPropagation()
+                            setVideoModal({ levelId, levelName, videos: levelVideos, canStartTest: isUnlocked })
+                          }}
+                        >
+                          <PlayCircle size={13} />
+                          {levelVideos.length} Lecture{levelVideos.length !== 1 ? 's' : ''}
+                        </button>
+                      )}
+                      {isUnlocked && (
+                        lvlAttempts.length === 0
+                          ? <span className="badge badge-green">Start</span>
+                          : <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>Continue</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -194,6 +218,18 @@ export default function StudentDashboard() {
             })}
           </div>
         </div>
+
+        {videoModal && (
+          <LevelVideosModal
+            levelId={videoModal.levelId}
+            levelName={videoModal.levelName}
+            videos={videoModal.videos}
+            onClose={() => setVideoModal(null)}
+            onStartTest={videoModal.canStartTest
+              ? () => { setVideoModal(null); startTest(selectedUnit.id, videoModal.levelId) }
+              : null}
+          />
+        )}
       </div>
     )
   }
