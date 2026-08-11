@@ -34,11 +34,14 @@ console.log(`${rows.length} question(s) look mis-keyed:\n`)
 
 for (const r of rows) {
   console.log(`${r.qid}  (${r.unit} · L${r.level} · ${r.responses} responses)`)
-  console.log(`  ${r.question.slice(0, 100).replace(/\s+/g, ' ')}`)
+  // Never truncate the stem. A 100-char cut once hid the clause "which is just
+  // above E in the group" on NCU09102, which made a correctly-keyed question look
+  // wrong — the whole point of this report is to be read carefully, so print it all.
+  console.log(`  ${r.question.replace(/\s+/g, ' ')}`)
   console.log(`  why:   ${r.reasons.join('; ')}`)
-  console.log(`  keyed  ${r.keyed.letter}: "${(r.keyed.text || '(image)').slice(0, 60)}" — ${r.keyed.count} picked, avg ${r.keyed.meanPct.toFixed(0)}%`)
+  console.log(`  keyed  ${r.keyed.letter}: "${r.keyed.text || '(image)'}" — ${r.keyed.count} picked, avg ${r.keyed.meanPct.toFixed(0)}%`)
   if (r.rival) {
-    console.log(`  rival  ${r.rival.letter}: "${(r.rival.text || '(image)').slice(0, 60)}" — ${r.rival.count} picked, avg ${r.rival.meanPct.toFixed(0)}%`)
+    console.log(`  rival  ${r.rival.letter}: "${r.rival.text || '(image)'}" — ${r.rival.count} picked, avg ${r.rival.meanPct.toFixed(0)}%`)
   }
   if (r.keyedOutperforms) {
     console.log(`  NOTE:  the key's students beat the field by ${r.discrimination.toFixed(0)} pts — likely just a hard question, check before changing anything`)
