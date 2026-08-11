@@ -1,15 +1,13 @@
-// Re-grades submitted attempts against the CURRENT answer key, for questions whose
-// correct_option was corrected after students had already answered them.
+// Re-grades submitted attempts against the CURRENT answer key.
 //
-// Dry-run by default — prints every change it would make. Pass --apply to write.
+// The admin UI (/admin/key-changes) is the normal way to do this — it shows impact
+// per key change and applies one at a time. This CLI is the bulk/offline escape
+// hatch, and shares src/lib/regrade.js with the UI so the two can't grade differently.
 //
-// Deliberate policy: level unlocks are only ever ADDED, never revoked. A student
-// who now falls below the bar keeps access they were already granted; taking a
-// level away mid-course punishes them for someone else's key error.
+// Dry-run by default. Pass --apply to write.
 import { readFileSync } from 'fs'
 import { createClient } from '@supabase/supabase-js'
-import { correctOptionKey, optionEntries } from '../src/lib/questionOptions.js'
-import { MARKS_CORRECT, MARKS_WRONG, thresholdPctFor, nextLevelIdFor } from '../src/lib/constants.js'
+import { buildRegradePlan, applyRegradePlan, planNetMarks } from '../src/lib/regrade.js'
 
 const env = Object.fromEntries(
   readFileSync(new URL('../.env', import.meta.url), 'utf8')
@@ -32,169 +30,46 @@ async function pageAll(build) {
 
 const questions = await pageAll(() => sb.from('questions')
   .select('id, qid, option1, option2, option3, option4, correct_option'))
-const qById = Object.fromEntries(questions.map(q => [q.id, q]))
-
 const attempts = await pageAll(() => sb.from('test_attempts')
   .select('id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, question_ids, answers')
   .eq('submitted', true))
-
+const progress = await pageAll(() => sb.from('student_progress').select('student_id, unlocked_levels_by_unit'))
 const students = await pageAll(() => sb.from('students').select('id, name, roll_number'))
+
+const questionsById = Object.fromEntries(questions.map(q => [q.id, q]))
+const progressByStudent = Object.fromEntries(progress.map(p => [p.student_id, p]))
 const nameOf = Object.fromEntries(students.map(s => [s.id, `${s.name} (${s.roll_number})`]))
 
-function liveStatus(q, selected) {
-  if (!selected) return 'skipped'
-  const key = correctOptionKey(q)
-  const entry = optionEntries(q).find(e => e.key === key)
-  return (selected === key || (entry?.text && selected === entry.text)) ? 'correct' : 'wrong'
-}
+const plan = buildRegradePlan({ attempts, questionsById, progressByStudent })
 
-// ── 1. Recompute every attempt, keep the ones that actually changed ──────────
-const changed = []
-for (const a of attempts) {
-  const ans = a.answers || {}
-  if (ans.responses === undefined) continue      // legacy format — always derived live, nothing frozen to fix
-  const responses = ans.responses || {}
-  const qids = a.question_ids || []
-  if (!qids.length) continue
+console.log(`${attempts.length} submitted attempts scanned — ${plan.attemptPatches.length} need re-grading.\n`)
+if (!plan.attemptPatches.length) process.exit(0)
 
-  const oldCorrect = new Set(ans.correct_ids || [])
-  const oldWrong = new Set(ans.wrong_ids || [])
-  if (!oldCorrect.size && !oldWrong.size) continue
-
-  const correct = [], wrong = [], skipped = []
-  let unknown = false
-  for (const qid of qids) {
-    const q = qById[qid]
-    if (!q) {
-      // Question no longer in the bank — preserve whatever it was graded as
-      // rather than silently reclassifying it as skipped.
-      unknown = true
-      if (oldCorrect.has(qid)) correct.push(qid)
-      else if (oldWrong.has(qid)) wrong.push(qid)
-      else skipped.push(qid)
-      continue
-    }
-    const st = liveStatus(q, responses[qid])
-    if (st === 'correct') correct.push(qid)
-    else if (st === 'wrong') wrong.push(qid)
-    else skipped.push(qid)
-  }
-
-  const score = correct.length * MARKS_CORRECT + wrong.length * MARKS_WRONG
-  if (score === a.score && correct.length === a.correct_count && wrong.length === a.wrong_count) continue
-
-  changed.push({
-    attempt: a, unknown,
-    next: {
-      answers: { ...ans, correct_ids: correct, wrong_ids: wrong, skipped_ids: skipped },
-      score, correct_count: correct.length, wrong_count: wrong.length, skipped_count: skipped.length,
-    },
-  })
-}
-
-console.log(`${attempts.length} submitted attempts scanned — ${changed.length} need re-grading.\n`)
-if (!changed.length) process.exit(0)
-
-for (const c of changed) {
-  const a = c.attempt
-  const d = c.next.score - a.score
+for (const p of plan.attemptPatches) {
+  const a = attempts.find(x => x.id === p.id)
+  const d = p.patch.score - p.before.score
   console.log(`  ${nameOf[a.student_id] || a.student_id} · Unit ${a.unit_id} L${a.level} #${a.attempt_number}` +
-    ` · ${a.score} → ${c.next.score} (${d >= 0 ? '+' : ''}${d})` +
-    ` · ${a.correct_count}✓/${a.wrong_count}✗ → ${c.next.correct_count}✓/${c.next.wrong_count}✗` +
-    (c.unknown ? '  [contains a question no longer in the bank — its grade preserved]' : ''))
+    ` · ${p.before.score} → ${p.patch.score} (${d >= 0 ? '+' : ''}${d})` +
+    (p.hadMissingQuestion ? '  [has a question no longer in the bank — its grade preserved]' : ''))
 }
+console.log(`\nNet marks across all attempts: ${planNetMarks(plan) >= 0 ? '+' : ''}${planNetMarks(plan)}`)
 
-// ── 2. Work out which unlocks the new scores earn ────────────────────────────
-// A level counts as cleared if ANY of its attempts crosses that attempt-number's
-// bar, using post-regrade scores. Mirrors the rule the app applies at submit time.
-const byGroup = {}
-for (const a of attempts) {
-  if (a.unit_id == null) continue                 // legacy rows with no unit can't map to a level chain
-  const patched = changed.find(c => c.attempt.id === a.id)?.next
-  const key = `${a.student_id}|${a.unit_id}|${a.level}`
-  ;(byGroup[key] ||= []).push({
-    attempt_number: a.attempt_number,
-    score: patched ? patched.score : a.score,
-    total: patched
-      ? patched.correct_count + patched.wrong_count + patched.skipped_count
-      : (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0),
-  })
-}
-
-const touchedStudents = [...new Set(changed.map(c => c.attempt.student_id))]
-const progress = await pageAll(() => sb.from('student_progress')
-  .select('student_id, unlocked_levels_by_unit').in('student_id', touchedStudents))
-const progOf = Object.fromEntries(progress.map(p => [p.student_id, p]))
-
-const unlockAdds = []
-for (const [key, list] of Object.entries(byGroup)) {
-  const [student_id, unitStr, levelStr] = key.split('|')
-  if (!touchedStudents.includes(student_id)) continue
-  const unit_id = Number(unitStr), level = Number(levelStr)
-  const next = nextLevelIdFor(unit_id, level)
-  if (next == null) continue
-  const cleared = list.some(x => {
-    const max = x.total * MARKS_CORRECT
-    const pct = max > 0 ? (x.score / max) * 100 : 0
-    const bar = thresholdPctFor(x.attempt_number)
-    return bar != null && pct >= bar
-  })
-  if (!cleared) continue
-  const byUnit = progOf[student_id]?.unlocked_levels_by_unit || {}
-  if ((byUnit[unit_id] || [1]).includes(next)) continue
-  unlockAdds.push({ student_id, unit_id, level, next })
-}
-
-console.log(`\n${unlockAdds.length} level unlock(s) newly earned:`)
-for (const u of unlockAdds) {
+console.log(`\n${plan.unlocksGained.length} level unlock(s) newly earned:`)
+for (const u of plan.unlocksGained) {
   console.log(`  ${nameOf[u.student_id] || u.student_id} · Unit ${u.unit_id} L${u.level} cleared → unlock L${u.next}`)
 }
-if (!unlockAdds.length) console.log('  (none)')
-console.log('\nNo unlock is ever revoked, even where a score dropped.')
+if (!plan.unlocksGained.length) console.log('  (none)')
+
+if (plan.unlocksLost.length) {
+  console.log(`\n${plan.unlocksLost.length} student(s) now fall below the bar for a level they already hold.`)
+  console.log('These are KEPT — the key was wrong through no fault of theirs.')
+}
 
 if (!APPLY) { console.log('\nDry run. Re-run with --apply to write these changes.'); process.exit(0) }
 
-// ── 3. Write ─────────────────────────────────────────────────────────────────
 console.log('\nApplying…')
-let ok = 0
-for (const c of changed) {
-  const { error } = await sb.from('test_attempts').update(c.next).eq('id', c.attempt.id)
-  if (error) console.error(`  FAILED attempt ${c.attempt.id}: ${error.message}`)
-  else ok++
-}
-console.log(`  ${ok}/${changed.length} attempts re-graded.`)
-
-// used_questions holds only the most recent status per (student, question), and it
-// drives test question selection (fresh → wrong → skipped → correct). Refresh it
-// from each student's latest re-graded attempt so a now-correct answer stops being
-// re-served as if the student had got it wrong.
-const latestStatus = {}   // `${student}|${question}` -> { attempt_number, status }
-for (const c of changed) {
-  const a = c.attempt
-  for (const [status, ids] of [['correct', c.next.answers.correct_ids], ['wrong', c.next.answers.wrong_ids], ['skipped', c.next.answers.skipped_ids]]) {
-    for (const qid of ids) {
-      const k = `${a.student_id}|${qid}`
-      if (!latestStatus[k] || latestStatus[k].attempt_number < a.attempt_number) {
-        latestStatus[k] = { attempt_number: a.attempt_number, status, student_id: a.student_id, question_id: qid }
-      }
-    }
-  }
-}
-let uq = 0
-for (const v of Object.values(latestStatus)) {
-  const { error } = await sb.from('used_questions')
-    .update({ status: v.status }).eq('student_id', v.student_id).eq('question_id', v.question_id)
-  if (!error) uq++
-}
-console.log(`  ${uq} used_questions rows refreshed.`)
-
-for (const u of unlockAdds) {
-  const byUnit = progOf[u.student_id]?.unlocked_levels_by_unit || {}
-  const cur = byUnit[u.unit_id] || [1]
-  const updated = { ...byUnit, [u.unit_id]: [...new Set([...cur, u.next])].sort((a, b) => a - b) }
-  const { error } = await sb.from('student_progress')
-    .update({ unlocked_levels_by_unit: updated }).eq('student_id', u.student_id)
-  if (error) console.error(`  FAILED unlock for ${nameOf[u.student_id]}: ${error.message}`)
-  else { progOf[u.student_id].unlocked_levels_by_unit = updated; console.log(`  unlocked Unit ${u.unit_id} L${u.next} for ${nameOf[u.student_id]}`) }
-}
+const res = await applyRegradePlan(sb, plan, { attempts, note: 'Bulk re-grade against current answer keys' })
+console.log(`  ${res.attemptsWritten}/${plan.attemptPatches.length} attempts re-graded.`)
+console.log(`  ${res.usedWritten} used_questions rows refreshed.`)
+console.log(`  ${res.unlocksWritten} unlock(s) granted.`)
 console.log('Done.')
