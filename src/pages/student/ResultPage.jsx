@@ -93,6 +93,27 @@ export default function ResultPage() {
 
   const questionsForModal = modal === 'correct' ? correctQs : modal === 'wrong' ? wrongQs : skippedQs
 
+  // How this answer scores under the CURRENT key, vs. how it was graded at submit
+  // time. An admin correcting a question's answer key afterwards desyncs the two,
+  // which otherwise renders as a flat contradiction — a question sitting under
+  // "Wrong" with the student's own answer highlighted green, or under "Correct"
+  // with a red ✗ on it. Surface the change instead of showing it silently.
+  function liveStatusOf(q) {
+    const selected = responses[q.id]
+    if (!selected) return 'skipped'
+    const correctKey = correctOptionKey(q)
+    const correctEntry = optionEntries(q).find(e => e.key === correctKey)
+    return (selected === correctKey || (correctEntry?.text && selected === correctEntry.text)) ? 'correct' : 'wrong'
+  }
+
+  function keyChangedOf(q) {
+    if (!hasNewFormat) return null
+    const graded = correctIds.includes(q.id) ? 'correct' : wrongIds.includes(q.id) ? 'wrong' : 'skipped'
+    const now = liveStatusOf(q)
+    if (graded === 'skipped' || now === 'skipped' || graded === now) return null
+    return { graded, now }
+  }
+
   const requiredPct = thresholdPctFor(attemptsForLevel)
   const passed = requiredPct != null && pct >= requiredPct
 
@@ -187,6 +208,7 @@ export default function ResultPage() {
                     // Attempts submitted before the key-based fix stored the raw
                     // selected option text instead of its key — match either form.
                     const isSelected = (opt) => selected === opt.key || (opt.text !== '' && selected === opt.text)
+                    const keyChanged = keyChangedOf(q)
                     return (
                       <div key={q.id} style={{ padding: '0.875rem', background: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
                         {/* Meta row — kept in sync with AttemptReviewModal.jsx's meta row */}
@@ -194,7 +216,16 @@ export default function ResultPage() {
                           <span><span style={{ fontWeight: 600 }}>Q ID:</span> <code style={{ color: 'var(--primary)', fontWeight: 600 }}>{q.qid}</code></span>
                           <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                           {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
+                          {keyChanged && (
+                            <span className="badge" style={{ background: '#fef9c3', color: '#92400e', border: '1px solid #fde68a' }}>key updated</span>
+                          )}
                         </div>
+
+                        {keyChanged && (
+                          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '0.5rem 0.65rem', fontSize: '0.75rem', color: '#92400e', marginBottom: '0.6rem', lineHeight: 1.5 }}>
+                            This question’s answer key was corrected after your attempt. It was graded <strong>{keyChanged.graded}</strong> at the time, but the right answer is now shown below. Your score for this test hasn’t changed.
+                          </div>
+                        )}
 
                         {/* Question text */}
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-700)', whiteSpace: 'pre-wrap', marginBottom: '0.6rem' }}>{q.question}</div>
@@ -204,7 +235,7 @@ export default function ResultPage() {
                           </div>
                         )}
 
-                        {modal === 'correct' && (
+                        {modal === 'correct' && !keyChanged && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                             {opts.map((opt, i) => {
                               const isCorrect = opt.key === correctKey
@@ -228,7 +259,11 @@ export default function ResultPage() {
                           </div>
                         )}
 
-                        {(modal === 'wrong' || modal === 'skipped') && (
+                        {/* The "correct" view normally just points at the right answer,
+                            since the student's pick and the right answer are the same
+                            thing. A corrected key breaks that, so fall through to the
+                            detailed view that marks both. */}
+                        {(modal !== 'correct' || keyChanged) && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                             {opts.map((opt, i) => {
                               const isCorrect  = opt.key === correctKey
@@ -241,6 +276,14 @@ export default function ResultPage() {
                                   {String.fromCharCode(65 + i)}. {opt.text}
                                   {opt.image && <img src={opt.image} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 120, marginTop: '0.3rem', display: 'block', borderRadius: 4 }} />}
                                   {suffix}
+                                  {/* Without this, an answer that turned green because
+                                      the key was corrected is indistinguishable from
+                                      one the student never picked. */}
+                                  {selectedHere && (
+                                    <span style={{ display: 'block', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', opacity: 0.75 }}>
+                                      Your answer
+                                    </span>
+                                  )}
                                 </div>
                               )
                             })}

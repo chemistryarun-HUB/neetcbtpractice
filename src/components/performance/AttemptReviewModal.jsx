@@ -43,20 +43,41 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
   const wrongIds = new Set(storedAnswers.wrong_ids || [])
   const skippedIds = new Set(storedAnswers.skipped_ids || [])
 
-  function statusFor(q) {
-    // Prefer the status recorded at attempt time (authoritative); fall back to
-    // live derivation only for attempts predating that field.
-    if (hasNewFormat && (correctIds.size || wrongIds.size || skippedIds.size)) {
-      if (correctIds.has(q.id)) return 'correct'
-      if (wrongIds.has(q.id)) return 'wrong'
-      return 'skipped'
-    }
+  // How this answer scores under the CURRENT answer key.
+  function liveStatusFor(q) {
     const selected = responses[q.id]
     if (!selected) return 'skipped'
     const correctKey = correctOptionKey(q)
     const correctEntry = optionEntries(q).find(e => e.key === correctKey)
     const isCorrect = selected === correctKey || (correctEntry?.text && selected === correctEntry.text)
     return isCorrect ? 'correct' : 'wrong'
+  }
+
+  const hasStoredStatus = hasNewFormat && (correctIds.size || wrongIds.size || skippedIds.size)
+
+  // What the student was actually graded as — this is what their score, and any
+  // level unlock it triggered, was based on, so it stays authoritative here even
+  // when the key has since changed. Attempts predating the stored-status field
+  // fall back to live derivation.
+  function statusFor(q) {
+    if (hasStoredStatus) {
+      if (correctIds.has(q.id)) return 'correct'
+      if (wrongIds.has(q.id)) return 'wrong'
+      return 'skipped'
+    }
+    return liveStatusFor(q)
+  }
+
+  // An admin fixing a wrong answer key retroactively desyncs the frozen grade
+  // from the live key: the badge said "Wrong" while the student's own answer sat
+  // highlighted green, or "Correct" while their answer carried a red ✗. Detect
+  // that instead of rendering the contradiction silently.
+  function keyChangedFor(q) {
+    if (!hasStoredStatus) return null
+    const graded = statusFor(q)
+    const now = liveStatusFor(q)
+    if (graded === 'skipped' || now === 'skipped' || graded === now) return null
+    return { graded, now }
   }
 
   function isChosen(opt, q) {
@@ -140,6 +161,7 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {sortedVisible.map((q, i) => {
                 const status = statusFor(q)
+                const keyChanged = keyChangedFor(q)
                 const correctKey = correctOptionKey(q)
                 const opts = optionEntries(q)
                 return (
@@ -150,10 +172,25 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
                         <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                         {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
                       </div>
-                      <span className={`badge ${status === 'correct' ? 'badge-easy' : status === 'wrong' ? 'badge-hard' : 'badge-locked'}`}>
-                        {status === 'correct' ? 'Correct' : status === 'wrong' ? 'Wrong' : 'Skipped'}
+                      <span style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexShrink: 0 }}>
+                        {keyChanged && (
+                          <span className="badge" style={{ background: '#fef9c3', color: '#92400e', border: '1px solid #fde68a' }}>
+                            key updated
+                          </span>
+                        )}
+                        <span className={`badge ${status === 'correct' ? 'badge-easy' : status === 'wrong' ? 'badge-hard' : 'badge-locked'}`}>
+                          {status === 'correct' ? 'Correct' : status === 'wrong' ? 'Wrong' : 'Skipped'}
+                        </span>
                       </span>
                     </div>
+
+                    {keyChanged && (
+                      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '0.5rem 0.65rem', fontSize: '0.75rem', color: '#92400e', marginBottom: '0.6rem', lineHeight: 1.5 }}>
+                        The answer key for this question was corrected after this attempt.
+                        It was graded <strong>{keyChanged.graded}</strong> at the time, but under the current key this answer is <strong>{keyChanged.now}</strong>.
+                        The score above still reflects the original grading.
+                      </div>
+                    )}
                     <div style={{ fontSize: '0.875rem', color: 'var(--gray-700)', whiteSpace: 'pre-wrap', marginBottom: '0.6rem' }}>
                       <span style={{ color: 'var(--gray-400)', marginRight: '0.4rem' }}>Q{i + 1}.</span>{q.question}
                     </div>
@@ -170,6 +207,14 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
                         return (
                           <div key={opt.key} style={{ padding: '0.4rem 0.65rem', borderRadius: '6px', fontSize: '0.8125rem', whiteSpace: 'pre-wrap', background: bg, color, fontWeight: fw, border, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                             <span>{opt.text}{isCorrect ? ' ✓' : chosen ? ' ✗' : ''}</span>
+                            {/* Without this, an answer that's green because the key
+                                was corrected looks identical to one the student
+                                never picked. */}
+                            {chosen && (
+                              <span style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', opacity: 0.75 }}>
+                                Student’s answer
+                              </span>
+                            )}
                             {opt.image && <img src={opt.image} alt="" style={{ maxWidth: '100%', maxHeight: 100, borderRadius: 4 }} />}
                           </div>
                         )
