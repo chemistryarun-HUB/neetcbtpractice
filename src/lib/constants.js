@@ -37,6 +37,14 @@ export const NEET_CHEMISTRY_SYLLABUS = [
       { id: 20, name: 'Principles Related to Practical Chemistry' },
     ],
   },
+  {
+    section: 'Fundamentals of Organic Reaction Mechanism',
+    units: [
+      { id: 21, name: 'Nomenclature' },
+      { id: 22, name: 'Isomerism' },
+      { id: 23, name: 'Electron Displacement Effects' },
+    ],
+  },
 ]
 
 // ── Per-unit level definitions ────────────────────────────────────────────────

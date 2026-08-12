@@ -6,6 +6,10 @@ import {
   computeStreak, clearedInfo, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
+import { NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+
+// Was hardcoded to 20 — went stale the moment a 4th syllabus section was added.
+const TOTAL_UNIT_COUNT = NEET_CHEMISTRY_SYLLABUS.reduce((sum, s) => sum + s.units.length, 0)
 
 function waLink(phone, message) {
   if (!phone) return null
@@ -105,7 +109,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             <div className="meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.875rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
               <code>{student.roll_number}</code>
               <span>Class {student.class} · NEET {student.neet_year}</span>
-              <span>{unlockedUnitsCount} / 20 units unlocked</span>
+              <span>{unlockedUnitsCount} / {TOTAL_UNIT_COUNT} units unlocked</span>
             </div>
           </div>
         </div>
