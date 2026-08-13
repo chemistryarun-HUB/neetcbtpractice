@@ -138,6 +138,14 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Miscellaneous',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
   ],
+  22: [
+    { id: 1, name: 'Structural Isomerism',      topic: 'Structural Isomerism' },
+    { id: 2, name: 'Conformational Isomerism',  topic: 'Conformational Isomerism' },
+    { id: 3, name: 'Geometrical Isomerism',     topic: 'Geometrical Isomerism' },
+    { id: 4, name: 'Optical Isomerism',         topic: 'Optical Isomerism' },
+    { id: 5, name: 'Miscellaneous',             topic: 'Miscellaneous' },
+    { id: 6, name: 'Complete Chapter Test',     topic: 'Complete Chapter Test' },
+  ],
   // Add more units here as you upload questions for them:
   // 2: [
   //   { id: 1, name: 'Bohr Model', topic: 'Bohr Model' },
