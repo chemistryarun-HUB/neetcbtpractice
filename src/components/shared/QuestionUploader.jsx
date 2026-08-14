@@ -184,7 +184,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const [editSaving, setEditSaving] = useState(false)
   const [previewModeId, setPreviewModeId] = useState(null)  // which question's preview toggle is active
   const [previewMode, setPreviewMode] = useState('admin')   // 'admin' | 'student'
-  const [showInactive, setShowInactive] = useState(false)
+  const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
   const [dupeGroups, setDupeGroups] = useState(null) // null = not yet loaded
@@ -231,13 +231,20 @@ export default function QuestionUploader({ uploadedBy }) {
       }
     }
     if (levelFilter) q = q.eq('level', Number(levelFilter))
-    // Once a unit is picked, sort level-first so the admin can review a chapter
-    // level-by-level instead of questions from every level being interleaved
-    // by Q ID — that's the whole point of the Unit filter.
-    q = unitFilter ? q.order('level', { ascending: true }).order('qid', { ascending: true }) : q.order('qid', { ascending: true })
-    // Soft-delete: only show active questions unless showInactive is on
-    if (!showInactive) q = q.eq('is_active', true)
+    // Sorting is redone client-side after fetch (see loadQuestions) so unit/level
+    // grouping works correctly by numeric unit order even when browsing all units
+    // at once — the `unit` column is free text ("Unit 11 - ..."), which sorts
+    // wrong alphabetically ("Unit 10" before "Unit 2").
+    q = q.order('qid', { ascending: true })
+    if (statusFilter === 'active') q = q.eq('is_active', true)
+    else if (statusFilter === 'inactive') q = q.eq('is_active', false)
+    // 'both' — no is_active filter
     return q
+  }
+
+  // Leading unit number from the free-text `unit` column, for numeric sorting.
+  function unitNumOf(q) {
+    return Number((q.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || 999
   }
 
   async function loadQuestions() {
@@ -250,6 +257,10 @@ export default function QuestionUploader({ uploadedBy }) {
       all.push(...(page || []))
       if (!page || page.length < 1000) break
     }
+    // Numeric unit order, then level, then qid — lets the admin scan the whole
+    // bank (or an unfiltered "all inactive" view) unit-by-unit and level-by-level
+    // at a glance, not just within one pre-selected unit.
+    all.sort((a, b) => unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true }))
     setQuestions(all)
     setLoading(false)
   }
@@ -257,7 +268,7 @@ export default function QuestionUploader({ uploadedBy }) {
   // Reset downstream filters and reload when parent filter changes
   useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
-  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, showInactive])
+  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
 
   async function markInactive(id) {
     const { error } = await supabase.from('questions').update({ is_active: false }).eq('id', id)
@@ -708,7 +719,7 @@ export default function QuestionUploader({ uploadedBy }) {
   })
 
   // Reset to page 1 when any filter/search changes
-  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, showInactive])
+  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, statusFilter])
 
   // Auto-expand when search narrows to exactly 1 result
   useEffect(() => {
@@ -716,8 +727,10 @@ export default function QuestionUploader({ uploadedBy }) {
     else setExpandedId(prev => (filtered.find(q => q.id === prev) ? prev : null))
   }, [filtered.length, search])
 
-  // When a filter is active, show all results so nothing is hidden behind pages
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== ''
+  // When a filter is active, show all results so nothing is hidden behind pages —
+  // includes a non-default status filter, since browsing "Inactive" is meant to
+  // show every inactive question across the bank at a glance, not 50 at a time.
+  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
 
@@ -805,11 +818,20 @@ export default function QuestionUploader({ uploadedBy }) {
                 </button>
               )}
 
-              {/* Show Inactive toggle */}
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', color: showInactive ? '#b91c1c' : 'var(--gray-500)', marginLeft: 'auto', whiteSpace: 'nowrap' }}>
-                <input type="checkbox" checked={showInactive} onChange={e => setShowInactive(e.target.checked)} />
-                Show Inactive
-              </label>
+              {/* Active / Inactive / Both — selecting Inactive or Both shows every
+                  matching question across the whole bank at once (see isFiltering),
+                  grouped unit-wise then level-wise, so a mass of inactive questions
+                  can be scanned at a glance instead of hunting unit by unit. */}
+              <select
+                className="form-control"
+                style={{ width: '150px', flex: '0 0 150px', marginLeft: 'auto', fontWeight: statusFilter !== 'active' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'both' ? 'var(--primary)' : undefined }}
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+              >
+                <option value="active">Active Qs</option>
+                <option value="inactive">Inactive Qs</option>
+                <option value="both">Both</option>
+              </select>
             </div>
           </div>
 
@@ -829,16 +851,21 @@ export default function QuestionUploader({ uploadedBy }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {(() => { let lastLevel = null; return visibleQuestions.map(q => {
+                  {(() => { let lastUnit = null; let lastLevel = null; return visibleQuestions.map(q => {
                     const isOpen = expandedId === q.id
                     const isEditing = editId === q.id
                     const isInactive = q.is_active === false
                     const opts = [q.option1, q.option2, q.option3, q.option4]
-                    // Group by level once a unit is picked and no single level is
-                    // filtered — lets the admin scan a whole chapter level-by-level.
-                    const showLevelHeader = unitFilter && !levelFilter && q.level !== lastLevel
+                    // Browsing "All Units" (no unitFilter) additionally groups by unit,
+                    // so e.g. every inactive question across the whole bank can be
+                    // scanned unit-by-unit and level-by-level in one view instead of
+                    // having to pick one unit at a time.
+                    const showUnitHeader = !unitFilter && q.unit !== lastUnit
+                    if (showUnitHeader) { lastUnit = q.unit; lastLevel = null }
+                    const showLevelHeader = !levelFilter && (showUnitHeader || q.level !== lastLevel)
                     if (showLevelHeader) lastLevel = q.level
-                    const levelCount = showLevelHeader ? filtered.filter(x => x.level === q.level).length : 0
+                    const unitCount = showUnitHeader ? filtered.filter(x => x.unit === q.unit).length : 0
+                    const levelCount = showLevelHeader ? filtered.filter(x => x.unit === q.unit && x.level === q.level).length : 0
                     const rowStyle = {
                       cursor: 'pointer',
                       opacity: isInactive ? 0.55 : 1,
@@ -846,8 +873,18 @@ export default function QuestionUploader({ uploadedBy }) {
                     }
                     return (
                       <>
+                        {showUnitHeader && (
+                          <tr key={`unit-${q.unit}`}>
+                            <td colSpan={8} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
+                              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
+                                {q.unit}
+                                <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}> · {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                         {showLevelHeader && (
-                          <tr key={`lvl-${q.level}`}>
+                          <tr key={`lvl-${q.unit}-${q.level}`}>
                             <td colSpan={8} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
                                 Level {q.level}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
