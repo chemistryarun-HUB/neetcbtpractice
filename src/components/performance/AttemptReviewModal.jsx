@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { hasStructuredMtc } from '../../lib/mtc'
+import MatchTable from '../shared/MatchTable'
 import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
 
 // Mirrors ResultPage.jsx's own review UI — same Correct/Wrong/Skipped tiles
@@ -24,7 +26,7 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
       setLoading(true)
       const { data } = await supabase
         .from('questions')
-        .select('id, qid, question, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag')
+        .select('id, qid, question, question_type, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, col_a1, col_a2, col_a3, col_a4, col_b1, col_b2, col_b3, col_b4, col_a1_image, col_a2_image, col_a3_image, col_a4_image, col_b1_image, col_b2_image, col_b3_image, col_b4_image')
         .in('id', attempt.question_ids || [])
       if (cancelled) return
       const byId = Object.fromEntries((data || []).map(q => [q.id, q]))
@@ -197,6 +199,7 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
                     {q.question_image && (
                       <img src={q.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 6, border: '1px solid var(--gray-200)', marginBottom: '0.6rem' }} />
                     )}
+                    {hasStructuredMtc(q) && <MatchTable q={q} />}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.4rem' }}>
                       {opts.map(opt => {
                         const isCorrect = opt.key === correctKey

@@ -83,8 +83,24 @@ create table if not exists questions (
   -- real images to replace "[Image]" placeholders). Excel re-uploads must not silently
   -- revert that fix, so handleExcelUpload() in QuestionUploader.jsx skips overwriting
   -- question/options/correct_option/question_image for locked rows.
-  content_locked boolean not null default false
+  content_locked boolean not null default false,
+  -- Match the Column (MTC): per-item text + optional image for each of the 8 items
+  -- (Column A: 1-4, Column B: p-s). Null on every question created before this existed
+  -- (and on every non-MTC question) — see migration_mtc_images.sql.
+  col_a1 text, col_a1_image text,
+  col_a2 text, col_a2_image text,
+  col_a3 text, col_a3_image text,
+  col_a4 text, col_a4_image text,
+  col_b1 text, col_b1_image text,
+  col_b2 text, col_b2_image text,
+  col_b3 text, col_b3_image text,
+  col_b4 text, col_b4_image text
 );
+
+-- NOTE: this CREATE TABLE is already behind the live DB for several older
+-- columns (question_image, option1_image..option4_image, is_active) that
+-- were added directly against Supabase outside any tracked migration —
+-- not addressed here, out of scope for this change.
 
 alter table questions enable row level security;
 

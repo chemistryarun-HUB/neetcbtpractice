@@ -4,7 +4,9 @@ import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { hasStructuredMtc } from '../../lib/mtc'
 import InfoTooltip from '../../components/shared/InfoTooltip'
+import MatchTable from '../../components/shared/MatchTable'
 import toast from 'react-hot-toast'
 
 function shuffle(arr) {
@@ -310,6 +312,7 @@ export default function TestPage() {
               <img src={current.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 280, borderRadius: 8, border: '1px solid var(--gray-200)' }} />
             </div>
           )}
+          {hasStructuredMtc(current) && <MatchTable q={current} />}
 
           <ul className="options-list">
             {current.shuffledOptions.map((opt, i) => (

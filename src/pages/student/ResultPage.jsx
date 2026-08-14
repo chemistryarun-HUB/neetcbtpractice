@@ -4,6 +4,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { hasStructuredMtc } from '../../lib/mtc'
+import MatchTable from '../../components/shared/MatchTable'
 import { X } from 'lucide-react'
 
 export default function ResultPage() {
@@ -29,7 +31,7 @@ export default function ResultPage() {
       // Fetch ALL question objects for this attempt using question_ids array
       const { data: qs } = await supabase
         .from('questions')
-        .select('id, qid, question, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, topic')
+        .select('id, qid, question, question_type, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, topic, col_a1, col_a2, col_a3, col_a4, col_b1, col_b2, col_b3, col_b4, col_a1_image, col_a2_image, col_a3_image, col_a4_image, col_b1_image, col_b2_image, col_b3_image, col_b4_image')
         .in('id', att.question_ids)
       setQuestions(qs || [])
 
@@ -234,6 +236,7 @@ export default function ResultPage() {
                             <img src={q.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, border: '1px solid var(--gray-200)' }} />
                           </div>
                         )}
+                        {hasStructuredMtc(q) && <MatchTable q={q} />}
 
                         {modal === 'correct' && !keyChanged && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>

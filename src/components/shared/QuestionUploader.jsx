@@ -5,7 +5,9 @@ import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock } from 'lucide-react'
 import { UNIT_LEVELS, levelIdsFor, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
 import { correctOptionKey } from '../../lib/questionOptions'
+import { hasStructuredMtc } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
+import MatchTable from './MatchTable'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
@@ -58,8 +60,14 @@ const BLANK = {
   reason_image_file: null,
   ar_correct: 'A',
   // Match the Column
-  col_a1: '', col_a2: '', col_a3: '', col_a4: '',
-  col_b1: '', col_b2: '', col_b3: '', col_b4: '',
+  col_a1: '', col_a1_image_file: null,
+  col_a2: '', col_a2_image_file: null,
+  col_a3: '', col_a3_image_file: null,
+  col_a4: '', col_a4_image_file: null,
+  col_b1: '', col_b1_image_file: null,
+  col_b2: '', col_b2_image_file: null,
+  col_b3: '', col_b3_image_file: null,
+  col_b4: '', col_b4_image_file: null,
   mtc_option1: '', mtc_option2: '', mtc_option3: '', mtc_option4: '',
   mtc_correct_label: 'Option 1',
   // Common
@@ -290,6 +298,11 @@ export default function QuestionUploader({ uploadedBy }) {
       // protecting it from a future Excel re-upload clobbering it back.
       // Admin can uncheck if they genuinely want Excel to keep overriding this row.
       content_locked:    true,
+      // Match the Column — only meaningful when question_type is MTC, but set
+      // unconditionally (empty string for everything else) so a legacy MTC row
+      // being restructured for the first time has somewhere to type into.
+      col_a1: q.col_a1 || '', col_a2: q.col_a2 || '', col_a3: q.col_a3 || '', col_a4: q.col_a4 || '',
+      col_b1: q.col_b1 || '', col_b2: q.col_b2 || '', col_b3: q.col_b3 || '', col_b4: q.col_b4 || '',
     })
     // Pre-populate image URLs from the existing DB record
     setEditImgUrls({
@@ -298,6 +311,10 @@ export default function QuestionUploader({ uploadedBy }) {
       option2_image:  q.option2_image  || null,
       option3_image:  q.option3_image  || null,
       option4_image:  q.option4_image  || null,
+      col_a1_image: q.col_a1_image || null, col_a2_image: q.col_a2_image || null,
+      col_a3_image: q.col_a3_image || null, col_a4_image: q.col_a4_image || null,
+      col_b1_image: q.col_b1_image || null, col_b2_image: q.col_b2_image || null,
+      col_b3_image: q.col_b3_image || null, col_b4_image: q.col_b4_image || null,
     })
     setEditImgUploading(new Set())
     setEditId(q.id)
@@ -342,6 +359,23 @@ export default function QuestionUploader({ uploadedBy }) {
         option2_image:   editImgUrls.option2_image  ?? null,
         option3_image:   editImgUrls.option3_image  ?? null,
         option4_image:   editImgUrls.option4_image  ?? null,
+      }
+      // Match the Column's structured columns only ever apply to MTC rows —
+      // gated on the row's actual type (not just presence of editForm.col_a1,
+      // since that's always populated as '' by openEdit) so a Single MCQ/A-R
+      // edit can never accidentally write col_a/col_b columns.
+      const original = questions.find(x => x.id === qId)
+      if (original?.question_type === 'Match the Column') {
+        Object.assign(patch, {
+          col_a1: editForm.col_a1, col_a1_image: editImgUrls.col_a1_image ?? null,
+          col_a2: editForm.col_a2, col_a2_image: editImgUrls.col_a2_image ?? null,
+          col_a3: editForm.col_a3, col_a3_image: editImgUrls.col_a3_image ?? null,
+          col_a4: editForm.col_a4, col_a4_image: editImgUrls.col_a4_image ?? null,
+          col_b1: editForm.col_b1, col_b1_image: editImgUrls.col_b1_image ?? null,
+          col_b2: editForm.col_b2, col_b2_image: editImgUrls.col_b2_image ?? null,
+          col_b3: editForm.col_b3, col_b3_image: editImgUrls.col_b3_image ?? null,
+          col_b4: editForm.col_b4, col_b4_image: editImgUrls.col_b4_image ?? null,
+        })
       }
       const { error } = await supabase.from('questions').update(patch).eq('id', qId)
       if (error) throw error
@@ -451,16 +485,33 @@ export default function QuestionUploader({ uploadedBy }) {
           reason_image:   reasonImgUrl,
         }
       } else {
-        // Match the Column
-        const colBLabels = ['p', 'q', 'r', 's']
-        let mtcQ = form.question ? form.question.trim() + '\n\n' : ''
-        mtcQ += 'Match Column A with Column B:\n'
-        for (let i = 1; i <= 4; i++) {
-          mtcQ += `${i}. ${form[`col_a${i}`]}    ${colBLabels[i - 1]}. ${form[`col_b${i}`]}\n`
-        }
+        // Match the Column — each of the 8 items carries its own optional
+        // image alongside its text, uploaded in parallel like the MCQ options
+        // above. The table itself renders from these structured columns via
+        // <MatchTable>, not from `question` — so `question` here is just the
+        // optional intro line, the same way MCQ option text was never part of
+        // search either.
+        const [a1, a2, a3, a4, b1, b2, b3, b4] = await Promise.all([
+          form.col_a1_image_file ? uploadImage(form.col_a1_image_file) : null,
+          form.col_a2_image_file ? uploadImage(form.col_a2_image_file) : null,
+          form.col_a3_image_file ? uploadImage(form.col_a3_image_file) : null,
+          form.col_a4_image_file ? uploadImage(form.col_a4_image_file) : null,
+          form.col_b1_image_file ? uploadImage(form.col_b1_image_file) : null,
+          form.col_b2_image_file ? uploadImage(form.col_b2_image_file) : null,
+          form.col_b3_image_file ? uploadImage(form.col_b3_image_file) : null,
+          form.col_b4_image_file ? uploadImage(form.col_b4_image_file) : null,
+        ])
         record = {
           ...base,
-          question:      mtcQ.trim(),
+          question: form.question.trim() || 'Match the following:',
+          col_a1: form.col_a1, col_a1_image: a1,
+          col_a2: form.col_a2, col_a2_image: a2,
+          col_a3: form.col_a3, col_a3_image: a3,
+          col_a4: form.col_a4, col_a4_image: a4,
+          col_b1: form.col_b1, col_b1_image: b1,
+          col_b2: form.col_b2, col_b2_image: b2,
+          col_b3: form.col_b3, col_b3_image: b3,
+          col_b4: form.col_b4, col_b4_image: b4,
           option1: form.mtc_option1, option2: form.mtc_option2,
           option3: form.mtc_option3, option4: form.mtc_option4,
           correct_option: resolveCorrectOption(form.mtc_correct_label, form.mtc_option1, form.mtc_option2, form.mtc_option3, form.mtc_option4),
@@ -907,6 +958,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                         <img src={q.question_image} alt="Question" style={{ maxHeight: 180, maxWidth: '100%', borderRadius: 6, border: '1px solid var(--gray-200)' }} />
                                       </div>
                                     )}
+                                    {hasStructuredMtc(q) && <MatchTable q={q} />}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                                       {opts.map((opt, i) => {
                                         const isCorrect = `option${i + 1}` === correctOptionKey(q)
@@ -933,6 +985,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                         <img src={q.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 280, borderRadius: 8, border: '1px solid var(--gray-200)' }} />
                                       </div>
                                     )}
+                                    {hasStructuredMtc(q) && <MatchTable q={q} />}
                                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                                       {opts.map((opt, i) => {
                                         const optImgKey = `option${i + 1}_image`
@@ -984,6 +1037,55 @@ export default function QuestionUploader({ uploadedBy }) {
                                     onRemove={() => setEditImgUrls(u => ({ ...u, question_image: null }))}
                                   />
                                 </div>
+
+                                {/* Match the Column — per-item text + optional image, same
+                                    fields Add Manually collects. Legacy rows (created before
+                                    this existed) start with all 8 blank here even though their
+                                    old flattened text still lives in Question Text above; filling
+                                    these in switches that row over to the structured table display. */}
+                                {q.question_type === 'Match the Column' && (
+                                  <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)', marginBottom: '0.75rem' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
+                                      <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
+                                      <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>COLUMN B</div>
+                                    </div>
+                                    {[1, 2, 3, 4].map(i => {
+                                      const bLabel = ['p', 'q', 'r', 's'][i - 1]
+                                      return (
+                                        <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: '#fff' }}>
+                                          <div style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid var(--gray-200)' }}>
+                                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                              <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{i}.</span>
+                                              <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
+                                                value={editForm[`col_a${i}`]}
+                                                onChange={e => setEditForm(f => ({ ...f, [`col_a${i}`]: e.target.value }))} />
+                                            </div>
+                                            <EditImageField
+                                              url={editImgUrls[`col_a${i}_image`]}
+                                              uploading={editImgUploading.has(`col_a${i}_image`)}
+                                              onUpload={file => uploadEditImage(q.qid, `col_a${i}_image`, file)}
+                                              onRemove={() => setEditImgUrls(u => ({ ...u, [`col_a${i}_image`]: null }))}
+                                            />
+                                          </div>
+                                          <div style={{ padding: '0.4rem 0.6rem' }}>
+                                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                              <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{bLabel}.</span>
+                                              <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
+                                                value={editForm[`col_b${i}`]}
+                                                onChange={e => setEditForm(f => ({ ...f, [`col_b${i}`]: e.target.value }))} />
+                                            </div>
+                                            <EditImageField
+                                              url={editImgUrls[`col_b${i}_image`]}
+                                              uploading={editImgUploading.has(`col_b${i}_image`)}
+                                              onUpload={file => uploadEditImage(q.qid, `col_b${i}_image`, file)}
+                                              onRemove={() => setEditImgUrls(u => ({ ...u, [`col_b${i}_image`]: null }))}
+                                            />
+                                          </div>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )}
 
                                 {/* Options */}
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.75rem' }}>
@@ -1350,15 +1452,17 @@ export default function QuestionUploader({ uploadedBy }) {
                       <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: i % 2 === 0 ? '#f8faff' : '#fff' }}>
                         <div style={{ padding: '0.4rem 0.75rem', borderRight: '1px solid var(--gray-200)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                           <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.9rem', flexShrink: 0, minWidth: '1.1rem' }}>{i}.</span>
-                          <input className="form-control" style={{ padding: '0.25rem 0.4rem', fontSize: '0.875rem', border: 'none', background: 'transparent', boxShadow: 'none' }} required
+                          <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.25rem 0.4rem', fontSize: '0.875rem', border: 'none', background: 'transparent', boxShadow: 'none' }} required
                             placeholder={`Item ${i}`} value={form[`col_a${i}`]}
                             onChange={e => setForm(f => ({ ...f, [`col_a${i}`]: e.target.value }))} />
+                          <ImageField label="" file={form[`col_a${i}_image_file`]} onChange={f => setForm(v => ({ ...v, [`col_a${i}_image_file`]: f }))} />
                         </div>
                         <div style={{ padding: '0.4rem 0.75rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                           <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.9rem', flexShrink: 0, minWidth: '1.1rem' }}>{bLabel}.</span>
-                          <input className="form-control" style={{ padding: '0.25rem 0.4rem', fontSize: '0.875rem', border: 'none', background: 'transparent', boxShadow: 'none' }} required
+                          <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.25rem 0.4rem', fontSize: '0.875rem', border: 'none', background: 'transparent', boxShadow: 'none' }} required
                             placeholder={`Item ${bLabel}`} value={form[`col_b${i}`]}
                             onChange={e => setForm(f => ({ ...f, [`col_b${i}`]: e.target.value }))} />
+                          <ImageField label="" file={form[`col_b${i}_image_file`]} onChange={f => setForm(v => ({ ...v, [`col_b${i}_image_file`]: f }))} />
                         </div>
                       </div>
                     )
