@@ -419,7 +419,7 @@ export default function QuestionUploader({ uploadedBy }) {
     const data = []
     for (let from = 0; ; from += 1000) {
       const { data: page, error } = await supabase.from('questions')
-        .select('id, qid, question, level, source, is_active')
+        .select('id, qid, question, level, source, is_active, created_at')
         .order('qid', { ascending: true })
         .range(from, from + 999)
       if (error) { toast.error(error.message); setDupeLoading(false); return }
@@ -435,7 +435,16 @@ export default function QuestionUploader({ uploadedBy }) {
     }
     // Keyed by the grouping key (not array index) so a group can be safely
     // removed or shrunk — via "Not a duplicate" — without index drift.
-    const dupes = Object.entries(groups).filter(([, items]) => items.length > 1).map(([key, items]) => ({ key, items }))
+    // Newest-first: a group is ranked by its most recently created question, so
+    // duplicates from a just-uploaded batch surface at the top instead of being
+    // buried wherever their Q ID happens to sort alphabetically.
+    const dupes = Object.entries(groups)
+      .filter(([, items]) => items.length > 1)
+      .map(([key, items]) => ({
+        key,
+        items: [...items].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+      }))
+      .sort((a, b) => new Date(b.items[0].created_at) - new Date(a.items[0].created_at))
     setDupeGroups(dupes)
     setDupePreviewId(null)
     setDupeLoading(false)
