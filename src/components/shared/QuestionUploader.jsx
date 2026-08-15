@@ -1,36 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock } from 'lucide-react'
-import { UNIT_LEVELS, levelIdsFor, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
-import { correctOptionKey } from '../../lib/questionOptions'
-import { hasStructuredMtc } from '../../lib/mtc'
+import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock, Maximize2 } from 'lucide-react'
+import { UNIT_LEVELS } from '../../lib/constants'
+import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic } from '../../lib/topics'
+import { uploadQuestionImage } from '../../lib/storage'
 import InfoTooltip from './InfoTooltip'
-import MatchTable from './MatchTable'
+import QuestionView from './QuestionView'
+import QuestionReviewer from './QuestionReviewer'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
   return val && UUID_RE.test(val) ? val : null
-}
-
-// Topic is derived from (unit, level) via UNIT_LEVELS — the DB `topic` column is kept in
-// sync with this on every save, so level is always the single source of truth for topic.
-function deriveTopic(unitString, level) {
-  const match = (unitString || '').match(/^Unit\s+(\d+)\s*-/i)
-  if (!match) return ''
-  const unitId = Number(match[1])
-  const levelDefs = UNIT_LEVELS[unitId] || []
-  return levelDefs.find(l => l.id === Number(level))?.name || ''
-}
-
-// Full syllabus text for a level (as opposed to deriveTopic's short display name) — shown in the "i" tooltip.
-function deriveFullTopic(unitString, level) {
-  const match = (unitString || '').match(/^Unit\s+(\d+)\s*-/i)
-  if (!match) return ''
-  const unitId = Number(match[1])
-  const levelDefs = UNIT_LEVELS[unitId] || []
-  return levelDefs.find(l => l.id === Number(level))?.topic || ''
 }
 
 // Standard Assertion-Reason options (NEET pattern)
@@ -100,31 +82,6 @@ function ImageField({ label, file, onChange }) {
   )
 }
 
-// Image field for the Edit panel — works with already-uploaded URLs (not File objects)
-function EditImageField({ label, url, uploading, onUpload, onRemove }) {
-  return (
-    <div style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-      {url && (
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-          <img src={url} alt={label} style={{ height: 80, maxWidth: 200, objectFit: 'contain', borderRadius: 4, border: '1px solid var(--gray-200)', background: '#fafafa' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-            <button type="button" onClick={onRemove}
-              style={{ fontSize: '0.65rem', color: '#b91c1c', background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: 4, cursor: 'pointer', padding: '0.15rem 0.45rem', fontWeight: 600 }}>
-              Remove
-            </button>
-          </div>
-        </div>
-      )}
-      <label style={{ cursor: uploading ? 'wait' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.7rem', color: uploading ? 'var(--gray-400)' : 'var(--primary)', fontWeight: 600, userSelect: 'none' }}>
-        <ImagePlus size={13} />
-        {uploading ? 'Uploading…' : url ? 'Replace Image' : 'Upload Image'}
-        <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading}
-          onChange={e => { if (e.target.files[0]) { onUpload(e.target.files[0]); e.target.value = '' } }} />
-      </label>
-    </div>
-  )
-}
-
 // Maps a topic string to its level number for a given unit using UNIT_LEVELS definitions.
 // Matching is case-insensitive and trims whitespace.
 // Returns 1 if the topic is not found in the unit's level definitions.
@@ -161,13 +118,6 @@ const PAGE_SIZE = 50
 
 const SUBJECTS = ['Chemistry', 'Physics', 'Biology', 'Mathematics']
 
-// Unit names must match the `unit` column stored in the DB (partial ilike match is used for filtering).
-// Derived from NEET_CHEMISTRY_SYLLABUS (the single source of truth for section/unit
-// names) rather than duplicated here — this list used to be hand-copied and drifted
-// out of sync whenever a unit or section was added to the syllabus elsewhere.
-const CHEMISTRY_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
-
-
 export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
   const [questions, setQuestions] = useState([])
@@ -178,12 +128,12 @@ export default function QuestionUploader({ uploadedBy }) {
   const [subjectFilter, setSubjectFilter] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
-  const [expandedId, setExpandedId] = useState(null)
-  const [editId, setEditId] = useState(null)
-  const [editForm, setEditForm] = useState({})
-  const [editSaving, setEditSaving] = useState(false)
-  const [previewModeId, setPreviewModeId] = useState(null)  // which question's preview toggle is active
-  const [previewMode, setPreviewMode] = useState('student') // 'admin' | 'student' — student is the default view on open
+  // Reviewing happens in a full-screen overlay (QuestionReviewer) rather than an
+  // inline row panel — the row panel only ever got the bottom half of a window
+  // whose top half was chrome, which is the wrong shape for judging a question
+  // the way a student will see it. `reviewIndex` indexes into visibleQuestions.
+  const [reviewIndex, setReviewIndex] = useState(null)
+  const [reviewStartInEdit, setReviewStartInEdit] = useState(false)
   const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
@@ -201,25 +151,6 @@ export default function QuestionUploader({ uploadedBy }) {
   const [manualLevel, setManualLevel] = useState('')
 
   const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
-
-  // Level choices for the Edit panel, driven by whichever unit the form currently
-  // points at — a hardcoded 1-9 list used to hide the real levels of any unit with
-  // more than nine (Unit 3 has 11, so "Miscellaneous" was unreachable).
-  const editUnitId = Number((editForm.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || null
-  const editLevelDefs = UNIT_LEVELS[editUnitId] || []
-  const editLevelOptions = (() => {
-    const opts = editLevelDefs.length > 0
-      ? editLevelDefs.map(l => ({ id: l.id, label: `Level ${l.id}: ${l.name}` }))
-      : levelIdsFor(editUnitId).map(id => ({ id, label: `Level ${id}` }))
-    // Keep whatever the row is already tagged with selectable even if it isn't a
-    // defined level, so merely opening the panel can't silently retag the question.
-    const current = Number(editForm.level)
-    if (current && !opts.some(o => o.id === current)) {
-      opts.push({ id: current, label: `Level ${current} (not defined for this unit)` })
-      opts.sort((a, b) => a.id - b.id)
-    }
-    return opts
-  })()
 
   function buildQuestionsQuery() {
     let q = supabase.from('questions').select('*')
@@ -273,144 +204,32 @@ export default function QuestionUploader({ uploadedBy }) {
   useEffect(() => { setLevelFilter('') }, [unitFilter])
   useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
 
-  // Patches a question's is_active in-place within the Find Duplicates groups,
-  // instead of re-scanning the whole bank — a re-scan would also throw away any
-  // "Not a duplicate" dismissals made earlier in the same session, undermining
-  // the point of reviewing a long list of groups one decision at a time.
-  function patchDupeQuestion(id, patch) {
-    setDupeGroups(prev => prev && prev.map(g => ({ ...g, items: g.items.map(q => q.id === id ? { ...q, ...patch } : q) })))
+  // Every single-question mutation (activate/deactivate, edit save) patches the
+  // already-loaded rows in place instead of refetching. A refetch flips `loading`
+  // on, which unmounts the table inside its own scroll container and drops the
+  // admin back at the top of the level — losing their place after every single
+  // decision, which is exactly what makes reviewing a level unusable.
+  //
+  // The consequence is that a question deactivated while the Active-only filter
+  // is on stays visible (struck through and flagged) until the next real load.
+  // That's the better behaviour here: it keeps the list stable mid-review and
+  // leaves the decision one click away from being undone.
+  function patchQuestion(id, patch) {
+    setQuestions(prev => prev.map(q => (q.id === id ? { ...q, ...patch } : q)))
+    // Find Duplicates keeps its own copy of the rows; a re-scan there would also
+    // throw away any "Not a duplicate" dismissals made earlier in the session.
+    setDupeGroups(prev => prev && prev.map(g => ({ ...g, items: g.items.map(q => (q.id === id ? { ...q, ...patch } : q)) })))
   }
 
-  async function markInactive(id) {
-    const { error } = await supabase.from('questions').update({ is_active: false }).eq('id', id)
+  async function setActive(id, isActive) {
+    const { error } = await supabase.from('questions').update({ is_active: isActive }).eq('id', id)
     if (error) { toast.error(error.message); return }
-    toast.success('Marked inactive')
-    loadQuestions()
-    patchDupeQuestion(id, { is_active: false })
+    toast.success(isActive ? 'Restored to active' : 'Marked inactive')
+    patchQuestion(id, { is_active: isActive })
   }
 
-  async function markActive(id) {
-    const { error } = await supabase.from('questions').update({ is_active: true }).eq('id', id)
-    if (error) { toast.error(error.message); return }
-    toast.success('Restored to active')
-    loadQuestions()
-    patchDupeQuestion(id, { is_active: true })
-  }
-
-  // Per-field image upload state for the edit panel: { uploading: Set<field>, urls: { question_image, option1_image, ... } }
-  const [editImgUploading, setEditImgUploading] = useState(new Set())
-  const [editImgUrls, setEditImgUrls] = useState({})
-
-  function openEdit(q) {
-    const optsMap = { option1: q.option1, option2: q.option2, option3: q.option3, option4: q.option4 }
-    const correctLabel = Object.entries(optsMap).find(([, v]) => v === q.correct_option)?.[0] || 'option1'
-    setEditForm({
-      question:          q.question || '',
-      option1:           q.option1 || '',
-      option2:           q.option2 || '',
-      option3:           q.option3 || '',
-      option4:           q.option4 || '',
-      correct_option_key: correctLabel,
-      unit:              q.unit,
-      level:             q.level,
-      difficulty_level:  q.difficulty_level || 'Medium',
-      question_tag:      q.question_tag || '',
-      source:            q.source || '',
-      is_active:         q.is_active !== false,
-      // Editing here means "I've verified/fixed this by hand" — default to
-      // protecting it from a future Excel re-upload clobbering it back.
-      // Admin can uncheck if they genuinely want Excel to keep overriding this row.
-      content_locked:    true,
-      // Match the Column — only meaningful when question_type is MTC, but set
-      // unconditionally (empty string for everything else) so a legacy MTC row
-      // being restructured for the first time has somewhere to type into.
-      col_a1: q.col_a1 || '', col_a2: q.col_a2 || '', col_a3: q.col_a3 || '', col_a4: q.col_a4 || '',
-      col_b1: q.col_b1 || '', col_b2: q.col_b2 || '', col_b3: q.col_b3 || '', col_b4: q.col_b4 || '',
-    })
-    // Pre-populate image URLs from the existing DB record
-    setEditImgUrls({
-      question_image: q.question_image || null,
-      option1_image:  q.option1_image  || null,
-      option2_image:  q.option2_image  || null,
-      option3_image:  q.option3_image  || null,
-      option4_image:  q.option4_image  || null,
-      col_a1_image: q.col_a1_image || null, col_a2_image: q.col_a2_image || null,
-      col_a3_image: q.col_a3_image || null, col_a4_image: q.col_a4_image || null,
-      col_b1_image: q.col_b1_image || null, col_b2_image: q.col_b2_image || null,
-      col_b3_image: q.col_b3_image || null, col_b4_image: q.col_b4_image || null,
-    })
-    setEditImgUploading(new Set())
-    setEditId(q.id)
-    setExpandedId(null)
-  }
-
-  async function uploadEditImage(qid, field, file) {
-    setEditImgUploading(prev => new Set(prev).add(field))
-    try {
-      const publicUrl = await uploadImage(file)
-      setEditImgUrls(prev => ({ ...prev, [field]: publicUrl }))
-    } catch (err) {
-      toast.error(err.message)
-    } finally {
-      setEditImgUploading(prev => { const s = new Set(prev); s.delete(field); return s })
-    }
-  }
-
-  async function handleEditSave(qId) {
-    setEditSaving(true)
-    try {
-      // Fall back to the option-key sentinel when that option has no text
-      // (image-only option) — see questionOptions.js.
-      const resolvedCorrect = editForm[editForm.correct_option_key] || editForm.correct_option_key
-      const patch = {
-        question:        editForm.question,
-        option1:         editForm.option1,
-        option2:         editForm.option2,
-        option3:         editForm.option3,
-        option4:         editForm.option4,
-        correct_option:  resolvedCorrect,
-        unit:            editForm.unit,
-        level:           Number(editForm.level),
-        topic:           deriveTopic(editForm.unit, editForm.level),
-        difficulty_level: editForm.difficulty_level,
-        question_tag:    editForm.question_tag || null,
-        source:          editForm.source || null,
-        is_active:       editForm.is_active,
-        content_locked:  editForm.content_locked,
-        question_image:  editImgUrls.question_image ?? null,
-        option1_image:   editImgUrls.option1_image  ?? null,
-        option2_image:   editImgUrls.option2_image  ?? null,
-        option3_image:   editImgUrls.option3_image  ?? null,
-        option4_image:   editImgUrls.option4_image  ?? null,
-      }
-      // Match the Column's structured columns only ever apply to MTC rows —
-      // gated on the row's actual type (not just presence of editForm.col_a1,
-      // since that's always populated as '' by openEdit) so a Single MCQ/A-R
-      // edit can never accidentally write col_a/col_b columns.
-      const original = questions.find(x => x.id === qId)
-      if (original?.question_type === 'Match the Column') {
-        Object.assign(patch, {
-          col_a1: editForm.col_a1, col_a1_image: editImgUrls.col_a1_image ?? null,
-          col_a2: editForm.col_a2, col_a2_image: editImgUrls.col_a2_image ?? null,
-          col_a3: editForm.col_a3, col_a3_image: editImgUrls.col_a3_image ?? null,
-          col_a4: editForm.col_a4, col_a4_image: editImgUrls.col_a4_image ?? null,
-          col_b1: editForm.col_b1, col_b1_image: editImgUrls.col_b1_image ?? null,
-          col_b2: editForm.col_b2, col_b2_image: editImgUrls.col_b2_image ?? null,
-          col_b3: editForm.col_b3, col_b3_image: editImgUrls.col_b3_image ?? null,
-          col_b4: editForm.col_b4, col_b4_image: editImgUrls.col_b4_image ?? null,
-        })
-      }
-      const { error } = await supabase.from('questions').update(patch).eq('id', qId)
-      if (error) throw error
-      toast.success('Question updated!')
-      setEditId(null)
-      loadQuestions()
-    } catch (err) {
-      toast.error(err.message)
-    } finally {
-      setEditSaving(false)
-    }
-  }
+  const markInactive = id => setActive(id, false)
+  const markActive = id => setActive(id, true)
 
   async function loadDuplicates() {
     setDupeLoading(true)
@@ -475,14 +294,7 @@ export default function QuestionUploader({ uploadedBy }) {
       .filter(g => g.items.length > 1))
   }
 
-  async function uploadImage(file) {
-    const ext = file.name.split('.').pop().toLowerCase()
-    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
-    const { error } = await supabase.storage.from('question-images').upload(path, file, { upsert: false })
-    if (error) throw new Error(`Image upload failed: ${error.message}`)
-    const { data: { publicUrl } } = supabase.storage.from('question-images').getPublicUrl(path)
-    return publicUrl
-  }
+  const uploadImage = uploadQuestionImage
 
   async function handleManualSubmit(e) {
     e.preventDefault()
@@ -770,18 +582,33 @@ export default function QuestionUploader({ uploadedBy }) {
   // Reset to page 1 when any filter/search changes
   useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, statusFilter])
 
-  // Auto-expand when search narrows to exactly 1 result
-  useEffect(() => {
-    if (filtered.length === 1) setExpandedId(filtered[0].id)
-    else setExpandedId(prev => (filtered.find(q => q.id === prev) ? prev : null))
-  }, [filtered.length, search])
-
   // When a filter is active, show all results so nothing is hidden behind pages —
   // includes a non-default status filter, since browsing "Inactive" is meant to
   // show every inactive question across the bank at a glance, not 50 at a time.
   const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+
+  function openReview(q, startInEdit = false) {
+    const i = visibleQuestions.findIndex(x => x.id === q.id)
+    if (i < 0) return
+    setReviewStartInEdit(startInEdit)
+    setReviewIndex(i)
+  }
+
+  // Closing the reviewer puts the admin back on the row they last had open —
+  // after walking twenty questions with the arrow keys, landing back on the row
+  // they started from would be its own kind of lost place.
+  function closeReview() {
+    const q = visibleQuestions[reviewIndex]
+    setReviewIndex(null)
+    setReviewStartInEdit(false)
+    if (q) {
+      requestAnimationFrame(() => {
+        document.getElementById(`qrow-${q.id}`)?.scrollIntoView({ block: 'center' })
+      })
+    }
+  }
 
   return (
     <div>
@@ -792,23 +619,49 @@ export default function QuestionUploader({ uploadedBy }) {
         <button className={`tab-btn ${tab === 'dupes' ? 'active' : ''}`} onClick={() => { setTab('dupes'); if (!dupeGroups) loadDuplicates() }}>Find Duplicates</button>
       </div>
 
+      {/* Full-screen reviewer. It walks visibleQuestions — whatever the filters
+          are currently showing — so "review this level" is just: filter to the
+          level, open the first question, then hold →. */}
+      {tab === 'list' && reviewIndex != null && visibleQuestions[reviewIndex] && (
+        <QuestionReviewer
+          questions={visibleQuestions}
+          index={reviewIndex}
+          onIndexChange={setReviewIndex}
+          onClose={closeReview}
+          onToggleActive={q => setActive(q.id, q.is_active === false)}
+          onSaved={row => patchQuestion(row.id, row)}
+          startInEdit={reviewStartInEdit}
+        />
+      )}
+
       {/* ── LIST ── */}
       {tab === 'list' && (
         <div className="card">
-          <div className="card-header" style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-            {/* Row 1: search + count + clear */}
+          {/* Chrome is kept to two tight rows — every pixel spent here is a pixel
+              the question list doesn't get. Reading a question happens in the
+              full-screen reviewer, not in this card. */}
+          <div className="card-header" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem 1rem' }}>
+            {/* Row 1: search + count + review entry point */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: '200px' }}>
                 <Search size={16} />
                 <input
                   className="form-control"
-                  style={{ border: 'none', boxShadow: 'none', padding: '0', fontSize: '1.0625rem' }}
+                  style={{ border: 'none', boxShadow: 'none', padding: '0', fontSize: '1rem' }}
                   placeholder="Search by Q ID, question, tag or topic…"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
               </div>
               <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions</span>
+              {visibleQuestions.length > 0 && (
+                <button className="btn btn-primary btn-sm"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
+                  onClick={() => openReview(visibleQuestions[0])}
+                  title="Open the first question full screen, then walk the list with ← / →">
+                  <Maximize2 size={14} /> Review {visibleQuestions.length} full screen
+                </button>
+              )}
             </div>
 
             {/* Row 2: Subject → Unit → Level cascade */}
@@ -884,7 +737,9 @@ export default function QuestionUploader({ uploadedBy }) {
             </div>
           </div>
 
-          <div className="table-wrap">
+          {/* Taller than the shared 70vh default — this list is the whole point
+              of the page, so it gets whatever the two header rows don't. */}
+          <div className="table-wrap" style={{ maxHeight: 'max(360px, calc(100vh - 250px))' }}>
             {loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div> : (
               <table>
                 <thead>
@@ -901,14 +756,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 </thead>
                 <tbody>
                   {(() => { let lastUnit = null; let lastLevel = null; return visibleQuestions.map(q => {
-                    const isOpen = expandedId === q.id
-                    const isEditing = editId === q.id
                     const isInactive = q.is_active === false
-                    const opts = [q.option1, q.option2, q.option3, q.option4]
-                    // Defaults to Student Preview for a question that hasn't had its
-                    // toggle touched yet — that's the view an admin actually wants on
-                    // open, since it's what checks "does this look right to a student".
-                    const activeMode = previewModeId === q.id ? previewMode : 'student'
                     // Browsing "All Units" (no unitFilter) additionally groups by unit,
                     // so e.g. every inactive question across the whole bank can be
                     // scanned unit-by-unit and level-by-level in one view instead of
@@ -919,35 +767,45 @@ export default function QuestionUploader({ uploadedBy }) {
                     if (showLevelHeader) lastLevel = q.level
                     const unitCount = showUnitHeader ? filtered.filter(x => x.unit === q.unit).length : 0
                     const levelCount = showLevelHeader ? filtered.filter(x => x.unit === q.unit && x.level === q.level).length : 0
-                    const rowStyle = {
-                      cursor: 'pointer',
-                      opacity: isInactive ? 0.55 : 1,
-                      background: isEditing ? '#fffbeb' : isOpen ? 'var(--primary-light, #eff6ff)' : isInactive ? '#fef2f2' : undefined,
-                    }
                     return (
-                      <>
+                      <Fragment key={q.id}>
                         {showUnitHeader && (
-                          <tr key={`unit-${q.unit}`}>
+                          <tr>
                             <td colSpan={8} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
-                              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
                                 {q.unit}
-                                <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}> · {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
+                                <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}>· {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
                               </div>
                             </td>
                           </tr>
                         )}
                         {showLevelHeader && (
-                          <tr key={`lvl-${q.unit}-${q.level}`}>
+                          <tr>
                             <td colSpan={8} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
                                 Level {q.level}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
                                 <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
                                 <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>· {levelCount} question{levelCount !== 1 ? 's' : ''}</span>
+                                <button className="btn btn-ghost btn-sm"
+                                  style={{ marginLeft: '0.35rem', fontSize: '0.7rem', padding: '0.1rem 0.45rem', color: 'var(--primary)', fontWeight: 700 }}
+                                  onClick={() => openReview(q)}
+                                  title="Open this level in the full-screen reviewer and walk it with ← / →">
+                                  ▶ Review this level
+                                </button>
                               </div>
                             </td>
                           </tr>
                         )}
-                        <tr key={q.id} style={rowStyle} onClick={() => { if (!isEditing) setExpandedId(isOpen ? null : q.id) }}>
+                        <tr
+                          id={`qrow-${q.id}`}
+                          style={{
+                            cursor: 'pointer',
+                            opacity: isInactive ? 0.55 : 1,
+                            background: isInactive ? '#fef2f2' : undefined,
+                          }}
+                          onClick={() => openReview(q)}
+                          title="Click to review full screen"
+                        >
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
                             {isInactive && <span style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '3px', padding: '0 4px' }}>inactive</span>}
@@ -967,320 +825,36 @@ export default function QuestionUploader({ uploadedBy }) {
                           <td onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', flexWrap: 'nowrap' }}>
                             <button
                               className="btn btn-outline btn-sm"
-                              style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
-                              onClick={() => { setExpandedId(isOpen ? null : q.id); setEditId(null) }}
+                              style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                              title="Review full screen"
+                              onClick={() => openReview(q)}
                             >
-                              {isOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                              {isOpen ? 'Close' : 'View'}
+                              <Maximize2 size={12} /> Review
                             </button>
                             <button
                               className="btn btn-outline btn-sm"
-                              style={{ fontSize: '0.75rem', padding: '0.2rem 0.4rem', display: 'flex', alignItems: 'center', color: isEditing ? '#d97706' : undefined, borderColor: isEditing ? '#d97706' : undefined }}
+                              style={{ fontSize: '0.75rem', padding: '0.2rem 0.4rem', display: 'flex', alignItems: 'center' }}
                               title="Edit question"
-                              onClick={() => { if (isEditing) { setEditId(null) } else { openEdit(q) } }}
+                              onClick={() => openReview(q, true)}
                             >
                               <Pencil size={13} />
                             </button>
-                            {isInactive ? (
-                              <button
-                                className="btn btn-sm"
-                                style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', fontWeight: 600, background: '#fee2e2', color: '#b91c1c', border: '1.5px solid #fca5a5', borderRadius: 'var(--radius)', cursor: 'pointer' }}
-                                onClick={() => markActive(q.id)}
-                                title="Click to restore active"
-                              >
-                                Inactive
-                              </button>
-                            ) : (
-                              <button
-                                className="btn btn-sm"
-                                style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', fontWeight: 600, background: '#dcfce7', color: '#15803d', border: '1.5px solid #86efac', borderRadius: 'var(--radius)', cursor: 'pointer' }}
-                                onClick={() => markInactive(q.id)}
-                                title="Click to deactivate"
-                              >
-                                Active
-                              </button>
-                            )}
+                            <button
+                              className="btn btn-sm"
+                              style={{
+                                fontSize: '0.7rem', padding: '0.2rem 0.55rem', fontWeight: 600, borderRadius: 'var(--radius)', cursor: 'pointer',
+                                background: isInactive ? '#fee2e2' : '#dcfce7',
+                                color: isInactive ? '#b91c1c' : '#15803d',
+                                border: `1.5px solid ${isInactive ? '#fca5a5' : '#86efac'}`,
+                              }}
+                              onClick={() => setActive(q.id, isInactive)}
+                              title={isInactive ? 'Click to restore active' : 'Click to deactivate'}
+                            >
+                              {isInactive ? 'Inactive' : 'Active'}
+                            </button>
                           </td>
                         </tr>
-
-                        {/* ── View panel ── */}
-                        {isOpen && !isEditing && (
-                          <tr key={`${q.id}-detail`}>
-                            <td colSpan={8} style={{ padding: '0', borderTop: 'none' }}>
-                              <div style={{ background: '#f8faff', borderTop: '2px solid var(--primary, #3b82f6)', borderBottom: '1px solid var(--gray-200)' }}>
-
-                                {/* Toggle bar */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1.25rem', borderBottom: '1px solid var(--gray-100)', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', fontSize: '0.75rem', color: 'var(--gray-500)', alignItems: 'center' }}>
-                                    <code style={{ fontWeight: 700, color: 'var(--gray-700)' }}>{q.qid}</code>
-                                    <span>{q.question_type}</span>
-                                    <span>Level {q.level}</span>
-                                    <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
-                                    {/* Tag/Source are admin-only metadata a student never sees on the
-                                        real test screen — showing them while previewing "as a student"
-                                        would misrepresent what the student actually sees. */}
-                                    {activeMode === 'admin' && q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
-                                    {activeMode === 'admin' && q.source && <span>Source: {q.source}</span>}
-                                    {isInactive && <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', padding: '0 6px', fontWeight: 600 }}>INACTIVE</span>}
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '0' }}>
-                                    {['admin', 'student'].map(mode => (
-                                      <button key={mode} type="button"
-                                        onClick={() => { setPreviewModeId(q.id); setPreviewMode(mode) }}
-                                        style={{
-                                          padding: '0.25rem 0.75rem', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', border: '1.5px solid var(--primary, #3b82f6)',
-                                          borderRadius: mode === 'admin' ? 'var(--radius) 0 0 var(--radius)' : '0 var(--radius) var(--radius) 0',
-                                          background: activeMode === mode ? 'var(--primary, #3b82f6)' : '#fff',
-                                          color: activeMode === mode ? '#fff' : 'var(--primary, #3b82f6)',
-                                          marginLeft: mode === 'student' ? '-1px' : 0,
-                                        }}>
-                                        {mode === 'admin' ? 'Admin View' : 'Student Preview'}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                {/* Admin view — shows correct answer highlighted */}
-                                {activeMode === 'admin' && (
-                                  <div style={{ padding: '1rem 1.25rem' }}>
-                                    <div style={{ fontWeight: 600, fontSize: '0.9375rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', marginBottom: q.question_image ? '0.5rem' : '0.875rem', lineHeight: 1.6 }}>
-                                      {q.question}
-                                    </div>
-                                    {q.question_image && (
-                                      <div style={{ marginBottom: '0.875rem' }}>
-                                        <img src={q.question_image} alt="Question" style={{ maxHeight: 180, maxWidth: '100%', borderRadius: 6, border: '1px solid var(--gray-200)' }} />
-                                      </div>
-                                    )}
-                                    {hasStructuredMtc(q) && <MatchTable q={q} />}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                      {opts.map((opt, i) => {
-                                        const isCorrect = `option${i + 1}` === correctOptionKey(q)
-                                        const optImgKey = `option${i + 1}_image`
-                                        return (
-                                          <div key={i} style={{ padding: '0.45rem 0.75rem', borderRadius: '6px', fontSize: '0.875rem', fontWeight: isCorrect ? 700 : 400, background: isCorrect ? '#dcfce7' : 'var(--gray-100)', color: isCorrect ? '#15803d' : 'var(--gray-700)', border: isCorrect ? '1.5px solid #86efac' : '1px solid transparent' }}>
-                                            <div style={{ whiteSpace: 'pre-wrap' }}>{String.fromCharCode(65 + i)}. {opt}{isCorrect ? ' ✓ Correct' : ''}</div>
-                                            {q[optImgKey] && <img src={q[optImgKey]} alt={`Option ${i + 1}`} style={{ maxHeight: 100, maxWidth: '100%', marginTop: '0.3rem', borderRadius: 4, border: '1px solid var(--gray-200)' }} />}
-                                          </div>
-                                        )
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* Student preview — exactly like test page, no answer revealed */}
-                                {activeMode === 'student' && (
-                                  <div style={{ padding: '1rem 1.25rem', background: '#fff', maxWidth: 680 }}>
-                                    <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', lineHeight: 1.7, marginBottom: q.question_image ? '0.75rem' : '1.25rem' }}>
-                                      {q.question}
-                                    </div>
-                                    {q.question_image && (
-                                      <div style={{ marginBottom: '1.25rem' }}>
-                                        <img src={q.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 280, borderRadius: 8, border: '1px solid var(--gray-200)' }} />
-                                      </div>
-                                    )}
-                                    {hasStructuredMtc(q) && <MatchTable q={q} />}
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                                      {opts.map((opt, i) => {
-                                        const optImgKey = `option${i + 1}_image`
-                                        return (
-                                          <li key={i} className="option-item" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 10, border: '1.5px solid var(--gray-200)', background: 'var(--gray-50)', cursor: 'default', fontSize: '0.9375rem' }}>
-                                            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--gray-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0, color: 'var(--gray-600)' }}>
-                                              {String.fromCharCode(65 + i)}
-                                            </div>
-                                            <div>
-                                              <span style={{ whiteSpace: 'pre-wrap' }}>{opt}</span>
-                                              {q[optImgKey] && <div style={{ marginTop: '0.5rem' }}><img src={q[optImgKey]} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 160, borderRadius: 6, border: '1px solid var(--gray-200)' }} /></div>}
-                                            </div>
-                                          </li>
-                                        )
-                                      })}
-                                    </ul>
-                                    <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
-                                      This is exactly how the student sees this question (options are shuffled during the actual test)
-                                    </div>
-                                  </div>
-                                )}
-
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-
-                        {/* ── Edit panel ── */}
-                        {isEditing && (
-                          <tr key={`${q.id}-edit`}>
-                            <td colSpan={8} style={{ padding: '0', borderTop: 'none' }}>
-                              <div style={{ padding: '1rem 1.25rem', background: '#fffbeb', borderTop: '2px solid #d97706', borderBottom: '1px solid #fde68a' }}>
-                                <div style={{ fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.875rem', color: '#92400e' }}>
-                                  Editing: <code>{q.qid}</code>
-                                  <span style={{ fontWeight: 400, marginLeft: '0.5rem', fontSize: '0.75rem', color: '#b45309' }}>— changes save to Supabase; student history is preserved</span>
-                                </div>
-
-                                {/* Question text + image */}
-                                <div className="form-group" style={{ margin: '0 0 0.75rem' }}>
-                                  <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e' }}>Question Text</label>
-                                  <textarea className="form-control" rows={3} style={{ fontSize: '0.875rem', resize: 'vertical' }}
-                                    value={editForm.question}
-                                    onChange={e => setEditForm(f => ({ ...f, question: e.target.value }))} />
-                                  <EditImageField
-                                    label="Question Image"
-                                    url={editImgUrls.question_image}
-                                    uploading={editImgUploading.has('question_image')}
-                                    onUpload={file => uploadEditImage(q.qid, 'question_image', file)}
-                                    onRemove={() => setEditImgUrls(u => ({ ...u, question_image: null }))}
-                                  />
-                                </div>
-
-                                {/* Match the Column — per-item text + optional image, same
-                                    fields Add Manually collects. Legacy rows (created before
-                                    this existed) start with all 8 blank here even though their
-                                    old flattened text still lives in Question Text above; filling
-                                    these in switches that row over to the structured table display. */}
-                                {q.question_type === 'Match the Column' && (
-                                  <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)', marginBottom: '0.75rem' }}>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
-                                      <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
-                                      <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>COLUMN B</div>
-                                    </div>
-                                    {[1, 2, 3, 4].map(i => {
-                                      const bLabel = ['p', 'q', 'r', 's'][i - 1]
-                                      return (
-                                        <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: '#fff' }}>
-                                          <div style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid var(--gray-200)' }}>
-                                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                                              <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{i}.</span>
-                                              <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
-                                                value={editForm[`col_a${i}`]}
-                                                onChange={e => setEditForm(f => ({ ...f, [`col_a${i}`]: e.target.value }))} />
-                                            </div>
-                                            <EditImageField
-                                              url={editImgUrls[`col_a${i}_image`]}
-                                              uploading={editImgUploading.has(`col_a${i}_image`)}
-                                              onUpload={file => uploadEditImage(q.qid, `col_a${i}_image`, file)}
-                                              onRemove={() => setEditImgUrls(u => ({ ...u, [`col_a${i}_image`]: null }))}
-                                            />
-                                          </div>
-                                          <div style={{ padding: '0.4rem 0.6rem' }}>
-                                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                                              <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{bLabel}.</span>
-                                              <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
-                                                value={editForm[`col_b${i}`]}
-                                                onChange={e => setEditForm(f => ({ ...f, [`col_b${i}`]: e.target.value }))} />
-                                            </div>
-                                            <EditImageField
-                                              url={editImgUrls[`col_b${i}_image`]}
-                                              uploading={editImgUploading.has(`col_b${i}_image`)}
-                                              onUpload={file => uploadEditImage(q.qid, `col_b${i}_image`, file)}
-                                              onRemove={() => setEditImgUrls(u => ({ ...u, [`col_b${i}_image`]: null }))}
-                                            />
-                                          </div>
-                                        </div>
-                                      )
-                                    })}
-                                  </div>
-                                )}
-
-                                {/* Options */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                                  {[1, 2, 3, 4].map(i => {
-                                    const key = `option${i}`
-                                    const imgKey = `option${i}_image`
-                                    const isCorrect = editForm.correct_option_key === key
-                                    return (
-                                      <div key={i} style={{ padding: '0.45rem 0.625rem', borderRadius: 'var(--radius)', background: isCorrect ? '#f0fdf4' : 'var(--gray-50)', border: `1.5px solid ${isCorrect ? '#86efac' : 'var(--gray-200)'}` }}>
-                                        <label style={{ fontSize: '0.7rem', fontWeight: 600, color: isCorrect ? '#15803d' : 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.25rem', cursor: 'pointer' }}>
-                                          <input type="radio" name={`edit-correct-${q.id}`} checked={isCorrect}
-                                            onChange={() => setEditForm(f => ({ ...f, correct_option_key: key }))} />
-                                          Option {i}{isCorrect ? ' ✓ correct' : ''}
-                                        </label>
-                                        <input className="form-control" style={{ fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none', padding: '0' }}
-                                          value={editForm[key]}
-                                          onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))} />
-                                        <EditImageField
-                                          label={`Option ${i} Image`}
-                                          url={editImgUrls[imgKey]}
-                                          uploading={editImgUploading.has(imgKey)}
-                                          onUpload={file => uploadEditImage(q.qid, imgKey, file)}
-                                          onRemove={() => setEditImgUrls(u => ({ ...u, [imgKey]: null }))}
-                                        />
-                                      </div>
-                                    )
-                                  })}
-                                </div>
-
-                                {/* Metadata row */}
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.625rem', marginBottom: '0.75rem' }}>
-                                  <div className="form-group" style={{ margin: 0, flex: '1.4 1 190px' }}>
-                                    <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Unit</label>
-                                    <select className="form-control" style={{ fontSize: '0.8125rem' }}
-                                      value={(editForm.unit || '').match(/^Unit\s+(\d+)/i)?.[1] || ''}
-                                      onChange={e => {
-                                        const unit = CHEMISTRY_UNITS.find(u => u.id === Number(e.target.value))
-                                        // Moving to a different unit means the old level number
-                                        // almost certainly doesn't map to the same topic there —
-                                        // reset to Level 1 so it doesn't silently point at the wrong syllabus.
-                                        setEditForm(f => ({ ...f, unit: unit ? `Unit ${unit.id} - ${unit.name}` : '', level: 1 }))
-                                      }}>
-                                      {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
-                                    </select>
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '1.2 1 200px' }}>
-                                    <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                      Level
-                                      <InfoTooltip text={deriveFullTopic(editForm.unit, editForm.level)} align="left" />
-                                    </label>
-                                    <select className="form-control" style={{ fontSize: '0.8125rem' }}
-                                      value={editForm.level}
-                                      onChange={e => setEditForm(f => ({ ...f, level: e.target.value }))}>
-                                      {editLevelOptions.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
-                                    </select>
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
-                                    <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Difficulty</label>
-                                    <select className="form-control" style={{ fontSize: '0.8125rem' }}
-                                      value={editForm.difficulty_level}
-                                      onChange={e => setEditForm(f => ({ ...f, difficulty_level: e.target.value }))}>
-                                      <option>Easy</option><option>Medium</option><option>Hard</option>
-                                    </select>
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
-                                    <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Question Tag</label>
-                                    <input className="form-control" style={{ fontSize: '0.8125rem' }}
-                                      value={editForm.question_tag}
-                                      onChange={e => setEditForm(f => ({ ...f, question_tag: e.target.value }))} />
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
-                                    <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Source</label>
-                                    <input className="form-control" style={{ fontSize: '0.8125rem' }}
-                                      value={editForm.source}
-                                      onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))} />
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}>
-                                      <input type="checkbox" checked={editForm.is_active} onChange={e => setEditForm(f => ({ ...f, is_active: e.target.checked }))} />
-                                      Is Active
-                                    </label>
-                                  </div>
-                                  <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}
-                                      title="When checked, re-uploading an Excel sheet with this Q ID will NOT overwrite the question text, options or correct answer — only metadata (topic, difficulty, tag, source) gets updated.">
-                                      <input type="checkbox" checked={editForm.content_locked} onChange={e => setEditForm(f => ({ ...f, content_locked: e.target.checked }))} />
-                                      <Lock size={13} /> Lock content from Excel re-upload
-                                    </label>
-                                  </div>
-                                </div>
-
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                  <button className="btn btn-primary btn-sm" disabled={editSaving} onClick={() => handleEditSave(q.id)}>
-                                    {editSaving ? 'Saving…' : 'Save Changes'}
-                                  </button>
-                                  <button className="btn btn-ghost btn-sm" onClick={() => setEditId(null)}>Cancel</button>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </>
+                      </Fragment>
                     )
                   }) })()}
                 </tbody>
@@ -1768,8 +1342,8 @@ export default function QuestionUploader({ uploadedBy }) {
                     const isPreviewLoading = dupePreviewLoadingId === dq.id
                     const full = dupeFullById[dq.id]
                     return (
-                      <>
-                        <tr key={dq.id}
+                      <Fragment key={dq.id}>
+                        <tr
                           onClick={() => toggleDupePreview(dq)}
                           style={{ borderTop: '1px solid var(--gray-100)', opacity: dq.is_active === false ? 0.55 : 1, cursor: 'pointer', background: isExpanded ? 'var(--primary-light, #eff6ff)' : undefined }}>
                           <td style={{ padding: '0.45rem 0.75rem', whiteSpace: 'nowrap' }}>
@@ -1820,34 +1394,17 @@ export default function QuestionUploader({ uploadedBy }) {
                                       <span className={`badge badge-${(full.difficulty_level || '').toLowerCase()}`}>{full.difficulty_level}</span>
                                       {full.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{full.question_tag}</span>}
                                     </div>
-                                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', marginBottom: full.question_image ? '0.5rem' : '0.75rem', lineHeight: 1.6 }}>
-                                      {full.question}
-                                    </div>
-                                    {full.question_image && (
-                                      <div style={{ marginBottom: '0.75rem' }}>
-                                        <img src={full.question_image} alt="Question" style={{ maxHeight: 180, maxWidth: '100%', borderRadius: 6, border: '1px solid var(--gray-200)' }} />
-                                      </div>
-                                    )}
-                                    {hasStructuredMtc(full) && <MatchTable q={full} />}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                                      {[full.option1, full.option2, full.option3, full.option4].map((opt, i) => {
-                                        const isCorrect = `option${i + 1}` === correctOptionKey(full)
-                                        const optImgKey = `option${i + 1}_image`
-                                        return (
-                                          <div key={i} style={{ padding: '0.4rem 0.65rem', borderRadius: '6px', fontSize: '0.8125rem', fontWeight: isCorrect ? 700 : 400, background: isCorrect ? '#dcfce7' : 'var(--gray-100)', color: isCorrect ? '#15803d' : 'var(--gray-700)', border: isCorrect ? '1.5px solid #86efac' : '1px solid transparent' }}>
-                                            <span style={{ whiteSpace: 'pre-wrap' }}>{String.fromCharCode(65 + i)}. {opt}{isCorrect ? ' ✓' : ''}</span>
-                                            {full[optImgKey] && <img src={full[optImgKey]} alt={`Option ${i + 1}`} style={{ maxHeight: 90, maxWidth: '100%', marginTop: '0.3rem', display: 'block', borderRadius: 4, border: '1px solid var(--gray-200)' }} />}
-                                          </div>
-                                        )
-                                      })}
-                                    </div>
+                                    {/* Same renderer the full-screen reviewer uses, so deciding
+                                        which of two near-identical questions to keep compares
+                                        like with like. */}
+                                    <QuestionView q={full} mode="admin" size="compact" />
                                   </>
                                 )}
                               </div>
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     )
                   })}
                 </tbody>

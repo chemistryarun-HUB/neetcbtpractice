@@ -272,6 +272,14 @@ tbody tr:hover td { background: var(--gray-50); }
 .q-nav-btn.answered { background: var(--primary); color: #fff; border-color: var(--primary); }
 .q-nav-btn.current { border-color: var(--primary); color: var(--primary); }
 
+/* Keyboard-shortcut hints (question reviewer footer) */
+kbd {
+  display: inline-block; min-width: 1.1em; padding: 0 0.3em;
+  border: 1px solid var(--gray-300); border-bottom-width: 2px; border-radius: 4px;
+  background: #fff; color: var(--gray-600);
+  font-family: inherit; font-size: 0.95em; font-weight: 700; line-height: 1.4; text-align: center;
+}
+
 @media (max-width: 640px) {
   .page-content { padding: 1rem; }
   .result-tiles { grid-template-columns: 1fr; }
