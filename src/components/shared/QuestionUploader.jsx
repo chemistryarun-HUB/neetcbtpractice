@@ -187,8 +187,11 @@ export default function QuestionUploader({ uploadedBy }) {
   const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
-  const [dupeGroups, setDupeGroups] = useState(null) // null = not yet loaded
+  const [dupeGroups, setDupeGroups] = useState(null) // null = not yet loaded; else [{ key, items }]
   const [dupeLoading, setDupeLoading] = useState(false)
+  const [dupePreviewId, setDupePreviewId] = useState(null)   // which question's inline preview is open
+  const [dupePreviewLoadingId, setDupePreviewLoadingId] = useState(null)
+  const [dupeFullById, setDupeFullById] = useState({})       // id -> fully-loaded question row, fetched lazily on first expand
   // Upload Excel tab — subject/unit selection
   const [uploadSubject, setUploadSubject] = useState('')
   const [uploadUnitId, setUploadUnitId] = useState('')
@@ -270,12 +273,20 @@ export default function QuestionUploader({ uploadedBy }) {
   useEffect(() => { setLevelFilter('') }, [unitFilter])
   useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
 
+  // Patches a question's is_active in-place within the Find Duplicates groups,
+  // instead of re-scanning the whole bank — a re-scan would also throw away any
+  // "Not a duplicate" dismissals made earlier in the same session, undermining
+  // the point of reviewing a long list of groups one decision at a time.
+  function patchDupeQuestion(id, patch) {
+    setDupeGroups(prev => prev && prev.map(g => ({ ...g, items: g.items.map(q => q.id === id ? { ...q, ...patch } : q) })))
+  }
+
   async function markInactive(id) {
     const { error } = await supabase.from('questions').update({ is_active: false }).eq('id', id)
     if (error) { toast.error(error.message); return }
     toast.success('Marked inactive')
     loadQuestions()
-    if (dupeGroups) loadDuplicates()
+    patchDupeQuestion(id, { is_active: false })
   }
 
   async function markActive(id) {
@@ -283,6 +294,7 @@ export default function QuestionUploader({ uploadedBy }) {
     if (error) { toast.error(error.message); return }
     toast.success('Restored to active')
     loadQuestions()
+    patchDupeQuestion(id, { is_active: true })
   }
 
   // Per-field image upload state for the edit panel: { uploading: Set<field>, urls: { question_image, option1_image, ... } }
@@ -421,9 +433,37 @@ export default function QuestionUploader({ uploadedBy }) {
       if (!groups[key]) groups[key] = []
       groups[key].push(q)
     }
-    const dupes = Object.values(groups).filter(g => g.length > 1)
+    // Keyed by the grouping key (not array index) so a group can be safely
+    // removed or shrunk — via "Not a duplicate" — without index drift.
+    const dupes = Object.entries(groups).filter(([, items]) => items.length > 1).map(([key, items]) => ({ key, items }))
     setDupeGroups(dupes)
+    setDupePreviewId(null)
     setDupeLoading(false)
+  }
+
+  // Full row (options, images, correct answer, etc.) is only fetched once a
+  // question is actually expanded — the initial scan stays cheap across the
+  // whole bank by selecting just enough fields to group and list.
+  async function toggleDupePreview(dq) {
+    if (dupePreviewId === dq.id) { setDupePreviewId(null); return }
+    if (!dupeFullById[dq.id]) {
+      setDupePreviewLoadingId(dq.id)
+      const { data, error } = await supabase.from('questions').select('*').eq('id', dq.id).single()
+      setDupePreviewLoadingId(null)
+      if (error) { toast.error(error.message); return }
+      setDupeFullById(prev => ({ ...prev, [dq.id]: data }))
+    }
+    setDupePreviewId(dq.id)
+  }
+
+  // Removes one question from its group — for the many false positives the
+  // 80-char-prefix heuristic produces (same opening line, genuinely different
+  // question). Purely a local dismissal for this scan; hitting Refresh reruns
+  // the heuristic from scratch and can surface it again.
+  function dismissFromDupeGroup(groupKey, qId) {
+    setDupeGroups(prev => prev
+      .map(g => g.key === groupKey ? { ...g, items: g.items.filter(q => q.id !== qId) } : g)
+      .filter(g => g.items.length > 1))
   }
 
   async function uploadImage(file) {
@@ -1679,7 +1719,8 @@ export default function QuestionUploader({ uploadedBy }) {
           </div>
 
           <p className="text-muted" style={{ fontSize: '0.8125rem', marginBottom: '1rem' }}>
-            Questions are grouped by the first 80 characters of their text. Groups with 2+ matches are shown below.
+            Questions are grouped by the first 80 characters of their text. Groups with 2+ matches are shown below —
+            click a row to preview the full question and decide for yourself.
           </p>
 
           {dupeLoading && <div style={{ padding: '2rem', textAlign: 'center' }}>Scanning all questions…</div>}
@@ -1688,11 +1729,11 @@ export default function QuestionUploader({ uploadedBy }) {
             <div className="empty-state">No duplicate questions found.</div>
           )}
 
-          {!dupeLoading && dupeGroups && dupeGroups.map((group, gi) => (
-            <div key={gi} style={{ marginBottom: '1.25rem', border: '1px solid #fde68a', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
+          {!dupeLoading && dupeGroups && dupeGroups.map(group => (
+            <div key={group.key} style={{ marginBottom: '1.25rem', border: '1px solid #fde68a', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
               <div style={{ background: '#fefce8', padding: '0.5rem 0.875rem', fontSize: '0.75rem', color: '#92400e', borderBottom: '1px solid #fde68a', fontWeight: 600 }}>
-                Group {gi + 1} · {group.length} duplicates
-                <span style={{ fontWeight: 400, marginLeft: '0.75rem', color: '#b45309' }}>"{(group[0].question || '').trim().substring(0, 80)}…"</span>
+                {group.items.length} possible duplicates
+                <span style={{ fontWeight: 400, marginLeft: '0.75rem', color: '#b45309' }}>"{(group.items[0].question || '').trim().substring(0, 80)}…"</span>
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                 <thead>
@@ -1702,41 +1743,97 @@ export default function QuestionUploader({ uploadedBy }) {
                     <th style={{ padding: '0.4rem 0.75rem', textAlign: 'left', fontWeight: 600, color: 'var(--gray-600)' }}>Source</th>
                     <th style={{ padding: '0.4rem 0.75rem', textAlign: 'left', fontWeight: 600, color: 'var(--gray-600)' }}>Question Preview</th>
                     <th style={{ padding: '0.4rem 0.75rem', textAlign: 'center', fontWeight: 600, color: 'var(--gray-600)' }}>Status</th>
-                    <th style={{ padding: '0.4rem 0.75rem', width: '120px' }}></th>
+                    <th style={{ padding: '0.4rem 0.75rem', width: '210px' }}></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {group.map(dq => (
-                    <tr key={dq.id} style={{ borderTop: '1px solid var(--gray-100)', opacity: dq.is_active === false ? 0.55 : 1 }}>
-                      <td style={{ padding: '0.45rem 0.75rem', whiteSpace: 'nowrap' }}>
-                        <code style={{ color: dq.is_active === false ? '#ef4444' : undefined, textDecoration: dq.is_active === false ? 'line-through' : 'none' }}>{dq.qid}</code>
-                      </td>
-                      <td style={{ padding: '0.45rem 0.75rem', textAlign: 'center' }}>{dq.level}</td>
-                      <td style={{ padding: '0.45rem 0.75rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{dq.source || '—'}</td>
-                      <td style={{ padding: '0.45rem 0.75rem', fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '340px' }}>
-                        {(dq.question || '').trim().substring(0, 120)}{(dq.question || '').length > 120 ? '…' : ''}
-                      </td>
-                      <td style={{ padding: '0.45rem 0.75rem', textAlign: 'center' }}>
-                        {dq.is_active === false
-                          ? <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', padding: '1px 6px', fontSize: '0.7rem', fontWeight: 600 }}>inactive</span>
-                          : <span style={{ background: '#dcfce7', color: '#15803d', borderRadius: '4px', padding: '1px 6px', fontSize: '0.7rem', fontWeight: 600 }}>active</span>
-                        }
-                      </td>
-                      <td style={{ padding: '0.45rem 0.75rem', display: 'flex', gap: '0.35rem' }}>
-                        {dq.is_active !== false ? (
-                          <button className="btn btn-outline btn-sm" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', color: '#b91c1c', borderColor: '#fca5a5' }}
-                            onClick={() => markInactive(dq.id)}>
-                            Mark Inactive
-                          </button>
-                        ) : (
-                          <button className="btn btn-outline btn-sm" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', color: '#15803d', borderColor: '#86efac' }}
-                            onClick={() => markActive(dq.id)}>
-                            Restore
-                          </button>
+                  {group.items.map(dq => {
+                    const isExpanded = dupePreviewId === dq.id
+                    const isPreviewLoading = dupePreviewLoadingId === dq.id
+                    const full = dupeFullById[dq.id]
+                    return (
+                      <>
+                        <tr key={dq.id}
+                          onClick={() => toggleDupePreview(dq)}
+                          style={{ borderTop: '1px solid var(--gray-100)', opacity: dq.is_active === false ? 0.55 : 1, cursor: 'pointer', background: isExpanded ? 'var(--primary-light, #eff6ff)' : undefined }}>
+                          <td style={{ padding: '0.45rem 0.75rem', whiteSpace: 'nowrap' }}>
+                            <code style={{ color: dq.is_active === false ? '#ef4444' : undefined, textDecoration: dq.is_active === false ? 'line-through' : 'none' }}>{dq.qid}</code>
+                          </td>
+                          <td style={{ padding: '0.45rem 0.75rem', textAlign: 'center' }}>{dq.level}</td>
+                          <td style={{ padding: '0.45rem 0.75rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{dq.source || '—'}</td>
+                          <td style={{ padding: '0.45rem 0.75rem', fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '340px', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            {isExpanded ? <ChevronUp size={13} style={{ flexShrink: 0, color: 'var(--primary)' }} /> : <ChevronDown size={13} style={{ flexShrink: 0, color: 'var(--gray-300)' }} />}
+                            <span>{isPreviewLoading ? 'Loading full question…' : `${(dq.question || '').trim().substring(0, 120)}${(dq.question || '').length > 120 ? '…' : ''}`}</span>
+                          </td>
+                          <td style={{ padding: '0.45rem 0.75rem', textAlign: 'center' }}>
+                            {dq.is_active === false
+                              ? <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', padding: '1px 6px', fontSize: '0.7rem', fontWeight: 600 }}>inactive</span>
+                              : <span style={{ background: '#dcfce7', color: '#15803d', borderRadius: '4px', padding: '1px 6px', fontSize: '0.7rem', fontWeight: 600 }}>active</span>
+                            }
+                          </td>
+                          <td onClick={e => e.stopPropagation()} style={{ padding: '0.45rem 0.75rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                            {dq.is_active !== false ? (
+                              <button className="btn btn-outline btn-sm" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', color: '#b91c1c', borderColor: '#fca5a5' }}
+                                onClick={() => markInactive(dq.id)}>
+                                Mark Inactive
+                              </button>
+                            ) : (
+                              <button className="btn btn-outline btn-sm" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', color: '#15803d', borderColor: '#86efac' }}
+                                onClick={() => markActive(dq.id)}>
+                                Restore
+                              </button>
+                            )}
+                            <button className="btn btn-outline btn-sm" title="Not actually a duplicate — remove it from this group"
+                              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', color: 'var(--gray-500)' }}
+                              onClick={() => dismissFromDupeGroup(group.key, dq.id)}>
+                              Not a duplicate
+                            </button>
+                          </td>
+                        </tr>
+
+                        {isExpanded && (
+                          <tr key={`${dq.id}-preview`}>
+                            <td colSpan={6} style={{ padding: 0, borderTop: 'none' }}>
+                              <div style={{ padding: '0.875rem 1.25rem', background: '#f8faff', borderTop: '2px solid var(--primary, #3b82f6)', borderBottom: '1px solid var(--gray-200)' }}>
+                                {isPreviewLoading || !full ? (
+                                  <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--gray-400)', fontSize: '0.8125rem' }}>Loading…</div>
+                                ) : (
+                                  <>
+                                    <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', fontSize: '0.75rem', color: 'var(--gray-500)', marginBottom: '0.6rem' }}>
+                                      <span title={full.unit}>{full.unit}</span>
+                                      <span className={`badge badge-${(full.difficulty_level || '').toLowerCase()}`}>{full.difficulty_level}</span>
+                                      {full.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{full.question_tag}</span>}
+                                    </div>
+                                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', marginBottom: full.question_image ? '0.5rem' : '0.75rem', lineHeight: 1.6 }}>
+                                      {full.question}
+                                    </div>
+                                    {full.question_image && (
+                                      <div style={{ marginBottom: '0.75rem' }}>
+                                        <img src={full.question_image} alt="Question" style={{ maxHeight: 180, maxWidth: '100%', borderRadius: 6, border: '1px solid var(--gray-200)' }} />
+                                      </div>
+                                    )}
+                                    {hasStructuredMtc(full) && <MatchTable q={full} />}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                      {[full.option1, full.option2, full.option3, full.option4].map((opt, i) => {
+                                        const isCorrect = `option${i + 1}` === correctOptionKey(full)
+                                        const optImgKey = `option${i + 1}_image`
+                                        return (
+                                          <div key={i} style={{ padding: '0.4rem 0.65rem', borderRadius: '6px', fontSize: '0.8125rem', fontWeight: isCorrect ? 700 : 400, background: isCorrect ? '#dcfce7' : 'var(--gray-100)', color: isCorrect ? '#15803d' : 'var(--gray-700)', border: isCorrect ? '1.5px solid #86efac' : '1px solid transparent' }}>
+                                            <span style={{ whiteSpace: 'pre-wrap' }}>{String.fromCharCode(65 + i)}. {opt}{isCorrect ? ' ✓' : ''}</span>
+                                            {full[optImgKey] && <img src={full[optImgKey]} alt={`Option ${i + 1}`} style={{ maxHeight: 90, maxWidth: '100%', marginTop: '0.3rem', display: 'block', borderRadius: 4, border: '1px solid var(--gray-200)' }} />}
+                                          </div>
+                                        )
+                                      })}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
                         )}
-                      </td>
-                    </tr>
-                  ))}
+                      </>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
