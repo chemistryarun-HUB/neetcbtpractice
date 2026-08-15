@@ -183,7 +183,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const [editForm, setEditForm] = useState({})
   const [editSaving, setEditSaving] = useState(false)
   const [previewModeId, setPreviewModeId] = useState(null)  // which question's preview toggle is active
-  const [previewMode, setPreviewMode] = useState('admin')   // 'admin' | 'student'
+  const [previewMode, setPreviewMode] = useState('student') // 'admin' | 'student' — student is the default view on open
   const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
@@ -905,6 +905,10 @@ export default function QuestionUploader({ uploadedBy }) {
                     const isEditing = editId === q.id
                     const isInactive = q.is_active === false
                     const opts = [q.option1, q.option2, q.option3, q.option4]
+                    // Defaults to Student Preview for a question that hasn't had its
+                    // toggle touched yet — that's the view an admin actually wants on
+                    // open, since it's what checks "does this look right to a student".
+                    const activeMode = previewModeId === q.id ? previewMode : 'student'
                     // Browsing "All Units" (no unitFilter) additionally groups by unit,
                     // so e.g. every inactive question across the whole bank can be
                     // scanned unit-by-unit and level-by-level in one view instead of
@@ -1012,8 +1016,11 @@ export default function QuestionUploader({ uploadedBy }) {
                                     <span>{q.question_type}</span>
                                     <span>Level {q.level}</span>
                                     <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
-                                    {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
-                                    {q.source && <span>Source: {q.source}</span>}
+                                    {/* Tag/Source are admin-only metadata a student never sees on the
+                                        real test screen — showing them while previewing "as a student"
+                                        would misrepresent what the student actually sees. */}
+                                    {activeMode === 'admin' && q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
+                                    {activeMode === 'admin' && q.source && <span>Source: {q.source}</span>}
                                     {isInactive && <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', padding: '0 6px', fontWeight: 600 }}>INACTIVE</span>}
                                   </div>
                                   <div style={{ display: 'flex', gap: '0' }}>
@@ -1023,8 +1030,8 @@ export default function QuestionUploader({ uploadedBy }) {
                                         style={{
                                           padding: '0.25rem 0.75rem', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', border: '1.5px solid var(--primary, #3b82f6)',
                                           borderRadius: mode === 'admin' ? 'var(--radius) 0 0 var(--radius)' : '0 var(--radius) var(--radius) 0',
-                                          background: (previewModeId === q.id ? previewMode : 'admin') === mode ? 'var(--primary, #3b82f6)' : '#fff',
-                                          color: (previewModeId === q.id ? previewMode : 'admin') === mode ? '#fff' : 'var(--primary, #3b82f6)',
+                                          background: activeMode === mode ? 'var(--primary, #3b82f6)' : '#fff',
+                                          color: activeMode === mode ? '#fff' : 'var(--primary, #3b82f6)',
                                           marginLeft: mode === 'student' ? '-1px' : 0,
                                         }}>
                                         {mode === 'admin' ? 'Admin View' : 'Student Preview'}
@@ -1034,7 +1041,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                 </div>
 
                                 {/* Admin view — shows correct answer highlighted */}
-                                {(previewModeId !== q.id || previewMode === 'admin') && (
+                                {activeMode === 'admin' && (
                                   <div style={{ padding: '1rem 1.25rem' }}>
                                     <div style={{ fontWeight: 600, fontSize: '0.9375rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', marginBottom: q.question_image ? '0.5rem' : '0.875rem', lineHeight: 1.6 }}>
                                       {q.question}
@@ -1061,7 +1068,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                 )}
 
                                 {/* Student preview — exactly like test page, no answer revealed */}
-                                {previewModeId === q.id && previewMode === 'student' && (
+                                {activeMode === 'student' && (
                                   <div style={{ padding: '1rem 1.25rem', background: '#fff', maxWidth: 680 }}>
                                     <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--gray-800)', whiteSpace: 'pre-wrap', lineHeight: 1.7, marginBottom: q.question_image ? '0.75rem' : '1.25rem' }}>
                                       {q.question}
