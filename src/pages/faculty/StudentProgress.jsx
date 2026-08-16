@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
 import { ArrowLeft } from 'lucide-react'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
@@ -102,7 +102,7 @@ export default function StudentProgress() {
                 const best = lvlAttempts.reduce((b, a) => (a.score || 0) > (b.score || 0) ? a : b, {})
                 return (
                   <div key={level.id} className={`level-card ${unlocked ? 'unlocked' : 'locked'}`}>
-                    <div className="level-num">Level {level.id}</div>
+                    <div className="level-num">{levelBadge(unitId, level.id)}</div>
                     <h4>{level.name}</h4>
                     <div className="level-stats">
                       <div>Attempts: <strong>{lvlAttempts.length}</strong></div>
@@ -144,7 +144,7 @@ export default function StudentProgress() {
                     {attempts.map(a => (
                       <tr key={a.id}>
                         <td>Unit {a.unit_id}</td>
-                        <td>Level {a.level}</td>
+                        <td>{levelBadge(a.unit_id, a.level)}</td>
                         <td>#{a.attempt_number}</td>
                         <td><strong>{a.score ?? '-'}</strong></td>
                         <td style={{ color: 'var(--green)' }}>{a.correct_count}</td>

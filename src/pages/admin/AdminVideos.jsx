@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { Plus, Trash2, ArrowUp, ArrowDown, Pencil, Check, X, ExternalLink } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import InfoTooltip from '../../components/shared/InfoTooltip'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
+import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { parseYouTubeId, youtubeThumbUrl, youtubeWatchUrl } from '../../lib/youtube'
 
 const NAV = [
@@ -122,7 +122,7 @@ export default function AdminVideos() {
   }
 
   async function handleDelete(video) {
-    if (!window.confirm(`Remove "${video.title}" from Level ${video.level}?\n\nThis only unlinks the lecture here — the video itself stays on YouTube.`)) return
+    if (!window.confirm(`Remove "${video.title}" from ${levelBadge(video.unit_id, video.level)}?\n\nThis only unlinks the lecture here — the video itself stays on YouTube.`)) return
     const { error } = await supabase.from('level_videos').delete().eq('id', video.id)
     if (error) { toast.error(error.message); return }
     toast.success('Lecture removed')
@@ -210,7 +210,7 @@ export default function AdminVideos() {
                   <div style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', borderBottom: levelVideos.length || isAdding ? '1px solid var(--gray-100)' : 'none' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
                       <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--gray-400)' }}>
-                        Level {lvl.id}
+                        {levelBadge(unitId, lvl.id)}
                       </span>
                       <strong style={{ fontSize: '0.9375rem' }}>{lvl.name}</strong>
                       <InfoTooltip text={lvl.topic || lvl.name} />

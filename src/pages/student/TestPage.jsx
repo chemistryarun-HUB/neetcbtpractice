@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { hasStructuredMtc } from '../../lib/mtc'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -278,7 +278,7 @@ export default function TestPage() {
       <div className="test-header">
         <div>
           <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            Level {levelNum}: {levelInfo?.name}
+            {isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadge(unitNum, levelNum)}: ${levelInfo?.name}`}
             <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
           </div>
           <div style={{ fontSize: '0.8rem', opacity: 0.8 }} className="q-counter">

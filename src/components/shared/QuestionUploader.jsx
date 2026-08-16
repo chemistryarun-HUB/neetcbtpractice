@@ -3,8 +3,8 @@ import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock, Maximize2 } from 'lucide-react'
-import { UNIT_LEVELS } from '../../lib/constants'
-import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic } from '../../lib/topics'
+import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { uploadQuestionImage } from '../../lib/storage'
 import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
@@ -783,7 +783,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <tr>
                             <td colSpan={8} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
-                                Level {q.level}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
+                                {levelBadge(unitIdOf(q.unit), q.level)}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
                                 <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
                                 <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>· {levelCount} question{levelCount !== 1 ? 's' : ''}</span>
                                 <button className="btn btn-ghost btn-sm"

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Play, ExternalLink } from 'lucide-react'
 import { youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '../../lib/youtube'
+import { levelBadge } from '../../lib/constants'
 
 /**
  * Lecture player a student opens from a level card before attempting that level.
@@ -8,7 +9,7 @@ import { youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from '../../lib/you
  * because a level's lectures are taught in order and jumping in at part 3 is
  * rarely what anyone wants.
  */
-export default function LevelVideosModal({ levelId, levelName, videos, onClose, onStartTest }) {
+export default function LevelVideosModal({ unitId, levelId, levelName, videos, onClose, onStartTest }) {
   const [activeIdx, setActiveIdx] = useState(0)
   const active = videos[activeIdx]
   if (!active) return null
@@ -21,7 +22,7 @@ export default function LevelVideosModal({ levelId, levelName, videos, onClose, 
         <div className="modal-header">
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--gray-400)' }}>
-              Level {levelId} · {videos.length} lecture{videos.length !== 1 ? 's' : ''}
+              {levelBadge(unitId, levelId)} · {videos.length} lecture{videos.length !== 1 ? 's' : ''}
             </div>
             <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{levelName}</div>
           </div>

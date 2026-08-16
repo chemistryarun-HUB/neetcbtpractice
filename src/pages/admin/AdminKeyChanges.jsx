@@ -5,6 +5,8 @@ import { AlertTriangle, Check, RefreshCw, ChevronDown, ChevronUp } from 'lucide-
 import Topbar from '../../components/shared/Topbar'
 import { buildRegradePlan, applyRegradePlan, planNetMarks } from '../../lib/regrade'
 import { analyseAnswerKeys, ITEM_ANALYSIS_RULES } from '../../lib/itemAnalysis'
+import { levelBadge } from '../../lib/constants'
+import { unitIdOf } from '../../lib/topics'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -327,7 +329,7 @@ export default function AdminKeyChanges() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
                       <AlertTriangle size={15} style={{ color: '#d97706' }} />
                       <code style={{ color: 'var(--primary)', fontWeight: 700 }}>{s.qid}</code>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{s.unit} · Level {s.level} · {s.responses} responses</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{s.unit} · {levelBadge(unitIdOf(s.unit), s.level)} · {s.responses} responses</span>
                       {s.nobodyPickedKeyed && <span className="badge badge-hard">nobody chose the keyed answer</span>}
                       {s.keyedOutperforms && (
                         <span className="badge" style={{ background: 'var(--gray-100)', color: 'var(--gray-500)' }}>

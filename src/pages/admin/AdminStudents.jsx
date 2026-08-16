@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
 import { computeStreak, aggregateAccuracy, buildActivityMessage } from '../../lib/performanceMetrics'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
@@ -256,7 +256,7 @@ function StudentProgress({ student, onBack }) {
                       <tr key={key} style={{ background: cleared ? '#f0fdf4' : undefined }}>
                         <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>Unit {unitId}: {unitName(unitId)}</td>
                         <td style={{ fontWeight: 700, color: 'var(--gray-700)' }}>
-                          Level {level}
+                          {levelBadge(unitId, level)}
                           <div style={{ fontSize: '0.7rem', fontWeight: 400, color: 'var(--gray-400)' }}>{levelName(unitId, level)}</div>
                         </td>
                         <td style={{ textAlign: 'center' }}>{lvlAttempts.length}</td>
@@ -289,7 +289,7 @@ function StudentProgress({ student, onBack }) {
                           <td colSpan={8} style={{ padding: 0, borderTop: 'none' }}>
                             <div style={{ background: '#f8faff', borderTop: '2px solid #bfdbfe', borderBottom: '1px solid var(--gray-200)', padding: '0.75rem 1rem' }}>
                               <div style={{ fontWeight: 600, fontSize: '0.75rem', color: '#1d4ed8', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Unit {unitId} · Level {level} — All Attempts
+                                Unit {unitId} · {levelBadge(unitId, level)} — All Attempts
                               </div>
                               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                                 <thead>

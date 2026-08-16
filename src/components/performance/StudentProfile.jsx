@@ -6,7 +6,7 @@ import {
   computeStreak, clearedInfo, attemptClearedOwnBar, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
-import { NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
+import { NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
 
 // Was hardcoded to 20 — went stale the moment a 4th syllabus section was added.
 const TOTAL_UNIT_COUNT = NEET_CHEMISTRY_SYLLABUS.reduce((sum, s) => sum + s.units.length, 0)
@@ -230,7 +230,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                         <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(g.unitId).padStart(2, '0')}</div>
                         <div style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', fontWeight: 600, marginBottom: '0.35rem' }}>{unitName(g.unitId)}</div>
                         <div onClick={e => e.stopPropagation()} style={{ fontWeight: 700 }}>
-                          Level {String(g.level).padStart(2, '0')}
+                          {levelBadge(g.unitId, g.level, { pad: true })}
                           <InfoTooltip text={lDef?.topic} align="left" />
                         </div>
                       </td>
@@ -284,10 +284,10 @@ function LastAttemptCard({ attempt, onOpen }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-              Unit {String(attempt.unit_id).padStart(2, '0')} · Level {String(attempt.level).padStart(2, '0')} · Attempt #{attempt.attempt_number}
+              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_number}
             </div>
             <div style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--gray-800)', marginTop: '0.15rem' }} onClick={e => e.stopPropagation()}>
-              Level {attempt.level}
+              {levelBadge(attempt.unit_id, attempt.level)}
               <InfoTooltip text={lDef?.topic} align="left" />
             </div>
           </div>

@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor, nextLevelIdFor } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from '../../components/shared/MatchTable'
+import InfoTooltip from '../../components/shared/InfoTooltip'
 import { X } from 'lucide-react'
 
 export default function ResultPage() {
@@ -134,7 +135,7 @@ export default function ResultPage() {
       <div className="page-content" style={{ maxWidth: '720px' }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ fontSize: '0.875rem', color: 'var(--gray-400)', marginBottom: '0.25rem' }}>
-            Level {level}: {levelInfo?.name} · Attempt #{attemptsForLevel}
+            {isChapterTestLevel(unitId, level) ? 'CCT' : `${levelBadge(unitId, level)}: ${levelInfo?.name}`} · Attempt #{attemptsForLevel}
           </div>
           <div style={{ fontSize: '3rem', fontWeight: 900, color: score >= 0 ? 'var(--green)' : 'var(--red)', lineHeight: 1 }}>
             {score}
@@ -148,7 +149,13 @@ export default function ResultPage() {
         {/* Status banner */}
         {nextUnlocked ? (
           <div style={{ background: '#dcfce7', border: '1.5px solid #16a34a', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem' }}>🎉 Level {nextLevelId} Unlocked!</div>
+            <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+              🎉 {isChapterTestLevel(unitId, nextLevelId) ? (
+                <>CCT Unlocked!<InfoTooltip text="Complete Chapter Test" /></>
+              ) : (
+                `${levelBadge(unitId, nextLevelId)} Unlocked!`
+              )}
+            </div>
             <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>Score ≥ {requiredPct}% — great work!</div>
           </div>
         ) : requiredPct != null && !passed ? (
@@ -181,7 +188,7 @@ export default function ResultPage() {
           </button>
           {nextUnlocked && nextLevelId != null && (
             <button className="btn btn-primary" onClick={() => navigate(`/student/test/${unitId}/${nextLevelId}`)}>
-              Start Level {nextLevelId} →
+              Start {isChapterTestLevel(unitId, nextLevelId) ? 'CCT' : levelBadge(unitId, nextLevelId)} →
             </button>
           )}
           <Link to="/student/dashboard" className="btn btn-ghost">

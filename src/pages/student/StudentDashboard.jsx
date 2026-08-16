@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
+import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -157,7 +157,7 @@ export default function StudentDashboard() {
             Unit {selectedUnit.id}: {selectedUnit.name}
           </h3>
           <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-            {levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and Level {lastLevelId} always unlocked
+            {levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and {levelBadge(selectedUnit.id, lastLevelId)} always unlocked
           </p>
           <div className="levels-grid">
             {levelDefs.map(({ id: levelId, name: levelName, topic: levelTopic }) => {
@@ -175,7 +175,7 @@ export default function StudentDashboard() {
                   onClick={() => isUnlocked && startTest(selectedUnit.id, levelId)}
                 >
                   <div className="level-num">
-                    Level {levelId}
+                    {levelBadge(selectedUnit.id, levelId)}
                     <InfoTooltip text={levelTopic || levelName} />
                   </div>
                   <h4>{levelName}</h4>
@@ -221,6 +221,7 @@ export default function StudentDashboard() {
 
         {videoModal && (
           <LevelVideosModal
+            unitId={selectedUnit.id}
             levelId={videoModal.levelId}
             levelName={videoModal.levelName}
             videos={videoModal.videos}

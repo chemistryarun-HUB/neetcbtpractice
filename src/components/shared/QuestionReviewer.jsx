@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
-import { deriveTopic, deriveFullTopic } from '../../lib/topics'
+import { deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { levelBadge } from '../../lib/constants'
 import QuestionView from './QuestionView'
 import QuestionEditPanel from './QuestionEditPanel'
 import InfoTooltip from './InfoTooltip'
@@ -131,7 +132,9 @@ export default function QuestionReviewer({
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flex: '1 1 200px' }}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</span>
           <span style={{ opacity: 0.5 }}>·</span>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Level {q.level}: {topic}</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {levelBadge(unitIdOf(q.unit), q.level)}: {topic}
+          </span>
           <InfoTooltip text={deriveFullTopic(q.unit, q.level) || q.topic} />
         </div>
 

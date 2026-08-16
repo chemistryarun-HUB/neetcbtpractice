@@ -5,6 +5,7 @@ import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from '../shared/MatchTable'
 import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
+import { levelBadge } from '../../lib/constants'
 
 // Mirrors ResultPage.jsx's own review UI — same Correct/Wrong/Skipped tiles
 // the student sees on their own post-test screen (clicking a tile filters
@@ -106,7 +107,7 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
           <div>
             <div>Attempt Review</div>
             <div style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--gray-500)', marginTop: '0.2rem' }}>
-              Unit {String(attempt.unit_id).padStart(2, '0')} · Level {String(attempt.level).padStart(2, '0')} · Attempt #{attempt.attempt_number} — {studentName}
+              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_number} — {studentName}
             </div>
           </div>
           <button className="btn btn-ghost btn-sm" onClick={onClose}><X size={18} /></button>

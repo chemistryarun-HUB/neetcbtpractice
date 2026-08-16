@@ -167,6 +167,30 @@ export function levelIdsFor(unitId) {
 }
 
 /**
+ * The Complete Chapter Test (CCT) is always the last level of a unit, and it
+ * behaves nothing like the sequential levels before it: it's unlocked from
+ * day one (alongside Level 1) rather than earned by clearing a prior level,
+ * and it draws its questions from every level of the unit combined instead
+ * of having its own pool. Labeling it "Level 07" the same way as the levels
+ * that ARE sequentially gated implies a numeric position it doesn't have —
+ * hence the short "CCT" badge everywhere a level number is shown, paired
+ * with an "i" tooltip carrying the full name (already the level's own
+ * name/topic string in UNIT_LEVELS, so no separate copy to keep in sync).
+ */
+export function isChapterTestLevel(unitId, levelId) {
+  const defs = UNIT_LEVELS[Number(unitId)] || []
+  return defs.length > 0 && defs[defs.length - 1].id === Number(levelId)
+}
+
+// Short display label for a level — "CCT" for the Complete Chapter Test,
+// else "Level N" (optionally zero-padded to match a table's other numbers).
+export function levelBadge(unitId, levelId, { pad = false } = {}) {
+  if (isChapterTestLevel(unitId, levelId)) return 'CCT'
+  if (levelId == null) return 'Level —'
+  return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
+}
+
+/**
  * The level a student unlocks by clearing `levelId` in `unitId` — null when
  * they've just cleared the unit's last level, so there's nothing left to open.
  *
