@@ -26,14 +26,15 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   const [unitFilter, setUnitFilter] = useState('all')
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
-  // Most-recently-attempted level group first, so whatever the student is
-  // actively working on right now surfaces at the top instead of always
-  // Unit 1 / Level 1.
+  // Unit then level, ascending — sorting by most-recent-attempt used to put
+  // e.g. Level 4 above Level 2 above Level 5 whenever the student happened to
+  // revisit an earlier level later, which reads as broken progression to
+  // anyone scanning top-to-bottom expecting Level 01, 02, 03... in order.
   const groupEntries = useMemo(() => Object.entries(groups).map(([key, rows]) => {
     const [unitId, level] = key.split('-').map(Number)
     const recent = mostRecent(rows)
     return { key, unitId, level, rows, recent }
-  }).sort((a, b) => (b.recent?.submitted_at || '').localeCompare(a.recent?.submitted_at || '')), [groups])
+  }).sort((a, b) => a.unitId - b.unitId || a.level - b.level), [groups])
 
   const distinctUnits = useMemo(() => [...new Set(attempts.map(a => a.unit_id).filter(id => id != null))].sort((a, b) => a - b), [attempts])
 
