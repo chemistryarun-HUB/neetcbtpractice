@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock, Maximize2 } from 'lucide-react'
+import { Upload, Plus, Search, ChevronDown, ChevronUp, ImagePlus, Lock, Maximize2 } from 'lucide-react'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
@@ -613,7 +613,10 @@ export default function QuestionUploader({ uploadedBy }) {
 
   return (
     <div>
-      <div className="tabs">
+      {/* Tighter than the shared .tabs default (1.5rem) — inline override so
+          the other pages reusing .tabs (AdminKeyChanges, AdminStudents)
+          aren't affected. */}
+      <div className="tabs" style={{ marginBottom: '0.75rem' }}>
         <button className={`tab-btn ${tab === 'list' ? 'active' : ''}`} onClick={() => setTab('list')}>Question List</button>
         <button className={`tab-btn ${tab === 'manual' ? 'active' : ''}`} onClick={() => setTab('manual')}>Add Manually</button>
         <button className={`tab-btn ${tab === 'excel' ? 'active' : ''}`} onClick={() => setTab('excel')}>Upload Excel</button>
@@ -641,7 +644,7 @@ export default function QuestionUploader({ uploadedBy }) {
           {/* Chrome is kept to two tight rows — every pixel spent here is a pixel
               the question list doesn't get. Reading a question happens in the
               full-screen reviewer, not in this card. */}
-          <div className="card-header" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem 1rem' }}>
+          <div className="card-header" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', padding: '0.6rem 0.875rem' }}>
             {/* Row 1: search + count + review entry point */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: '200px' }}>
@@ -752,6 +755,7 @@ export default function QuestionUploader({ uploadedBy }) {
                     <th style={{ textAlign: 'center' }}>Question</th>
                     <th style={{ width: '80px' }}>Difficulty</th>
                     <th>Tag</th>
+                    <th>Source</th>
                     <th style={{ width: '96px' }}></th>
                   </tr>
                 </thead>
@@ -772,7 +776,7 @@ export default function QuestionUploader({ uploadedBy }) {
                       <Fragment key={q.id}>
                         {showUnitHeader && (
                           <tr>
-                            <td colSpan={8} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
+                            <td colSpan={9} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
                                 {q.unit}
                                 <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}>· {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
@@ -782,7 +786,7 @@ export default function QuestionUploader({ uploadedBy }) {
                         )}
                         {showLevelHeader && (
                           <tr>
-                            <td colSpan={8} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
+                            <td colSpan={9} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
                                 {levelBadge(unitIdOf(q.unit), q.level)}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
                                 <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
@@ -825,7 +829,13 @@ export default function QuestionUploader({ uploadedBy }) {
                             <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                           </td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)' }}>{q.question_tag}</td>
-                          <td onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.source}>{q.source}</td>
+                          {/* Edit and the Active/Inactive toggle used to live here too —
+                              moved out of the list row since both are one click away inside
+                              the full-screen reviewer (its own Edit button, and the A key /
+                              Active-Inactive toggle there — see QuestionReviewer.jsx), and
+                              this row only needs to get someone into that view. */}
+                          <td onClick={e => e.stopPropagation()} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <button
                               className="btn btn-outline btn-sm"
                               style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
@@ -833,27 +843,6 @@ export default function QuestionUploader({ uploadedBy }) {
                               onClick={() => openReview(q)}
                             >
                               <Maximize2 size={12} /> Review
-                            </button>
-                            <button
-                              className="btn btn-outline btn-sm"
-                              style={{ fontSize: '0.75rem', padding: '0.2rem 0.4rem', display: 'flex', alignItems: 'center' }}
-                              title="Edit question"
-                              onClick={() => openReview(q, true)}
-                            >
-                              <Pencil size={13} />
-                            </button>
-                            <button
-                              className="btn btn-sm"
-                              style={{
-                                fontSize: '0.7rem', padding: '0.2rem 0.55rem', fontWeight: 600, borderRadius: 'var(--radius)', cursor: 'pointer',
-                                background: isInactive ? '#fee2e2' : '#dcfce7',
-                                color: isInactive ? '#b91c1c' : '#15803d',
-                                border: `1.5px solid ${isInactive ? '#fca5a5' : '#86efac'}`,
-                              }}
-                              onClick={() => setActive(q.id, isInactive)}
-                              title={isInactive ? 'Click to restore active' : 'Click to deactivate'}
-                            >
-                              {isInactive ? 'Inactive' : 'Active'}
                             </button>
                           </td>
                         </tr>
