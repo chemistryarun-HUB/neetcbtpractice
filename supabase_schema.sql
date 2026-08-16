@@ -83,7 +83,21 @@ create table if not exists questions (
   -- real images to replace "[Image]" placeholders). Excel re-uploads must not silently
   -- revert that fix, so handleExcelUpload() in QuestionUploader.jsx skips overwriting
   -- question/options/correct_option/question_image for locked rows.
+  -- NOTE: this covers the CONTENT half of a row only. The metadata half
+  -- (unit/level/topic/difficulty/tag/source) is deliberately still re-synced from
+  -- Excel on a locked row — pin those individually with the five columns below.
   content_locked boolean not null default false,
+  -- Per-field locks for the metadata an Excel re-upload would otherwise revert.
+  -- Independent of content_locked and of each other; all default false, so a field
+  -- is only protected once an admin edits it in the Edit panel (which pins it) or
+  -- clicks its lock on. `topic` has no lock of its own — it's derived from
+  -- (unit, level), so it follows unit_locked/level_locked. See src/lib/fieldLocks.js
+  -- and migration_field_locks.sql.
+  unit_locked       boolean not null default false,
+  level_locked      boolean not null default false,
+  difficulty_locked boolean not null default false,
+  tag_locked        boolean not null default false,
+  source_locked     boolean not null default false,
   -- Match the Column (MTC): per-item text + optional image for each of the 8 items
   -- (Column A: 1-4, Column B: p-s). Null on every question created before this existed
   -- (and on every non-MTC question) — see migration_mtc_images.sql.

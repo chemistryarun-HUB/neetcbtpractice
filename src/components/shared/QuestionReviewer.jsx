@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
 import { deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { levelBadge } from '../../lib/constants'
+import { hasAnyFieldLock, lockSummary } from '../../lib/fieldLocks'
 import QuestionView from './QuestionView'
 import QuestionEditPanel from './QuestionEditPanel'
 import InfoTooltip from './InfoTooltip'
@@ -123,7 +124,7 @@ export default function QuestionReviewer({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
           <code style={{ fontWeight: 700, fontSize: '0.9375rem', letterSpacing: '0.02em' }}>{q.qid}</code>
-          {q.content_locked && <Lock size={13} style={{ opacity: 0.8 }} />}
+          {(q.content_locked || hasAnyFieldLock(q)) && <Lock size={13} style={{ opacity: 0.8 }} title={lockSummary(q)} />}
           {isInactive && (
             <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: 4, padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>INACTIVE</span>
           )}

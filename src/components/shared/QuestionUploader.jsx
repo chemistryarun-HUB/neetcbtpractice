@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, Pencil, ImagePlus, Lock, Maximize2 } from 'lucide-react'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
 import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
@@ -515,28 +516,26 @@ export default function QuestionUploader({ uploadedBy }) {
           return
         }
 
-        // Questions manually fixed via the Edit panel (content_locked=true) must not
-        // have their question/options/correct_option reverted by a stale Excel source —
-        // that's the whole reason content_locked exists. Look up which incoming Q IDs
-        // are currently locked, then split into a full upsert vs. a metadata-only upsert.
+        // Locks decide, per existing row, which columns this sheet may overwrite:
+        //   content_locked → skip the content half (question/options/answer/images)
+        //   unit_locked, level_locked, …  → skip that one metadata field
+        // Both are looked up together here. Q IDs with no row yet aren't in the
+        // result at all, which is what makes new questions insert with every value
+        // straight from the sheet — locks only ever apply to rows being re-touched.
         const allQids = dedupedRecords.map(r => r.qid)
-        const lockedQids = new Set()
+        const lockByQid = new Map()
         const LOOKUP_BATCH = 500
         for (let i = 0; i < allQids.length; i += LOOKUP_BATCH) {
-          const { data: lockedRows, error: lookupErr } = await supabase
+          const { data: lockRows, error: lookupErr } = await supabase
             .from('questions')
-            .select('qid')
+            .select(['qid', 'content_locked', ...LOCK_COLUMNS].join(', '))
             .in('qid', allQids.slice(i, i + LOOKUP_BATCH))
-            .eq('content_locked', true)
           if (lookupErr) throw lookupErr
-          for (const row of lockedRows) lockedQids.add(row.qid)
+          for (const row of lockRows) lockByQid.set(row.qid, row)
         }
 
-        const fullRecords = dedupedRecords.filter(r => !lockedQids.has(r.qid))
-        const metadataOnlyRecords = dedupedRecords
-          .filter(r => lockedQids.has(r.qid))
-          .map(({ qid, subject, unit, chapter_name, topic, level, difficulty_level, question_tag, source, uploaded_by }) =>
-            ({ qid, subject, unit, chapter_name, topic, level, difficulty_level, question_tag, source, uploaded_by }))
+        const { fullRecords, partialUpdates, contentLockedCount, fieldLockCounts } =
+          planLockedUpload(dedupedRecords, lockByQid)
 
         const BATCH = 500
         for (let i = 0; i < fullRecords.length; i += BATCH) {
@@ -545,19 +544,21 @@ export default function QuestionUploader({ uploadedBy }) {
             .upsert(fullRecords.slice(i, i + BATCH), { onConflict: 'qid' })
           if (error) throw error
         }
-        // Locked rows are guaranteed to already exist (that's how lockedQids was built),
+        // Locked rows are guaranteed to already exist (that's how lockByQid was built),
         // so this must be a plain UPDATE, not an upsert — Postgres checks NOT NULL
         // constraints (question, option1-4, correct_option) against the INSERT branch
         // of "ON CONFLICT DO UPDATE" before it even resolves the conflict, so omitting
         // those columns from an upsert payload fails even though only a row that already
         // satisfies them would ever be touched.
-        for (const { qid, ...fields } of metadataOnlyRecords) {
+        for (const { qid, fields } of partialUpdates) {
           const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
           if (error) throw error
         }
 
         const parts = [`${dedupedRecords.length} questions uploaded successfully!`]
-        if (metadataOnlyRecords.length) parts.push(`${metadataOnlyRecords.length} were 🔒 locked — question/options/answer preserved, only metadata updated.`)
+        if (contentLockedCount) parts.push(`${contentLockedCount} were 🔒 content-locked — question/options/answer preserved.`)
+        const pinned = Object.entries(fieldLockCounts).filter(([, n]) => n > 0)
+        if (pinned.length) parts.push(`🔒 Kept manual values for ${pinned.map(([label, n]) => `${label} (${n})`).join(', ')}.`)
         if (skipped.length) parts.push(`${skipped.length} skipped (missing Q ID or Question).`)
         if (duplicateCount) parts.push(`${duplicateCount} duplicate Q ID(s) in file — kept last occurrence.`)
         toast.success(parts.join(' '), { duration: 8000 })
@@ -809,7 +810,9 @@ export default function QuestionUploader({ uploadedBy }) {
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
                             {isInactive && <span style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '3px', padding: '0 4px' }}>inactive</span>}
-                            {q.content_locked && <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title="Content locked — protected from Excel re-upload overwrites" />}
+                            {(q.content_locked || hasAnyFieldLock(q)) && (
+                              <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title={lockSummary(q)} />
+                            )}
                           </td>
                           <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>

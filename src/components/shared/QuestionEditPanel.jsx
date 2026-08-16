@@ -1,11 +1,33 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { ImagePlus, Lock } from 'lucide-react'
+import { ImagePlus, Lock, LockOpen } from 'lucide-react'
 import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { uploadQuestionImage } from '../../lib/storage'
+import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import InfoTooltip from './InfoTooltip'
+
+/**
+ * Click-to-toggle padlock shown beside each field an Excel re-upload could
+ * otherwise revert. Locked (blue) = the sheet can't touch this field; open
+ * (grey) = the sheet owns it again.
+ */
+function FieldLock({ locked, onToggle, label }) {
+  return (
+    <button type="button" onClick={onToggle}
+      title={locked
+        ? `${label} is locked — an Excel re-upload will not overwrite it. Click to unlock.`
+        : `${label} follows the Excel sheet. Click to lock the current value.`}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: '0.15rem', cursor: 'pointer',
+        border: 'none', background: 'none', padding: '0 0.15rem', lineHeight: 1,
+        color: locked ? '#0284c7' : 'var(--gray-300)',
+      }}>
+      {locked ? <Lock size={12} /> : <LockOpen size={12} />}
+    </button>
+  )
+}
 
 // Image field that works with already-uploaded URLs (not File objects).
 function EditImageField({ label, url, uploading, onUpload, onRemove }) {
@@ -52,7 +74,13 @@ function initialForm(q) {
     // Editing here means "I've verified/fixed this by hand" — default to
     // protecting it from a future Excel re-upload clobbering it back.
     // Admin can uncheck if they genuinely want Excel to keep overriding this row.
+    // Covers the content half only; the five metadata fields carry their own
+    // locks below, which is what stops an Excel re-upload reverting a hand-set
+    // Level or Unit (see lib/fieldLocks.js).
     content_locked:     true,
+    // Per-field locks load from the row as-is — unlike content_locked, merely
+    // opening the panel must not pin a field the admin never touched.
+    ...Object.fromEntries(LOCK_COLUMNS.map(c => [c, !!q[c]])),
     // Match the Column — only meaningful when question_type is MTC, but set
     // unconditionally (empty string for everything else) so a legacy MTC row
     // being restructured for the first time has somewhere to type into.
@@ -88,6 +116,22 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
   const [imgUrls, setImgUrls] = useState(() => initialImages(q))
   const [uploading, setUploading] = useState(() => new Set())
   const [saving, setSaving] = useState(false)
+
+  // Setting one of the five lockable fields to a value different from the one
+  // in the DB pins it automatically: typing a Level here means "this is the
+  // Level I want", and the next Excel re-upload silently reverting it is the
+  // whole bug this exists to stop. Editing it back to the stored value leaves
+  // the lock alone, so a no-op keystroke doesn't pin anything, and the padlock
+  // beside the field is always there to override either way.
+  function setLockable(field, value, extra = {}) {
+    const lockCol = LOCK_COL_BY_FIELD[field]
+    const changed = String(value ?? '') !== String(q[field] ?? '')
+    setForm(f => ({ ...f, [field]: value, ...(changed ? { [lockCol]: true } : {}), ...extra }))
+  }
+
+  function toggleLock(lockCol) {
+    setForm(f => ({ ...f, [lockCol]: !f[lockCol] }))
+  }
 
   // Level choices are driven by whichever unit the form currently points at — a
   // hardcoded 1-9 list used to hide the real levels of any unit with more than
@@ -141,6 +185,9 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         source:           form.source || null,
         is_active:        form.is_active,
         content_locked:   form.content_locked,
+        // Persisting these is what makes the padlocks mean anything — the Excel
+        // importer reads them back to decide which columns it may overwrite.
+        ...Object.fromEntries(LOCK_COLUMNS.map(c => [c, !!form[c]])),
         question_image:   imgUrls.question_image ?? null,
         option1_image:    imgUrls.option1_image  ?? null,
         option2_image:    imgUrls.option2_image  ?? null,
@@ -284,18 +331,24 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         })}
       </div>
 
-      {/* Metadata row */}
+      {/* Metadata row — each of these five carries its own padlock, because
+          these are exactly the columns an Excel re-upload rewrites. */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.625rem', marginBottom: '0.75rem' }}>
         <div className="form-group" style={{ margin: 0, flex: '1.4 1 190px' }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Unit</label>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+            Unit
+            <FieldLock label="Unit" locked={form.unit_locked} onToggle={() => toggleLock('unit_locked')} />
+          </label>
           <select className="form-control" style={{ fontSize: '0.8125rem' }}
             value={editUnitId || ''}
             onChange={e => {
               const unit = CHEMISTRY_UNITS.find(u => u.id === Number(e.target.value))
               // Moving to a different unit means the old level number almost
               // certainly doesn't map to the same topic there — reset to Level 1
-              // so it doesn't silently point at the wrong syllabus.
-              setForm(f => ({ ...f, unit: unit ? `Unit ${unit.id} - ${unit.name}` : '', level: 1 }))
+              // so it doesn't silently point at the wrong syllabus. That reset is
+              // a real value change, so it pins Level too: a stale sheet row
+              // carrying the OLD unit's level must not drag it back.
+              setLockable('unit', unit ? `Unit ${unit.id} - ${unit.name}` : '', { level: 1, level_locked: true })
             }}>
             {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
           </select>
@@ -304,32 +357,42 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             Level
             <InfoTooltip text={deriveFullTopic(form.unit, form.level)} align="left" />
+            <FieldLock label="Level" locked={form.level_locked} onToggle={() => toggleLock('level_locked')} />
           </label>
           <select className="form-control" style={{ fontSize: '0.8125rem' }}
             value={form.level}
-            onChange={e => setForm(f => ({ ...f, level: e.target.value }))}>
+            onChange={e => setLockable('level', e.target.value)}>
             {levelOptions.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
           </select>
         </div>
-        <div className="form-group" style={{ margin: 0, flex: '0.6 1 100px' }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Difficulty</label>
+        <div className="form-group" style={{ margin: 0, flex: '0.6 1 110px' }}>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+            Difficulty
+            <FieldLock label="Difficulty" locked={form.difficulty_locked} onToggle={() => toggleLock('difficulty_locked')} />
+          </label>
           <select className="form-control" style={{ fontSize: '0.8125rem' }}
             value={form.difficulty_level}
-            onChange={e => setForm(f => ({ ...f, difficulty_level: e.target.value }))}>
+            onChange={e => setLockable('difficulty_level', e.target.value)}>
             <option>Easy</option><option>Medium</option><option>Hard</option>
           </select>
         </div>
         <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Question Tag</label>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+            Question Tag
+            <FieldLock label="Question Tag" locked={form.tag_locked} onToggle={() => toggleLock('tag_locked')} />
+          </label>
           <input className="form-control" style={{ fontSize: '0.8125rem' }}
             value={form.question_tag}
-            onChange={e => setForm(f => ({ ...f, question_tag: e.target.value }))} />
+            onChange={e => setLockable('question_tag', e.target.value)} />
         </div>
         <div className="form-group" style={{ margin: 0, flex: '1 1 140px' }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Source</label>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+            Source
+            <FieldLock label="Source" locked={form.source_locked} onToggle={() => toggleLock('source_locked')} />
+          </label>
           <input className="form-control" style={{ fontSize: '0.8125rem' }}
             value={form.source}
-            onChange={e => setForm(f => ({ ...f, source: e.target.value }))} />
+            onChange={e => setLockable('source', e.target.value)} />
         </div>
         <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}>
@@ -339,9 +402,9 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         </div>
         <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}
-            title="When checked, re-uploading an Excel sheet with this Q ID will NOT overwrite the question text, options or correct answer — only metadata (topic, difficulty, tag, source) gets updated.">
+            title="Covers the question text, options, correct answer and images only. Unit, Level, Difficulty, Tag and Source are NOT covered by this — each has its own padlock above, because a re-upload re-syncs those by design.">
             <input type="checkbox" checked={form.content_locked} onChange={e => setForm(f => ({ ...f, content_locked: e.target.checked }))} />
-            <Lock size={13} /> Lock content from Excel re-upload
+            <Lock size={13} /> Lock question &amp; options from Excel
           </label>
         </div>
       </div>
