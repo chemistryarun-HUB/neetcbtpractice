@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 import InfoTooltip from '../shared/InfoTooltip'
 import {
   unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
-  computeStreak, clearedInfo, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
+  computeStreak, clearedInfo, attemptClearedOwnBar, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
 import { NEET_CHEMISTRY_SYLLABUS } from '../../lib/constants'
@@ -42,13 +42,18 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   // ordering above), with cleared/trend precomputed per attempt. Attempt
   // numbers themselves are already scoped to (unit, level) at creation time
   // in TestPage.jsx — this only controls display order, not the numbering.
+  //
+  // The per-row badge checks each attempt against its OWN attempt-scaled bar
+  // (attemptClearedOwnBar), not "was the level ever cleared" — a later retry
+  // that itself scored badly must not be badged "Level cleared" just because
+  // an earlier attempt already unlocked the next level. clearedInfo() is
+  // still used, but only for the aggregate clearedCount stat tile below.
   const visibleGroups = useMemo(() => {
     const filtered = unitFilter === 'all' ? groupEntries : groupEntries.filter(g => g.unitId === Number(unitFilter))
     return filtered.map(g => {
-      const cleared = clearedInfo(g.rows)
       const sorted = [...g.rows].sort((a, b) => b.attempt_number - a.attempt_number)
       const attemptsInfo = sorted.map(a => {
-        const isCleared = cleared.cleared && a.attempt_number >= cleared.attemptNumber
+        const isCleared = attemptClearedOwnBar(a)
         return { attempt: a, cleared: isCleared, trend: isCleared ? null : trendLabel(g.rows, a.attempt_number) }
       })
       return { ...g, attemptsInfo }

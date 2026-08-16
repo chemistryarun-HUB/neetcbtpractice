@@ -68,7 +68,10 @@ export function computeStreak(attempts) {
 // "Cleared" = the first attempt whose score crosses that attempt number's
 // real unlock threshold (thresholdPctFor) — i.e. the exact attempt where the
 // student actually unlocked the next level in the app. Attempt 4 onward
-// keeps using the same bar as attempt 3, matching TestPage.jsx.
+// keeps using the same bar as attempt 3, matching TestPage.jsx. This answers
+// "is the level unlocked" (an aggregate, permanent fact once true — TestPage
+// never re-locks a level over a later bad attempt), which is what the
+// clearedCount stat tile wants.
 export function clearedInfo(attemptsForLevel) {
   const sorted = [...attemptsForLevel].sort((a, b) => a.attempt_number - b.attempt_number)
   for (const a of sorted) {
@@ -78,6 +81,17 @@ export function clearedInfo(attemptsForLevel) {
     }
   }
   return { cleared: false }
+}
+
+// Did THIS specific attempt clear its own attempt-scaled threshold — distinct
+// from clearedInfo(), which answers "is the level unlocked" as a permanent,
+// aggregate fact. Used for the per-row "Level cleared" badge: once a level is
+// cleared once, the level stays unlocked, but a later attempt that itself
+// scored badly (even negative, from heavy negative marking) shouldn't still
+// be badged "Level cleared" — that misrepresents that specific attempt.
+export function attemptClearedOwnBar(a) {
+  const requiredPct = thresholdPctFor(a.attempt_number)
+  return requiredPct != null && scorePct(a) >= requiredPct
 }
 
 // Trend as of a specific attempt (defaults to the latest) — lets a per-attempt
