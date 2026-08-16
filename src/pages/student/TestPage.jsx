@@ -115,24 +115,27 @@ export default function TestPage() {
 
       setQuestions(prepared)
 
-      // Count existing SUBMITTED attempts for this level — an abandoned/never-submitted
-      // session must not consume a number slot, since only submitted attempts ever
-      // show up in attempt history (Performance pages filter to submitted=true), so
-      // counting unsubmitted rows here would silently create gaps in the displayed sequence.
-      const { count } = await supabase
-        .from('test_attempts')
-        .select('id', { count: 'exact', head: true })
-        .eq('student_id', user.id)
-        .eq('unit_id', unitNum)
-        .eq('level', levelNum)
-        .eq('submitted', true)
+      // next_attempt_number() is a Postgres function (migration_attempt_numbering.sql)
+      // that atomically increments a per-(student, unit, level) counter row —
+      // replaces a count-existing-rows-then-insert that raced whenever two
+      // test-starts landed close together (two tabs, a double-click, or a
+      // student on a stale cached bundle racing one on a fresh deploy), which
+      // is how attempt_number ended up with real duplicates and gaps in
+      // production. See that migration's header for the full story and
+      // lib/performanceMetrics.js's attemptsInOrder() for how the UI stayed
+      // correct regardless (it derives an attempt's displayed position from
+      // submission order, not from this column) while this was still broken.
+      const { data: nextNumber, error: numErr } = await supabase.rpc('next_attempt_number', {
+        p_student_id: user.id, p_unit_id: unitNum, p_level: levelNum,
+      })
+      if (numErr) throw numErr
 
       // Create attempt record
       const { data: attempt, error } = await supabase.from('test_attempts').insert({
         student_id: user.id,
         unit_id: unitNum,
         level: levelNum,
-        attempt_number: (count || 0) + 1,
+        attempt_number: nextNumber,
         question_ids: prepared.map(q => q.id),
         answers: {},
         submitted: false,
