@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
+import { attemptsInOrder } from '../../lib/performanceMetrics'
 import { ArrowLeft } from 'lucide-react'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
@@ -51,6 +52,15 @@ export default function StudentProgress() {
     levelMap[key].push(a)
   }
   const attemptedUnitIds = [...new Set(attempts.map(a => a.unit_id).filter(Boolean))].sort((a, b) => a - b)
+
+  // attempt id → its position in that (unit, level)'s submission order. The
+  // stored attempt_number has duplicates and gaps in real data, so the flat
+  // "All Attempts" table below numbers rows from this instead (see
+  // attemptsInOrder in performanceMetrics).
+  const positionById = {}
+  for (const rows of Object.values(levelMap)) {
+    for (const { attempt, position } of attemptsInOrder(rows)) positionById[attempt.id] = position
+  }
 
   const totalAttempted = attempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
 
@@ -145,7 +155,7 @@ export default function StudentProgress() {
                       <tr key={a.id}>
                         <td>Unit {a.unit_id}</td>
                         <td>{levelBadge(a.unit_id, a.level)}</td>
-                        <td>#{a.attempt_number}</td>
+                        <td>#{positionById[a.id] ?? a.attempt_number}</td>
                         <td><strong>{a.score ?? '-'}</strong></td>
                         <td style={{ color: 'var(--green)' }}>{a.correct_count}</td>
                         <td style={{ color: 'var(--red)' }}>{a.wrong_count}</td>

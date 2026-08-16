@@ -107,7 +107,11 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
           <div>
             <div>Attempt Review</div>
             <div style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--gray-500)', marginTop: '0.2rem' }}>
-              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_number} — {studentName}
+              {/* attempt_position is the submission-order position the caller
+                  already computed for its table; attempt_number is the stored
+                  value, kept only as a fallback for callers that don't have the
+                  level's other attempts to hand (see attemptsInOrder). */}
+              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_position ?? attempt.attempt_number} — {studentName}
             </div>
           </div>
           <button className="btn btn-ghost btn-sm" onClick={onClose}><X size={18} /></button>

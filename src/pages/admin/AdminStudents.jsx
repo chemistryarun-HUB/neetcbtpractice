@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
-import { computeStreak, aggregateAccuracy, buildActivityMessage } from '../../lib/performanceMetrics'
+import { computeStreak, aggregateAccuracy, buildActivityMessage, attemptsInOrder } from '../../lib/performanceMetrics'
 
 const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
 function unitName(unitId) {
@@ -300,15 +300,17 @@ function StudentProgress({ student, onBack }) {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {lvlAttempts
-                                    .slice()
-                                    .sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at))
-                                    .map((a, i) => {
+                                  {/* Newest first, numbered by submission-order position rather
+                                      than the stored attempt_number — that column has duplicates
+                                      and gaps in real data (see attemptsInOrder). */}
+                                  {attemptsInOrder(lvlAttempts)
+                                    .reverse()
+                                    .map(({ attempt: a, position }, i) => {
                                       const total = (a.correct_count ?? 0) + (a.wrong_count ?? 0) + (a.skipped_count ?? 0)
                                       const acc = total > 0 ? ((a.correct_count / total) * 100).toFixed(1) : '0.0'
                                       return (
                                         <tr key={a.id} style={{ borderTop: '1px solid #dbeafe', background: i % 2 === 0 ? '#fff' : '#f0f7ff' }}>
-                                          <td style={{ padding: '0.3rem 0.6rem', fontWeight: 600 }}>#{a.attempt_number ?? i + 1}</td>
+                                          <td style={{ padding: '0.3rem 0.6rem', fontWeight: 600 }}>#{position}</td>
                                           <td style={{ padding: '0.3rem 0.6rem', textAlign: 'center', fontWeight: 600 }}>{a.score ?? '—'}</td>
                                           <td style={{ padding: '0.3rem 0.6rem', textAlign: 'center', color: '#15803d', fontWeight: 600 }}>{a.correct_count ?? '—'}</td>
                                           <td style={{ padding: '0.3rem 0.6rem', textAlign: 'center', color: '#b91c1c', fontWeight: 600 }}>{a.wrong_count ?? '—'}</td>

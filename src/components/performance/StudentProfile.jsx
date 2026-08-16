@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 import InfoTooltip from '../shared/InfoTooltip'
 import {
   unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
-  computeStreak, clearedInfo, attemptClearedOwnBar, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
+  computeStreak, clearedInfo, attemptClearedOwnBar, attemptsInOrder, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
 import { NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
@@ -26,22 +26,24 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   const [unitFilter, setUnitFilter] = useState('all')
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
-  // Unit then level, ascending — sorting by most-recent-attempt used to put
-  // e.g. Level 4 above Level 2 above Level 5 whenever the student happened to
-  // revisit an earlier level later, which reads as broken progression to
-  // anyone scanning top-to-bottom expecting Level 01, 02, 03... in order.
+  // The whole table reads bottom-up as a progression: within a unit, Level 1
+  // sits at the bottom and each level stacks above it, with the CCT (always
+  // the last level) on top — and within a level the oldest attempt is at the
+  // bottom, newest on top. So groups sort by unit ascending (syllabus order,
+  // one block per unit) but level DESCENDING.
   const groupEntries = useMemo(() => Object.entries(groups).map(([key, rows]) => {
     const [unitId, level] = key.split('-').map(Number)
     const recent = mostRecent(rows)
     return { key, unitId, level, rows, recent }
-  }).sort((a, b) => a.unitId - b.unitId || a.level - b.level), [groups])
+  }).sort((a, b) => a.unitId - b.unitId || b.level - a.level), [groups])
 
   const distinctUnits = useMemo(() => [...new Set(attempts.map(a => a.unit_id).filter(id => id != null))].sort((a, b) => a - b), [attempts])
 
-  // Each group's own attempts, most recent attempt first (matches the group
-  // ordering above), with cleared/trend precomputed per attempt. Attempt
-  // numbers themselves are already scoped to (unit, level) at creation time
-  // in TestPage.jsx — this only controls display order, not the numbering.
+  // Each group's own attempts, newest first so the latest test sits at the top
+  // of its level block. The "#N" shown is the attempt's position in submission
+  // order (attemptsInOrder), NOT the stored attempt_number — that column has
+  // duplicates and gaps in real data, which surfaced as two "#2" rows in one
+  // level and a level whose history started at "#5". See attemptsInOrder.
   //
   // The per-row badge checks each attempt against its OWN attempt-scaled bar
   // (attemptClearedOwnBar), not "was the level ever cleared" — a later retry
@@ -51,10 +53,9 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   const visibleGroups = useMemo(() => {
     const filtered = unitFilter === 'all' ? groupEntries : groupEntries.filter(g => g.unitId === Number(unitFilter))
     return filtered.map(g => {
-      const sorted = [...g.rows].sort((a, b) => b.attempt_number - a.attempt_number)
-      const attemptsInfo = sorted.map(a => {
+      const attemptsInfo = [...attemptsInOrder(g.rows)].reverse().map(({ attempt: a, position }) => {
         const isCleared = attemptClearedOwnBar(a)
-        return { attempt: a, cleared: isCleared, trend: isCleared ? null : trendLabel(g.rows, a.attempt_number) }
+        return { attempt: a, position, cleared: isCleared, trend: isCleared ? null : trendLabel(g.rows, position) }
       })
       return { ...g, attemptsInfo }
     })
@@ -64,6 +65,12 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   // the Last Attempt card specifically, but still count toward the raw
   // (unit-agnostic) stat tiles below.
   const lastAttempt = mostRecent(attempts.filter(a => a.unit_id != null))
+  // Same submission-order position the table shows, so the card and the row
+  // for one attempt never disagree about which try it was.
+  const lastAttemptPosition = lastAttempt
+    ? attemptsInOrder(groups[`${lastAttempt.unit_id}-${lastAttempt.level}`] || [])
+        .find(x => x.attempt.id === lastAttempt.id)?.position ?? null
+    : null
   const mostRecentAny = mostRecent(attempts)
   const overallAccuracy = aggregateAccuracy(attempts)
   const avgTime = avgTimePerQuestion(attempts)
@@ -166,7 +173,11 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
 
       <div className="perf-split">
         {lastAttempt ? (
-          <LastAttemptCard attempt={lastAttempt} onOpen={() => onOpenReview(lastAttempt)} />
+          <LastAttemptCard
+            attempt={lastAttempt}
+            position={lastAttemptPosition}
+            onOpen={() => onOpenReview({ ...lastAttempt, attempt_position: lastAttemptPosition })}
+          />
         ) : (
           <div className="card card-body empty-state">No attempts yet</div>
         )}
@@ -224,7 +235,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                 const a = info.attempt
                 const when = fmtWhen(a.submitted_at)
                 return (
-                  <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview(a)}>
+                  <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview({ ...a, attempt_position: info.position })}>
                     {i === 0 && (
                       <td rowSpan={g.attemptsInfo.length} style={{ verticalAlign: 'top', borderRight: '1px solid var(--gray-100)', width: '200px', maxWidth: '200px' }}>
                         <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(g.unitId).padStart(2, '0')}</div>
@@ -235,7 +246,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                         </div>
                       </td>
                     )}
-                    <td style={{ fontWeight: 700 }}>#{a.attempt_number}</td>
+                    <td style={{ fontWeight: 700 }}>#{info.position}</td>
                     <td style={{ textAlign: 'right', fontWeight: 700 }}>{a.score}</td>
                     <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
                     <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
@@ -264,7 +275,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   )
 }
 
-function LastAttemptCard({ attempt, onOpen }) {
+function LastAttemptCard({ attempt, position, onOpen }) {
   const lDef = levelDef(attempt.unit_id, attempt.level)
   const total = totalQuestions(attempt)
   const maxScore = total * 4
@@ -284,7 +295,7 @@ function LastAttemptCard({ attempt, onOpen }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_number}
+              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{position ?? attempt.attempt_number}
             </div>
             <div style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--gray-800)', marginTop: '0.15rem' }} onClick={e => e.stopPropagation()}>
               {levelBadge(attempt.unit_id, attempt.level)}

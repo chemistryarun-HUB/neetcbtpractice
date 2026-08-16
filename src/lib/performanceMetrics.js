@@ -65,6 +65,40 @@ export function computeStreak(attempts) {
   return streak
 }
 
+/**
+ * A level's attempts in the order they actually happened (oldest first), each
+ * tagged with the position it occupies in that sequence.
+ *
+ * `position` exists because the stored `attempt_number` cannot be trusted for
+ * display. TestPage assigns it at test-START time from a count, and two things
+ * corrupt it:
+ *
+ *   - An older build counted abandoned (never-submitted) sessions, so a student
+ *     who bailed out of four tests before finishing one had their first real
+ *     attempt stored as "#5" — a sequence starting at 5 with nothing before it.
+ *   - The number is chosen before the row exists, so two sessions started
+ *     against the same count both claim it, leaving two "#2"s in one level.
+ *
+ * Both artifacts are in production data. The counting fix shipped in Jul 2026
+ * (8f7a526) with a one-time renumber, but attempts created afterwards by
+ * students still running a cached copy of the old bundle kept reproducing it,
+ * so this is not a closed historical window that a second backfill would seal.
+ *
+ * Position is derived from submission order instead — a fact about what
+ * happened rather than a number guessed before it happened. `attempt_number`
+ * is deliberately still used for the unlock-threshold maths (see clearedInfo /
+ * attemptClearedOwnBar): that's the bar the app actually applied at the time,
+ * and re-deriving it now would retroactively re-judge levels students have
+ * genuinely unlocked.
+ */
+export function attemptsInOrder(attemptsForLevel) {
+  return [...attemptsForLevel]
+    .sort((a, b) =>
+      String(a.submitted_at || '').localeCompare(String(b.submitted_at || '')) ||
+      (a.attempt_number ?? 0) - (b.attempt_number ?? 0))
+    .map((attempt, i) => ({ attempt, position: i + 1 }))
+}
+
 // "Cleared" = the first attempt whose score crosses that attempt number's
 // real unlock threshold (thresholdPctFor) — i.e. the exact attempt where the
 // student actually unlocked the next level in the app. Attempt 4 onward
@@ -73,8 +107,9 @@ export function computeStreak(attempts) {
 // never re-locks a level over a later bad attempt), which is what the
 // clearedCount stat tile wants.
 export function clearedInfo(attemptsForLevel) {
-  const sorted = [...attemptsForLevel].sort((a, b) => a.attempt_number - b.attempt_number)
-  for (const a of sorted) {
+  // Walked in submission order rather than by attempt_number, which duplicates
+  // often enough to make that sort unstable (see attemptsInOrder).
+  for (const { attempt: a } of attemptsInOrder(attemptsForLevel)) {
     const requiredPct = thresholdPctFor(a.attempt_number)
     if (requiredPct != null && scorePct(a) >= requiredPct) {
       return { cleared: true, attemptNumber: a.attempt_number }
@@ -94,14 +129,19 @@ export function attemptClearedOwnBar(a) {
   return requiredPct != null && scorePct(a) >= requiredPct
 }
 
-// Trend as of a specific attempt (defaults to the latest) — lets a per-attempt
-// row show its own trend at that point in time, not just the group's overall one.
-export function trendLabel(attemptsForLevel, atAttemptNumber = null) {
-  const sorted = [...attemptsForLevel].sort((a, b) => a.attempt_number - b.attempt_number)
-  const idx = atAttemptNumber == null ? sorted.length - 1 : sorted.findIndex(a => a.attempt_number === atAttemptNumber)
-  if (idx < 1) return 'needs-work'
-  const last = scorePct(sorted[idx])
-  const prev = scorePct(sorted[idx - 1])
+// Trend as of a specific attempt, identified by its 1-based position in the
+// level's submission order (defaults to the latest) — lets a per-attempt row
+// show its own trend at that point in time, not just the group's overall one.
+//
+// Positional rather than keyed on attempt_number: a level with two attempts
+// stored as "#2" made the old lookup resolve both rows to the same earlier
+// attempt, so one of them showed a trend computed against the wrong test.
+export function trendLabel(attemptsForLevel, atPosition = null) {
+  const ordered = attemptsInOrder(attemptsForLevel)
+  const idx = atPosition == null ? ordered.length - 1 : atPosition - 1
+  if (idx < 1 || idx >= ordered.length) return 'needs-work'
+  const last = scorePct(ordered[idx].attempt)
+  const prev = scorePct(ordered[idx - 1].attempt)
   if (last > prev + 2) return 'improving'
   if (last < prev - 2) return 'declining'
   return 'needs-work'
