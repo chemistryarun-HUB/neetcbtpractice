@@ -146,6 +146,22 @@ export const UNIT_LEVELS = {
     { id: 5, name: 'Miscellaneous',             topic: 'Miscellaneous' },
     { id: 6, name: 'Complete Chapter Test',     topic: 'Complete Chapter Test' },
   ],
+  23: [
+    { id: 1, name: 'Inductive Effect and its Applications',
+              topic: 'Inductive Effect and its Applications' },
+    { id: 2, name: 'Resonance/Mesomerism, Resonance Energy, Aromaticity and its Applications',
+              topic: 'Resonance/Mesomerism, Resonance Energy, Aromaticity and its Applications' },
+    { id: 3, name: 'Resonance/Mesomeric Effect and its Applications',
+              topic: 'Resonance/Mesomeric Effect and its Applications' },
+    { id: 4, name: 'Hyperconjugation, Electromeric Effect and its Applications',
+              topic: 'Hyperconjugation, Electromeric Effect and its Applications' },
+    { id: 5, name: 'Acidic and Basic Strength',
+              topic: 'Acidic and Basic Strength' },
+    { id: 6, name: 'Electrophiles, Nucleophiles, Nucleophilicity, Solvent Effect and Types of Reactions',
+              topic: 'Electrophiles, Nucleophiles, Nucleophilicity, Solvent Effect and Types of Reactions' },
+    { id: 7, name: 'Miscellaneous',             topic: 'Miscellaneous' },
+    { id: 8, name: 'Complete Chapter Test',     topic: 'Complete Chapter Test' },
+  ],
   // Add more units here as you upload questions for them:
   // 2: [
   //   { id: 1, name: 'Bohr Model', topic: 'Bohr Model' },
