@@ -257,14 +257,26 @@ export default function LevelRulesTour({ studentId, studentName, onClose }) {
         </div>
 
         <div className="modal-footer" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          {/* Progress dots double as the step count — no separate "3 of 7" label needed. */}
-          <div style={{ display: 'flex', gap: '0.3rem' }}>
-            {steps.map((_, idx) => (
-              <span key={idx} style={{
-                width: idx === i ? 16 : 6, height: 6, borderRadius: 999, transition: 'width 0.15s',
-                background: idx === i ? 'var(--primary)' : 'var(--gray-200)',
-              }} />
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {/* Explicit, always-visible escape hatch — a lot of students opening this
+                already know the rules from experience (everyone existing gets this
+                tour once too, not just brand-new signups) and just want out without
+                hunting for the small ✕. Same finish() as X/Esc — one click either way
+                marks it seen for good. */}
+            {!atLast && (
+              <button className="btn btn-ghost btn-sm" onClick={finish} style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', padding: '0.2rem 0.4rem' }}>
+                Skip
+              </button>
+            )}
+            {/* Progress dots double as the step count — no separate "3 of 7" label needed. */}
+            <div style={{ display: 'flex', gap: '0.3rem' }}>
+              {steps.map((_, idx) => (
+                <span key={idx} style={{
+                  width: idx === i ? 16 : 6, height: 6, borderRadius: 999, transition: 'width 0.15s',
+                  background: idx === i ? 'var(--primary)' : 'var(--gray-200)',
+                }} />
+              ))}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             {!atFirst && (
