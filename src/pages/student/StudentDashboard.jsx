@@ -3,10 +3,11 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
-import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle } from 'lucide-react'
+import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import LevelVideosModal from '../../components/shared/LevelVideosModal'
+import LevelRulesTour, { hasTourBeenSeen } from '../../components/student/LevelRulesTour'
 import { groupVideosByUnitLevel } from '../../lib/youtube'
 
 export default function StudentDashboard() {
@@ -16,6 +17,9 @@ export default function StudentDashboard() {
   const [progress, setProgress] = useState(null)
   const [attempts, setAttempts] = useState([])
   const [loading, setLoading] = useState(true)
+  // Auto-opens once per student (see LevelRulesTour's own localStorage
+  // check); the "How levels work" link reopens it any time after that.
+  const [tourOpen, setTourOpen] = useState(false)
 
   // unitId → array of { level, topic, count } sorted by level
   const [unitLevels, setUnitLevels] = useState({})
@@ -100,6 +104,13 @@ export default function StudentDashboard() {
     load()
   }, [user.id])
 
+  // First-visit auto-open, once the dashboard actually has something to show
+  // behind it — separate from the load effect above so it re-checks after
+  // `loading` flips, rather than firing against stale state on mount.
+  useEffect(() => {
+    if (!loading && !hasTourBeenSeen(user.id)) setTourOpen(true)
+  }, [loading, user.id])
+
   async function handleLogout() {
     await logout()
     navigate('/')
@@ -156,8 +167,12 @@ export default function StudentDashboard() {
           <h3 style={{ fontWeight: 700, marginBottom: '0.25rem', color: 'var(--gray-700)' }}>
             Unit {selectedUnit.id}: {selectedUnit.name}
           </h3>
-          <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-            {levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and {levelBadge(selectedUnit.id, lastLevelId)} always unlocked
+          <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <span>{levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and {levelBadge(selectedUnit.id, lastLevelId)} always unlocked</span>
+            <button onClick={() => setTourOpen(true)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600, fontSize: '0.8125rem', padding: 0 }}>
+              <HelpCircle size={14} /> How levels work
+            </button>
           </p>
           <div className="levels-grid">
             {levelDefs.map(({ id: levelId, name: levelName, topic: levelTopic }) => {
@@ -231,6 +246,8 @@ export default function StudentDashboard() {
               : null}
           />
         )}
+
+        {tourOpen && <LevelRulesTour studentId={user.id} studentName={user.name} onClose={() => setTourOpen(false)} />}
       </div>
     )
   }
@@ -263,6 +280,10 @@ export default function StudentDashboard() {
             <Link to="/student/practice-papers" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <FileText size={15} /> Practice Papers
             </Link>
+            <button className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+              onClick={() => setTourOpen(true)}>
+              <HelpCircle size={15} /> How levels work
+            </button>
           </div>
         </div>
 
@@ -289,6 +310,8 @@ export default function StudentDashboard() {
           </div>
         ))}
       </div>
+
+      {tourOpen && <LevelRulesTour studentId={user.id} studentName={user.name} onClose={() => setTourOpen(false)} />}
     </div>
   )
 }
