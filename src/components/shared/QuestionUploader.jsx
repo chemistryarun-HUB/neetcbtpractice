@@ -246,10 +246,28 @@ export default function QuestionUploader({ uploadedBy }) {
       data.push(...(page || []))
       if (!page || page.length < 1000) break
     }
+
+    // Every (question_id, group_key) an admin already ruled "not a
+    // duplicate" — fetched fresh on each scan so a dismissal made in an
+    // earlier session, or by someone else, is honoured here too. Without
+    // this, "Not a duplicate" only ever removed the pair from local React
+    // state: it looked handled, then came right back on the next refresh,
+    // with nothing distinguishing it from a pair nobody had reviewed yet.
+    const dismissed = new Set()
+    for (let from = 0; ; from += 1000) {
+      const { data: page, error } = await supabase.from('dupe_dismissals')
+        .select('question_id, group_key')
+        .range(from, from + 999)
+      if (error) { toast.error(error.message); setDupeLoading(false); return }
+      for (const row of page || []) dismissed.add(`${row.question_id}|${row.group_key}`)
+      if (!page || page.length < 1000) break
+    }
+
     // Group by first 80 chars of question text (trimmed, lowercased for comparison)
     const groups = {}
     for (const q of data) {
       const key = (q.question || '').trim().substring(0, 80).toLowerCase()
+      if (dismissed.has(`${q.id}|${key}`)) continue
       if (!groups[key]) groups[key] = []
       groups[key].push(q)
     }
@@ -287,9 +305,16 @@ export default function QuestionUploader({ uploadedBy }) {
 
   // Removes one question from its group — for the many false positives the
   // 80-char-prefix heuristic produces (same opening line, genuinely different
-  // question). Purely a local dismissal for this scan; hitting Refresh reruns
-  // the heuristic from scratch and can surface it again.
-  function dismissFromDupeGroup(groupKey, qId) {
+  // question). Persisted to dupe_dismissals FIRST, and the row is only
+  // removed from the list once that write actually succeeds — an admin
+  // watching it disappear must be able to trust that it's really gone, not
+  // just gone until the next refresh (which is exactly what only updating
+  // local state used to do). ignoreDuplicates makes a double-click or a
+  // pair already dismissed elsewhere a harmless no-op instead of an error.
+  async function dismissFromDupeGroup(groupKey, qId) {
+    const { error } = await supabase.from('dupe_dismissals')
+      .upsert({ question_id: qId, group_key: groupKey }, { onConflict: 'question_id,group_key', ignoreDuplicates: true })
+    if (error) { toast.error(`Couldn't save that — try again. (${error.message})`); return }
     setDupeGroups(prev => prev
       .map(g => g.key === groupKey ? { ...g, items: g.items.filter(q => q.id !== qId) } : g)
       .filter(g => g.items.length > 1))

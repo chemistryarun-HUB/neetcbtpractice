@@ -271,6 +271,29 @@ create policy "Level videos deletable by admin" on level_videos
   for delete using (true);
 
 -- ============================================================
+-- DUPLICATE DISMISSALS (Find Duplicates tab in the Question Bank)
+-- "Not a duplicate" persists here as (question_id, group_key) rather than
+-- only living in React state, so it survives a refresh or a later re-scan
+-- instead of the pair silently reappearing. group_key is the same first-80-
+-- characters grouping key loadDuplicates() uses, so editing a question's
+-- text enough to change its grouping naturally invalidates any old
+-- dismissal instead of it wrongly suppressing a new duplicate signal.
+-- See migration_dupe_dismissals.sql.
+-- ============================================================
+create table if not exists dupe_dismissals (
+  id uuid primary key default uuid_generate_v4(),
+  question_id uuid not null references questions(id) on delete cascade,
+  group_key text not null,
+  dismissed_at timestamptz default now(),
+  unique (question_id, group_key)
+);
+
+alter table dupe_dismissals enable row level security;
+
+create policy "Dupe dismissals accessible by all" on dupe_dismissals
+  for all using (true);
+
+-- ============================================================
 -- INDEXES
 -- ============================================================
 create index if not exists idx_level_videos_unit_level on level_videos(unit_id, level, sort_order);
