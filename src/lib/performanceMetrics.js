@@ -37,6 +37,21 @@ export function aggregateAccuracy(attempts) {
   return totals.total > 0 ? (totals.correct / totals.total) * 100 : 0
 }
 
+// Score as a % of max possible marks, aggregated across many attempts —
+// weighted by question count (sum of score / sum of max marks) rather than a
+// naive mean of each attempt's own scorePct, so a 25-question attempt isn't
+// weighted the same as a 5-question one. Same weighting approach as
+// aggregateAccuracy above, just for score-with-negative-marking instead of
+// raw correct/attempted.
+export function aggregateScorePct(attempts) {
+  const totals = attempts.reduce((acc, a) => {
+    acc.score += a.score || 0
+    acc.max += totalQuestions(a) * MARKS_CORRECT
+    return acc
+  }, { score: 0, max: 0 })
+  return totals.max > 0 ? (totals.score / totals.max) * 100 : 0
+}
+
 export function avgTimePerQuestion(attempts) {
   const totals = attempts.reduce((acc, a) => {
     acc.time += a.time_taken || 0

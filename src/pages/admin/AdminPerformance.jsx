@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import StudentSidebar from '../../components/performance/StudentSidebar'
 import StudentProfile from '../../components/performance/StudentProfile'
 import ClassLeaderboard from '../../components/performance/ClassLeaderboard'
+import ClassReport from '../../components/performance/ClassReport'
 import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
 
 const NAV = [
@@ -93,7 +94,7 @@ export default function AdminPerformance() {
 
   function handleSelectClassFromSidebar(cls) {
     setSelectedClass(cls)
-    setView('leaderboard')
+    setView('classReport')
   }
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
@@ -123,6 +124,7 @@ export default function AdminPerformance() {
                 <strong style={{ color: 'var(--gray-600)' }}>Admin</strong> / Students
                 {view === 'profile' && selectedStudent && <> / <strong style={{ color: 'var(--gray-600)' }}>{selectedStudent.name}</strong></>}
                 {view === 'leaderboard' && <> / <strong style={{ color: 'var(--gray-600)' }}>Leaderboard</strong></>}
+                {view === 'classReport' && <> / <strong style={{ color: 'var(--gray-600)' }}>Class Report</strong></>}
               </p>
             </div>
 
@@ -137,6 +139,17 @@ export default function AdminPerformance() {
                 selectedStudentId={selectedStudentId}
                 onSelectStudent={handleSelectStudent}
                 onBack={() => setView('profile')}
+                onShowReport={() => setView('classReport')}
+              />
+            ) : view === 'classReport' ? (
+              <ClassReport
+                students={students}
+                attemptsByStudent={attemptsByStudent}
+                progressByStudent={progressByStudent}
+                selectedClass={selectedClass}
+                onSelectClass={setSelectedClass}
+                onSelectStudent={handleSelectStudent}
+                onShowLeaderboard={() => setView('leaderboard')}
               />
             ) : selectedStudent ? (
               <StudentProfile

@@ -19,7 +19,7 @@ function classSortKey(cls) {
 
 export default function ClassLeaderboard({
   students, attemptsByStudent, selectedClass, onSelectClass,
-  selectedStudentId, onSelectStudent, onBack,
+  selectedStudentId, onSelectStudent, onBack, onShowReport,
 }) {
   const [sortMetric, setSortMetric] = useState('attempts')
 
@@ -61,6 +61,7 @@ export default function ClassLeaderboard({
           </div>
         </div>
         <div className="header-actions">
+          <button className="btn btn-outline" onClick={onShowReport}>View class report →</button>
           <button className="btn btn-primary" onClick={onBack}>← Back to student view</button>
         </div>
       </div>

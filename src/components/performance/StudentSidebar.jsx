@@ -78,7 +78,7 @@ export default function StudentSidebar({
             const visible = !q || classHasMatch(cls)
             if (!visible) return null
             const expanded = isExpanded(cls)
-            const isLbActive = view === 'leaderboard' && selectedClass === cls
+            const isLbActive = (view === 'leaderboard' || view === 'classReport') && selectedClass === cls
             const list = byClass[cls].filter(matchesSearch)
             return (
               <div key={cls} className="perf-class-group" style={{ borderTop: '1px solid var(--gray-100)' }}>
