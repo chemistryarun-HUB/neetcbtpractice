@@ -145,7 +145,6 @@ export default function AdminPerformance() {
               <ClassReport
                 students={students}
                 attemptsByStudent={attemptsByStudent}
-                progressByStudent={progressByStudent}
                 selectedClass={selectedClass}
                 onSelectClass={setSelectedClass}
                 onSelectStudent={handleSelectStudent}

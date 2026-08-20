@@ -4,7 +4,8 @@ import {
   aggregateAccuracy, aggregateScorePct, totalQuestions, scorePct,
   mostRecent, daysSince, buildActivityMessage, unitName,
 } from '../../lib/performanceMetrics'
-import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { levelBadge } from '../../lib/constants'
+import UnitDrilldown from './UnitDrilldown'
 
 function classSortKey(cls) {
   const m = (cls || '').match(/\d+/)
@@ -48,12 +49,16 @@ function bandColor(pct) {
   return { bg: '#fee2e2', fg: '#b91c1c', border: '#fca5a5' }
 }
 
+// Note: no progressByStudent prop. Everything here is derived from actual
+// submitted attempts rather than unlocked_levels_by_unit — an unlocked-based
+// count reads as a meaningless 100% on Level 1 and the CCT, which are open to
+// everyone from day one without being earned.
 export default function ClassReport({
-  students, attemptsByStudent, progressByStudent,
+  students, attemptsByStudent,
   selectedClass, onSelectClass, onSelectStudent, onShowLeaderboard,
 }) {
   const [expandedUnit, setExpandedUnit] = useState(null)
-  const [funnelUnitId, setFunnelUnitId] = useState(null)
+  const [drilldownUnitId, setDrilldownUnitId] = useState(null)
 
   const classes = useMemo(() => {
     const set = new Set(students.map(s => s.class).filter(Boolean))
@@ -124,37 +129,18 @@ export default function ClassReport({
       .sort((a, b) => a.level - b.level)
   }, [expandedUnit, scopeAttempts])
 
-  // ── Progression funnel (one unit at a time — level numbering/CCT differ per unit) ──
+  // Units this class has actually touched — the drill-down's unit picker, and
+  // the fallback for which unit it opens on.
   const unitsWithData = useMemo(() => [...new Set(scopeAttempts.map(a => a.unit_id).filter(id => id != null))]
     .sort((a, b) => a - b), [scopeAttempts])
-  const activeFunnelUnitId = funnelUnitId ?? unitsWithData[0] ?? null
-  const funnelLevels = useMemo(
-    () => (activeFunnelUnitId != null ? (UNIT_LEVELS[activeFunnelUnitId] || []) : []),
-    [activeFunnelUnitId],
-  )
-  // Level 1 and the last level (CCT) are open to everyone from day one — the
-  // unlocked_levels_by_unit array never has to include them for a student to
-  // reach them, so counting from that array made both bars read as a trivial
-  // 100% regardless of actual progress. On real data that showed EVERY
-  // student "reaching" the CCT of a unit where only a sixth of them had even
-  // cleared Level 1 — actively misleading for a chart whose whole job is
-  // showing how far the cohort has actually gotten.
-  //
-  // Fix: for those two always-open levels, count who's genuinely ATTEMPTED
-  // them (the only real signal an always-open level has). For the levels in
-  // between — only reachable by clearing the one before — the unlocked array
-  // stays the right signal: it's earned progress, not mere activity.
-  const funnelLastLevelId = funnelLevels.length > 0 ? funnelLevels[funnelLevels.length - 1].id : null
-  const funnelCounts = useMemo(() => {
-    if (activeFunnelUnitId == null) return []
-    return funnelLevels.map(l => {
-      const alwaysOpen = l.id === 1 || l.id === funnelLastLevelId
-      const count = alwaysOpen
-        ? new Set(scopeAttempts.filter(a => a.unit_id === activeFunnelUnitId && a.level === l.id).map(a => a.student_id)).size
-        : scopeStudents.filter(s => (progressByStudent[s.id]?.unlocked_levels_by_unit?.[activeFunnelUnitId] || []).includes(l.id)).length
-      return { level: l.id, count, alwaysOpen }
-    })
-  }, [activeFunnelUnitId, funnelLevels, funnelLastLevelId, scopeAttempts, scopeStudents, progressByStudent])
+  // Defaults to the weakest unit rather than the lowest-numbered one: the
+  // drill-down exists to answer "who's stuck where", so it should open on the
+  // unit most likely to need that answer. A previously-picked unit is dropped
+  // if the newly-selected class has no attempts in it, which would otherwise
+  // strand the drill-down on an all-zeroes unit after switching class.
+  const activeDrilldownUnitId = (drilldownUnitId != null && unitsWithData.includes(drilldownUnitId))
+    ? drilldownUnitId
+    : (unitRows[0]?.unitId ?? unitsWithData[0] ?? null)
 
   // ── Score distribution ──
   const distBands = useMemo(() => {
@@ -263,7 +249,11 @@ export default function ClassReport({
                     return (
                       <div key={row.unitId}>
                         <button
-                          onClick={() => setExpandedUnit(isExpanded ? null : row.unitId)}
+                          // Also points the drill-down below at this unit — clicking a
+                          // weak unit here and then asking "so who's stuck in it?" is
+                          // the natural next question, and scrolling down to re-pick
+                          // the same unit from a dropdown would be busywork.
+                          onClick={() => { setExpandedUnit(isExpanded ? null : row.unitId); setDrilldownUnitId(row.unitId) }}
                           style={{
                             width: '100%', display: 'flex', alignItems: 'center', gap: '0.625rem',
                             padding: '0.5rem 0.625rem', borderRadius: 8, border: `1.5px solid ${c.border}`,
@@ -315,40 +305,20 @@ export default function ClassReport({
                   </div>
                 </div>
 
-                {/* ── Progression funnel ── */}
-                <div className="card">
-                  <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
-                    <span>Level Progression</span>
-                    {unitsWithData.length > 0 && (
-                      <select className="form-control" style={{ width: 'auto', fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
-                        value={activeFunnelUnitId ?? ''} onChange={e => setFunnelUnitId(Number(e.target.value))}>
-                        {unitsWithData.map(uid => <option key={uid} value={uid}>{unitName(uid)}</option>)}
-                      </select>
-                    )}
-                  </div>
-                  <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {funnelCounts.length === 0 ? (
-                      <div className="text-muted">No unit data yet</div>
-                    ) : funnelCounts.map(f => (
-                      <div key={f.level} className="perf-bar-row">
-                        <span className="perf-bar-label">
-                          {levelBadge(activeFunnelUnitId, f.level)}{f.alwaysOpen && <sup style={{ marginLeft: 2 }}>†</sup>}
-                        </span>
-                        <span className="perf-bar-track">
-                          <span className="perf-bar-fill" style={{ width: `${Math.max((f.count / scopeStudents.length) * 100, f.count > 0 ? 3 : 0)}%` }} />
-                        </span>
-                        <span className="perf-bar-value">{f.count}</span>
-                      </div>
-                    ))}
-                    <div className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                      How many students have unlocked each level (out of {scopeStudents.length}).
-                      {' '}<sup>†</sup> Level 1 and CCT are open to everyone by default, so these two instead
-                      count who's actually attempted them.
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+          )}
+
+          {/* ── Class → Unit → Level → Student drill-down ── */}
+          {activeDrilldownUnitId != null && (
+            <UnitDrilldown
+              students={scopeStudents}
+              attemptsByStudent={attemptsByStudent}
+              unitId={activeDrilldownUnitId}
+              unitOptions={unitsWithData}
+              onSelectUnit={setDrilldownUnitId}
+              onSelectStudent={onSelectStudent}
+            />
           )}
 
           {/* ── Engagement ── */}
