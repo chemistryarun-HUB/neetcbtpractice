@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { supabase } from '../../lib/supabase'
 import {
   attemptsInOrder, attemptClearedOwnBar, waLink, buildActivityMessage,
   computeStreak, aggregateAccuracy, mostRecent,
 } from '../../lib/performanceMetrics'
 import { UNIT_LEVELS } from '../../lib/constants'
+// Statically imported: storage.js is already in the main bundle via the question
+// uploader, so dynamically importing it here would split nothing.
+import { uploadStudentReport } from '../../lib/storage'
 
 function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
@@ -18,48 +22,104 @@ function initials(name) {
 // ascending.
 const NONE = -1
 
-// One-tap WhatsApp to the student and each parent. Rendered as three compact
-// pills rather than full buttons because this sits in a table row — the
-// message is the same nudge text the student profile builds, so a chase from
-// here says exactly what a chase from there would.
-function WaPills({ student, allAttempts }) {
-  const message = buildActivityMessage({
+const PILL = {
+  width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
+  justifyContent: 'center', fontSize: '0.62rem', fontWeight: 700, textDecoration: 'none',
+}
+
+// One-tap WhatsApp to the student and each parent.
+//
+// Two send modes share these same three pills rather than becoming six
+// buttons: 'nudge' fires the existing short chase message instantly, 'report'
+// generates a PDF, uploads it and sends a link to it. Keeping the recipient
+// choice in the pill you press is what keeps either mode a single click.
+function WaPills({ student, allAttempts, classAttempts, mode, cachedUrl, onCacheUrl }) {
+  const [busy, setBusy] = useState(false)
+
+  const nudge = () => buildActivityMessage({
     name: student.name,
     totalAttempts: allAttempts.length,
     streak: computeStreak(allAttempts),
     lastActiveIso: mostRecent(allAttempts)?.submitted_at,
     overallAccuracy: aggregateAccuracy(allAttempts),
   })
+
   const targets = [
     ['S', student.phone_student, 'student'],
     ['M', student.phone_mother, 'mother'],
     ['F', student.phone_father, 'father'],
   ]
+
+  async function sendReport(phone) {
+    if (busy) return
+    // The tab MUST be opened synchronously inside the click handler — opening
+    // it after the upload awaits puts it outside the user-gesture stack and
+    // every browser's popup blocker kills it. So: open a blank tab now, point
+    // it at WhatsApp once the URL exists.
+    const win = window.open('', '_blank')
+    setBusy(true)
+    const toastId = toast.loading(`Preparing ${student.name}'s report…`)
+    try {
+      let url = cachedUrl
+      let model
+      // jsPDF is ~350KB — dynamically imported so it only loads for the admin
+      // who actually sends a report, not in everyone's initial bundle.
+      const [{ buildStudentReport, buildReportMessage }, { reportPdfBlob, reportFileName }] =
+        await Promise.all([
+          import('../../lib/studentReport'),
+          import('../../lib/reportPdf'),
+        ])
+      model = buildStudentReport({ student, attempts: allAttempts, classAttempts })
+      if (!url) {
+        url = await uploadStudentReport(reportPdfBlob(model), student.id, reportFileName(model))
+        onCacheUrl(student.id, url)
+      }
+      const wa = waLink(phone, buildReportMessage(model, url))
+      toast.success('Report ready — opening WhatsApp', { id: toastId })
+      if (win && !win.closed) win.location.href = wa
+      else window.location.href = wa
+    } catch (err) {
+      if (win && !win.closed) win.close()
+      toast.error(err.message || 'Could not prepare the report', { id: toastId })
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <div style={{ display: 'flex', gap: '0.2rem', justifyContent: 'center' }}>
       {targets.map(([letter, phone, who]) => {
-        const href = waLink(phone, message)
-        if (!href) {
+        if (!phone || !waLink(phone, 'x')) {
           return (
             <span key={letter} title={`No ${who} number saved`}
-              style={{
-                width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
-                justifyContent: 'center', fontSize: '0.62rem', fontWeight: 700,
-                background: 'var(--gray-100)', color: 'var(--gray-300)', border: '1px solid var(--gray-200)',
-              }}>
+              style={{ ...PILL, background: 'var(--gray-100)', color: 'var(--gray-300)', border: '1px solid var(--gray-200)' }}>
               {letter}
             </span>
           )
         }
+        const reportMode = mode === 'report'
+        const title = reportMode
+          ? `Send ${student.name}'s progress report PDF to ${who} — ${phone}`
+          : `WhatsApp ${who} a quick nudge — ${phone}`
+
+        if (reportMode) {
+          return (
+            <button key={letter} type="button" title={title} disabled={busy}
+              onClick={e => { e.stopPropagation(); sendReport(phone) }}
+              style={{
+                ...PILL, cursor: busy ? 'wait' : 'pointer',
+                background: busy ? 'var(--gray-100)' : '#dbeafe',
+                color: busy ? 'var(--gray-400)' : '#1d4ed8',
+                border: `1px solid ${busy ? 'var(--gray-200)' : '#93c5fd'}`,
+              }}>
+              {letter}
+            </button>
+          )
+        }
         return (
-          <a key={letter} href={href} target="_blank" rel="noreferrer"
-            title={`WhatsApp ${who} — ${phone}`}
-            onClick={e => e.stopPropagation()}
-            style={{
-              width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: '0.62rem', fontWeight: 700, textDecoration: 'none',
-              background: '#dcfce7', color: '#15803d', border: '1px solid #86efac',
-            }}>
+          <a key={letter} href={waLink(phone, nudge())} target="_blank" rel="noreferrer"
+            title={title} onClick={e => e.stopPropagation()}
+            style={{ ...PILL, background: '#dcfce7', color: '#15803d', border: '1px solid #86efac' }}>
             {letter}
           </a>
         )
@@ -72,6 +132,16 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
   const [activeIdsByLevel, setActiveIdsByLevel] = useState(null) // { [level]: Set<questionId> }
   const [loading, setLoading] = useState(true)
   const [sort, setSort] = useState({ key: 'name', dir: 'asc' })
+  // What the S/M/F pills send. Set once, then every send stays one click.
+  const [waMode, setWaMode] = useState('nudge')
+  // studentId -> uploaded report URL, so sending to a second parent reuses the
+  // PDF already generated rather than uploading a duplicate.
+  const [reportUrls, setReportUrls] = useState({})
+
+  const classAttempts = useMemo(
+    () => students.flatMap(s => attemptsByStudent[s.id] || []),
+    [students, attemptsByStudent],
+  )
 
   const levels = useMemo(() => UNIT_LEVELS[unitId] || [], [unitId])
   const lastLevelId = levels.length > 0 ? levels[levels.length - 1].id : null
@@ -239,6 +309,23 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
 
   return (
     <div>
+      {/* Send mode. Keeping this out of the row means the S/M/F pills stay a
+          single click each — you set what you're sending once, then work down
+          the class picking recipients. */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontWeight: 600 }}>WhatsApp buttons send:</span>
+        <div className="chips" style={{ marginBottom: 0 }}>
+          {[['nudge', 'Quick nudge'], ['report', 'Progress report PDF']].map(([k, label]) => (
+            <button key={k} className={`chip ${waMode === k ? 'active' : ''}`} onClick={() => setWaMode(k)}>{label}</button>
+          ))}
+        </div>
+        <span style={{ fontSize: '0.7rem', color: 'var(--gray-400)' }}>
+          {waMode === 'report'
+            ? 'Builds the PDF, uploads it, and opens WhatsApp with a link to it.'
+            : 'Opens WhatsApp with a short "get back to practice" message.'}
+        </span>
+      </div>
+
       <div className="table-wrap" style={{ maxHeight: 'max(320px, calc(100vh - 320px))' }}>
         <table>
           <thead>
@@ -302,7 +389,14 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                     : <span style={{ color: 'var(--gray-300)' }}>—</span>}
                 </td>
                 <td onClick={e => e.stopPropagation()}>
-                  <WaPills student={r.student} allAttempts={r.allAttempts} />
+                  <WaPills
+                    student={r.student}
+                    allAttempts={r.allAttempts}
+                    classAttempts={classAttempts}
+                    mode={waMode}
+                    cachedUrl={reportUrls[r.student.id]}
+                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [id]: url }))}
+                  />
                 </td>
               </tr>
             ))}
