@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { clearedInfo, unitName } from '../../lib/performanceMetrics'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import UnitRoster from './UnitRoster'
 
 function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
@@ -54,10 +55,14 @@ function StudentChips({ students, onSelectStudent, emptyLabel }) {
  * meaningless 100% on exactly those two rows.
  */
 export default function UnitDrilldown({
-  students, attemptsByStudent, unitId, unitOptions, onSelectUnit, onSelectStudent,
+  students, attemptsByStudent, unitId, unitOptions, onSelectUnit, onSelectStudent, showClass,
 }) {
   const [expandedLevel, setExpandedLevel] = useState(null)
   const [showNotStarted, setShowNotStarted] = useState(false)
+  // 'levels' answers "how far has the cohort got"; 'students' answers "where
+  // is each individual student" — same unit, two directions through the same
+  // data, so they share one picker rather than becoming separate sections.
+  const [mode, setMode] = useState('levels')
 
   // Attempts this class made in this unit, per student.
   const unitAttemptsByStudent = useMemo(() => {
@@ -106,16 +111,23 @@ export default function UnitDrilldown({
     <div className="card" style={{ marginBottom: '1.5rem' }}>
       <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         <span>Unit Progress — who has cleared what</span>
-        {unitOptions.length > 0 && (
-          <select
-            className="form-control"
-            style={{ width: 'auto', maxWidth: 320, fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
-            value={unitId ?? ''}
-            onChange={e => { setExpandedLevel(null); onSelectUnit(Number(e.target.value)) }}
-          >
-            {unitOptions.map(uid => <option key={uid} value={uid}>{unitName(uid)}</option>)}
-          </select>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div className="chips" style={{ marginBottom: 0 }}>
+            {[['levels', 'By level'], ['students', 'By student']].map(([k, label]) => (
+              <button key={k} className={`chip ${mode === k ? 'active' : ''}`} onClick={() => setMode(k)}>{label}</button>
+            ))}
+          </div>
+          {unitOptions.length > 0 && (
+            <select
+              className="form-control"
+              style={{ width: 'auto', maxWidth: 320, fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
+              value={unitId ?? ''}
+              onChange={e => { setExpandedLevel(null); onSelectUnit(Number(e.target.value)) }}
+            >
+              {unitOptions.map(uid => <option key={uid} value={uid}>{unitName(uid)}</option>)}
+            </select>
+          )}
+        </div>
       </div>
 
       <div style={{ padding: '0.875rem 1.25rem' }}>
@@ -156,7 +168,18 @@ export default function UnitDrilldown({
           </div>
         )}
 
-        {startedStudents.length === 0 ? (
+        {mode === 'students' ? (
+          // Deliberately not gated on startedStudents: the roster lists every
+          // student including the ones who never opened the unit, which is
+          // exactly who you're looking for when nobody has started.
+          <UnitRoster
+            students={students}
+            attemptsByStudent={attemptsByStudent}
+            unitId={unitId}
+            showClass={showClass}
+            onSelectStudent={onSelectStudent}
+          />
+        ) : startedStudents.length === 0 ? (
           <div className="empty-state" style={{ padding: '1.5rem 1rem' }}>
             Nobody in this class has attempted this unit yet.
           </div>

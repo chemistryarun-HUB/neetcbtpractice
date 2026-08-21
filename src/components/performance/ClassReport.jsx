@@ -318,6 +318,8 @@ export default function ClassReport({
               unitOptions={unitsWithData}
               onSelectUnit={setDrilldownUnitId}
               onSelectStudent={onSelectStudent}
+              // Only worth a column when the roster actually spans classes.
+              showClass={selectedClass === 'all'}
             />
           )}
 
