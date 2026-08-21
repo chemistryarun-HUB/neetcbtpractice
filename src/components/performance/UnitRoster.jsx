@@ -33,7 +33,7 @@ const PILL = {
 // buttons: 'nudge' fires the existing short chase message instantly, 'report'
 // generates a PDF, uploads it and sends a link to it. Keeping the recipient
 // choice in the pill you press is what keeps either mode a single click.
-function WaPills({ student, allAttempts, classAttempts, mode, cachedUrl, onCacheUrl }) {
+function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel, mode, cachedUrl, onCacheUrl }) {
   const [busy, setBusy] = useState(false)
 
   const nudge = () => buildActivityMessage({
@@ -44,11 +44,21 @@ function WaPills({ student, allAttempts, classAttempts, mode, cachedUrl, onCache
     overallAccuracy: aggregateAccuracy(allAttempts),
   })
 
-  const targets = [
-    ['S', student.phone_student, 'student'],
-    ['M', student.phone_mother, 'mother'],
-    ['F', student.phone_father, 'father'],
-  ]
+  // The recipients depend on what's being sent. A nudge ("get back to
+  // practice") is aimed at the student as much as the parents, but the report
+  // is written FOR a parent — it explains the marking scheme and asks them to
+  // sit down with their child — so sending it to the student would be handing
+  // them a letter about themselves.
+  const targets = mode === 'report'
+    ? [
+        ['M', student.phone_mother, 'mother'],
+        ['F', student.phone_father, 'father'],
+      ]
+    : [
+        ['S', student.phone_student, 'student'],
+        ['M', student.phone_mother, 'mother'],
+        ['F', student.phone_father, 'father'],
+      ]
 
   async function sendReport(phone) {
     if (busy) return
@@ -64,17 +74,17 @@ function WaPills({ student, allAttempts, classAttempts, mode, cachedUrl, onCache
       let model
       // jsPDF is ~350KB — dynamically imported so it only loads for the admin
       // who actually sends a report, not in everyone's initial bundle.
-      const [{ buildStudentReport, buildReportMessage }, { reportPdfBlob, reportFileName }] =
+      const [{ buildUnitReport, buildUnitReportMessage }, { reportPdfBlob, reportFileName }] =
         await Promise.all([
           import('../../lib/studentReport'),
           import('../../lib/reportPdf'),
         ])
-      model = buildStudentReport({ student, attempts: allAttempts, classAttempts })
+      model = buildUnitReport({ student, unitId, attempts: allAttempts, classAttempts, activeIdsByLevel })
       if (!url) {
         url = await uploadStudentReport(reportPdfBlob(model), student.id, reportFileName(model))
         onCacheUrl(student.id, url)
       }
-      const wa = waLink(phone, buildReportMessage(model, url))
+      const wa = waLink(phone, buildUnitReportMessage(model, url))
       toast.success('Report ready — opening WhatsApp', { id: toastId })
       if (win && !win.closed) win.location.href = wa
       else window.location.href = wa
@@ -321,7 +331,7 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
         </div>
         <span style={{ fontSize: '0.7rem', color: 'var(--gray-400)' }}>
           {waMode === 'report'
-            ? 'Builds the PDF, uploads it, and opens WhatsApp with a link to it.'
+            ? 'Builds a PDF for this chapter, uploads it, and opens WhatsApp with a link — parents only.'
             : 'Opens WhatsApp with a short "get back to practice" message.'}
         </span>
       </div>
@@ -351,11 +361,11 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
             {sorted.map(r => (
               <tr key={r.student.id}>
                 <td>
-                  <button className="perf-lb-student" onClick={() => onSelectStudent(r.student.id)}>
+                  <button className="perf-lb-student" title={`${r.student.name} · Roll ${r.student.roll_number || '—'}`} onClick={() => onSelectStudent(r.student.id)}>
                     <span className="perf-s-avatar">{initials(r.student.name)}</span>
                     <span>
                       <span style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{r.student.name}</span>
-                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--gray-400)' }}>{r.student.roll_number}</span>
+
                     </span>
                   </button>
                 </td>
@@ -393,9 +403,11 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                     student={r.student}
                     allAttempts={r.allAttempts}
                     classAttempts={classAttempts}
+                    unitId={unitId}
+                    activeIdsByLevel={activeIdsByLevel}
                     mode={waMode}
-                    cachedUrl={reportUrls[r.student.id]}
-                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [id]: url }))}
+                    cachedUrl={reportUrls[`${r.student.id}|${unitId}`]}
+                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [`${id}|${unitId}`]: url }))}
                   />
                 </td>
               </tr>

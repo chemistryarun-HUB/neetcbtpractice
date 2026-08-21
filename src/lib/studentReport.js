@@ -1,18 +1,31 @@
-// Builds the parent-facing progress report for one student.
+// Builds the parent-facing progress report for ONE student in ONE chapter.
 //
 // Deliberately separate from the PDF drawing code: this file decides WHAT the
 // report says, reportPdf.js decides how it looks. That split is what lets the
 // wording be checked against real data without rendering anything.
+//
+// Chapter-scoped rather than whole-syllabus on purpose: it's sent from the
+// unit roster while looking at one chapter, and a parent reading about the one
+// chapter their child is actually stuck in acts on it — a six-chapter dump
+// gets skimmed and closed.
 import {
   attemptsInOrder, attemptClearedOwnBar, totalQuestions,
-  aggregateAccuracy, computeStreak, mostRecent, daysSince, unitName, scorePct,
+  aggregateAccuracy, mostRecent, daysSince, unitName, scorePct,
 } from './performanceMetrics'
 import { UNIT_LEVELS, levelBadge, thresholdPctFor, MARKS_CORRECT, MARKS_WRONG, QUESTIONS_PER_ATTEMPT } from './constants'
 
+// Small counts are spelled out, and every sentence below keeps a comma or dash
+// between a level badge and any following number. Without that, "Level 3" plus
+// "2 times" renders as "Level 3 2 times", which a parent reads as "32" — a
+// real misreading reported from the first draft, not a hypothetical one.
+const WORDS = ['zero', 'once', 'twice', 'three times', 'four times', 'five times',
+  'six times', 'seven times', 'eight times', 'nine times', 'ten times']
+export function timesWord(n) {
+  return WORDS[n] || `${n} times`
+}
 
-// "5 days ago" / "today" / "yesterday" — the phrasing the request asked for,
-// and the thing a parent actually reads a report for: not just what happened
-// but how long ago, which is what turns a number into a nudge.
+// "5 days ago" / "today" / "yesterday" — not just what happened but how long
+// ago, which is what turns a number into a nudge.
 export function agoLabel(iso) {
   const d = daysSince(iso)
   if (d == null) return ''
@@ -23,213 +36,179 @@ export function agoLabel(iso) {
   return m === 1 ? 'about a month ago' : `about ${m} months ago`
 }
 
-/**
- * Per-unit story for this student.
- *
- * Each unit resolves to exactly one status so the report can lead with the
- * headline rather than making a parent infer it from a table:
- *   complete    — every sequential level cleared
- *   on-track    — cleared something recently, still moving
- *   stuck       — has attempted the next level repeatedly without clearing it
- *   stalled     — started, but nothing cleared for a long while
- *   not-started — never opened
- */
-export function buildUnitStories(attempts) {
-  const byUnit = {}
-  for (const a of attempts) {
-    if (a.unit_id == null) continue
-    ;(byUnit[a.unit_id] ||= []).push(a)
-  }
-
-  return Object.entries(byUnit).map(([uid, unitAttempts]) => {
-    const unitId = Number(uid)
-    const defs = UNIT_LEVELS[unitId] || []
-    const lastLevelId = defs.length > 0 ? defs[defs.length - 1].id : null
-    // The CCT is open from day one and draws from the whole chapter, so it
-    // isn't part of the sequential ladder a student climbs.
-    const ladderIds = defs.filter(l => l.id !== lastLevelId).map(l => l.id)
-
-    const byLevel = {}
-    for (const a of unitAttempts) (byLevel[a.level] ||= []).push(a)
-
-    const cleared = []       // { level, onAttempt, whenIso }
-    const attemptedNotCleared = []
-    for (const [lvl, arr] of Object.entries(byLevel)) {
-      const level = Number(lvl)
-      const ordered = attemptsInOrder(arr)
-      const hit = ordered.find(({ attempt }) => attemptClearedOwnBar(attempt))
-      if (hit) cleared.push({ level, onAttempt: hit.position, whenIso: hit.attempt.submitted_at, tries: ordered.length })
-      else attemptedNotCleared.push({ level, tries: ordered.length, bestPct: Math.max(...arr.map(scorePct)) })
-    }
-
-    const ladderCleared = cleared.filter(c => c.level !== lastLevelId).sort((a, b) => a.level - b.level)
-    const latestClear = ladderCleared.length
-      ? ladderCleared.reduce((best, c) => (c.whenIso > (best?.whenIso || '') ? c : best), null)
-      : null
-    const cctCleared = lastLevelId != null && cleared.some(c => c.level === lastLevelId)
-
-    // The next rung: lowest ladder level they haven't cleared.
-    const clearedSet = new Set(ladderCleared.map(c => c.level))
-    const nextLevel = ladderIds.find(id => !clearedSet.has(id)) ?? null
-    const stuckOn = nextLevel != null ? attemptedNotCleared.find(x => x.level === nextLevel) : null
-
-    const lastActivity = mostRecent(unitAttempts)?.submitted_at || null
-    const idleDays = daysSince(lastActivity)
-
-    let status
-    if (ladderIds.length > 0 && ladderCleared.length >= ladderIds.length) status = 'complete'
-    else if (stuckOn && stuckOn.tries >= 2) status = 'stuck'
-    else if (idleDays != null && idleDays > 14) status = 'stalled'
-    else status = 'on-track'
-
-    return {
-      unitId,
-      name: unitName(unitId),
-      status,
-      ladderTotal: ladderIds.length,
-      clearedCount: ladderCleared.length,
-      latestClear,
-      nextLevel,
-      nextLevelBadge: nextLevel != null ? levelBadge(unitId, nextLevel) : null,
-      stuckOn,
-      cctCleared,
-      attempts: unitAttempts.length,
-      questionsDone: unitAttempts.reduce((s, a) => s + totalQuestions(a), 0),
-      accuracy: aggregateAccuracy(unitAttempts),
-      lastActivity,
-      idleDays,
-    }
-  }).sort((a, b) => a.unitId - b.unitId)
-}
-
-// Plain-English line a parent reads without needing to know the app.
-export function unitHeadline(u) {
-  switch (u.status) {
-    case 'complete':
-      return `All ${u.ladderTotal} levels cleared. Chapter complete.`
-    case 'stuck': {
-      const last = u.latestClear
-        ? `Cleared ${levelBadge(u.unitId, u.latestClear.level)} ${agoLabel(u.latestClear.whenIso)}. `
-        : ''
-      // No "Needs attention" tacked on here — the PDF already shows that as a
-      // status pill and the WhatsApp message prefixes it, so repeating it read
-      // as scolding rather than informing.
-      return `${last}Has tried ${u.nextLevelBadge} ${u.stuckOn.tries} times without clearing it — best score so far ${u.stuckOn.bestPct.toFixed(0)}%.`
-    }
-    case 'stalled': {
-      const last = u.latestClear
-        ? `Last cleared ${levelBadge(u.unitId, u.latestClear.level)} ${agoLabel(u.latestClear.whenIso)}. `
-        : 'Started but hasn\'t cleared a level yet. '
-      return `${last}No practice here for ${u.idleDays} days.`
-    }
-    default: {
-      if (u.latestClear) {
-        return `Cleared ${levelBadge(u.unitId, u.latestClear.level)} ${agoLabel(u.latestClear.whenIso)}${u.latestClear.onAttempt > 1 ? ` (on attempt ${u.latestClear.onAttempt})` : ''}. Now working on ${u.nextLevelBadge}.`
-      }
-      return `Started practising. Working towards ${u.nextLevelBadge}.`
-    }
-  }
-}
-
 const STATUS_META = {
-  complete:  { label: 'Complete',        tone: 'good' },
-  'on-track':{ label: 'On track',        tone: 'good' },
-  stuck:     { label: 'Needs attention', tone: 'warn' },
-  stalled:   { label: 'Paused',          tone: 'warn' },
+  complete:    { label: 'Chapter complete', tone: 'good' },
+  'on-track':  { label: 'On track',         tone: 'good' },
+  stuck:       { label: 'Needs attention',  tone: 'warn' },
+  paused:      { label: 'Paused',           tone: 'warn' },
+  'not-started': { label: 'Not started',    tone: 'warn' },
 }
 export function statusMeta(status) { return STATUS_META[status] || STATUS_META['on-track'] }
 
 /**
- * The whole report model for one student.
- *
- * classAttempts is every attempt by that student's classmates and is used only
- * for the class-average benchmark — a neutral "where does this sit" line.
- * Deliberately an average and not a rank: a rank tells a parent their child is
- * 47th, which shames without informing; an average tells them whether the
- * child is above or below typical, which is what they can act on.
+ * @param activeIdsByLevel { [level]: Set<questionId> } of questions still live
+ *        at each level. Supplied by the caller (the roster already loads it),
+ *        so coverage is measured against today's pool rather than a stale one.
  */
-/**
- * The WhatsApp message the report link travels in.
- *
- * Written to stand on its own: a parent who never opens the PDF should still
- * come away knowing the one thing that matters most this week. The headline is
- * chosen from the report itself rather than being generic, and the tone stays
- * factual without being alarming — a parent who feels accused stops reading.
- */
-export function buildReportMessage(model, url) {
-  const first = (model.student.name || '').trim().split(/\s+/)[0] || 'your child'
-  const s = model.summary
-  const date = model.generatedAt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+export function buildUnitReport({
+  student, unitId, attempts, classAttempts = [], activeIdsByLevel = null, generatedAt = new Date(),
+}) {
+  const defs = UNIT_LEVELS[unitId] || []
+  const lastLevelId = defs.length > 0 ? defs[defs.length - 1].id : null
+  // The CCT is open from day one and draws from the whole chapter, so it isn't
+  // a rung on the ladder a student climbs — it gets reported separately.
+  const ladderDefs = defs.filter(l => l.id !== lastLevelId)
 
-  const lines = [`Namaste! ${first}'s NEET Chemistry progress report (${date}) is ready.`, '']
+  const unitAttempts = attempts.filter(a => a.unit_id === unitId)
+  const byLevel = {}
+  for (const a of unitAttempts) (byLevel[a.level] ||= []).push(a)
 
-  if (s.totalAttempts === 0) {
-    lines.push(`${first} hasn't attempted any practice test yet. The full report explains how the levels work and how to get started.`)
-  } else {
-    lines.push(`• ${s.totalLevelsCleared} of ${s.totalLevelsAvailable} levels cleared across ${s.unitsStarted} chapter${s.unitsStarted !== 1 ? 's' : ''}`)
-    lines.push(`• ${s.questionsPractised} questions practised · ${s.accuracy.toFixed(0)}% accuracy`)
-    lines.push(`• Last practised ${s.lastActiveLabel}`)
-    const focus = model.needsWork[0]
-    if (focus) {
-      lines.push('', `Needs attention: ${focus.name} — ${unitHeadline(focus)}`)
+  const poolFor = (lvl) => {
+    if (!activeIdsByLevel) return null
+    if (lvl === lastLevelId) {
+      const all = new Set()
+      for (const [l, ids] of Object.entries(activeIdsByLevel)) {
+        if (Number(l) !== lastLevelId) for (const id of ids) all.add(id)
+      }
+      return all
     }
+    return activeIdsByLevel[lvl] ?? new Set()
   }
 
-  lines.push('', `Full report: ${url}`, '', 'Do go through it with them — happy to discuss anytime.')
-  return lines.join('\n')
-}
+  // Coverage counts distinct questions actually served, intersected with the
+  // questions still active there — students get served questions that are
+  // later deactivated, and a raw count runs past the live total.
+  const coverageFor = (lvl) => {
+    const pool = poolFor(lvl)
+    if (!pool) return { seen: null, total: null }
+    const served = new Set((byLevel[lvl] || []).flatMap(a => a.question_ids || []))
+    return { seen: [...served].filter(id => pool.has(id)).length, total: pool.size }
+  }
 
-export function buildStudentReport({ student, attempts, classAttempts = [], generatedAt = new Date() }) {
-  const units = buildUnitStories(attempts)
-  const totalQ = attempts.reduce((s, a) => s + totalQuestions(a), 0)
-  const accuracy = aggregateAccuracy(attempts)
-  const classAccuracy = classAttempts.length ? aggregateAccuracy(classAttempts) : null
-  const lastActive = mostRecent(attempts)?.submitted_at || null
+  function describe(levelDef) {
+    const arr = byLevel[levelDef.id] || []
+    const cov = coverageFor(levelDef.id)
+    const base = {
+      id: levelDef.id,
+      badge: levelBadge(unitId, levelDef.id),
+      name: levelDef.name,
+      tries: arr.length,
+      seen: cov.seen,
+      total: cov.total,
+    }
+    if (arr.length === 0) return { ...base, state: 'not-reached' }
+    const ordered = attemptsInOrder(arr)
+    const hit = ordered.find(({ attempt }) => attemptClearedOwnBar(attempt))
+    if (hit) {
+      return {
+        ...base,
+        state: 'cleared',
+        onAttempt: hit.position,
+        whenIso: hit.attempt.submitted_at,
+        ago: agoLabel(hit.attempt.submitted_at),
+      }
+    }
+    return { ...base, state: 'attempted', bestPct: Math.max(...arr.map(scorePct)) }
+  }
 
-  const totalLevelsCleared = units.reduce((s, u) => s + u.clearedCount, 0)
-  const totalLevelsAvailable = units.reduce((s, u) => s + u.ladderTotal, 0)
+  const levels = ladderDefs.map(describe)
+  const cct = lastLevelId != null ? describe(defs[defs.length - 1]) : null
 
-  const strengths = [...units].filter(u => u.attempts >= 2).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3)
-  const needsWork = [...units].filter(u => u.status === 'stuck' || u.status === 'stalled')
-    .sort((a, b) => a.accuracy - b.accuracy)
+  const clearedLevels = levels.filter(l => l.state === 'cleared')
+  const latestClear = clearedLevels.length
+    ? clearedLevels.reduce((best, c) => (c.whenIso > (best?.whenIso || '') ? c : best), null)
+    : null
+  const nextLevel = levels.find(l => l.state !== 'cleared') || null
+  const lastActivity = mostRecent(unitAttempts)?.submitted_at || null
+  const idleDays = daysSince(lastActivity)
 
-  // Concrete next steps, in priority order, capped so the parent gets a short
-  // to-do list rather than a wall of advice they'll skip.
+  let status
+  if (unitAttempts.length === 0) status = 'not-started'
+  else if (ladderDefs.length > 0 && clearedLevels.length >= ladderDefs.length) status = 'complete'
+  else if (nextLevel && nextLevel.state === 'attempted' && nextLevel.tries >= 2) status = 'stuck'
+  else if (idleDays != null && idleDays > 14) status = 'paused'
+  else status = 'on-track'
+
+  // The single sentence a parent must read even if they read nothing else.
+  // Kept short and in plain words — many parents reading this are not fluent
+  // in English, and a sentence they have to re-read is a sentence they skip.
+  let headline
+  switch (status) {
+    case 'not-started':
+      headline = 'Has not started this unit yet. No test attempted so far.'
+      break
+    case 'complete':
+      headline = `All ${ladderDefs.length} levels cleared. This unit is complete.`
+      break
+    case 'stuck':
+      headline = `${latestClear ? `Cleared ${latestClear.badge}, ${latestClear.ago}. ` : ''}`
+        + `${nextLevel.badge} has been attempted ${timesWord(nextLevel.tries)}, but not cleared yet. Best score so far: ${nextLevel.bestPct.toFixed(0)}%.`
+      break
+    case 'paused':
+      headline = `${latestClear ? `Last cleared ${latestClear.badge}, ${latestClear.ago}. ` : 'Started this unit, but no level cleared yet. '}`
+        + `There has been no practice in this unit for ${idleDays} days.`
+      break
+    default:
+      headline = latestClear
+        ? `Cleared ${latestClear.badge}, ${latestClear.ago}${latestClear.onAttempt > 1 ? ` (on attempt ${latestClear.onAttempt})` : ''}. Now working on ${nextLevel ? nextLevel.badge : 'the next level'}.`
+        : `Practice has started. Working towards ${nextLevel ? nextLevel.badge : 'the first level'}.`
+  }
+
+  // A short to-do list in plain words. Capped at three — a parent given ten
+  // things to do does none of them.
   const actions = []
-  for (const u of needsWork.slice(0, 2)) {
-    if (u.status === 'stuck') {
-      actions.push(`Revise ${u.name} — ${u.nextLevelBadge} has been attempted ${u.stuckOn.tries} times without clearing. Watch the lecture for that level before the next try.`)
-    } else {
-      actions.push(`Return to ${u.name} — no practice there for ${u.idleDays} days.`)
-    }
+  if (status === 'not-started') {
+    actions.push('Please ask them to open this unit and try Level 1. It is already unlocked and ready.')
+    actions.push('Every level has a video lecture by the chemistry faculty in the app. Watching it first makes the test much easier.')
+  } else if (status === 'stuck') {
+    actions.push(`${nextLevel.badge} (${nextLevel.name}) needs revision. The video lecture for this level is in the app — please ask them to watch it before the next try.`)
+    actions.push(`Answer carefully rather than guessing. A wrong answer loses ${Math.abs(MARKS_WRONG)} mark. Leaving a question blank loses nothing.`)
+  } else if (status === 'paused') {
+    actions.push(`Practice in this unit stopped ${idleDays} days ago. Please encourage them to start again.`)
+    if (nextLevel) actions.push(`The next level is ${nextLevel.badge} — ${nextLevel.name}. Its video lecture is in the app.`)
+  } else if (status === 'complete') {
+    // Lead with the thing to DO. "Well done" alone is a nice sentence but the
+    // WhatsApp message quotes only the first action, so praise on its own line
+    // would waste the one slot a parent actually reads.
+    actions.push('Well done! Please ask them to revise with the Complete Chapter Test — it mixes questions from all the levels of this unit.')
+    actions.push('Keeping this unit revised while moving to the next one is what holds the marks at exam time.')
+  } else if (nextLevel) {
+    actions.push(`The next level is ${nextLevel.badge} — ${nextLevel.name}. Its video lecture is in the app.`)
+    actions.push('Daily practice is working well. Please keep it going.')
   }
-  const idle = daysSince(lastActive)
-  if (idle != null && idle > 7) {
-    actions.unshift(`Get back to daily practice — the last test was ${agoLabel(lastActive)}.`)
+  if (idleDays != null && idleDays > 7 && status !== 'paused' && status !== 'not-started') {
+    actions.unshift(`The last test in this unit was ${agoLabel(lastActivity)}. Please encourage daily practice.`)
   }
-  if (actions.length === 0) {
-    actions.push('Keep the current routine going — progress is steady across every chapter started.')
-  }
+
+  const unitClassAttempts = classAttempts.filter(a => a.unit_id === unitId)
 
   return {
     student,
     generatedAt,
-    summary: {
-      totalAttempts: attempts.length,
-      questionsPractised: totalQ,
-      accuracy,
-      classAccuracy,
-      streak: computeStreak(attempts),
-      lastActive,
-      lastActiveLabel: lastActive ? agoLabel(lastActive) : 'never',
-      totalLevelsCleared,
-      totalLevelsAvailable,
-      unitsStarted: units.length,
+    // label carries the unit NUMBER as well as the name — a parent tracking
+    // progress across the syllabus needs to know which chapter this is, not
+    // just what it's called.
+    unit: {
+      id: unitId,
+      name: unitName(unitId),
+      label: `Unit ${unitId} — ${unitName(unitId)}`,
+      levelCount: ladderDefs.length,
     },
-    units,
-    strengths,
-    needsWork,
-    actions,
+    status,
+    headline,
+    summary: {
+      levelsCleared: clearedLevels.length,
+      ladderTotal: ladderDefs.length,
+      attempts: unitAttempts.length,
+      questionsPractised: unitAttempts.reduce((s, a) => s + totalQuestions(a), 0),
+      accuracy: aggregateAccuracy(unitAttempts),
+      classAccuracy: unitClassAttempts.length ? aggregateAccuracy(unitClassAttempts) : null,
+      lastActive: lastActivity,
+      lastActiveLabel: lastActivity ? agoLabel(lastActivity) : 'not yet',
+    },
+    levels,
+    cct,
+    actions: actions.slice(0, 3),
     scheme: {
       perTest: QUESTIONS_PER_ATTEMPT,
       correct: MARKS_CORRECT,
@@ -238,4 +217,39 @@ export function buildStudentReport({ student, attempts, classAttempts = [], gene
       easedBar: thresholdPctFor(3),
     },
   }
+}
+
+/**
+ * The WhatsApp message the report link travels in.
+ *
+ * Written to stand on its own: a parent who never opens the PDF should still
+ * come away knowing the one thing that matters this week. Tone stays factual
+ * without being alarming — a parent who feels accused stops reading.
+ */
+export function buildUnitReportMessage(model, url) {
+  const first = (model.student.name || '').trim().split(/\s+/)[0] || 'your child'
+  const s = model.summary
+  const date = model.generatedAt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+
+  const lines = [
+    `Namaste! This is ${first}'s progress report for *${model.unit.label}* (NEET Chemistry), as on ${date}.`,
+    '',
+    model.headline,
+    '',
+  ]
+
+  if (s.attempts > 0) {
+    lines.push(`• Levels cleared: ${s.levelsCleared} of ${s.ladderTotal}`)
+    lines.push(`• Practice done: ${s.attempts} test${s.attempts !== 1 ? 's' : ''}, ${s.questionsPractised} questions`)
+    lines.push(`• Accuracy: ${s.accuracy.toFixed(0)}%`)
+    lines.push(`• Last practised: ${s.lastActiveLabel}`)
+    lines.push('')
+  }
+  lines.push(`This unit has ${model.unit.levelCount} levels. Each level has its own video lecture by our chemistry faculty in the app.`, '')
+  if (model.actions.length) {
+    lines.push(`What will help now: ${model.actions[0]}`, '')
+  }
+
+  lines.push(`Full report: ${url}`, '', 'Please go through it with them. Happy to discuss anytime.')
+  return lines.join('\n')
 }
