@@ -205,6 +205,19 @@ export function daysSince(iso) {
   return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
 }
 
+// wa.me deep link for a saved phone number, or null when there's no number on
+// file. Numbers are stored inconsistently (spaces, +91, bare 10-digit), so
+// everything non-numeric is stripped and the country code added when missing.
+// StudentProfile.jsx and AdminStudents.jsx each still carry their own private
+// copy of this — new callers should use this one.
+export function waLink(phone, message) {
+  if (!phone) return null
+  const cleaned = String(phone).replace(/\D/g, '')
+  if (cleaned.length < 10) return null
+  const num = cleaned.startsWith('91') ? cleaned : `91${cleaned}`
+  return `https://wa.me/${num}?text=${encodeURIComponent(message)}`
+}
+
 const PRACTICE_LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 
 // Picks one of several warm, data-driven WhatsApp nudges instead of the same

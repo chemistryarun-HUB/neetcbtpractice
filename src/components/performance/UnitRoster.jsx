@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { attemptsInOrder, attemptClearedOwnBar } from '../../lib/performanceMetrics'
-import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import {
+  attemptsInOrder, attemptClearedOwnBar, waLink, buildActivityMessage,
+  computeStreak, aggregateAccuracy, mostRecent,
+} from '../../lib/performanceMetrics'
+import { UNIT_LEVELS } from '../../lib/constants'
 
 function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
@@ -14,6 +17,56 @@ function initials(name) {
 // the bottom of the scale and is exactly who you're looking for when you sort
 // ascending.
 const NONE = -1
+
+// One-tap WhatsApp to the student and each parent. Rendered as three compact
+// pills rather than full buttons because this sits in a table row — the
+// message is the same nudge text the student profile builds, so a chase from
+// here says exactly what a chase from there would.
+function WaPills({ student, allAttempts }) {
+  const message = buildActivityMessage({
+    name: student.name,
+    totalAttempts: allAttempts.length,
+    streak: computeStreak(allAttempts),
+    lastActiveIso: mostRecent(allAttempts)?.submitted_at,
+    overallAccuracy: aggregateAccuracy(allAttempts),
+  })
+  const targets = [
+    ['S', student.phone_student, 'student'],
+    ['M', student.phone_mother, 'mother'],
+    ['F', student.phone_father, 'father'],
+  ]
+  return (
+    <div style={{ display: 'flex', gap: '0.2rem', justifyContent: 'center' }}>
+      {targets.map(([letter, phone, who]) => {
+        const href = waLink(phone, message)
+        if (!href) {
+          return (
+            <span key={letter} title={`No ${who} number saved`}
+              style={{
+                width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '0.62rem', fontWeight: 700,
+                background: 'var(--gray-100)', color: 'var(--gray-300)', border: '1px solid var(--gray-200)',
+              }}>
+              {letter}
+            </span>
+          )
+        }
+        return (
+          <a key={letter} href={href} target="_blank" rel="noreferrer"
+            title={`WhatsApp ${who} — ${phone}`}
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: '0.62rem', fontWeight: 700, textDecoration: 'none',
+              background: '#dcfce7', color: '#15803d', border: '1px solid #86efac',
+            }}>
+            {letter}
+          </a>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function UnitRoster({ students, attemptsByStudent, unitId, showClass, onSelectStudent }) {
   const [activeIdsByLevel, setActiveIdsByLevel] = useState(null) // { [level]: Set<questionId> }
@@ -112,8 +165,17 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
     const seen = pool && served ? [...served].filter(id => pool.has(id)).length : null
     const totalInLevel = pool ? pool.size : null
 
+    // The CCT reports coverage rather than a cleared flag: it's open from day
+    // one and draws from the whole unit, so "how much of the chapter have they
+    // actually been tested on" is the useful signal, not a pass/fail badge.
+    const cctPool = lastLevelId != null ? poolForLevel(lastLevelId) : null
+    const cctServed = new Set((byLevel[lastLevelId] || []).flatMap(a => a.question_ids || []))
+    const cctSeen = cctPool ? [...cctServed].filter(id => cctPool.has(id)).length : null
+    const cctTotal = cctPool ? cctPool.size : null
+
     return {
       student: s,
+      allAttempts: attemptsByStudent[s.id] || [],
       attempts: unitAttempts.length,
       clearedCount: ladder.length,
       ladderTotal: Math.max(0, levels.length - (lastLevelId != null ? 1 : 0)),
@@ -122,6 +184,8 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
       seen,
       totalInLevel,
       cctCleared,
+      cctSeen,
+      cctTotal,
     }
   }), [students, attemptsByStudent, unitId, levels, lastLevelId, poolForLevel])
 
@@ -129,11 +193,13 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
     const val = r => {
       switch (sort.key) {
         case 'name': return (r.student.name || '').toLowerCase()
-        case 'cleared': return r.clearedCount
-        case 'highest': return r.highest ?? NONE
+        // Never-started students sort below everyone who has at least engaged,
+        // rather than tying with those who started and cleared nothing.
+        case 'cleared': return r.attempts === 0 ? NONE : r.clearedCount
         case 'attempt': return r.clearedOn ?? NONE
         case 'seen': return r.seen ?? NONE
         case 'attempts': return r.attempts
+        case 'cct': return r.cctSeen ?? NONE
         default: return 0
       }
     }
@@ -153,15 +219,18 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
       : { key, dir: key === 'name' ? 'asc' : 'desc' })
   }
 
+  // "Highest cleared" is gone on purpose: levels unlock strictly in sequence,
+  // so the count and the high-water mark are the same fact stated twice — the
+  // space goes to the WhatsApp column instead.
   const COLS = [
     { key: 'name', label: 'Student', align: 'left' },
     ...(showClass ? [{ key: null, label: 'Class', align: 'left' }] : []),
     { key: 'cleared', label: 'Levels cleared', align: 'center' },
-    { key: 'highest', label: 'Highest cleared', align: 'left' },
     { key: 'attempt', label: 'Cleared on', align: 'center' },
-    { key: 'seen', label: 'Qs seen in that level', align: 'center' },
+    { key: 'seen', label: 'Qs seen at that level', align: 'center' },
     { key: 'attempts', label: 'Attempts', align: 'center' },
-    { key: null, label: 'CCT', align: 'center' },
+    { key: 'cct', label: 'CCT Qs seen', align: 'center' },
+    { key: null, label: 'WhatsApp', align: 'center' },
   ]
 
   if (loading) {
@@ -206,13 +275,15 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                 {showClass && (
                   <td><span className="badge" style={{ background: 'var(--gray-100)', color: 'var(--gray-500)' }}>{r.student.class || '—'}</span></td>
                 )}
-                <td style={{ textAlign: 'center', fontWeight: 600, fontSize: '0.8125rem', color: r.clearedCount > 0 ? '#15803d' : 'var(--gray-400)' }}>
-                  {r.clearedCount} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>/ {r.ladderTotal}</span>
-                </td>
-                <td style={{ fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
-                  {r.highest != null
-                    ? <span style={{ fontWeight: 700, color: 'var(--gray-700)' }}>{levelBadge(unitId, r.highest)}</span>
-                    : <span style={{ color: 'var(--gray-400)' }}>{r.attempts > 0 ? 'None yet' : 'Not started'}</span>}
+                {/* A student who never opened the unit shows "—", not "0 / 5".
+                    Rendering them as a zero made them indistinguishable from
+                    someone who tried and failed, so counting the non-zero rows
+                    disagreed with the "started this unit" tile above. Now the
+                    rows carrying a number are exactly the students who started. */}
+                <td style={{ textAlign: 'center', fontWeight: 600, fontSize: '0.8125rem', color: r.clearedCount > 0 ? '#15803d' : r.attempts > 0 ? '#b45309' : 'var(--gray-300)' }}>
+                  {r.attempts === 0
+                    ? '—'
+                    : <>{r.clearedCount} <span style={{ color: 'var(--gray-400)', fontWeight: 400 }}>/ {r.ladderTotal}</span></>}
                 </td>
                 <td style={{ textAlign: 'center', fontSize: '0.8125rem', color: r.clearedOn != null ? 'var(--gray-700)' : 'var(--gray-300)' }}>
                   {r.clearedOn != null ? `#${r.clearedOn}` : '—'}
@@ -225,10 +296,13 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                 <td style={{ textAlign: 'center', fontSize: '0.8125rem', color: r.attempts > 0 ? 'var(--gray-700)' : 'var(--gray-300)' }}>
                   {r.attempts || '—'}
                 </td>
-                <td style={{ textAlign: 'center' }}>
-                  {r.cctCleared
-                    ? <span className="badge badge-easy" style={{ fontSize: '0.65rem' }}>cleared</span>
+                <td style={{ textAlign: 'center', fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
+                  {r.cctSeen > 0
+                    ? <><strong style={{ color: r.cctCleared ? '#15803d' : 'var(--gray-700)' }}>{r.cctSeen}</strong> <span style={{ color: 'var(--gray-400)' }}>/ {r.cctTotal}</span></>
                     : <span style={{ color: 'var(--gray-300)' }}>—</span>}
+                </td>
+                <td onClick={e => e.stopPropagation()}>
+                  <WaPills student={r.student} allAttempts={r.allAttempts} />
                 </td>
               </tr>
             ))}
@@ -238,11 +312,15 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
           </tbody>
         </table>
       </div>
-      <div className="text-muted" style={{ fontSize: '0.75rem', padding: '0.5rem 0.25rem 0' }}>
-        Click any column heading to sort (click again to reverse). <strong>Highest cleared</strong> ignores the CCT,
-        which is open from day one and so isn't earned progression — it gets its own column. <strong>Cleared on</strong> is
-        which attempt at that level finally passed its threshold. <strong>Qs seen</strong> counts distinct questions the
-        student has actually been served at that level, out of the questions still active at that level — so it always reads as coverage of the current pool.
+      <div className="text-muted" style={{ fontSize: '0.75rem', padding: '0.5rem 0.25rem 0', lineHeight: 1.7 }}>
+        Click any column heading to sort (click again to reverse).
+        {' '}<strong>Levels cleared</strong> counts the sequential levels passed, excluding the CCT; a dash means the
+        student hasn't opened this unit at all, so the rows showing a number match the "started this unit" count above.
+        {' '}<strong>Cleared on</strong> is which attempt finally passed the threshold at their most recent cleared level,
+        and <strong>Qs seen at that level</strong> is their coverage of that same level.
+        {' '}<strong>CCT Qs seen</strong> is how much of the whole chapter they've been tested on in the Complete Chapter
+        Test, which draws from every level combined. Coverage counts distinct questions actually served, against the
+        questions still active — so it always reads against today's pool.
       </div>
     </div>
   )
