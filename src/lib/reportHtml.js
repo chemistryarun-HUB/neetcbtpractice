@@ -24,7 +24,6 @@ export function buildReportHtml(model, lang = 'en') {
   const s = model.summary
   const tone = TONE[model.status] || TONE['on-track']
   const pct = n => `${Math.round(n)}%`
-  const ringPct = s.ladderTotal > 0 ? Math.round((s.levelsCleared / s.ladderTotal) * 100) : 0
 
   const levelRows = model.levels.map(l => {
     const cleared = l.state === 'cleared'
@@ -90,10 +89,6 @@ export function buildReportHtml(model, lang = 'en') {
   .tile b.sm{font-size:14px;padding-top:3px}
   .tile span{display:block;font-size:10.5px;color:#64748b;margin-top:5px;font-weight:500}
 
-  .ring-wrap{display:flex;align-items:center;gap:13px;margin:16px 24px 0;background:linear-gradient(90deg,#f8fafc,#fff);border:1.5px solid #e8eef6;border-radius:13px;padding:13px 16px}
-  .ring{width:52px;height:52px;border-radius:50%;flex-shrink:0;background:conic-gradient(${tone.bar} ${ringPct * 3.6}deg,#e8eef6 0);display:flex;align-items:center;justify-content:center}
-  .ring i{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12.5px;font-weight:800;color:${tone.fg}}
-  .ring-txt{font-size:12.5px;color:#475569;line-height:1.5}
 
   h2{font-size:14px;font-weight:800;margin:22px 24px 0;color:#0f172a;display:flex;align-items:center;gap:8px}
   h2:before{content:'';width:4px;height:15px;border-radius:2px;background:${tone.bar}}
@@ -150,21 +145,13 @@ export function buildReportHtml(model, lang = 'en') {
   <div class="tiles">
     <div class="tile"><b>${s.levelsCleared} / ${s.ladderTotal}</b><span>${esc(L.tiles.cleared)}</span></div>
     <div class="tile"><b>${s.questionsPractised}</b><span>${esc(L.tiles.questions)}</span></div>
+    <div class="tile"><b>${s.attempts}</b><span>${esc(L.tiles.tests)}</span></div>
     <div class="tile"><b>${pct(s.accuracy)}</b><span>${esc(L.tiles.accuracy)}</span></div>
     <div class="tile"><b class="sm">${esc(L.ago(s.lastActiveDays))}</b><span>${esc(L.tiles.last)}</span></div>
   </div>
 
-  <div class="ring-wrap">
-    <div class="ring"><i>${ringPct}%</i></div>
-    <div class="ring-txt">${esc(
-      s.classAccuracy != null && s.attempts > 0
-        ? L.classAvg(s.accuracy, s.classAccuracy)
-        : L.levelsLine(model.unit.levelCount),
-    )}</div>
-  </div>
 
   <h2>${esc(L.levelByLevel)}</h2>
-  <div class="intro">${esc(L.levelIntro(model.unit.levelCount))}</div>
   <div class="levels">${levelRows}</div>
   ${cctBlock}
 
