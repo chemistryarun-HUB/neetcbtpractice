@@ -7,6 +7,7 @@ import {
   computeStreak, aggregateAccuracy, mostRecent,
 } from '../../lib/performanceMetrics'
 import { UNIT_LEVELS } from '../../lib/constants'
+import { LANGS } from '../../lib/reportI18n'
 // Statically imported: storage.js is already in the main bundle via the question
 // uploader, so dynamically importing it here would split nothing.
 import { uploadStudentReport } from '../../lib/storage'
@@ -33,7 +34,7 @@ const PILL = {
 // buttons: 'nudge' fires the existing short chase message instantly, 'report'
 // generates a PDF, uploads it and sends a link to it. Keeping the recipient
 // choice in the pill you press is what keeps either mode a single click.
-function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel, mode, cachedUrl, onCacheUrl }) {
+function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel, mode, lang, cachedUrl, onCacheUrl }) {
   const [busy, setBusy] = useState(false)
 
   const nudge = () => buildActivityMessage({
@@ -74,17 +75,17 @@ function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel
       let model
       // jsPDF is ~350KB — dynamically imported so it only loads for the admin
       // who actually sends a report, not in everyone's initial bundle.
-      const [{ buildUnitReport, buildUnitReportMessage }, { reportPdfBlob, reportFileName }] =
+      const [{ buildUnitReport }, { reportPdfBlob, reportFileName, reportMessage }] =
         await Promise.all([
           import('../../lib/studentReport'),
           import('../../lib/reportPdf'),
         ])
       model = buildUnitReport({ student, unitId, attempts: allAttempts, classAttempts, activeIdsByLevel })
       if (!url) {
-        url = await uploadStudentReport(reportPdfBlob(model), student.id, reportFileName(model))
+        url = await uploadStudentReport(await reportPdfBlob(model, lang), student.id, reportFileName(model, lang))
         onCacheUrl(student.id, url)
       }
-      const wa = waLink(phone, buildUnitReportMessage(model, url))
+      const wa = waLink(phone, reportMessage(model, url, lang))
       toast.success('Report ready — opening WhatsApp', { id: toastId })
       if (win && !win.closed) win.location.href = wa
       else window.location.href = wa
@@ -144,6 +145,9 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
   const [sort, setSort] = useState({ key: 'name', dir: 'asc' })
   // What the S/M/F pills send. Set once, then every send stays one click.
   const [waMode, setWaMode] = useState('nudge')
+  // Report language. Parents read this, not the student — many are far more
+  // comfortable in Hindi or Gujarati than in English.
+  const [reportLang, setReportLang] = useState('en')
   // studentId -> uploaded report URL, so sending to a second parent reuses the
   // PDF already generated rather than uploading a duplicate.
   const [reportUrls, setReportUrls] = useState({})
@@ -329,6 +333,19 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
             <button key={k} className={`chip ${waMode === k ? 'active' : ''}`} onClick={() => setWaMode(k)}>{label}</button>
           ))}
         </div>
+        {waMode === 'report' && (
+          <>
+            <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontWeight: 600 }}>in</span>
+            <div className="chips" style={{ marginBottom: 0 }}>
+              {LANGS.map(l => (
+                <button key={l.code} className={`chip ${reportLang === l.code ? 'active' : ''}`}
+                  onClick={() => setReportLang(l.code)} title={`Send the report in ${l.label}`}>
+                  {l.native}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         <span style={{ fontSize: '0.7rem', color: 'var(--gray-400)' }}>
           {waMode === 'report'
             ? 'Builds a PDF for this chapter, uploads it, and opens WhatsApp with a link — parents only.'
@@ -406,8 +423,9 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                     unitId={unitId}
                     activeIdsByLevel={activeIdsByLevel}
                     mode={waMode}
-                    cachedUrl={reportUrls[`${r.student.id}|${unitId}`]}
-                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [`${id}|${unitId}`]: url }))}
+                    lang={reportLang}
+                    cachedUrl={reportUrls[`${r.student.id}|${unitId}|${reportLang}`]}
+                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [`${id}|${unitId}|${reportLang}`]: url }))}
                   />
                 </td>
               </tr>
