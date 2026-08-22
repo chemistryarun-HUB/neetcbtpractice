@@ -69,7 +69,7 @@ function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel
     // it at WhatsApp once the URL exists.
     const win = window.open('', '_blank')
     setBusy(true)
-    const toastId = toast.loading(`Preparing ${student.name}'s report…`)
+    const toastId = toast.loading(`Preparing ${student.name}'s report (3 languages)…`)
     try {
       let url = cachedUrl
       let model
@@ -82,7 +82,7 @@ function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel
         ])
       model = buildUnitReport({ student, unitId, attempts: allAttempts, classAttempts, activeIdsByLevel })
       if (!url) {
-        url = await uploadStudentReport(await reportPdfBlob(model, lang), student.id, reportFileName(model, lang))
+        url = await uploadStudentReport(await reportPdfBlob(model), student.id, reportFileName(model))
         onCacheUrl(student.id, url)
       }
       const wa = waLink(phone, reportMessage(model, url, lang))
@@ -145,8 +145,8 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
   const [sort, setSort] = useState({ key: 'name', dir: 'asc' })
   // What the S/M/F pills send. Set once, then every send stays one click.
   const [waMode, setWaMode] = useState('nudge')
-  // Report language. Parents read this, not the student — many are far more
-  // comfortable in Hindi or Gujarati than in English.
+  // Language of the covering WhatsApp message. The PDF itself always carries
+  // all three languages, so this only picks how the message reads.
   const [reportLang, setReportLang] = useState('en')
   // studentId -> uploaded report URL, so sending to a second parent reuses the
   // PDF already generated rather than uploading a duplicate.
@@ -335,11 +335,11 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
         </div>
         {waMode === 'report' && (
           <>
-            <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontWeight: 600 }}>in</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontWeight: 600 }}>message in</span>
             <div className="chips" style={{ marginBottom: 0 }}>
               {LANGS.map(l => (
                 <button key={l.code} className={`chip ${reportLang === l.code ? 'active' : ''}`}
-                  onClick={() => setReportLang(l.code)} title={`Send the report in ${l.label}`}>
+                  onClick={() => setReportLang(l.code)} title={`Write the WhatsApp message in ${l.label} — the PDF always contains all three`}>
                   {l.native}
                 </button>
               ))}
@@ -348,7 +348,7 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
         )}
         <span style={{ fontSize: '0.7rem', color: 'var(--gray-400)' }}>
           {waMode === 'report'
-            ? 'Builds a PDF for this chapter, uploads it, and opens WhatsApp with a link — parents only.'
+            ? 'Builds one PDF for this chapter in English, Hindi and Gujarati, uploads it, and opens WhatsApp with a link — parents only.'
             : 'Opens WhatsApp with a short "get back to practice" message.'}
         </span>
       </div>
@@ -424,8 +424,8 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
                     activeIdsByLevel={activeIdsByLevel}
                     mode={waMode}
                     lang={reportLang}
-                    cachedUrl={reportUrls[`${r.student.id}|${unitId}|${reportLang}`]}
-                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [`${id}|${unitId}|${reportLang}`]: url }))}
+                    cachedUrl={reportUrls[`${r.student.id}|${unitId}`]}
+                    onCacheUrl={(id, url) => setReportUrls(prev => ({ ...prev, [`${id}|${unitId}`]: url }))}
                   />
                 </td>
               </tr>

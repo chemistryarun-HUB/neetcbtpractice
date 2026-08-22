@@ -19,7 +19,7 @@ const TONE = {
   'not-started':{ bg: '#fef2f2', fg: '#b91c1c', bar: '#ef4444', ring: '#fecaca' },
 }
 
-export function buildReportHtml(model, lang = 'en') {
+export function buildReportHtml(model, lang = 'en', { langHint = null } = {}) {
   const L = t(lang)
   const s = model.summary
   const tone = TONE[model.status] || TONE['on-track']
@@ -79,6 +79,7 @@ export function buildReportHtml(model, lang = 'en') {
   .chap-sub{font-size:11.5px;opacity:.88;margin-top:4px}
   .date{font-size:11.5px;opacity:.85;margin-top:5px}
 
+  .langhint{margin:9px 24px 0;font-size:10.5px;color:#475569;background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:6px 11px;text-align:center}
   .verdict{margin:-16px 24px 0;background:${tone.bg};border:1.5px solid ${tone.ring};border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;position:relative;z-index:3;box-shadow:0 6px 18px rgba(15,23,42,.07)}
   .pill{background:${tone.bar};color:#fff;font-size:11px;font-weight:800;padding:5px 11px;border-radius:999px;white-space:nowrap;letter-spacing:.02em}
   .verdict p{font-size:14px;line-height:1.55;color:${tone.fg};font-weight:600}
@@ -141,6 +142,8 @@ export function buildReportHtml(model, lang = 'en') {
     <span class="pill">${esc(L.status[model.status])}</span>
     <p>${esc(L.headline(model))}</p>
   </div>
+
+  ${langHint ? `<div class="langhint">${esc(langHint)}</div>` : ''}
 
   <div class="tiles">
     <div class="tile"><b>${s.levelsCleared} / ${s.ladderTotal}</b><span>${esc(L.tiles.cleared)}</span></div>

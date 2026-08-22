@@ -22,6 +22,7 @@ const en = {
   dir: 'ltr',
   fontStack: `'Segoe UI', 'Helvetica Neue', Arial, sans-serif`,
   reportTitle: 'Chapter Progress Report',
+  alsoInThisLanguage: 'Also in English',
   brand: 'Computer based chemistry practice for NEET',
   levelsLine: n => `This chapter is divided into ${n} levels, arranged lecture-wise`,
   ago(d) {
@@ -104,6 +105,7 @@ const hi = {
   dir: 'ltr',
   fontStack: `'Nirmala UI', 'Noto Sans Devanagari', 'Mangal', 'Segoe UI', sans-serif`,
   reportTitle: 'अध्याय प्रगति रिपोर्ट',
+  alsoInThisLanguage: 'यह रिपोर्ट हिन्दी में आगे के पेज पर',
   brand: 'NEET के लिए कंप्यूटर आधारित केमिस्ट्री अभ्यास',
   levelsLine: n => `यह अध्याय ${n} लेवल में बँटा है, जो लेक्चर के क्रम में लगाए गए हैं`,
   ago(d) {
@@ -189,6 +191,7 @@ const gu = {
   dir: 'ltr',
   fontStack: `'Nirmala UI', 'Noto Sans Gujarati', 'Shruti', 'Segoe UI', sans-serif`,
   reportTitle: 'પ્રકરણ પ્રગતિ અહેવાલ',
+  alsoInThisLanguage: 'આ અહેવાલ ગુજરાતીમાં આગળના પાના પર',
   brand: 'NEET માટે કમ્પ્યુટર આધારિત કેમિસ્ટ્રી અભ્યાસ',
   levelsLine: n => `આ પ્રકરણ ${n} લેવલમાં વહેંચાયેલું છે, જે લેક્ચર પ્રમાણે ગોઠવેલા છે`,
   ago(d) {
