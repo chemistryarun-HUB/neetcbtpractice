@@ -93,7 +93,7 @@ const en = {
       L.push(`• Accuracy: ${pct(s.accuracy)}`)
       L.push(`• Last practised: ${this.ago(s.lastActiveDays)}`, '')
     }
-    L.push(`This unit has ${m.unit.levelCount} levels, arranged lecture-wise — each level follows one lecture taken by our chemistry faculty.`, '')
+    L.push(`This chapter has ${m.unit.levelCount} levels, arranged lecture-wise — each level follows one lecture taken by our chemistry faculty.`, '')
     L.push(`Please encourage daily practice of ${m.scheme.perTest} questions. NEET is an exam of question practice, more than reading notes or watching videos.`, '')
     L.push(`Full report: ${url}`, '', 'Please go through it with them. Happy to discuss anytime.')
     return L.join('\n')
@@ -134,23 +134,23 @@ const hi = {
   },
   headline(m) {
     const { latestClear: lc, nextLevel: nl, idleDays } = m.facts
-    const who = (m.student.name || "").trim() || "The student"
+    const who = (m.student.name || '').trim() || 'विद्यार्थी'
     switch (m.status) {
       case 'not-started': return `${who} ने अभी यह अध्याय शुरू नहीं किया है। अब तक कोई टेस्ट नहीं दिया गया।`
       case 'complete': return `${who} ने सभी ${m.unit.levelCount} लेवल क्लियर कर लिए हैं। यह अध्याय पूरा हो गया है।`
-      case 'stuck': return `${lc ? `${who} ने ${lc.badge}, ${this.ago(lc.days)} क्लियर किया था। ` : ''}${nl.badge} — ${this.times(nl.tries)} किया गया, लेकिन अभी क्लियर नहीं हुआ। अब तक का सबसे अच्छा स्कोर: ${pct(nl.bestPct)}।`
-      case 'paused': return `${lc ? `आख़िरी बार ${lc.badge}, ${this.ago(lc.days)} क्लियर हुआ था। ` : 'यूनिट शुरू तो हुई, पर अभी कोई लेवल क्लियर नहीं हुआ। '}पिछले ${idleDays} दिनों से इस यूनिट में कोई अभ्यास नहीं हुआ है।`
+      case 'stuck': return `${lc ? `${who} ने ${lc.badge} क्लियर किया था — ${this.ago(lc.days)}। ` : ''}${nl.badge} के अब तक ${nl.tries} प्रयास हो चुके हैं, लेकिन यह अभी क्लियर नहीं हुआ। अब तक का सबसे अच्छा स्कोर: ${pct(nl.bestPct)}।`
+      case 'paused': return `${lc ? `आख़िरी बार ${lc.badge} क्लियर हुआ था — ${this.ago(lc.days)}। ` : 'अध्याय शुरू तो हुआ, पर अभी कोई लेवल क्लियर नहीं हुआ। '}पिछले ${idleDays} दिनों से इस अध्याय में कोई अभ्यास नहीं हुआ है।`
       default: return lc
-        ? `${who} ने ${lc.badge}, ${this.ago(lc.days)}, ${this.ordinal(lc.onAttempt)} प्रयास में क्लियर किया, और अब ${nl ? nl.badge : 'अगले लेवल'} पर काम कर रहे हैं।`
-        : `${who} ने अभ्यास शुरू कर दिया है, और ${nl ? nl.badge : 'पहले लेवल'} की तैयारी कर रहे हैं।`
+        ? `${who} ने ${lc.badge} ${this.ordinal(lc.onAttempt)} प्रयास में क्लियर किया — ${this.ago(lc.days)}। अब ${nl ? nl.badge : 'अगले लेवल'} की तैयारी चल रही है।`
+        : `${who} ने अभ्यास शुरू कर दिया है। अभी ${nl ? nl.badge : 'पहले लेवल'} की तैयारी चल रही है।`
     }
   },
   tiles: { cleared: 'लेवल क्लियर', questions: 'प्रश्न हल किए', tests: 'टेस्ट दिए', accuracy: 'सटीकता', last: 'आख़िरी अभ्यास' },
   levelByLevel: 'लेवल के अनुसार प्रगति',
   levelState: {
-    cleared: (t, l) => `${t.ago(l.days)} क्लियर${l.onAttempt > 1 ? `, प्रयास ${l.onAttempt} में` : ''}`,
+    cleared: (t, l) => `${t.ago(l.days)} क्लियर${l.onAttempt > 1 ? `, ${t.ordinal(l.onAttempt)} प्रयास में` : ''}`,
     attempted: (t, l) => `${t.times(l.tries)} प्रयास · सर्वश्रेष्ठ ${pct(l.bestPct)}`,
-    'not-reached': () => 'अभी तक नहीं पहुँचे',
+    'not-reached': () => 'अभी बाकी है',
   },
   qsOf: (a, b) => `${b} में से ${a} प्रश्न`,
   cctTitle: 'कम्प्लीट चैप्टर टेस्ट',
@@ -172,14 +172,14 @@ const hi = {
     const first = (m.student.name || '').trim().split(/\s+/)[0] || 'आपके बच्चे'
     const s = m.summary
     const date = m.generatedAt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-    const L = [`नमस्ते! यह ${first} की *${m.unit.label}* (NEET केमिस्ट्री) की प्रगति रिपोर्ट है, दिनांक ${date}।`, '', this.headline(m), '']
+    const L = [`नमस्ते! यह ${first} की प्रगति रिपोर्ट है — *${m.unit.label}* (NEET केमिस्ट्री), दिनांक ${date}।`, '', this.headline(m), '']
     if (s.attempts > 0) {
       L.push(`• लेवल क्लियर: ${s.ladderTotal} में से ${s.levelsCleared}`)
       L.push(`• अभ्यास: ${s.attempts} टेस्ट, ${s.questionsPractised} प्रश्न`)
       L.push(`• सटीकता: ${pct(s.accuracy)}`)
       L.push(`• आख़िरी अभ्यास: ${this.ago(s.lastActiveDays)}`, '')
     }
-    L.push(`यह यूनिट ${m.unit.levelCount} लेवल में बँटी है, जो लेक्चर के क्रम में लगाए गए हैं। हर लेवल हमारे केमिस्ट्री फैकल्टी के एक लेक्चर पर आधारित है।`, '')
+    L.push(`यह अध्याय ${m.unit.levelCount} लेवल में बँटा है, जो लेक्चर के क्रम में लगाए गए हैं। हर लेवल हमारे केमिस्ट्री फैकल्टी के एक लेक्चर पर आधारित है।`, '')
     L.push(`कृपया रोज़ ${m.scheme.perTest} प्रश्नों के अभ्यास के लिए प्रोत्साहित करें। NEET नोट्स पढ़ने या वीडियो देखने से ज़्यादा प्रश्नों के अभ्यास की परीक्षा है।`, '')
     L.push(`पूरी रिपोर्ट: ${url}`, '', 'कृपया इसे उनके साथ बैठकर देखें। किसी भी समय बात कर सकते हैं।')
     return L.join('\n')
@@ -220,52 +220,52 @@ const gu = {
   },
   headline(m) {
     const { latestClear: lc, nextLevel: nl, idleDays } = m.facts
-    const who = (m.student.name || "").trim() || "The student"
+    const who = (m.student.name || '').trim() || 'વિદ્યાર્થી'
     switch (m.status) {
       case 'not-started': return `${who} એ હજી આ પ્રકરણ શરૂ કર્યું નથી. અત્યાર સુધી કોઈ ટેસ્ટ આપ્યો નથી.`
       case 'complete': return `${who} એ બધા ${m.unit.levelCount} લેવલ ક્લિયર કરી લીધા છે. આ પ્રકરણ પૂર્ણ થયું છે.`
-      case 'stuck': return `${lc ? `${who} એ ${lc.badge}, ${this.ago(lc.days)} ક્લિયર કર્યું હતું. ` : ''}${nl.badge} — ${this.times(nl.tries)} પ્રયાસ કર્યો, પણ હજી ક્લિયર થયું નથી. અત્યાર સુધીનો શ્રેષ્ઠ સ્કોર: ${pct(nl.bestPct)}.`
-      case 'paused': return `${lc ? `છેલ્લે ${lc.badge}, ${this.ago(lc.days)} ક્લિયર થયું હતું. ` : 'યુનિટ શરૂ થયું, પણ હજી કોઈ લેવલ ક્લિયર થયું નથી. '}છેલ્લા ${idleDays} દિવસથી આ યુનિટમાં કોઈ અભ્યાસ થયો નથી.`
+      case 'stuck': return `${lc ? `${who} એ ${lc.badge} ક્લિયર કર્યું હતું — ${this.ago(lc.days)}. ` : ''}${nl.badge} ના ${nl.tries} પ્રયાસ થઈ ચૂક્યા છે, પણ તે હજી ક્લિયર થયું નથી. અત્યાર સુધીનો શ્રેષ્ઠ સ્કોર: ${pct(nl.bestPct)}.`
+      case 'paused': return `${lc ? `છેલ્લે ${lc.badge} ક્લિયર થયું હતું — ${this.ago(lc.days)}. ` : 'પ્રકરણ શરૂ થયું, પણ હજી કોઈ લેવલ ક્લિયર થયું નથી. '}છેલ્લા ${idleDays} દિવસથી આ પ્રકરણમાં કોઈ અભ્યાસ થયો નથી.`
       default: return lc
-        ? `${who} એ ${lc.badge}, ${this.ago(lc.days)}, ${this.ordinal(lc.onAttempt)} પ્રયાસમાં ક્લિયર કર્યું, અને હવે ${nl ? nl.badge : 'આગળના લેવલ'} પર કામ કરે છે.`
-        : `${who} એ અભ્યાસ શરૂ કરી દીધો છે, અને ${nl ? nl.badge : 'પહેલા લેવલ'} ની તૈયારી કરે છે.`
+        ? `${who} એ ${lc.badge} ${this.ordinal(lc.onAttempt)} પ્રયાસમાં ક્લિયર કર્યું — ${this.ago(lc.days)}. હવે ${nl ? nl.badge : 'આગળના લેવલ'} ની તૈયારી ચાલે છે.`
+        : `${who} એ અભ્યાસ શરૂ કરી દીધો છે. હવે ${nl ? nl.badge : 'પહેલા લેવલ'} ની તૈયારી ચાલે છે.`
     }
   },
   tiles: { cleared: 'લેવલ ક્લિયર', questions: 'પ્રશ્નોનો અભ્યાસ', tests: 'ટેસ્ટ આપ્યા', accuracy: 'ચોકસાઈ', last: 'છેલ્લો અભ્યાસ' },
   levelByLevel: 'લેવલ પ્રમાણે પ્રગતિ',
   levelState: {
-    cleared: (t, l) => `${t.ago(l.days)} ક્લિયર${l.onAttempt > 1 ? `, પ્રયાસ ${l.onAttempt} માં` : ''}`,
+    cleared: (t, l) => `${t.ago(l.days)} ક્લિયર${l.onAttempt > 1 ? `, ${t.ordinal(l.onAttempt)} પ્રયાસમાં` : ''}`,
     attempted: (t, l) => `${t.times(l.tries)} પ્રયાસ · શ્રેષ્ઠ ${pct(l.bestPct)}`,
-    'not-reached': () => 'હજી પહોંચ્યા નથી',
+    'not-reached': () => 'હજી બાકી છે',
   },
   qsOf: (a, b) => `${b} માંથી ${a} પ્રશ્નો`,
   cctTitle: 'કમ્પ્લીટ ચેપ્ટર ટેસ્ટ',
-  cctSub: n => `શરૂઆતથી ખુલ્લો · આખા ${n} લેવલને આવરી લે છે`,
+  cctSub: n => `શરૂઆતથી ખુલ્લો · બધા ${n} લેવલને આવરી લે છે`,
   cctQs: (a, b) => `${b} માંથી ${a} પ્રશ્નોનો અભ્યાસ`,
-  supportTitle: 'વાલી કઈ રીતે મદદ કરી શકે',
+  supportTitle: 'વાલીઓ કઈ રીતે મદદ કરી શકે',
   support: s => [
     `કૃપા કરીને દરરોજ ${s.perTest} પ્રશ્નોના અભ્યાસ માટે પ્રોત્સાહિત કરો — એટલે કે રોજ એક આખો ટેસ્ટ. અઠવાડિયે એક વાર લાંબો અભ્યાસ કરવા કરતાં રોજ થોડો અભ્યાસ ઘણો સારો છે.`,
-    `ફેકલ્ટીનું લેક્ચર પૂરું થયા પછી તે લેવલ ${s.clearWithinDays} દિવસમાં ક્લિયર કરી લેવું જોઈએ. લેક્ચર તાજું હોય ત્યારે અભ્યાસ કરવાથી ઘણો ફરક પડે છે.`,
+    `ફેકલ્ટીનું લેક્ચર પૂરું થયા પછી તે લેવલને ${s.clearWithinDays} દિવસમાં ક્લિયર કરી લેવું જોઈએ. લેક્ચર તાજું હોય ત્યારે અભ્યાસ કરવાથી ઘણો ફરક પડે છે.`,
     `NEET એ નોટ્સ વાંચવા કે વીડિયો જોવા કરતાં પ્રશ્નોના અભ્યાસની પરીક્ષા છે. વિષય સમજવો અને તેના પર પ્રશ્નો ઉકેલી શકવા — એ બે અલગ બાબતો છે.`,
   ],
   howTitle: 'આ અહેવાલ કઈ રીતે વાંચવો',
   how: (s, n) => [
     `દરેક ટેસ્ટમાં ${s.perTest} પ્રશ્નો હોય છે. માર્કિંગ ખરી NEET પરીક્ષા જેવું જ છે: સાચા જવાબ પર +${s.correct}, ખોટા જવાબ પર ${s.wrong}, અને ખાલી છોડવા પર 0. તેથી અટકળથી જવાબ આપવા કરતાં પ્રશ્ન ખાલી છોડવો વધુ સલામત છે.`,
     `કોઈ લેવલ ત્યારે "ક્લિયર" ગણાય જ્યારે પહેલા જ પ્રયાસમાં ${s.firstBar}% કે તેથી વધુ ગુણ આવે. જો પહેલી વારમાં ન થાય, તો પછીના પ્રયાસોમાં પાસ થવાની મર્યાદા ઘટાડવામાં આવે છે (${s.easedBar}% સુધી). તેથી ફરી પ્રયાસ કરવો હંમેશા ફાયદાકારક છે.`,
-    `લેવલ એક પછી એક ખૂલે છે — એક ક્લિયર થાય એટલે આગળનું ખૂલે. કમ્પ્લીટ ચેપ્ટર ટેસ્ટ શરૂઆતથી જ ખુલ્લો હોય છે અને આખા ${n} લેવલને એકસાથે આવરી લે છે.`,
+    `લેવલ એક પછી એક ખૂલે છે — એક ક્લિયર થાય એટલે આગળનું ખૂલે. કમ્પ્લીટ ચેપ્ટર ટેસ્ટ શરૂઆતથી જ ખુલ્લો હોય છે અને બધા ${n} લેવલને એકસાથે આવરી લે છે.`,
   ],
   msg(m, url) {
     const first = (m.student.name || '').trim().split(/\s+/)[0] || 'તમારા બાળક'
     const s = m.summary
     const date = m.generatedAt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-    const L = [`નમસ્તે! આ ${first} નો *${m.unit.label}* (NEET કેમિસ્ટ્રી) નો પ્રગતિ અહેવાલ છે, તારીખ ${date}.`, '', this.headline(m), '']
+    const L = [`નમસ્તે! આ ${first} નો પ્રગતિ અહેવાલ છે — *${m.unit.label}* (NEET કેમિસ્ટ્રી), તારીખ ${date}.`, '', this.headline(m), '']
     if (s.attempts > 0) {
       L.push(`• લેવલ ક્લિયર: ${s.ladderTotal} માંથી ${s.levelsCleared}`)
       L.push(`• અભ્યાસ: ${s.attempts} ટેસ્ટ, ${s.questionsPractised} પ્રશ્નો`)
       L.push(`• ચોકસાઈ: ${pct(s.accuracy)}`)
       L.push(`• છેલ્લો અભ્યાસ: ${this.ago(s.lastActiveDays)}`, '')
     }
-    L.push(`આ યુનિટ ${m.unit.levelCount} લેવલમાં વહેંચાયેલું છે, જે લેક્ચર પ્રમાણે ગોઠવેલા છે. દરેક લેવલ આપણા કેમિસ્ટ્રી ફેકલ્ટીના એક લેક્ચર પર આધારિત છે.`, '')
+    L.push(`આ પ્રકરણ ${m.unit.levelCount} લેવલમાં વહેંચાયેલું છે, જે લેક્ચર પ્રમાણે ગોઠવેલા છે. દરેક લેવલ અમારા કેમિસ્ટ્રી ફેકલ્ટીના એક લેક્ચર પર આધારિત છે.`, '')
     L.push(`કૃપા કરીને દરરોજ ${m.scheme.perTest} પ્રશ્નોના અભ્યાસ માટે પ્રોત્સાહિત કરો. NEET એ નોટ્સ વાંચવા કે વીડિયો જોવા કરતાં પ્રશ્નોના અભ્યાસની પરીક્ષા છે.`, '')
     L.push(`સંપૂર્ણ અહેવાલ: ${url}`, '', 'કૃપા કરીને તેમની સાથે બેસીને જુઓ. કોઈ પણ સમયે વાત કરી શકો છો.')
     return L.join('\n')
