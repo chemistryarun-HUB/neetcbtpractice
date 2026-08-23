@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { ImagePlus, Lock, LockOpen } from 'lucide-react'
+import { ImagePlus, Lock, LockOpen, Shuffle } from 'lucide-react'
 import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { uploadQuestionImage } from '../../lib/storage'
@@ -71,6 +71,11 @@ function initialForm(q) {
     question_tag:       q.question_tag || '',
     source:             q.source || '',
     is_active:          q.is_active !== false,
+    // Admin override for option shuffling. Defaults to true (shuffle) — the
+    // automatic detection in lib/optionShuffle.js still applies either way, so
+    // this only exists for questions detection can't see, e.g. options that
+    // are a deliberate sequence and read wrong out of order.
+    shuffle_options:    q.shuffle_options !== false,
     // Editing here means "I've verified/fixed this by hand" — default to
     // protecting it from a future Excel re-upload clobbering it back.
     // Admin can uncheck if they genuinely want Excel to keep overriding this row.
@@ -184,6 +189,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         question_tag:     form.question_tag || null,
         source:           form.source || null,
         is_active:        form.is_active,
+        shuffle_options:  form.shuffle_options,
         content_locked:   form.content_locked,
         // Persisting these is what makes the padlocks mean anything — the Excel
         // importer reads them back to decide which columns it may overwrite.
@@ -398,6 +404,13 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} />
             Is Active
+          </label>
+        </div>
+        <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', cursor: 'pointer', paddingBottom: '0.4rem', whiteSpace: 'nowrap' }}
+            title={'Options are shuffled for every attempt so a student cannot memorise "the answer is C". Untick for a question whose options must stay in the authored order — a deliberate sequence, for instance. Questions saying "All of the above" or "Both (b) and (c)" are detected and handled automatically, with or without this.'}>
+            <input type="checkbox" checked={form.shuffle_options} onChange={e => setForm(f => ({ ...f, shuffle_options: e.target.checked }))} />
+            <Shuffle size={13} /> Shuffle options
           </label>
         </div>
         <div className="form-group" style={{ margin: 0, flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>

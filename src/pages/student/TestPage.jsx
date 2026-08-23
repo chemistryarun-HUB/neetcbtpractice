@@ -3,12 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
-import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { correctOptionKey } from '../../lib/questionOptions'
+import { orderOptionsForAttempt } from '../../lib/optionShuffle'
 import { hasStructuredMtc } from '../../lib/mtc'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import MatchTable from '../../components/shared/MatchTable'
 import toast from 'react-hot-toast'
 
+// Question ORDER still shuffles unconditionally — only option order needs the
+// position-dependence rules in lib/optionShuffle.js.
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -105,13 +108,15 @@ export default function TestPage() {
 
       const selected = pool.slice(0, QUESTIONS_PER_ATTEMPT)
 
-      // Shuffle options for each question. Options are tracked by key
-      // ('option1'..'option4'), not text — image-only options have no text to
-      // key off, and identical/blank text must not be treated as the same answer.
-      const prepared = selected.map(q => {
-        const opts = shuffle(optionEntries(q))
-        return { ...q, shuffledOptions: opts }
-      })
+      // Order options per question. Tracked by key ('option1'..'option4'), not
+      // text — image-only options have no text to key off, and identical/blank
+      // text must not be treated as the same answer.
+      //
+      // orderOptionsForAttempt() decides whether to shuffle at all: a question
+      // saying "All of the above" keeps that option last, and one saying "Both
+      // (b) and (c)" is left in its authored order, because shuffling either
+      // makes the option text point at the wrong things.
+      const prepared = selected.map(q => ({ ...q, shuffledOptions: orderOptionsForAttempt(q) }))
 
       setQuestions(prepared)
 
@@ -195,6 +200,10 @@ export default function TestPage() {
         correct_ids: correctIds,
         wrong_ids:   wrongIds,
         skipped_ids: skippedIds,
+        // The option order this student actually saw. Without it the review
+        // screen re-rendered the authored order, so a student's remembered
+        // "I picked C" pointed at a different option than the one they chose.
+        option_order: Object.fromEntries(questions.map(q => [q.id, q.shuffledOptions.map(o => o.key)])),
       }
 
       // Update attempt

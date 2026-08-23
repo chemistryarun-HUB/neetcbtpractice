@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { orderOptionsForReview } from '../../lib/optionShuffle'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from '../shared/MatchTable'
 import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
@@ -45,6 +46,9 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
   const correctIds = new Set(storedAnswers.correct_ids || [])
   const wrongIds = new Set(storedAnswers.wrong_ids || [])
   const skippedIds = new Set(storedAnswers.skipped_ids || [])
+  // Replay the order the student saw, so an admin reviewing with them is
+  // looking at the same A/B/C/D the student was.
+  const optionOrder = hasNewFormat ? (storedAnswers.option_order || {}) : {}
 
   // How this answer scores under the CURRENT answer key.
   function liveStatusFor(q) {
@@ -170,7 +174,7 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
                 const status = statusFor(q)
                 const keyChanged = keyChangedFor(q)
                 const correctKey = correctOptionKey(q)
-                const opts = optionEntries(q)
+                const opts = orderOptionsForReview(q, optionOrder[q.id])
                 return (
                   <div key={q.id} style={{ padding: '0.875rem', background: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.5rem' }}>

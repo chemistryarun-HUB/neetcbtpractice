@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import { orderOptionsForReview } from '../../lib/optionShuffle'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from '../../components/shared/MatchTable'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -78,6 +79,10 @@ export default function ResultPage() {
   const correctIds  = hasNewFormat ? (storedAnswers.correct_ids  || []) : []
   const wrongIds    = hasNewFormat ? (storedAnswers.wrong_ids    || []) : []
   const skippedIds  = hasNewFormat ? (storedAnswers.skipped_ids  || []) : attempt.question_ids || []
+  // The option order this student actually saw during the test. Attempts taken
+  // before this was recorded fall back to the authored order — which is exactly
+  // what they used to display anyway.
+  const optionOrder = hasNewFormat ? (storedAnswers.option_order || {}) : {}
 
   // Build O(1) lookup map: id → question object
   const qMap = new Map(questions.map(q => [q.id, q]))
@@ -211,7 +216,7 @@ export default function ResultPage() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {questionsForModal.map(q => {
-                    const opts = optionEntries(q)
+                    const opts = orderOptionsForReview(q, optionOrder[q.id])
                     const correctKey = correctOptionKey(q)
                     const selected = responses[q.id]
                     // Attempts submitted before the key-based fix stored the raw
