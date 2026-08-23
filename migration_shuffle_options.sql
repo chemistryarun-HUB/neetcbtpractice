@@ -25,7 +25,4 @@
 alter table questions
   add column if not exists shuffle_options boolean not null default true;
 
-comment on column questions.shuffle_options is
-  'false = never shuffle this question''s options (admin override). Automatic '
-  'detection of "All of the above" / "Both (b) and (c)" in lib/optionShuffle.js '
-  'applies regardless of this flag.';
+comment on column questions.shuffle_options is 'false = never shuffle this question''s options (admin override). Automatic detection of All-of-the-above / Both-(b)-and-(c) in lib/optionShuffle.js applies regardless of this flag.';

@@ -29,9 +29,22 @@ async function renderLang(model, lang, langHint) {
   document.body.appendChild(host)
   try {
     // Capturing before webfonts settle renders Devanagari in a fallback face,
-    // so wait for font readiness and two frames of layout.
-    if (document.fonts?.ready) { try { await document.fonts.ready } catch { /* not fatal */ } }
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+    // so wait for font readiness and give layout a couple of frames.
+    //
+    // Both waits are raced against a timer, because neither is guaranteed to
+    // settle: requestAnimationFrame does NOT fire while a tab is hidden, so an
+    // admin who clicks send and switches tabs — which is exactly what happens,
+    // since sending opens WhatsApp in a new tab — would otherwise hang here
+    // forever, with the spinner stuck and no error. Proceeding a few frames
+    // early is harmless; hanging is not.
+    await Promise.race([
+      document.fonts?.ready ?? Promise.resolve(),
+      new Promise(r => setTimeout(r, 3000)),
+    ]).catch(() => {})
+    await Promise.race([
+      new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))),
+      new Promise(r => setTimeout(r, 300)),
+    ])
     return await html2canvas(shell, {
       scale: 2,                 // keeps small type crisp without bloating the file
       backgroundColor: '#ffffff',
@@ -47,12 +60,25 @@ async function renderLang(model, lang, langHint) {
 // Places a canvas onto the doc, starting a new page, and slicing if the
 // content is taller than one page rather than scaling it down — type stays
 // the same size across pages.
+// A page of this report is almost exactly A4-shaped, so its height lands within
+// a couple of pixels of the page either way. Without a tolerance it overflows
+// by ~2px and slices off a nearly blank page — in a three-language document
+// that means a blank sheet wedged between English and Hindi. Anything within
+// 8% is scaled down to fit instead; the shrink is imperceptible and far better
+// than a stray page.
+const FIT_TOLERANCE = 1.08
+
 function placeCanvas(doc, canvas, isFirstPage) {
   const imgW = A4.w
   const imgH = (canvas.height / canvas.width) * imgW
   if (!isFirstPage) doc.addPage()
   if (imgH <= A4.h) {
-    doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, imgW, imgH, undefined, 'FAST')
+    doc.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, imgW, imgH, undefined, 'FAST')
+    return
+  }
+  if (imgH <= A4.h * FIT_TOLERANCE) {
+    const w = imgW * (A4.h / imgH)
+    doc.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', (A4.w - w) / 2, 0, w, A4.h, undefined, 'FAST')
     return
   }
   const pxPerMm = canvas.width / imgW
@@ -64,7 +90,7 @@ function placeCanvas(doc, canvas, isFirstPage) {
     c.height = h
     c.getContext('2d').drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h)
     if (part > 0) doc.addPage()
-    doc.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, imgW, h / pxPerMm, undefined, 'FAST')
+    doc.addImage(c.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, imgW, h / pxPerMm, undefined, 'FAST')
   }
 }
 
