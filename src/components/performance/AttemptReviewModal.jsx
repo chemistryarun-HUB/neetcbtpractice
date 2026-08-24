@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { useModalExpand, useBodyScrollLock } from '../../hooks/useModalExpand'
+import ModalExpandButton from '../shared/ModalExpandButton'
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
 import { hasStructuredMtc } from '../../lib/mtc'
@@ -15,12 +17,23 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
   const [questions, setQuestions] = useState(null)
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState(null) // null (all) | 'correct' | 'wrong' | 'skipped'
+  const [expanded, toggleExpanded] = useModalExpand()
+  const scrollRef = useRef(null)
+  useBodyScrollLock()
 
   useEffect(() => {
     function handleKey(e) { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
   }, [onClose])
+
+  // The tiles sit at the top of a list that can run to ~10,000px. Tapping
+  // "Wrong" from halfway down otherwise leaves you halfway down a *different,
+  // shorter* list — usually past its end, so the filter looks like it did
+  // nothing. Snap back to the top so the first wrong question is what you see.
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 })
+  }, [filter])
 
   useEffect(() => {
     let cancelled = false
@@ -105,8 +118,12 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
     : visibleQuestions
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay overlay-review" onClick={onClose}>
+      <div
+        ref={scrollRef}
+        className={`modal modal-review${expanded ? ' expanded' : ''}`}
+        onClick={e => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
             <div>Attempt Review</div>
@@ -118,7 +135,10 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
               Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{attempt.attempt_position ?? attempt.attempt_number} — {studentName}
             </div>
           </div>
-          <button className="btn btn-ghost btn-sm" onClick={onClose}><X size={18} /></button>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', flexShrink: 0 }}>
+            <ModalExpandButton expanded={expanded} onToggle={toggleExpanded} />
+            <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close review"><X size={18} /></button>
+          </span>
         </div>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '0.875rem 1.5rem', borderBottom: '1px solid var(--gray-200)' }}>

@@ -8,6 +8,8 @@ import { orderOptionsForReview } from '../../lib/optionShuffle'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from '../../components/shared/MatchTable'
 import InfoTooltip from '../../components/shared/InfoTooltip'
+import { useModalExpand, useBodyScrollLock } from '../../hooks/useModalExpand'
+import ModalExpandButton from '../../components/shared/ModalExpandButton'
 import { X } from 'lucide-react'
 
 export default function ResultPage() {
@@ -23,6 +25,8 @@ export default function ResultPage() {
   const [attemptsForLevel, setAttemptsForLevel] = useState(0)
   const [nextUnlocked, setNextUnlocked] = useState(false)
   const [nextLevelId, setNextLevelId] = useState(null)
+  const [expanded, toggleExpanded] = useModalExpand()
+  useBodyScrollLock(!!modal)
 
   useEffect(() => {
     async function load() {
@@ -204,11 +208,14 @@ export default function ResultPage() {
 
       {/* Detail modal */}
       {modal && (
-        <div className="modal-overlay" onClick={() => setModal(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay overlay-review" onClick={() => setModal(null)}>
+          <div className={`modal modal-review${expanded ? ' expanded' : ''}`} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               {modal === 'correct' ? '✅ Correct Questions' : modal === 'wrong' ? '❌ Wrong Questions' : '⏭ Skipped Questions'}
-              <button className="btn btn-ghost btn-sm" onClick={() => setModal(null)}><X size={18} /></button>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', flexShrink: 0 }}>
+                <ModalExpandButton expanded={expanded} onToggle={toggleExpanded} />
+                <button className="btn btn-ghost btn-sm" onClick={() => setModal(null)} aria-label="Close"><X size={18} /></button>
+              </span>
             </div>
             <div className="modal-body">
               {questionsForModal.length === 0 ? (
