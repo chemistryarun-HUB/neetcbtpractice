@@ -26,7 +26,7 @@ export function shuffleArray(arr) {
 const ABOVE_RE = /\b(all|none|both|any)\s+of\s+(the\s+)?(above|these|them)\b/i
 
 // Two option letters joined by and/comma, with nothing but whitespace between
-// them — "Both (b) and (c)", "(A) and (B)", "both A and B".
+// them — "Both (b) and (c)", "(A) and (B)".
 //
 // Deliberately tight. A looser pattern matched real chemistry that has nothing
 // to do with options: "λC = λ∞ + (B)√C" is a constant, "M(A) = 50×10⁻³ and
@@ -34,6 +34,32 @@ const ABOVE_RE = /\b(all|none|both|any)\s+of\s+(the\s+)?(above|these|them)\b/i
 // Requiring the two letters to be adjacent excludes all three.
 const PAIR_RE = /\(\s*[a-dA-D]\s*\)\s*(?:,|and|&|\+|\/)\s*\(?\s*[a-dA-D]\s*\)/
 const BOTH_RE = /\bboth\s+\(?\s*[a-dA-D]\s*\)?\s+(?:and|&|,)\s+\(?\s*[a-dA-D]\s*\)?(?!\w)/i
+
+// …but a bare capital is not a reference to another option.
+//
+// Parentheses are the convention for pointing at an option by position. A bare
+// letter names something the question introduced itself, and such an option
+// carries its meaning with it wherever it lands, so it shuffles safely:
+//
+//   NCU07363  "in both A and B conductivity decrease"  — A and B are the two
+//             vessels the stem sets up
+//   NCU23028  "Both A and B"                           — A and B are the
+//             marked atoms in the question's image
+//
+// Those were the only two questions in the whole active bank that the pair
+// patterns caught, and both are safe to shuffle (confirmed by Arun 2026-08-24).
+// Requiring a parenthesised letter keeps "Both (b) and (c)" protected for
+// whatever gets added later, which is the case this module exists for.
+//
+// This gate runs before the pair patterns rather than replacing them: the
+// examples above ("(B)√C", "M(A) … M(B)") do contain a parenthesised letter and
+// still must not match, so the adjacency requirement is doing separate work.
+const PAREN_LETTER_RE = /\(\s*[a-dA-D]\s*\)/
+
+function refersToAnotherOption(text) {
+  if (!PAREN_LETTER_RE.test(text)) return false
+  return PAIR_RE.test(text) || BOTH_RE.test(text)
+}
 
 // Does the QUESTION label its own items (A), (i), "Statement 1"…? If so, letters
 // inside an option refer to those stem items, not to the other options — "(C) <
@@ -63,7 +89,7 @@ export function positionDependence(q) {
   // last and then happily shuffle the option that points at A and B, which is
   // the exact corruption this module exists to prevent. When both apply, the
   // stricter rule has to win.
-  if (!stemLabelsItems && texts.some(t => PAIR_RE.test(t) || BOTH_RE.test(t))) return 'self-ref'
+  if (!stemLabelsItems && texts.some(refersToAnotherOption)) return 'self-ref'
   if (texts.some(isAboveOption)) return 'above'
   return null
 }
