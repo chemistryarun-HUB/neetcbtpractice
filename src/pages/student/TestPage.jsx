@@ -70,10 +70,14 @@ export default function TestPage() {
       // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry"
       const unitPrefix = `Unit ${unitNum} -`
 
-      // Get fresh (unused) questions — always filtered to this unit
+      // Get fresh (unused) questions — always filtered to this unit.
+      // is_published gates questions the admin has uploaded but not reviewed
+      // yet; is_active gates ones taken out of service. Both must hold, and
+      // both have to be repeated on the fallback fetch below.
       let allQQuery = supabase.from('questions').select('*')
         .ilike('unit', `${unitPrefix}%`)
         .eq('is_active', true)
+        .eq('is_published', true)
       if (!isChapterTest) allQQuery = allQQuery.eq('level', levelNum)
       const { data: allQ } = await allQQuery
 
@@ -86,6 +90,7 @@ export default function TestPage() {
           .in('id', ids)
           .ilike('unit', `${unitPrefix}%`)
           .eq('is_active', true)
+          .eq('is_published', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)
         const { data } = await fbQuery
         return shuffle(data || [])

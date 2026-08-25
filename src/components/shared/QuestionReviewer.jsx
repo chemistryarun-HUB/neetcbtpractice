@@ -33,6 +33,7 @@ export default function QuestionReviewer({
   onIndexChange,
   onClose,
   onToggleActive,
+  onTogglePublished,
   onSaved,
   startInEdit = false,
 }) {
@@ -94,6 +95,7 @@ export default function QuestionReviewer({
         case 'e': case 'E': e.preventDefault(); setEditing(v => !v); break
         case 'v': case 'V': e.preventDefault(); setMode(m => (m === 'student' ? 'admin' : 'student')); break
         case 'a': case 'A': e.preventDefault(); onToggleActive(q); break
+        case 'p': case 'P': e.preventDefault(); if (onTogglePublished) onTogglePublished(q); break
         default: break
       }
     }
@@ -104,6 +106,7 @@ export default function QuestionReviewer({
   if (!q) return null
 
   const isInactive = q.is_active === false
+  const isPending = q.is_published === false
   const topic = deriveTopic(q.unit, q.level) || q.topic || '—'
 
   return (
@@ -127,6 +130,10 @@ export default function QuestionReviewer({
           {(q.content_locked || hasAnyFieldLock(q)) && <Lock size={13} style={{ opacity: 0.8 }} title={lockSummary(q)} />}
           {isInactive && (
             <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: 4, padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>INACTIVE</span>
+          )}
+          {isPending && !isInactive && (
+            <span title="Uploaded but not yet released — no student can see this question."
+              style={{ background: '#fef3c7', color: '#92400e', borderRadius: 4, padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>NOT PUBLISHED</span>
           )}
         </div>
 
@@ -178,6 +185,22 @@ export default function QuestionReviewer({
             }}>
             {isInactive ? 'Inactive' : 'Active'}
           </button>
+
+          {/* Publish (P). This screen is where a question actually gets checked,
+              so it is where releasing it belongs — the level-wide button in the
+              list is the bulk version of this one. Only rendered while the
+              question is unpublished; once live it has nothing to say, and the
+              Active toggle beside it already covers taking it back down. */}
+          {onTogglePublished && isPending && (
+            <button onClick={() => onTogglePublished(q)}
+              title="Students cannot see this question yet. Click to publish it (P)"
+              style={{
+                fontSize: '0.7rem', fontWeight: 700, padding: '0.3rem 0.6rem', borderRadius: 'var(--radius)', cursor: 'pointer',
+                background: '#fef3c7', color: '#92400e', border: '1.5px solid #fcd34d',
+              }}>
+              Publish
+            </button>
+          )}
 
           <button onClick={() => setEditing(v => !v)} title="Edit this question (E)"
             style={{
@@ -273,6 +296,7 @@ export default function QuestionReviewer({
         <span><kbd>V</kbd> admin ↔ student</span>
         <span><kbd>E</kbd> edit</span>
         <span><kbd>A</kbd> active / inactive</span>
+        {onTogglePublished && isPending && <span><kbd>P</kbd> publish</span>}
         <span><kbd>Home</kbd> <kbd>End</kbd> first / last</span>
         <span><kbd>Esc</kbd> back to list</span>
       </div>

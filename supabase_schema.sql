@@ -116,6 +116,15 @@ create table if not exists questions (
 -- were added directly against Supabase outside any tracked migration —
 -- not addressed here, out of scope for this change.
 
+-- Review gate — see migration_question_publish.sql for the reasoning and the
+-- one-time backfill. A student sees a question only when is_active AND
+-- is_published are both true:
+--   is_active     is this question in service at all?  (admin retires it)
+--   is_published  has it been reviewed and released?   (admin publishes it)
+-- Defaults to false so an Excel upload cannot reach students unreviewed.
+alter table questions
+  add column if not exists is_published boolean not null default false;
+
 alter table questions enable row level security;
 
 -- Students use custom auth (anon role), so policy must allow anon reads too

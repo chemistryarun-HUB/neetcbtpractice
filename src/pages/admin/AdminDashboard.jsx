@@ -16,16 +16,21 @@ const NAV = [
 ]
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ students: 0, faculty: 0, questions: 0 })
+  const [stats, setStats] = useState({ students: 0, faculty: 0, questions: 0, pending: 0 })
 
   useEffect(() => {
     async function load() {
-      const [s, f, q] = await Promise.all([
+      const [s, f, q, p] = await Promise.all([
         supabase.from('students').select('id', { count: 'exact', head: true }),
         supabase.from('faculty').select('id', { count: 'exact', head: true }),
         supabase.from('questions').select('id', { count: 'exact', head: true }),
+        // Uploaded but not yet released to students. Surfaced on the landing
+        // page because the failure mode of the review gate is silence — a batch
+        // that never gets published is invisible from every other screen.
+        supabase.from('questions').select('id', { count: 'exact', head: true })
+          .eq('is_published', false).eq('is_active', true),
       ])
-      setStats({ students: s.count || 0, faculty: f.count || 0, questions: q.count || 0 })
+      setStats({ students: s.count || 0, faculty: f.count || 0, questions: q.count || 0, pending: p.count || 0 })
     }
     load()
   }, [])
@@ -51,6 +56,15 @@ export default function AdminDashboard() {
             <div className="stat-value">{stats.questions}</div>
             <div className="stat-label">Questions in Bank</div>
           </div>
+          {stats.pending > 0 && (
+            <Link to="/admin/questions" style={{ textDecoration: 'none' }}>
+              <div className="stat-card" style={{ background: '#fffbeb', border: '1.5px solid #fcd34d', cursor: 'pointer' }}
+                title="Uploaded but not reviewed. Students cannot see these yet — click to review and publish them.">
+                <div className="stat-value" style={{ color: '#92400e' }}>{stats.pending}</div>
+                <div className="stat-label" style={{ color: '#92400e', fontWeight: 600 }}>Awaiting review</div>
+              </div>
+            </Link>
+          )}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>

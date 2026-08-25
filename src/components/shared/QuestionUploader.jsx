@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, useCallback, useMemo, Fragment } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -173,6 +173,9 @@ export default function QuestionUploader({ uploadedBy }) {
     q = q.order('qid', { ascending: true })
     if (statusFilter === 'active') q = q.eq('is_active', true)
     else if (statusFilter === 'inactive') q = q.eq('is_active', false)
+    // Uploaded but not released. Scoped to is_active for the same reason the
+    // banner tally is — a retired question is not waiting on anybody.
+    else if (statusFilter === 'pending') q = q.eq('is_published', false).eq('is_active', true)
     // 'both' — no is_active filter
     return q
   }
@@ -227,10 +230,89 @@ export default function QuestionUploader({ uploadedBy }) {
     if (error) { toast.error(error.message); return }
     toast.success(isActive ? 'Restored to active' : 'Marked inactive')
     patchQuestion(id, { is_active: isActive })
+    // Retiring/restoring moves a question in or out of the review queue.
+    refreshPendingCounts()
   }
 
   const markInactive = id => setActive(id, false)
   const markActive = id => setActive(id, true)
+
+  // ── Review gate ───────────────────────────────────────────────────────────
+  // Uploaded questions arrive is_published = false (DB default) and stay hidden
+  // from students until released here. is_active is deliberately NOT touched by
+  // any of this: a question the admin retired stays retired through a publish.
+
+  async function setPublished(id, isPublished) {
+    const { error } = await supabase.from('questions').update({ is_published: isPublished }).eq('id', id)
+    if (error) { toast.error(error.message); return }
+    toast.success(isPublished ? 'Published — students can see it now' : 'Unpublished — hidden from students')
+    patchQuestion(id, { is_published: isPublished })
+    refreshPendingCounts()
+  }
+
+  // Releases a whole level at once — the unit the admin actually works in, and
+  // what they asked for. Scoped by the exact `unit` string rather than a unit id
+  // because that column is free text and is what the rows themselves carry.
+  async function publishLevel(unit, level) {
+    const { data, error } = await supabase.from('questions')
+      .update({ is_published: true })
+      .eq('unit', unit).eq('level', level).eq('is_published', false).eq('is_active', true)
+      .select('id')
+    if (error) { toast.error(error.message); return }
+    const n = (data || []).length
+    if (!n) { toast('Nothing pending in this level.'); return }
+    toast.success(`${n} question${n !== 1 ? 's' : ''} published — ${levelBadge(unitIdOf(unit), level)} is live for students`)
+    setQuestions(prev => prev.map(q =>
+      q.unit === unit && q.level === level ? { ...q, is_published: true } : q))
+    refreshPendingCounts()
+  }
+
+  async function unpublishLevel(unit, level) {
+    const { data, error } = await supabase.from('questions')
+      .update({ is_published: false })
+      .eq('unit', unit).eq('level', level).eq('is_published', true)
+      .select('id')
+    if (error) { toast.error(error.message); return }
+    const n = (data || []).length
+    toast.success(`${n} question${n !== 1 ? 's' : ''} hidden from students`)
+    setQuestions(prev => prev.map(q =>
+      q.unit === unit && q.level === level ? { ...q, is_published: false } : q))
+    refreshPendingCounts()
+  }
+
+  // Bank-wide pending tally, independent of the current filters — without this
+  // a level uploaded months ago and never released is invisible unless the
+  // admin happens to filter to it.
+  //
+  // Scoped to is_active as well, and everything else about "pending" is scoped
+  // the same way: a question the admin retires mid-review is dealt with, not
+  // waiting on them, and counting it would leave a warning banner that can
+  // never reach zero. Retiring one is therefore also a way to clear it from
+  // the queue. Restoring it later brings it back as unpublished, which is
+  // right — it goes out to students only when someone says so.
+  const [pendingRows, setPendingRows] = useState([])
+  const refreshPendingCounts = useCallback(async () => {
+    const all = []
+    for (let from = 0; ; from += 1000) {
+      const { data: page, error } = await supabase.from('questions')
+        .select('unit, level').eq('is_published', false).eq('is_active', true)
+        .range(from, from + 999)
+      if (error) return
+      all.push(...(page || []))
+      if (!page || page.length < 1000) break
+    }
+    setPendingRows(all)
+  }, [])
+  useEffect(() => { refreshPendingCounts() }, [refreshPendingCounts])
+
+  // unit+level → pending count, for the badges on the level headers.
+  const pendingByLevel = useMemo(() => {
+    const m = {}
+    for (const r of pendingRows) m[`${r.unit}||${r.level}`] = (m[`${r.unit}||${r.level}`] || 0) + 1
+    return m
+  }, [pendingRows])
+  const pendingTotal = pendingRows.length
+  const pendingLevelCount = Object.keys(pendingByLevel).length
 
   async function loadDuplicates() {
     setDupeLoading(true)
@@ -416,12 +498,17 @@ export default function QuestionUploader({ uploadedBy }) {
         }
       }
 
+      // A hand-added question could arguably go straight out — the admin just
+      // typed every field. It still lands unpublished, because one rule ("nothing
+      // reaches students until you publish it") is easier to trust than two, and
+      // the level's publish button is one click away.
       const { error } = await supabase.from('questions').insert([record])
       if (error) throw error
-      toast.success('Question added!')
+      toast.success('Question added — publish its level to show it to students.', { duration: 6000 })
       setForm(BLANK)
       setManualSubject(''); setManualUnitId(''); setManualLevel('')
       loadQuestions()
+      refreshPendingCounts()
     } catch (err) {
       toast.error(err.message)
     } finally {
@@ -586,8 +673,13 @@ export default function QuestionUploader({ uploadedBy }) {
         if (pinned.length) parts.push(`🔒 Kept manual values for ${pinned.map(([label, n]) => `${label} (${n})`).join(', ')}.`)
         if (skipped.length) parts.push(`${skipped.length} skipped (missing Q ID or Question).`)
         if (duplicateCount) parts.push(`${duplicateCount} duplicate Q ID(s) in file — kept last occurrence.`)
-        toast.success(parts.join(' '), { duration: 8000 })
+        // Say it on the upload itself, not only in the banner: the whole point
+        // of the gate is that this step no longer puts anything in front of
+        // students, and that is surprising unless it is stated here.
+        parts.push('New questions are hidden from students until you publish their level.')
+        toast.success(parts.join(' '), { duration: 9000 })
         loadQuestions()
+        refreshPendingCounts()
       } catch (err) {
         console.error('Excel upload failed:', err)
         toast.error(err.message || 'Upload failed — see console for details.', { duration: 8000 })
@@ -658,12 +750,31 @@ export default function QuestionUploader({ uploadedBy }) {
           onIndexChange={setReviewIndex}
           onClose={closeReview}
           onToggleActive={q => setActive(q.id, q.is_active === false)}
+          onTogglePublished={q => setPublished(q.id, q.is_published === false)}
           onSaved={row => patchQuestion(row.id, row)}
           startInEdit={reviewStartInEdit}
         />
       )}
 
       {/* ── LIST ── */}
+      {/* The one thing this feature must not do is lose questions silently. An
+          upload that is never published is invisible to students AND easy for
+          the admin to forget, so the tally is shown on every tab of this page,
+          not tucked inside the list, and it links straight to the queue. */}
+      {pendingTotal > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 'var(--radius)', padding: '0.6rem 0.875rem', marginBottom: '0.75rem' }}>
+          <span style={{ fontSize: '0.875rem', color: '#92400e' }}>
+            <strong>{pendingTotal} question{pendingTotal !== 1 ? 's' : ''}</strong> across{' '}
+            <strong>{pendingLevelCount} level{pendingLevelCount !== 1 ? 's' : ''}</strong> {pendingTotal !== 1 ? 'are' : 'is'} waiting to be reviewed. Students cannot see {pendingTotal !== 1 ? 'them' : 'it'} yet.
+          </span>
+          <button className="btn btn-sm"
+            style={{ marginLeft: 'auto', background: '#92400e', color: '#fff', fontWeight: 700, fontSize: '0.75rem' }}
+            onClick={() => { setTab('list'); setStatusFilter('pending'); setUnitFilter(''); setLevelFilter(''); setSearch('') }}>
+            Show them
+          </button>
+        </div>
+      )}
+
       {tab === 'list' && (
         <div className="card">
           {/* Chrome is kept to two tight rows — every pixel spent here is a pixel
@@ -755,11 +866,12 @@ export default function QuestionUploader({ uploadedBy }) {
                   can be scanned at a glance instead of hunting unit by unit. */}
               <select
                 className="form-control"
-                style={{ width: '150px', flex: '0 0 150px', marginLeft: 'auto', fontWeight: statusFilter !== 'active' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'both' ? 'var(--primary)' : undefined }}
+                style={{ width: '170px', flex: '0 0 170px', marginLeft: 'auto', fontWeight: statusFilter !== 'active' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'both' ? 'var(--primary)' : undefined }}
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
                 <option value="active">Active Qs</option>
+                <option value="pending">Awaiting review{pendingTotal ? ` (${pendingTotal})` : ''}</option>
                 <option value="inactive">Inactive Qs</option>
                 <option value="both">Both</option>
               </select>
@@ -787,6 +899,9 @@ export default function QuestionUploader({ uploadedBy }) {
                 <tbody>
                   {(() => { let lastUnit = null; let lastLevel = null; return visibleQuestions.map(q => {
                     const isInactive = q.is_active === false
+                    // Uploaded but not yet released. Distinct from inactive: this
+                    // one is waiting on the admin, not retired by them.
+                    const isPending = q.is_published === false
                     // Browsing "All Units" (no unitFilter) additionally groups by unit,
                     // so e.g. every inactive question across the whole bank can be
                     // scanned unit-by-unit and level-by-level in one view instead of
@@ -822,6 +937,26 @@ export default function QuestionUploader({ uploadedBy }) {
                                   title="Open this level in the full-screen reviewer and walk it with ← / →">
                                   ▶ Review this level
                                 </button>
+                                {/* Publish control, level-wise. Same click-the-badge
+                                    idiom as a practice paper's Active/Inactive chip. */}
+                                {(() => {
+                                  const nPending = pendingByLevel[`${q.unit}||${q.level}`] || 0
+                                  return nPending > 0 ? (
+                                    <button
+                                      onClick={() => publishLevel(q.unit, q.level)}
+                                      title={`${nPending} question${nPending !== 1 ? 's' : ''} here have not been released. Students cannot see them yet — click to publish the level.`}
+                                      style={{ marginLeft: 'auto', border: '1px solid #fcd34d', background: '#fef9c3', color: '#92400e', fontWeight: 700, fontSize: '0.7rem', borderRadius: 999, padding: '0.15rem 0.6rem', cursor: 'pointer', fontFamily: 'inherit' }}>
+                                      {nPending} awaiting review — click to publish
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() => unpublishLevel(q.unit, q.level)}
+                                      title="Live for students. Click to pull this level back out of sight."
+                                      style={{ marginLeft: 'auto', border: '1px solid #86efac', background: '#dcfce7', color: '#15803d', fontWeight: 700, fontSize: '0.7rem', borderRadius: 999, padding: '0.15rem 0.6rem', cursor: 'pointer', fontFamily: 'inherit' }}>
+                                      Live ✓
+                                    </button>
+                                  )
+                                })()}
                               </div>
                             </td>
                           </tr>
@@ -831,7 +966,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           style={{
                             cursor: 'pointer',
                             opacity: isInactive ? 0.55 : 1,
-                            background: isInactive ? '#fef2f2' : undefined,
+                            background: isInactive ? '#fef2f2' : isPending ? '#fffbeb' : undefined,
                           }}
                           onClick={() => openReview(q)}
                           title="Click to review full screen"
@@ -839,6 +974,14 @@ export default function QuestionUploader({ uploadedBy }) {
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
                             {isInactive && <span style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '3px', padding: '0 4px' }}>inactive</span>}
+                            {isPending && !isInactive && (
+                              <span
+                                onClick={e => { e.stopPropagation(); setPublished(q.id, true) }}
+                                title="Not yet released — students cannot see this question. Click to publish just this one."
+                                style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d', borderRadius: '3px', padding: '0 4px', cursor: 'pointer' }}>
+                                unpublished
+                              </span>
+                            )}
                             {(q.content_locked || hasAnyFieldLock(q)) && (
                               <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title={lockSummary(q)} />
                             )}

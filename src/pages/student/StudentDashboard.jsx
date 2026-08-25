@@ -51,7 +51,10 @@ export default function StudentDashboard() {
       }
       setAttempts(a || [])
 
-      // 2. All active questions: unit, level, topic — to know which units/levels exist
+      // 2. All live questions: unit, level, topic — to know which units/levels exist.
+      // Gated on is_published as well as is_active so a level whose questions are
+      // uploaded but not yet reviewed doesn't appear on the syllabus at all —
+      // otherwise the student opens it and sits a test on unchecked questions.
       // Paginated — Supabase caps a single request at 1000 rows, and the question
       // bank has already grown past that, which was silently truncating counts.
       const qRows = []
@@ -61,6 +64,7 @@ export default function StudentDashboard() {
           .from('questions')
           .select('unit, level, topic')
           .eq('is_active', true)
+          .eq('is_published', true)
           .range(from, from + 999)
         if (error) { qErr = error; break }
         qRows.push(...(page || []))
