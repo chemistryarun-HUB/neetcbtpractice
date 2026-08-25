@@ -155,7 +155,11 @@ export default function QuestionUploader({ uploadedBy }) {
 
   function buildQuestionsQuery() {
     let q = supabase.from('questions').select('*')
-    // Filter by unit — Unit 11 uses a loose match to handle "d and f" vs "d- and f-" variants
+    // Filter by unit — Unit 11 keeps a loose match as a leftover safety net from
+    // when its rows carried "d and f" / "d- and f-" spellings. Audited 2026-08-24:
+    // all 636 of them now read "Unit 11 - d & f Block Elements" and nothing else,
+    // and uploads build `unit` from CHEMISTRY_UNITS, so no new variant can appear.
+    // Kept because it costs nothing and matches whatever spelling turns up.
     if (unitFilter) {
       const uid = Number(unitFilter)
       if (uid === 11) {
@@ -1434,7 +1438,12 @@ export default function QuestionUploader({ uploadedBy }) {
                   <tr>
                     <td>Q001</td>
                     <td>MCQ</td>
-                    <td>d and f Block Elements</td>
+                    {/* Matches the chapter_name actually stored on Unit 11's rows.
+                        The sheet's own Chapter Name is free text and never becomes
+                        the `unit` column — that is always built from the Unit
+                        dropdown above, which is why the bank has exactly one unit
+                        string per unit. */}
+                    <td>d- and f-Block Elements</td>
                     <td>General Introduction</td>
                     <td>Which element is a transition metal?</td>
                     <td>Fe</td>
