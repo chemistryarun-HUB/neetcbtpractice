@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from './constants'
+import { clearSession } from './session'
 
 export async function loginAsAdmin(email, password) {
   if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
@@ -46,9 +47,12 @@ export async function getCurrentFaculty() {
   return data
 }
 
+// Nothing imports this module today — hooks/useAuth.jsx is the live path — but
+// it is kept in step deliberately: clearing sessionStorage by hand was correct
+// only while that was the only store. A "remember me" session lives in
+// localStorage, so hand-rolled removeItem calls would now leave someone signed
+// in after logging out. Session storage belongs to lib/session.js alone.
 export async function logout() {
   await supabase.auth.signOut()
-  sessionStorage.removeItem('neetcbt_role')
-  sessionStorage.removeItem('neetcbt_student')
-  sessionStorage.removeItem('neetcbt_admin')
+  clearSession()
 }

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../lib/constants'
+import { loadSession, saveStudentSession, saveAdminSession, updateStoredStudent, clearSession } from '../lib/session'
 
 const AuthContext = createContext(null)
 
@@ -10,22 +11,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Restore session from storage
-    const storedRole = sessionStorage.getItem('neetcbt_role')
-    if (storedRole === 'admin') {
+    // Restore session from storage — localStorage ("remember me") first, then
+    // the per-tab one. See lib/session.js.
+    const stored = loadSession()
+    if (stored?.role === 'admin') {
       setRole('admin')
       setUser({ email: ADMIN_EMAIL })
       setLoading(false)
       return
     }
-    if (storedRole === 'student') {
-      const student = JSON.parse(sessionStorage.getItem('neetcbt_student') || 'null')
-      if (student) {
-        setRole('student')
-        setUser(student)
-        setLoading(false)
-        return
-      }
+    if (stored?.role === 'student') {
+      setRole('student')
+      setUser(stored.student)
+      setLoading(false)
+      return
     }
 
     // Check Supabase session for faculty
@@ -61,8 +60,9 @@ export function AuthProvider({ children }) {
           setUser({ supabase_user: session.user })
         }
       } else {
-        const storedRole = sessionStorage.getItem('neetcbt_role')
-        if (storedRole !== 'admin' && storedRole !== 'student') {
+        // A Supabase sign-out must not knock out an admin/student session,
+        // which doesn't use Supabase auth at all.
+        if (!loadSession()) {
           setRole(null)
           setUser(null)
         }
@@ -72,9 +72,9 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  function adminLogin(email, password) {
+  function adminLogin(email, password, remember = true) {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('neetcbt_role', 'admin')
+      saveAdminSession(remember)
       setRole('admin')
       setUser({ email: ADMIN_EMAIL })
       return true
@@ -82,16 +82,15 @@ export function AuthProvider({ children }) {
     return false
   }
 
-  function studentLogin(student) {
-    sessionStorage.setItem('neetcbt_role', 'student')
-    sessionStorage.setItem('neetcbt_student', JSON.stringify(student))
+  function studentLogin(student, remember = true) {
+    saveStudentSession(student, remember)
     setRole('student')
     setUser(student)
   }
 
   function updateStudentUser(updated) {
     const merged = { ...user, ...updated }
-    sessionStorage.setItem('neetcbt_student', JSON.stringify(merged))
+    updateStoredStudent(merged)
     setUser(merged)
   }
 
@@ -101,8 +100,9 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     await supabase.auth.signOut()
-    sessionStorage.removeItem('neetcbt_role')
-    sessionStorage.removeItem('neetcbt_student')
+    // Clears both stores, so an explicit logout really does end a remembered
+    // session — that's the escape hatch on a shared device.
+    clearSession()
     setRole(null)
     setUser(null)
   }
