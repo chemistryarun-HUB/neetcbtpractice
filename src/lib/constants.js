@@ -38,7 +38,7 @@ export const NEET_CHEMISTRY_SYLLABUS = [
     ],
   },
   {
-    section: 'Fundamentals of Organic Reaction Mechanism',
+    section: 'General Organic Chemistry (GOC)',
     units: [
       { id: 21, name: 'Nomenclature' },
       { id: 22, name: 'Isomerism' },
@@ -54,7 +54,7 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   // practise any module the day it is taught without clearing the ones before.
   //
   // Module 1 (Foundations: structure, IUPAC, isomerism, GOC) is NOT here — it
-  // is the existing 'Fundamentals of Organic Reaction Mechanism' section above,
+  // is the existing 'General Organic Chemistry (GOC)' section above,
   // which already holds all 498 organic questions, properly levelled.
   {
     section: 'Organic Reaction Mechanisms',
