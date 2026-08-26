@@ -86,6 +86,32 @@ function ImageField({ label, file, onChange }) {
 // Maps a topic string to its level number for a given unit using UNIT_LEVELS definitions.
 // Matching is case-insensitive and trims whitespace.
 // Returns 1 if the topic is not found in the unit's level definitions.
+// Resolve a sheet's "Unit" cell to a real unit id, tolerantly — one bulk sheet
+// spans a dozen units and nobody is going to type the canonical label exactly.
+// Accepts "27", "Unit 27", "Unit 27 - Nucleophilic Substitution (SN1/SN2)", or
+// just the name. Returns null when it matches nothing, which the caller reports
+// rather than guessing: a mistyped unit silently landing 40 questions in the
+// wrong module is far worse than being told to fix the cell.
+function resolveUnitId(raw) {
+  const s = String(raw || '').trim()
+  if (!s) return null
+
+  const num = s.match(/^(?:unit\s*)?(\d{1,2})\b/i)
+  if (num) {
+    const id = Number(num[1])
+    if (CHEMISTRY_UNITS.some(u => u.id === id)) return id
+  }
+
+  // Name match — ignore a leading "Unit N -", punctuation and spacing, so
+  // "d & f Block" and "d and f block elements" both land.
+  const norm = t => String(t).toLowerCase().replace(/^unit\s*\d+\s*[-–—:]\s*/, '')
+    .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim()
+  const target = norm(s)
+  if (!target) return null
+  const exact = CHEMISTRY_UNITS.find(u => norm(u.name) === target)
+  return exact ? exact.id : null
+}
+
 function topicToLevel(unitId, topic) {
   const levels = UNIT_LEVELS[unitId]
   if (!levels) return 1
@@ -146,6 +172,9 @@ export default function QuestionUploader({ uploadedBy }) {
   // Upload Excel tab — subject/unit selection
   const [uploadSubject, setUploadSubject] = useState('')
   const [uploadUnitId, setUploadUnitId] = useState('')
+  // Parsed sheet awaiting confirmation — nothing is written while this is set.
+  const [pendingUpload, setPendingUpload] = useState(null)
+  const [uploading, setUploading] = useState(false)
   // Add Manually tab — subject/unit/level selection (separate from list filters)
   const [manualSubject, setManualSubject] = useState('')
   const [manualUnitId, setManualUnitId] = useState('')
@@ -525,13 +554,16 @@ export default function QuestionUploader({ uploadedBy }) {
     if (!file) return
     e.target.value = ''
 
-    if (!uploadSubject || !uploadUnitId) {
-      toast.error('Please select Subject and Unit before uploading.')
+    // The Unit dropdown is now a FALLBACK, not a requirement: a sheet carrying
+    // its own "Unit" column can span as many units as it likes in one upload.
+    // Only rows with no unit of their own need the dropdown, so the guard is
+    // deferred until we know whether any such row exists.
+    if (!uploadSubject) {
+      toast.error('Please select Subject before uploading.')
       return
     }
 
     const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))
-    const unitLabel = selectedUnit ? `Unit ${selectedUnit.id} - ${selectedUnit.name}` : ''
 
     // Returns '' for missing/blank cells instead of the literal string "undefined"
     // (String(undefined) === "undefined", which is truthy and used to slip past validation)
@@ -569,13 +601,34 @@ export default function QuestionUploader({ uploadedBy }) {
 
         const records = []
         const skipped = []
-        const unitIdNum = Number(uploadUnitId)
+        const badUnits = []      // rows whose Unit cell matched no unit
+        const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
+        const levelFixed = []    // rows whose Level doesn't exist in their unit
 
         for (const r of rows) {
           const qid      = cell(r, 'Q ID')
           const question = cell(r, 'Question')
 
           if (!qid || !question) { skipped.push(qid || '(no Q ID)'); continue }
+
+          // Per-row unit, falling back to the dropdown. Accepts a "Unit" or
+          // "Unit ID" header.
+          const unitCell = cell(r, 'Unit') || cell(r, 'Unit ID')
+          let unitIdNum
+          if (unitCell) {
+            const resolved = resolveUnitId(unitCell)
+            if (!resolved) { badUnits.push({ qid, value: unitCell }); continue }
+            unitIdNum = resolved
+          } else if (selectedUnit) {
+            unitIdNum = selectedUnit.id
+          } else {
+            noUnit.push(qid); continue
+          }
+
+          // Always rebuilt from CHEMISTRY_UNITS, never from the sheet's text —
+          // this is what keeps exactly one unit string per unit in the bank.
+          const rowUnit = CHEMISTRY_UNITS.find(u => u.id === unitIdNum)
+          const unitLabel = `Unit ${rowUnit.id} - ${rowUnit.name}`
 
           const option1  = cell(r, 'Option 1')
           const option2  = cell(r, 'Option 2')
@@ -589,9 +642,21 @@ export default function QuestionUploader({ uploadedBy }) {
           // Read Level directly from Excel "Level" column if present.
           // Falls back to topic-name lookup in UNIT_LEVELS, then defaults to 1.
           const rawLevel = cell(r, 'Level')
-          const level = rawLevel && !isNaN(Number(rawLevel))
+          let level = rawLevel && !isNaN(Number(rawLevel))
             ? Number(rawLevel)
             : topicToLevel(unitIdNum, topic)
+
+          // A level the unit doesn't define is a silent black hole: the student
+          // dashboard renders levels from UNIT_LEVELS, so a question parked at
+          // Level 3 of a one-level module exists in the bank and is visible to
+          // nobody. Pull it back to the unit's first level and say so, rather
+          // than accepting a number that can never be reached. Only applies to
+          // units that actually declare their levels.
+          const known = UNIT_LEVELS[unitIdNum]
+          if (known?.length && !known.some(l => l.id === level)) {
+            levelFixed.push({ qid, from: level, to: known[0].id, unit: rowUnit.name })
+            level = known[0].id
+          }
 
           records.push({
             qid,
@@ -622,7 +687,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const dedupedRecords = Array.from(byQid.values())
         const duplicateCount = records.length - dedupedRecords.length
 
-        if (dedupedRecords.length === 0) {
+        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length) {
           const sampleHeaders = rows[0] ? Object.keys(rows[0]).join(', ') : '(sheet appears empty)'
           toast.error(
             `No valid rows found in sheet "${usedSheetName}". Expected columns "Q ID" and "Question" ` +
@@ -631,6 +696,39 @@ export default function QuestionUploader({ uploadedBy }) {
           )
           return
         }
+
+        // Nothing is written yet. A sheet spanning a dozen units is exactly the
+        // case where a wrong guess is expensive to unpick, so the admin gets to
+        // see where every row is about to land — and what could not be placed —
+        // before any of it reaches the bank. commitUpload() does the writing.
+        setPendingUpload({
+          fileName: file.name,
+          sheetName: usedSheetName,
+          records: dedupedRecords,
+          duplicateCount,
+          skipped,
+          badUnits,
+          noUnit,
+          levelFixed,
+        })
+        return
+      } catch (err) {
+        console.error('Excel parse failed:', err)
+        toast.error(err.message || 'Could not read that file — see console for details.', { duration: 8000 })
+      }
+    }
+    reader.readAsArrayBuffer(file)
+  }
+
+  // The write half, run only after the admin confirms the preview above.
+  async function commitUpload() {
+    const p = pendingUpload
+    if (!p) return
+    setUploading(true)
+    try {
+      {
+        const dedupedRecords = p.records
+        const { duplicateCount, skipped } = p
 
         // Locks decide, per existing row, which columns this sheet may overwrite:
         //   content_locked → skip the content half (question/options/answer/images)
@@ -682,14 +780,16 @@ export default function QuestionUploader({ uploadedBy }) {
         // students, and that is surprising unless it is stated here.
         parts.push('New questions are hidden from students until you publish their level.')
         toast.success(parts.join(' '), { duration: 9000 })
+        setPendingUpload(null)
         loadQuestions()
         refreshPendingCounts()
-      } catch (err) {
-        console.error('Excel upload failed:', err)
-        toast.error(err.message || 'Upload failed — see console for details.', { duration: 8000 })
       }
+    } catch (err) {
+      console.error('Excel upload failed:', err)
+      toast.error(err.message || 'Upload failed — see console for details.', { duration: 8000 })
+    } finally {
+      setUploading(false)
     }
-    reader.readAsArrayBuffer(file)
   }
 
   const filtered = questions.filter(q => {
@@ -1354,7 +1454,7 @@ export default function QuestionUploader({ uploadedBy }) {
         <div className="card card-body">
           <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Upload Questions via Excel</h3>
           <p className="text-muted" style={{ marginBottom: '1rem' }}>
-            Select the subject and unit first, then upload your Excel file. Subject, Unit, and Level are set automatically — no need to include them in the file.
+            Pick the subject, then upload. Add a Unit column to your sheet to send one file to many units at once — you'll see exactly where every row is going before anything is saved.
           </p>
 
           {/* Step 1: Subject */}
@@ -1393,14 +1493,93 @@ export default function QuestionUploader({ uploadedBy }) {
             </div>
           )}
 
-          {/* Step 3: File upload — enabled only after both are selected */}
+          {/* Preview — every row's destination, before anything is written. */}
+          {pendingUpload && (() => {
+            const byUnit = {}
+            for (const r of pendingUpload.records) byUnit[r.unit] = (byUnit[r.unit] || 0) + 1
+            const rows = Object.entries(byUnit).sort((a, b) =>
+              (Number(a[0].match(/^Unit\s+(\d+)/)?.[1]) || 0) - (Number(b[0].match(/^Unit\s+(\d+)/)?.[1]) || 0))
+            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length
+            return (
+              <div style={{ border: '1.5px solid var(--primary)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1.25rem', background: 'var(--gray-50)' }}>
+                <div style={{ fontWeight: 700, marginBottom: '0.15rem' }}>
+                  Ready to upload {pendingUpload.records.length} question{pendingUpload.records.length !== 1 ? 's' : ''}
+                </div>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '0.875rem' }}>
+                  from <strong>{pendingUpload.fileName}</strong> (sheet “{pendingUpload.sheetName}”) — nothing has been written yet.
+                </div>
+
+                <div className="table-wrap" style={{ maxHeight: 260, marginBottom: '0.875rem' }}>
+                  <table>
+                    <thead><tr><th>Going to</th><th style={{ textAlign: 'right' }}>Questions</th></tr></thead>
+                    <tbody>
+                      {rows.map(([unit, n]) => (
+                        <tr key={unit}><td>{unit}</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{n}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {problems > 0 && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#b91c1c', marginBottom: '0.75rem' }}>
+                    <strong>{problems} row{problems !== 1 ? 's' : ''} will be skipped.</strong>
+                    {pendingUpload.badUnits.length > 0 && (
+                      <div style={{ marginTop: '0.35rem' }}>
+                        Unit not recognised: {pendingUpload.badUnits.slice(0, 6).map(b => `${b.qid} (“${b.value}”)`).join(', ')}
+                        {pendingUpload.badUnits.length > 6 ? ` and ${pendingUpload.badUnits.length - 6} more` : ''}
+                      </div>
+                    )}
+                    {pendingUpload.noUnit.length > 0 && (
+                      <div style={{ marginTop: '0.35rem' }}>
+                        No Unit given and no unit selected above: {pendingUpload.noUnit.slice(0, 6).join(', ')}
+                        {pendingUpload.noUnit.length > 6 ? ` and ${pendingUpload.noUnit.length - 6} more` : ''}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {pendingUpload.levelFixed.length > 0 && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '0.75rem' }}>
+                    <strong>{pendingUpload.levelFixed.length} row{pendingUpload.levelFixed.length !== 1 ? 's' : ''} had a level that unit doesn’t have</strong> — moved to its first level, otherwise no student could ever see them.
+                    <div style={{ marginTop: '0.35rem' }}>
+                      {pendingUpload.levelFixed.slice(0, 5).map(l => `${l.qid}: L${l.from}→L${l.to} (${l.unit})`).join(', ')}
+                      {pendingUpload.levelFixed.length > 5 ? ` and ${pendingUpload.levelFixed.length - 5} more` : ''}
+                    </div>
+                  </div>
+                )}
+
+                {(pendingUpload.skipped.length > 0 || pendingUpload.duplicateCount > 0) && (
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '0.75rem' }}>
+                    {pendingUpload.skipped.length > 0 && <>{pendingUpload.skipped.length} row(s) missing Q ID or Question. </>}
+                    {pendingUpload.duplicateCount > 0 && <>{pendingUpload.duplicateCount} duplicate Q ID(s) in the file — last one wins.</>}
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                  <button className="btn btn-primary" disabled={uploading || pendingUpload.records.length === 0} onClick={commitUpload}>
+                    {uploading ? 'Uploading…' : `Upload ${pendingUpload.records.length} question${pendingUpload.records.length !== 1 ? 's' : ''}`}
+                  </button>
+                  <button className="btn btn-ghost" disabled={uploading} onClick={() => setPendingUpload(null)}>Cancel</button>
+                </div>
+              </div>
+            )
+          })()}
+
+          {/* Step 3: File upload */}
           <div style={{ marginTop: '0.5rem', marginBottom: '1.25rem' }}>
-            {uploadSubject && uploadUnitId ? (
+            {uploadSubject ? (
               <>
                 <div style={{ marginBottom: '0.75rem', padding: '0.6rem 0.875rem', background: 'var(--primary-light)', border: '1px solid var(--primary)', borderRadius: 'var(--radius)', fontSize: '0.8125rem', color: 'var(--primary-dark)' }}>
-                  Uploading as: <strong>{uploadSubject}</strong> → <strong>Unit {uploadUnitId} - {CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))?.name}</strong>
-                  {Number(uploadUnitId) === 11 && <span style={{ marginLeft: '0.5rem', color: 'var(--gray-500)' }}>(Level auto-assigned from Topic column)</span>}
-                  {Number(uploadUnitId) !== 11 && <span style={{ marginLeft: '0.5rem', color: 'var(--gray-500)' }}>(All questions set to Level 1 — edit per question after upload)</span>}
+                  Uploading as <strong>{uploadSubject}</strong>.{' '}
+                  {uploadUnitId ? (
+                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
+                  ) : (
+                    <>No unit selected — every row must carry its own <code>Unit</code> value.</>
+                  )}
+                  <div style={{ marginTop: '0.35rem', color: 'var(--gray-500)' }}>
+                    Add a <code>Unit</code> column to spread one sheet across many units — “27”, “Unit 27” or the unit’s name all work.
+                    A <code>Level</code> column is optional; without one, questions land on the unit’s first level.
+                  </div>
                 </div>
                 <label className="btn btn-primary" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Upload size={18} /> Choose Excel File (.xlsx / .xls / .csv)
@@ -1409,7 +1588,7 @@ export default function QuestionUploader({ uploadedBy }) {
               </>
             ) : (
               <div style={{ padding: '0.75rem 1rem', background: 'var(--gray-50)', border: '1px dashed var(--gray-300)', borderRadius: 'var(--radius)', fontSize: '0.875rem', color: 'var(--gray-400)' }}>
-                Please select Subject and Unit first
+                Please select Subject first
               </div>
             )}
           </div>
