@@ -112,6 +112,14 @@ function resolveUnitId(raw) {
   return exact ? exact.id : null
 }
 
+// "1", "Level 1", "level-1", "L2", " 3 " — the column is already called Level,
+// so the digits in it are the level. Returns null for a cell with no number at
+// all, which sends the caller to its topic-name fallback.
+function parseLevel(raw) {
+  const m = String(raw || '').match(/\d{1,2}/)
+  return m ? Number(m[0]) : null
+}
+
 function topicToLevel(unitId, topic) {
   const levels = UNIT_LEVELS[unitId]
   if (!levels) return 1
@@ -639,12 +647,19 @@ export default function QuestionUploader({ uploadedBy }) {
           const correctLabel   = cell(r, 'Correct Option')
           const correct_option = resolveCorrectOption(correctLabel, option1, option2, option3, option4)
 
-          // Read Level directly from Excel "Level" column if present.
-          // Falls back to topic-name lookup in UNIT_LEVELS, then defaults to 1.
+          // Read Level from the Excel "Level" column, falling back to a
+          // topic-name lookup in UNIT_LEVELS and finally to 1.
+          //
+          // parseLevel is tolerant for the same reason resolveUnitId is: people
+          // write "Level 1" and "L2" in a column already labelled Level. The
+          // old test was `!isNaN(Number(raw))`, so anything but a bare number
+          // fell through to the topic lookup — "Level 1" happened to come back
+          // as 1 and looked fine, while "Level 2" silently became Level 1 with
+          // nothing said. Reading the digits means the cell is obeyed, and a
+          // level the unit doesn't define is caught by the guard below.
           const rawLevel = cell(r, 'Level')
-          let level = rawLevel && !isNaN(Number(rawLevel))
-            ? Number(rawLevel)
-            : topicToLevel(unitIdNum, topic)
+          const parsedLevel = parseLevel(rawLevel)
+          let level = parsedLevel ?? topicToLevel(unitIdNum, topic)
 
           // A level the unit doesn't define is a silent black hole: the student
           // dashboard renders levels from UNIT_LEVELS, so a question parked at
