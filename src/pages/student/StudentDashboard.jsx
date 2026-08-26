@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge, isChapterTestLevel } from '../../lib/constants'
 import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -148,8 +148,15 @@ export default function StudentDashboard() {
     const dbLevels = unitLevels[selectedUnit.id] || []   // question counts from DB
     const countByLevel = Object.fromEntries(dbLevels.map(l => [l.level, l.count]))
     const lastLevelId = levelDefs.length > 0 ? levelDefs[levelDefs.length - 1].id : null
-    // CCT total = sum of all non-CCT levels
-    const cctTotal = dbLevels.filter(l => l.level !== lastLevelId).reduce((s, l) => s + l.count, 0)
+    // A single-level unit (the mechanism modules, units 24-33) has no chapter
+    // test — its one level IS the module. Going through isChapterTestLevel
+    // rather than comparing to lastLevelId matters here: level 1 is also the
+    // last level, so the old check treated it as a CCT and this sum, which
+    // deliberately excludes the CCT level, came out as 0 — the student saw
+    // "Total questions: —" on a module that had questions in it.
+    const cctTotal = dbLevels
+      .filter(l => !isChapterTestLevel(selectedUnit.id, l.level))
+      .reduce((s, l) => s + l.count, 0)
 
     return (
       <div className="dashboard">
@@ -172,7 +179,13 @@ export default function StudentDashboard() {
             Unit {selectedUnit.id}: {selectedUnit.name}
           </h3>
           <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-            <span>{levelDefs.length} level{levelDefs.length !== 1 ? 's' : ''} · Level 1 and {levelBadge(selectedUnit.id, lastLevelId)} always unlocked</span>
+            {/* With one level there is nothing to unlock in sequence, and the
+                multi-level wording renders as "Level 1 and Level 1". */}
+            <span>
+              {levelDefs.length === 1
+                ? '1 level · always unlocked'
+                : `${levelDefs.length} levels · Level 1 and ${levelBadge(selectedUnit.id, lastLevelId)} always unlocked`}
+            </span>
             <button onClick={() => setTourOpen(true)}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600, fontSize: '0.8125rem', padding: 0 }}>
               <HelpCircle size={14} /> How levels work
@@ -185,7 +198,7 @@ export default function StudentDashboard() {
               const isUnlocked = alwaysUnlocked || unlockedLevels.includes(levelId)
               const lvlAttempts = attemptsByLevel[levelId] || []
               const totalQAttempted = lvlAttempts.reduce((s, a) => s + (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0), 0)
-              const qCount = levelId === lastLevelId ? cctTotal : (countByLevel[levelId] ?? 0)
+              const qCount = isChapterTestLevel(selectedUnit.id, levelId) ? cctTotal : (countByLevel[levelId] ?? 0)
               const levelVideos = videosByUnit[selectedUnit.id]?.[levelId] || []
               return (
                 <div

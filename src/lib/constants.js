@@ -45,6 +45,32 @@ export const NEET_CHEMISTRY_SYLLABUS = [
       { id: 23, name: 'Electron Displacement Effects' },
     ],
   },
+  // Mechanism-wise organic course (modules 2-11 of 15; 12-15 not built yet).
+  //
+  // These are taught by REACTION MECHANISM rather than by NCERT chapter, so
+  // each module is its own unit and carries a single level — the whole module
+  // is one practice pool, deliberately, with no chapter test to combine levels
+  // that don't exist. A single-level unit is always unlocked, so a student can
+  // practise any module the day it is taught without clearing the ones before.
+  //
+  // Module 1 (Foundations: structure, IUPAC, isomerism, GOC) is NOT here — it
+  // is the existing 'Fundamentals of Organic Reaction Mechanism' section above,
+  // which already holds all 498 organic questions, properly levelled.
+  {
+    section: 'Organic Reaction Mechanisms',
+    units: [
+      { id: 24, name: 'Free Radical Reactions' },
+      { id: 25, name: 'Electrophilic Addition' },
+      { id: 26, name: 'Electrophilic Aromatic Substitution' },
+      { id: 27, name: 'Nucleophilic Substitution (SN1/SN2)' },
+      { id: 28, name: 'Elimination (E1/E2)' },
+      { id: 29, name: 'Aryl Halides & SNAr' },
+      { id: 30, name: 'Nucleophilic Addition at Carbonyl' },
+      { id: 31, name: 'Acyl Substitution' },
+      { id: 32, name: 'α-Carbon Chemistry' },
+      { id: 33, name: 'Oxidation & Reduction' },
+    ],
+  },
 ]
 
 // ── Per-unit level definitions ────────────────────────────────────────────────
@@ -162,11 +188,55 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',             topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',     topic: 'Complete Chapter Test' },
   ],
-  // Add more units here as you upload questions for them:
-  // 2: [
-  //   { id: 1, name: 'Bohr Model', topic: 'Bohr Model' },
-  //   ...
-  // ],
+  // ── Mechanism-wise modules (units 24-33) ──────────────────────────────────
+  // One level each, on purpose. The level `name` is the module's core idea —
+  // the hook it is taught with — because the unit name already says what the
+  // module is, and repeating it on the level card says nothing twice. `topic`
+  // carries the full title and is what the ⓘ tooltip shows.
+  //
+  // Splitting any of these into real levels later is just editing the array
+  // here and re-levelling that module's questions from the admin level
+  // dropdown; nothing about starting flat forecloses it.
+  24: [
+    { id: 1, name: 'No charge — the simplest mechanism',
+              topic: 'Free Radical Reactions — homolysis, initiation/propagation/termination, radical stability and selectivity.' },
+  ],
+  25: [
+    { id: 1, name: 'Carbocation and its three fates',
+              topic: 'Electrophilic Addition & Carbocation Chemistry — Markovnikov and anti-Markovnikov addition, carbocation stability and rearrangement.' },
+  ],
+  26: [
+    { id: 1, name: 'Ring reactions, one directive rule',
+              topic: 'Electrophilic Aromatic Substitution — nitration, halogenation, sulphonation, Friedel–Crafts; activating and deactivating groups, o/p and m direction.' },
+  ],
+  27: [
+    { id: 1, name: 'The central mechanism',
+              topic: 'Nucleophilic Substitution at sp³ (SN1/SN2) — mechanism, stereochemistry, kinetics; substrate, nucleophile, leaving group and solvent effects.' },
+  ],
+  28: [
+    { id: 1, name: 'Same substrate, different outcome',
+              topic: 'Elimination (E1/E2) and SN vs E competition — Zaitsev and Hofmann orientation, base strength and steric effects.' },
+  ],
+  29: [
+    { id: 1, name: 'Why the ring resists',
+              topic: 'Aryl Halides & Nucleophilic Aromatic Substitution — addition–elimination and benzyne routes, effect of activating groups.' },
+  ],
+  30: [
+    { id: 1, name: 'C=O opens up',
+              topic: 'Nucleophilic Addition at Carbonyl — addition of cyanide, bisulphite, alcohols, amines and Grignard reagents to aldehydes and ketones.' },
+  ],
+  31: [
+    { id: 1, name: 'Add, then kick out',
+              topic: 'Nucleophilic Addition–Elimination (Acyl Substitution) — reactivity order of acid derivatives, interconversion, hydrolysis and esterification.' },
+  ],
+  32: [
+    { id: 1, name: 'α-H hai ya nahi?',
+              topic: 'α-Carbon Chemistry (Enol/Enolate) — acidity of α-hydrogen, tautomerism, aldol and Cannizzaro, haloform reaction.' },
+  ],
+  33: [
+    { id: 1, name: 'One ladder, one reagent table',
+              topic: 'Oxidation & Reduction as One System — the oxidation ladder, common oxidising and reducing agents and what each one does.' },
+  ],
 }
 
 // Kept for backward-compat with any existing imports
@@ -193,9 +263,15 @@ export function levelIdsFor(unitId) {
  * with an "i" tooltip carrying the full name (already the level's own
  * name/topic string in UNIT_LEVELS, so no separate copy to keep in sync).
  */
+// A unit's LAST level is its Complete Chapter Test — it draws from every level
+// of the unit, so it only means anything where there is more than one level to
+// draw from. The mechanism modules (units 24-33) carry a single level each:
+// without the length > 1 guard that one level counts as "last", and every badge
+// in the app — syllabus card, test header, result screen, attempt review, the
+// performance table and the parent PDF — would label it CCT instead of Level 1.
 export function isChapterTestLevel(unitId, levelId) {
   const defs = UNIT_LEVELS[Number(unitId)] || []
-  return defs.length > 0 && defs[defs.length - 1].id === Number(levelId)
+  return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
 // Short display label for a level — "CCT" for the Complete Chapter Test,
