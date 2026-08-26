@@ -88,15 +88,18 @@ function ImageField({ label, file, onChange }) {
 // Returns 1 if the topic is not found in the unit's level definitions.
 // Resolve a sheet's "Unit" cell to a real unit id, tolerantly — one bulk sheet
 // spans a dozen units and nobody is going to type the canonical label exactly.
-// Accepts "27", "Unit 27", "Unit 27 - Nucleophilic Substitution (SN1/SN2)", or
-// just the name. Returns null when it matches nothing, which the caller reports
-// rather than guessing: a mistyped unit silently landing 40 questions in the
-// wrong module is far worse than being told to fix the cell.
+// Accepts "27", "Unit 27", "Unit-27", "UNIT_27", "Unit 27 - Nucleophilic
+// Substitution (SN1/SN2)", or just the name. The separator class between
+// "unit" and the digits was originally whitespace-only and missed "UNIT-24"
+// (hyphen, no space) — a real format a supplier's sheet used, which would
+// have silently rejected every row. Returns null when it matches nothing,
+// which the caller reports rather than guessing: a mistyped unit landing 40
+// questions in the wrong module is far worse than being told to fix the cell.
 function resolveUnitId(raw) {
   const s = String(raw || '').trim()
   if (!s) return null
 
-  const num = s.match(/^(?:unit\s*)?(\d{1,2})\b/i)
+  const num = s.match(/^(?:unit[\s_.:-]*)?(\d{1,2})\b/i)
   if (num) {
     const id = Number(num[1])
     if (CHEMISTRY_UNITS.some(u => u.id === id)) return id
@@ -118,6 +121,20 @@ function resolveUnitId(raw) {
 function parseLevel(raw) {
   const m = String(raw || '').match(/\d{1,2}/)
   return m ? Number(m[0]) : null
+}
+
+// The DB enforces `difficulty_level in ('Easy','Medium','Hard')` — anything
+// else fails the whole batch upsert, not just the offending row (see the
+// BATCH loop below: one `throw error` per batch). Caught here instead, at
+// parse time, so a sheet with "Very Hard" or a typo reports which row and
+// corrects it rather than rejecting every question in the file.
+const VALID_DIFFICULTIES = new Set(['Easy', 'Medium', 'Hard'])
+function normaliseDifficulty(raw) {
+  const s = String(raw || '').trim()
+  if (VALID_DIFFICULTIES.has(s)) return s
+  if (/very\s*hard|extreme/i.test(s)) return 'Hard'
+  if (/very\s*easy/i.test(s)) return 'Easy'
+  return null // caller falls back to 'Medium' and reports it
 }
 
 function topicToLevel(unitId, topic) {
@@ -146,7 +163,23 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
     'option 4': 'option4', '4': 'option4',
   }
   const norm = (label || '').trim().toLowerCase()
-  return textMap[norm] || keyMap[norm] || label || ''
+  const text = textMap[norm]
+
+  // The same trap as an empty option, just less obvious: when two or more
+  // options share IDENTICAL text, storing that text as correct_option is
+  // ambiguous — questionOptions.js's correctOptionKey() does `entries.find
+  // (text === correct_option)`, which always returns the FIRST option with
+  // that text, regardless of which one was actually meant. Caught on a real
+  // upload where all four options were the placeholder word "Image" (2D
+  // structures the source book couldn't be transcribed as text) — 4 of 5 such
+  // questions in that file resolved to option1 no matter which was marked
+  // correct. Falling back to the positional sentinel here, exactly as for an
+  // empty option, makes the match unambiguous regardless of what the
+  // duplicated text happens to say.
+  const options = [option1, option2, option3, option4]
+  const isAmbiguous = text && options.filter(o => o === text).length > 1
+  if (!text || isAmbiguous) return keyMap[norm] || label || ''
+  return text
 }
 
 const PAGE_SIZE = 50
@@ -612,6 +645,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const badUnits = []      // rows whose Unit cell matched no unit
         const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
         const levelFixed = []    // rows whose Level doesn't exist in their unit
+        const difficultyFixed = [] // rows whose Difficulty Level the DB would reject
 
         for (const r of rows) {
           const qid      = cell(r, 'Q ID')
@@ -673,6 +707,17 @@ export default function QuestionUploader({ uploadedBy }) {
             level = known[0].id
           }
 
+          const rawDifficulty = cell(r, 'Difficulty Level')
+          const mapped = rawDifficulty ? normaliseDifficulty(rawDifficulty) : 'Medium'
+          const difficulty = mapped || 'Medium'
+          // Report every change, not just the ones with nowhere confident to
+          // go — "Very Hard" -> "Hard" is still the sheet saying something
+          // different from what gets stored, and it should be visible before
+          // upload rather than discovered later on the question itself.
+          if (rawDifficulty && difficulty !== rawDifficulty) {
+            difficultyFixed.push({ qid, from: rawDifficulty, to: difficulty, guessed: !mapped })
+          }
+
           records.push({
             qid,
             question_type:    cell(r, 'Question Type') || 'MCQ',
@@ -687,7 +732,11 @@ export default function QuestionUploader({ uploadedBy }) {
             option3,
             option4,
             correct_option,
-            difficulty_level: cell(r, 'Difficulty Level') || 'Medium',
+            // A value the DB would reject fails the ENTIRE batch upsert, not
+            // just this row (see BATCH loop: one throw per batch) — so an
+            // unrecognised difficulty falls back to Medium rather than being
+            // passed through, and is reported in the preview instead.
+            difficulty_level: difficulty || 'Medium',
             question_tag:     cell(r, 'Question Tag'),
             source:           cell(r, 'Source'),
             uploaded_by:      toUuidOrNull(uploadedBy),
@@ -725,6 +774,7 @@ export default function QuestionUploader({ uploadedBy }) {
           badUnits,
           noUnit,
           levelFixed,
+          difficultyFixed,
         })
         return
       } catch (err) {
@@ -1559,6 +1609,17 @@ export default function QuestionUploader({ uploadedBy }) {
                     <div style={{ marginTop: '0.35rem' }}>
                       {pendingUpload.levelFixed.slice(0, 5).map(l => `${l.qid}: L${l.from}→L${l.to} (${l.unit})`).join(', ')}
                       {pendingUpload.levelFixed.length > 5 ? ` and ${pendingUpload.levelFixed.length - 5} more` : ''}
+                    </div>
+                  </div>
+                )}
+
+                {pendingUpload.difficultyFixed.length > 0 && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '0.75rem' }}>
+                    <strong>{pendingUpload.difficultyFixed.length} row{pendingUpload.difficultyFixed.length !== 1 ? 's' : ''} used a Difficulty Level the database doesn’t accept</strong> — only Easy / Medium / Hard are allowed, and one bad value would fail the whole upload rather than just that row.
+                    <div style={{ marginTop: '0.35rem' }}>
+                      {pendingUpload.difficultyFixed.slice(0, 5).map(d =>
+                        `${d.qid}: “${d.from}” → ${d.to}${d.guessed ? '' : ' (mapped)'}`).join(', ')}
+                      {pendingUpload.difficultyFixed.length > 5 ? ` and ${pendingUpload.difficultyFixed.length - 5} more` : ''}
                     </div>
                   </div>
                 )}
