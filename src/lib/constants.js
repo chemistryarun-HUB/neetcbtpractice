@@ -69,6 +69,11 @@ export const NEET_CHEMISTRY_SYLLABUS = [
       { id: 31, name: 'Acyl Substitution' },
       { id: 32, name: 'α-Carbon Chemistry' },
       { id: 33, name: 'Oxidation & Reduction' },
+      // Not mechanisms themselves — the two buckets the mechanism modules
+      // can't absorb. Practical work has its own question style, and
+      // Miscellaneous catches conversions that don't sit inside one module.
+      { id: 34, name: 'Practical Organic Chemistry' },
+      { id: 35, name: 'Miscellaneous Reactions' },
     ],
   },
 ]
@@ -236,6 +241,14 @@ export const UNIT_LEVELS = {
   33: [
     { id: 1, name: 'One ladder, one reagent table',
               topic: 'Oxidation & Reduction as One System — the oxidation ladder, common oxidising and reducing agents and what each one does.' },
+  ],
+  34: [
+    { id: 1, name: 'Test it, separate it, identify it',
+              topic: 'Practical Organic Chemistry — detection of extra elements (Lassaigne’s test), functional group identification, purification by crystallisation, distillation and chromatography, and the principles behind qualitative and quantitative analysis.' },
+  ],
+  35: [
+    { id: 1, name: 'Everything that fits nowhere else',
+              topic: 'Miscellaneous Reactions — named reactions and conversions that do not belong to a single mechanism module, plus mixed questions that cut across several of them.' },
   ],
 }
 
