@@ -6,6 +6,7 @@ import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
+import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
 import InfoTooltip from './InfoTooltip'
 
 /**
@@ -56,8 +57,16 @@ function EditImageField({ label, url, uploading, onUpload, onRemove }) {
 // an effect) so remounting the panel on a different question — which is what
 // keying it by q.id does — always starts from that row's real values.
 function initialForm(q) {
-  const optsMap = { option1: q.option1, option2: q.option2, option3: q.option3, option4: q.option4 }
-  const correctLabel = Object.entries(optsMap).find(([, v]) => v === q.correct_option)?.[0] || 'option1'
+  // correctOptionKey() is the same resolver TestPage/ResultPage/grading use —
+  // it checks the sentinel form ('option1'..'option4', stored for image-only
+  // or duplicated-placeholder options) as well as a text match. The previous
+  // text-only lookup here never recognised the sentinel at all, so opening the
+  // edit form on any image-only question showed "option1" selected as correct
+  // regardless of the real answer — reported against NCU24001, where the real
+  // answer is option4. Confirmed no already-saved question was corrupted by
+  // it: the answer_key_changes trigger logs every correct_option write, and
+  // none show the sentinel-to-plain-text conversion this bug would produce.
+  const correctLabel = correctOptionKey(q) || 'option1'
   return {
     question:           q.question || '',
     option1:            q.option1 || '',
@@ -172,9 +181,15 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
   async function handleSave() {
     setSaving(true)
     try {
-      // Fall back to the option-key sentinel when that option has no text
-      // (image-only option) — see questionOptions.js.
-      const resolvedCorrect = form[form.correct_option_key] || form.correct_option_key
+      // Same rule the Excel importer uses (questionOptions.js): store the
+      // option's own text only when it's non-empty AND unique among the four,
+      // otherwise the positional sentinel. The old version here treated any
+      // non-empty text as safe to store, which is exactly wrong for an
+      // image-only question where every option reads the same placeholder
+      // ("Image") — saving would have pointed correct_option at whichever
+      // option happened to be first with that text, not the one selected.
+      const resolvedCorrect = resolveCorrectOptionValue(
+        form.correct_option_key, [form.option1, form.option2, form.option3, form.option4])
       const patch = {
         question:         form.question,
         option1:          form.option1,

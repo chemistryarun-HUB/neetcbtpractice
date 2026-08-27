@@ -7,6 +7,7 @@ import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
+import { resolveCorrectOptionValue } from '../../lib/questionOptions'
 import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
@@ -147,15 +148,6 @@ function topicToLevel(unitId, topic) {
 
 // Resolve "Option 1"/"Option 2"/.../"1"/"2"/... to the actual option text
 function resolveCorrectOption(label, option1, option2, option3, option4) {
-  const textMap = {
-    'option 1': option1, '1': option1,
-    'option 2': option2, '2': option2,
-    'option 3': option3, '3': option3,
-    'option 4': option4, '4': option4,
-  }
-  // Image-only options have no text — fall back to a stable 'option1'..'option4'
-  // sentinel so the correct answer isn't lost as an empty string (see
-  // questionOptions.js for where this is resolved back).
   const keyMap = {
     'option 1': 'option1', '1': 'option1',
     'option 2': 'option2', '2': 'option2',
@@ -163,23 +155,16 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
     'option 4': 'option4', '4': 'option4',
   }
   const norm = (label || '').trim().toLowerCase()
-  const text = textMap[norm]
-
-  // The same trap as an empty option, just less obvious: when two or more
-  // options share IDENTICAL text, storing that text as correct_option is
-  // ambiguous — questionOptions.js's correctOptionKey() does `entries.find
-  // (text === correct_option)`, which always returns the FIRST option with
-  // that text, regardless of which one was actually meant. Caught on a real
-  // upload where all four options were the placeholder word "Image" (2D
-  // structures the source book couldn't be transcribed as text) — 4 of 5 such
-  // questions in that file resolved to option1 no matter which was marked
-  // correct. Falling back to the positional sentinel here, exactly as for an
-  // empty option, makes the match unambiguous regardless of what the
-  // duplicated text happens to say.
-  const options = [option1, option2, option3, option4]
-  const isAmbiguous = text && options.filter(o => o === text).length > 1
-  if (!text || isAmbiguous) return keyMap[norm] || label || ''
-  return text
+  const key = keyMap[norm]
+  // A label the map doesn't recognise (blank cell, stray text) has no option
+  // to resolve against — hand the raw label back rather than guessing option1,
+  // same as always.
+  if (!key) return label || ''
+  // Image-only or duplicated-placeholder options ("Image" on all four) can't
+  // be identified by text — resolveCorrectOptionValue falls back to the
+  // positional sentinel for those. See its comment in questionOptions.js; this
+  // is also what QuestionEditPanel.jsx uses, so the two can't diverge again.
+  return resolveCorrectOptionValue(key, [option1, option2, option3, option4])
 }
 
 const PAGE_SIZE = 50

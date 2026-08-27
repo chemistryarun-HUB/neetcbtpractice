@@ -21,3 +21,28 @@ export function correctOptionKey(q) {
   if (bySentinel) return bySentinel.key
   return null
 }
+
+// The write-side counterpart of correctOptionKey(): given which option is
+// correct and the bank's four option TEXTS (not entries — callers may be
+// working from unsaved form state that has no image URLs yet), decide what to
+// store in correct_option.
+//
+// An option's own text is fine to store UNLESS it's empty (image-only option,
+// nothing to match against) or shared by more than one option — the classic
+// case being every option reading the literal placeholder "Image" because the
+// source book's figures couldn't be transcribed. Storing shared text would
+// make correctOptionKey()'s lookup ambiguous: `entries.find(text === stored)`
+// always returns the FIRST option with that text, not necessarily the one
+// meant. The positional sentinel ('option1'..'option4') sidesteps ambiguity
+// entirely, which is why it exists.
+//
+// Single source of truth for this rule — the Excel importer and the manual
+// edit panel both need it, and diverging here is exactly how the edit panel
+// ended up silently defaulting every image-only question to "option1 is
+// correct" while the importer got it right.
+export function resolveCorrectOptionValue(key, optionTexts) {
+  const idx = Number(String(key).replace('option', '')) - 1
+  const text = optionTexts[idx]
+  const isAmbiguous = text && optionTexts.filter(o => o === text).length > 1
+  return (!text || isAmbiguous) ? key : text
+}
