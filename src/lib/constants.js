@@ -171,7 +171,7 @@ export const UNIT_LEVELS = {
   ],
   21: [
     { id: 1, name: 'Basics of Organic Chemistry',                        topic: 'Basics of Organic Chemistry' },
-    { id: 2, name: 'Nomenclature of Open Alkanes, Alkenes and Alkynes',  topic: 'Nomenclature of Open Alkanes, Alkenes and Alkynes' },
+    { id: 2, name: 'Nomenclature of Alkanes, Alkenes and Alkynes',  topic: 'Nomenclature of Alkanes, Alkenes and Alkynes' },
     { id: 3, name: 'Nomenclature of Compounds Having One Functional Group', topic: 'Nomenclature of Compounds Having One Functional Group' },
     { id: 4, name: 'Nomenclature of Compounds Having Poly Functional Group', topic: 'Nomenclature of Compounds Having Poly Functional Group' },
     { id: 5, name: 'Nomenclature of Aromatic Compounds',                 topic: 'Nomenclature of Aromatic Compounds' },
