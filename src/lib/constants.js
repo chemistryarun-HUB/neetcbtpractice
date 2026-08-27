@@ -169,6 +169,19 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
   ],
+  21: [
+    { id: 1, name: 'Basics of Organic Chemistry',                        topic: 'Basics of Organic Chemistry' },
+    { id: 2, name: 'Nomenclature of Open Alkanes, Alkenes and Alkynes',  topic: 'Nomenclature of Open Alkanes, Alkenes and Alkynes' },
+    { id: 3, name: 'Nomenclature of Compounds Having One Functional Group', topic: 'Nomenclature of Compounds Having One Functional Group' },
+    { id: 4, name: 'Nomenclature of Compounds Having Poly Functional Group', topic: 'Nomenclature of Compounds Having Poly Functional Group' },
+    { id: 5, name: 'Nomenclature of Aromatic Compounds',                 topic: 'Nomenclature of Aromatic Compounds' },
+    // Matches Unit 22/23's own convention: Multilevel Questions stays a
+    // named, non-final level with topic 'Miscellaneous' (what an Excel
+    // upload's Topic column should read to land here), and Complete Chapter
+    // Test is the separate, true last level.
+    { id: 6, name: 'Multilevel Questions',        topic: 'Miscellaneous' },
+    { id: 7, name: 'Complete Chapter Test',       topic: 'Complete Chapter Test' },
+  ],
   22: [
     { id: 1, name: 'Structural Isomerism',      topic: 'Structural Isomerism' },
     { id: 2, name: 'Conformational Isomerism',  topic: 'Conformational Isomerism' },
