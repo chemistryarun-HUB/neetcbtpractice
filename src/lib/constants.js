@@ -43,6 +43,11 @@ export const NEET_CHEMISTRY_SYLLABUS = [
       { id: 21, name: 'Nomenclature' },
       { id: 22, name: 'Isomerism' },
       { id: 23, name: 'Electron Displacement Effects' },
+      // Added 2026-08-16, pushing the whole Organic Reaction Mechanisms
+      // section below up by one (24→25 ... 35→36) — see the DB migration
+      // this shipped with (renumbers unit text + qid on all affected rows;
+      // level/topic/question content is untouched).
+      { id: 24, name: 'Physical Properties' },
     ],
   },
   // Mechanism-wise organic course (modules 2-11 of 15; 12-15 not built yet).
@@ -59,21 +64,21 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   {
     section: 'Organic Reaction Mechanisms',
     units: [
-      { id: 24, name: 'Free Radical Reactions' },
-      { id: 25, name: 'Electrophilic Addition' },
-      { id: 26, name: 'Electrophilic Aromatic Substitution' },
-      { id: 27, name: 'Nucleophilic Substitution (SN1/SN2)' },
-      { id: 28, name: 'Elimination (E1/E2)' },
-      { id: 29, name: 'Aryl Halides & SNAr' },
-      { id: 30, name: 'Nucleophilic Addition at Carbonyl' },
-      { id: 31, name: 'Acyl Substitution' },
-      { id: 32, name: 'α-Carbon Chemistry' },
-      { id: 33, name: 'Oxidation & Reduction' },
+      { id: 25, name: 'Free Radical Reactions' },
+      { id: 26, name: 'Electrophilic Addition' },
+      { id: 27, name: 'Electrophilic Aromatic Substitution' },
+      { id: 28, name: 'Nucleophilic Substitution (SN1/SN2)' },
+      { id: 29, name: 'Elimination (E1/E2)' },
+      { id: 30, name: 'Aryl Halides & SNAr' },
+      { id: 31, name: 'Nucleophilic Addition at Carbonyl' },
+      { id: 32, name: 'Acyl Substitution' },
+      { id: 33, name: 'α-Carbon Chemistry' },
+      { id: 34, name: 'Oxidation & Reduction' },
       // Not mechanisms themselves — the two buckets the mechanism modules
       // can't absorb. Practical work has its own question style, and
       // Miscellaneous catches conversions that don't sit inside one module.
-      { id: 34, name: 'Practical Organic Chemistry' },
-      { id: 35, name: 'Miscellaneous Reactions' },
+      { id: 35, name: 'Practical Organic Chemistry' },
+      { id: 36, name: 'Miscellaneous Reactions' },
     ],
   },
 ]
@@ -215,51 +220,52 @@ export const UNIT_LEVELS = {
   // Splitting any of these into real levels later is just editing the array
   // here and re-levelling that module's questions from the admin level
   // dropdown; nothing about starting flat forecloses it.
-  24: [
+  // Unit 24 (Physical Properties, GOC) has no levels defined yet.
+  25: [
     { id: 1, name: 'No charge — the simplest mechanism',
               topic: 'Free Radical Reactions — homolysis, initiation/propagation/termination, radical stability and selectivity.' },
   ],
-  25: [
+  26: [
     { id: 1, name: 'Carbocation and its three fates',
               topic: 'Electrophilic Addition & Carbocation Chemistry — Markovnikov and anti-Markovnikov addition, carbocation stability and rearrangement.' },
   ],
-  26: [
+  27: [
     { id: 1, name: 'Ring reactions, one directive rule',
               topic: 'Electrophilic Aromatic Substitution — nitration, halogenation, sulphonation, Friedel–Crafts; activating and deactivating groups, o/p and m direction.' },
   ],
-  27: [
+  28: [
     { id: 1, name: 'The central mechanism',
               topic: 'Nucleophilic Substitution at sp³ (SN1/SN2) — mechanism, stereochemistry, kinetics; substrate, nucleophile, leaving group and solvent effects.' },
   ],
-  28: [
+  29: [
     { id: 1, name: 'Same substrate, different outcome',
               topic: 'Elimination (E1/E2) and SN vs E competition — Zaitsev and Hofmann orientation, base strength and steric effects.' },
   ],
-  29: [
+  30: [
     { id: 1, name: 'Why the ring resists',
               topic: 'Aryl Halides & Nucleophilic Aromatic Substitution — addition–elimination and benzyne routes, effect of activating groups.' },
   ],
-  30: [
+  31: [
     { id: 1, name: 'C=O opens up',
               topic: 'Nucleophilic Addition at Carbonyl — addition of cyanide, bisulphite, alcohols, amines and Grignard reagents to aldehydes and ketones.' },
   ],
-  31: [
+  32: [
     { id: 1, name: 'Add, then kick out',
               topic: 'Nucleophilic Addition–Elimination (Acyl Substitution) — reactivity order of acid derivatives, interconversion, hydrolysis and esterification.' },
   ],
-  32: [
+  33: [
     { id: 1, name: 'α-H hai ya nahi?',
               topic: 'α-Carbon Chemistry (Enol/Enolate) — acidity of α-hydrogen, tautomerism, aldol and Cannizzaro, haloform reaction.' },
   ],
-  33: [
+  34: [
     { id: 1, name: 'One ladder, one reagent table',
               topic: 'Oxidation & Reduction as One System — the oxidation ladder, common oxidising and reducing agents and what each one does.' },
   ],
-  34: [
+  35: [
     { id: 1, name: 'Test it, separate it, identify it',
               topic: 'Practical Organic Chemistry — detection of extra elements (Lassaigne’s test), functional group identification, purification by crystallisation, distillation and chromatography, and the principles behind qualitative and quantitative analysis.' },
   ],
-  35: [
+  36: [
     { id: 1, name: 'Everything that fits nowhere else',
               topic: 'Miscellaneous Reactions — named reactions and conversions that do not belong to a single mechanism module, plus mixed questions that cut across several of them.' },
   ],

@@ -62,8 +62,9 @@ function initialForm(q) {
   // or duplicated-placeholder options) as well as a text match. The previous
   // text-only lookup here never recognised the sentinel at all, so opening the
   // edit form on any image-only question showed "option1" selected as correct
-  // regardless of the real answer — reported against NCU24001, where the real
-  // answer is option4. Confirmed no already-saved question was corrupted by
+  // regardless of the real answer — reported against NCU25001 (qid at the time
+  // was NCU24001, before the GOC/Organic-Reaction-Mechanisms unit renumbering),
+  // where the real answer is option4. Confirmed no already-saved question was corrupted by
   // it: the answer_key_changes trigger logs every correct_option write, and
   // none show the sentinel-to-plain-text conversion this bug would produce.
   const correctLabel = correctOptionKey(q) || 'option1'
