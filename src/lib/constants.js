@@ -211,7 +211,15 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',             topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',     topic: 'Complete Chapter Test' },
   ],
-  // ── Mechanism-wise modules (units 24-33) ──────────────────────────────────
+  // Unit 24 (Physical Properties, GOC) — one level, same shape as the
+  // mechanism modules below: the whole unit is one pool, always unlocked,
+  // no separate chapter test (there's nothing else to combine one level
+  // with). name === topic, matching Unit 21's convention for a real chapter
+  // unit — topic is what an Excel Topic column must read to land here.
+  24: [
+    { id: 1, name: 'Physical Properties', topic: 'Physical Properties' },
+  ],
+  // ── Mechanism-wise modules (units 25-34) ──────────────────────────────────
   // One level each, on purpose. The level `name` is the module's core idea —
   // the hook it is taught with — because the unit name already says what the
   // module is, and repeating it on the level card says nothing twice. `topic`
@@ -220,7 +228,6 @@ export const UNIT_LEVELS = {
   // Splitting any of these into real levels later is just editing the array
   // here and re-levelling that module's questions from the admin level
   // dropdown; nothing about starting flat forecloses it.
-  // Unit 24 (Physical Properties, GOC) has no levels defined yet.
   25: [
     { id: 1, name: 'No charge — the simplest mechanism',
               topic: 'Free Radical Reactions — homolysis, initiation/propagation/termination, radical stability and selectivity.' },
