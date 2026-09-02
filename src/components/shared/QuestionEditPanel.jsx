@@ -10,6 +10,10 @@ import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionO
 import { MTC_ROW_NUMS, MTC_LABELS_B, parseMtcFromText } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
 
+// Exactly the types already in the bank — nothing here can introduce a value
+// the render surfaces don't already handle.
+const QUESTION_TYPES = ['Single Choice MCQ', 'MCQ', 'Assertion Reason', 'Match the Column']
+
 /**
  * Click-to-toggle padlock shown beside each field an Excel re-upload could
  * otherwise revert. Locked (blue) = the sheet can't touch this field; open
@@ -71,6 +75,11 @@ function initialForm(q) {
   const correctLabel = correctOptionKey(q) || 'option1'
   return {
     question:           q.question || '',
+    // Editable, so an existing question can be reclassified in place. A
+    // question that turns out to be Match-the-Column otherwise has to be
+    // deleted and re-added through Add Manually, which forces inventing a new
+    // Q ID for a question that already has a perfectly good one.
+    question_type:      q.question_type || 'Single Choice MCQ',
     option1:            q.option1 || '',
     option2:            q.option2 || '',
     option3:            q.option3 || '',
@@ -196,6 +205,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         form.correct_option_key, [form.option1, form.option2, form.option3, form.option4])
       const patch = {
         question:         form.question,
+        question_type:    form.question_type,
         option1:          form.option1,
         option2:          form.option2,
         option3:          form.option3,
@@ -223,7 +233,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
       // gated on the row's actual type (not just presence of form.col_a1, since
       // that's always populated as '' above) so a Single MCQ/A-R edit can never
       // accidentally write col_a/col_b columns.
-      if (q.question_type === 'Match the Column') {
+      if (form.question_type === 'Match the Column') {
         for (const n of MTC_ROW_NUMS) {
           patch[`col_a${n}`] = form[`col_a${n}`]
           patch[`col_a${n}_image`] = imgUrls[`col_a${n}_image`] ?? null
@@ -267,6 +277,23 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         </span>
       </div>
 
+      {/* Question type — changing it to Match the Column reveals the column
+          editor below, so a question already in the bank can be converted in
+          place instead of being re-created under a new Q ID. */}
+      <div className="form-group" style={{ margin: '0 0 0.75rem', maxWidth: '260px' }}>
+        <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e' }}>Question Type</label>
+        <select className="form-control" style={{ fontSize: '0.875rem' }}
+          value={form.question_type}
+          onChange={e => setForm(f => ({ ...f, question_type: e.target.value }))}>
+          {QUESTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        {form.question_type === 'Match the Column' && q.question_type !== 'Match the Column' && (
+          <div style={{ marginTop: '0.35rem', fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 4, padding: '0.35rem 0.5rem' }}>
+            Converting to Match the Column. Fill the Column A / Column B rows below — the answer options stay exactly as they are.
+          </div>
+        )}
+      </div>
+
       {/* Question text + image */}
       <div className="form-group" style={{ margin: '0 0 0.75rem' }}>
         <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e' }}>Question Text</label>
@@ -287,7 +314,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           all 8 blank here even though their old flattened text still lives in
           Question Text above; filling these in switches that row over to the
           structured table display. */}
-      {q.question_type === 'Match the Column' && (
+      {form.question_type === 'Match the Column' && (
         <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)', marginBottom: '0.75rem' }}>
           {/* Read the table back out of the flattened question text instead of
               making the admin retype it. Every MTC row in the bank predates the
