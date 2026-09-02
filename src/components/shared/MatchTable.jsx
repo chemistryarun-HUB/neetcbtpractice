@@ -13,7 +13,11 @@ export default function MatchTable({ q }) {
         <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
         <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>COLUMN B</div>
       </div>
-      {[0, 1, 2, 3].map(i => (
+      {/* Driven by the rows mtcColumns() actually returns, never a fixed count:
+          it already trims trailing empties, so a 3-item question shows three
+          rows and an 11-item one shows six. Hardcoding 4 here silently dropped
+          rows 5 and 6 even after the schema and editor grew to hold them. */}
+      {colA.map((_, i) => (
         <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: i % 2 === 1 ? '#f8faff' : '#fff' }}>
           <div style={{ padding: '0.5rem 0.75rem', borderRight: '1px solid var(--gray-200)', display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
             <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.875rem', flexShrink: 0 }}>{colA[i].label}.</span>

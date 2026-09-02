@@ -7,6 +7,7 @@ import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../l
 import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
+import { MTC_ROW_NUMS, MTC_LABELS_B, parseMtcFromText } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
 
 /**
@@ -99,8 +100,10 @@ function initialForm(q) {
     // Match the Column — only meaningful when question_type is MTC, but set
     // unconditionally (empty string for everything else) so a legacy MTC row
     // being restructured for the first time has somewhere to type into.
-    col_a1: q.col_a1 || '', col_a2: q.col_a2 || '', col_a3: q.col_a3 || '', col_a4: q.col_a4 || '',
-    col_b1: q.col_b1 || '', col_b2: q.col_b2 || '', col_b3: q.col_b3 || '', col_b4: q.col_b4 || '',
+    ...Object.fromEntries(MTC_ROW_NUMS.flatMap(n => [
+      [`col_a${n}`, q[`col_a${n}`] || ''],
+      [`col_b${n}`, q[`col_b${n}`] || ''],
+    ])),
   }
 }
 
@@ -111,10 +114,10 @@ function initialImages(q) {
     option2_image:  q.option2_image  || null,
     option3_image:  q.option3_image  || null,
     option4_image:  q.option4_image  || null,
-    col_a1_image: q.col_a1_image || null, col_a2_image: q.col_a2_image || null,
-    col_a3_image: q.col_a3_image || null, col_a4_image: q.col_a4_image || null,
-    col_b1_image: q.col_b1_image || null, col_b2_image: q.col_b2_image || null,
-    col_b3_image: q.col_b3_image || null, col_b4_image: q.col_b4_image || null,
+    ...Object.fromEntries(MTC_ROW_NUMS.flatMap(n => [
+      [`col_a${n}_image`, q[`col_a${n}_image`] || null],
+      [`col_b${n}_image`, q[`col_b${n}_image`] || null],
+    ])),
   }
 }
 
@@ -221,7 +224,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
       // that's always populated as '' above) so a Single MCQ/A-R edit can never
       // accidentally write col_a/col_b columns.
       if (q.question_type === 'Match the Column') {
-        for (const n of [1, 2, 3, 4]) {
+        for (const n of MTC_ROW_NUMS) {
           patch[`col_a${n}`] = form[`col_a${n}`]
           patch[`col_a${n}_image`] = imgUrls[`col_a${n}_image`] ?? null
           patch[`col_b${n}`] = form[`col_b${n}`]
@@ -286,11 +289,47 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           structured table display. */}
       {q.question_type === 'Match the Column' && (
         <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)', marginBottom: '0.75rem' }}>
+          {/* Read the table back out of the flattened question text instead of
+              making the admin retype it. Every MTC row in the bank predates the
+              structured fields, and the biggest of them is 11 items — retyping
+              that per question is the reason MTC went unused. The parse only
+              fills the boxes; nothing is saved until Save, so the admin sees
+              exactly what it found and can fix anything before committing. */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', padding: '0.5rem 0.75rem', background: '#eff6ff', borderBottom: '1px solid var(--gray-200)' }}>
+            <button type="button"
+              onClick={() => {
+                const r = parseMtcFromText(form.question)
+                if (!r.colA.length && !r.colB.length) {
+                  toast.error('Could not find a Column I / Column II list in the question text — fill the rows in by hand.', { duration: 6000 })
+                  return
+                }
+                setForm(f => {
+                  const next = { ...f }
+                  MTC_ROW_NUMS.forEach(n => {
+                    next[`col_a${n}`] = r.colA[n - 1] || ''
+                    next[`col_b${n}`] = r.colB[n - 1] || ''
+                  })
+                  return next
+                })
+                const over = r.overflowA + r.overflowB
+                toast.success(
+                  `Filled ${r.colA.length} + ${r.colB.length} items.` +
+                  (over ? ` ${over} more didn't fit in ${MTC_ROW_NUMS.length} rows.` : '') +
+                  ' Check them, then Save.',
+                  { duration: 6000 })
+              }}
+              style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: 'var(--radius)', cursor: 'pointer', background: 'var(--primary)', color: '#fff', border: 'none' }}>
+              ⤓ Fill rows from question text
+            </button>
+            <span style={{ fontSize: '0.7rem', color: 'var(--gray-500)' }}>
+              Reads the Column I / Column II list above into these boxes. Nothing saves until you press Save.
+            </span>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
             <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
             <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>COLUMN B</div>
           </div>
-          {[1, 2, 3, 4].map(i => (
+          {MTC_ROW_NUMS.map(i => (
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: '#fff' }}>
               <div style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid var(--gray-200)' }}>
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
@@ -308,7 +347,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               </div>
               <div style={{ padding: '0.4rem 0.6rem' }}>
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                  <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{['p', 'q', 'r', 's'][i - 1]}.</span>
+                  <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{MTC_LABELS_B[i - 1]}.</span>
                   <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
                     value={form[`col_b${i}`]}
                     onChange={e => setForm(f => ({ ...f, [`col_b${i}`]: e.target.value }))} />

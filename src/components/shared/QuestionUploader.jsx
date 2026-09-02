@@ -8,6 +8,7 @@ import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../l
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
 import { resolveCorrectOptionValue } from '../../lib/questionOptions'
+import { MTC_ROW_NUMS, MTC_LABELS_B } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
@@ -44,14 +45,10 @@ const BLANK = {
   reason_image_file: null,
   ar_correct: 'A',
   // Match the Column
-  col_a1: '', col_a1_image_file: null,
-  col_a2: '', col_a2_image_file: null,
-  col_a3: '', col_a3_image_file: null,
-  col_a4: '', col_a4_image_file: null,
-  col_b1: '', col_b1_image_file: null,
-  col_b2: '', col_b2_image_file: null,
-  col_b3: '', col_b3_image_file: null,
-  col_b4: '', col_b4_image_file: null,
+  ...Object.fromEntries(MTC_ROW_NUMS.flatMap(n => [
+    [`col_a${n}`, ''], [`col_a${n}_image_file`, null],
+    [`col_b${n}`, ''], [`col_b${n}_image_file`, null],
+  ])),
   mtc_option1: '', mtc_option2: '', mtc_option3: '', mtc_option4: '',
   mtc_correct_label: 'Option 1',
   // Common
@@ -530,27 +527,16 @@ export default function QuestionUploader({ uploadedBy }) {
         // <MatchTable>, not from `question` — so `question` here is just the
         // optional intro line, the same way MCQ option text was never part of
         // search either.
-        const [a1, a2, a3, a4, b1, b2, b3, b4] = await Promise.all([
-          form.col_a1_image_file ? uploadImage(form.col_a1_image_file) : null,
-          form.col_a2_image_file ? uploadImage(form.col_a2_image_file) : null,
-          form.col_a3_image_file ? uploadImage(form.col_a3_image_file) : null,
-          form.col_a4_image_file ? uploadImage(form.col_a4_image_file) : null,
-          form.col_b1_image_file ? uploadImage(form.col_b1_image_file) : null,
-          form.col_b2_image_file ? uploadImage(form.col_b2_image_file) : null,
-          form.col_b3_image_file ? uploadImage(form.col_b3_image_file) : null,
-          form.col_b4_image_file ? uploadImage(form.col_b4_image_file) : null,
-        ])
+        const mtcFields = MTC_ROW_NUMS.flatMap(n => [`col_a${n}`, `col_b${n}`])
+        const mtcImages = await Promise.all(
+          mtcFields.map(f => form[`${f}_image_file`] ? uploadImage(form[`${f}_image_file`]) : null))
+        const mtcCols = Object.fromEntries(mtcFields.flatMap((f, i) => [
+          [f, form[f]], [`${f}_image`, mtcImages[i]],
+        ]))
         record = {
           ...base,
           question: form.question.trim() || 'Match the following:',
-          col_a1: form.col_a1, col_a1_image: a1,
-          col_a2: form.col_a2, col_a2_image: a2,
-          col_a3: form.col_a3, col_a3_image: a3,
-          col_a4: form.col_a4, col_a4_image: a4,
-          col_b1: form.col_b1, col_b1_image: b1,
-          col_b2: form.col_b2, col_b2_image: b2,
-          col_b3: form.col_b3, col_b3_image: b3,
-          col_b4: form.col_b4, col_b4_image: b4,
+          ...mtcCols,
           option1: form.mtc_option1, option2: form.mtc_option2,
           option3: form.mtc_option3, option4: form.mtc_option4,
           correct_option: resolveCorrectOption(form.mtc_correct_label, form.mtc_option1, form.mtc_option2, form.mtc_option3, form.mtc_option4),
@@ -1427,8 +1413,8 @@ export default function QuestionUploader({ uploadedBy }) {
                     <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
                     <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>COLUMN B</div>
                   </div>
-                  {[1, 2, 3, 4].map(i => {
-                    const bLabel = ['p', 'q', 'r', 's'][i - 1]
+                  {MTC_ROW_NUMS.map(i => {
+                    const bLabel = MTC_LABELS_B[i - 1]
                     return (
                       <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: i % 2 === 0 ? '#f8faff' : '#fff' }}>
                         <div style={{ padding: '0.4rem 0.75rem', borderRight: '1px solid var(--gray-200)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
