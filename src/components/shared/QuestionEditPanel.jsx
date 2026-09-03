@@ -12,7 +12,14 @@ import InfoTooltip from './InfoTooltip'
 
 // Exactly the types already in the bank — nothing here can introduce a value
 // the render surfaces don't already handle.
-const QUESTION_TYPES = ['Single Choice MCQ', 'MCQ', 'Assertion Reason', 'Match the Column']
+//
+// 'MCQ' was a second spelling of 'Single Choice MCQ', left over from the
+// Excel importer defaulting to it when a sheet's Question Type column was
+// blank (Add Manually and this panel always used 'Single Choice MCQ'). Never
+// a distinct type — nothing in the app treats them differently. All 632 rows
+// that had it were converted to 'Single Choice MCQ' on 2026-09-03 (see
+// backup-mcq-type-fix-2026-09-03.json), so it's dropped from the choices here.
+const QUESTION_TYPES = ['Single Choice MCQ', 'Assertion Reason', 'Match the Column']
 
 /**
  * Click-to-toggle padlock shown beside each field an Excel re-upload could
@@ -280,7 +287,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
       {/* Question type — changing it to Match the Column reveals the column
           editor below, so a question already in the bank can be converted in
           place instead of being re-created under a new Q ID. */}
-      <div className="form-group" style={{ margin: '0 0 0.75rem', maxWidth: '260px' }}>
+      <div className="form-group" style={{ margin: '0 0 0.75rem', maxWidth: '260px', marginLeft: 'auto' }}>
         <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e' }}>Question Type</label>
         <select className="form-control" style={{ fontSize: '0.875rem' }}
           value={form.question_type}

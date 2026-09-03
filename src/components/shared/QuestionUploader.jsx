@@ -691,7 +691,15 @@ export default function QuestionUploader({ uploadedBy }) {
 
           records.push({
             qid,
-            question_type:    cell(r, 'Question Type') || 'MCQ',
+            // 'MCQ' was this default until 2026-09-03 — every row it produced
+            // was a second spelling of 'Single Choice MCQ', which is why 632
+            // questions ended up split across two type strings that nothing
+            // in the app actually distinguished. Matching the manual-add
+            // default here is what stops a future blank-Type upload silently
+            // recreating that split (and the edit panel's Question Type
+            // dropdown no longer offers 'MCQ' to fix it by hand, since it
+            // isn't a real category — see QuestionEditPanel.jsx).
+            question_type:    cell(r, 'Question Type') || 'Single Choice MCQ',
             subject:          uploadSubject,
             unit:             unitLabel,
             chapter_name:     cell(r, 'Chapter Name'),
