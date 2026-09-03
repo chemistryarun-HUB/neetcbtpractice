@@ -287,7 +287,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
       {/* Question type — changing it to Match the Column reveals the column
           editor below, so a question already in the bank can be converted in
           place instead of being re-created under a new Q ID. */}
-      <div className="form-group" style={{ margin: '0 0 0.75rem', maxWidth: '260px', marginLeft: 'auto' }}>
+      <div className="form-group" style={{ margin: '0 0 0.75rem', maxWidth: '260px' }}>
         <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#92400e' }}>Question Type</label>
         <select className="form-control" style={{ fontSize: '0.875rem' }}
           value={form.question_type}

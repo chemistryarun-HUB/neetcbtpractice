@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
-import { deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { levelBadge } from '../../lib/constants'
 import { hasAnyFieldLock, lockSummary } from '../../lib/fieldLocks'
 import QuestionView from './QuestionView'
@@ -107,7 +107,6 @@ export default function QuestionReviewer({
 
   const isInactive = q.is_active === false
   const isPending = q.is_published === false
-  const topic = deriveTopic(q.unit, q.level) || q.topic || '—'
 
   return (
     <div style={{
@@ -137,13 +136,17 @@ export default function QuestionReviewer({
           )}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flex: '1 1 200px' }}>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</span>
-          <span style={{ opacity: 0.5 }}>·</span>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {levelBadge(unitIdOf(q.unit), q.level)}: {topic}
-          </span>
-          <InfoTooltip text={deriveFullTopic(q.unit, q.level) || q.topic} />
+        {/* Unit name and the level's full topic used to sit on this line too
+            ("Unit 24 - Physical Properties · Level 1: Physical Properties"),
+            which wrapped the header onto two lines on a real screen. Same
+            text, same "·" the header used — just moved into the ⓘ tooltip
+            instead of spelled out on a header that has little room already.
+            (The panel's white-space is `normal`, not `pre`, so this has to
+            stay one flowing string — a literal "\n" here would collapse to a
+            single space instead of a line break.) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flexShrink: 0 }}>
+          <span title={q.unit}>{levelBadge(unitIdOf(q.unit), q.level)}</span>
+          <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level) || q.topic}`} />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
