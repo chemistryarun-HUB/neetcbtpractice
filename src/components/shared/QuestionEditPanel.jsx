@@ -7,7 +7,7 @@ import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../l
 import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
-import { MTC_ROW_NUMS, MTC_LABELS_B, parseMtcFromText } from '../../lib/mtc'
+import { MTC_ROW_NUMS, LABEL_SCHEMES, DEFAULT_LABEL_A, DEFAULT_LABEL_B, parseMtcFromText } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
 
 // Exactly the types already in the bank — nothing here can introduce a value
@@ -120,6 +120,11 @@ function initialForm(q) {
       [`col_a${n}`, q[`col_a${n}`] || ''],
       [`col_b${n}`, q[`col_b${n}`] || ''],
     ])),
+    // Which alphabet each column's labels are drawn from — see LABEL_SCHEMES
+    // in lib/mtc.js. Falls back to the app's original hardcoded scheme for any
+    // row saved before this was a per-question choice.
+    mtc_label_a: q.mtc_label_a || DEFAULT_LABEL_A,
+    mtc_label_b: q.mtc_label_b || DEFAULT_LABEL_B,
   }
 }
 
@@ -247,6 +252,8 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           patch[`col_b${n}`] = form[`col_b${n}`]
           patch[`col_b${n}_image`] = imgUrls[`col_b${n}_image`] ?? null
         }
+        patch.mtc_label_a = form.mtc_label_a
+        patch.mtc_label_b = form.mtc_label_b
       }
       const { error } = await supabase.from('questions').update(patch).eq('id', q.id)
       if (error) throw error
@@ -359,6 +366,35 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               Reads the Column I / Column II list above into these boxes. Nothing saves until you press Save.
             </span>
           </div>
+          {/* Label scheme, per column. Source books don't agree on one — some
+              number Column A with roman numerals and letter Column B, some the
+              reverse, some plain numbers throughout — and the table used to
+              always print 1-6 / p-u regardless, disagreeing with the question's
+              own answer options ("A-I, B-II…") on anything that wasn't already
+              that exact scheme. Purely cosmetic: it only changes what's PRINTED
+              next to each row, never which row a piece of text is stored in, so
+              switching schemes can't move an answer or touch correct_option. */}
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: '0.5rem 0.75rem', background: '#f8faff', borderBottom: '1px solid var(--gray-200)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6' }}>
+              Column A labels
+              <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.2rem 0.4rem', width: 'auto' }}
+                value={form.mtc_label_a}
+                onChange={e => setForm(f => ({ ...f, mtc_label_a: e.target.value }))}>
+                {Object.entries(LABEL_SCHEMES).map(([key, s]) => <option key={key} value={key}>{s.title}</option>)}
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: '#16a34a' }}>
+              Column B labels
+              <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.2rem 0.4rem', width: 'auto' }}
+                value={form.mtc_label_b}
+                onChange={e => setForm(f => ({ ...f, mtc_label_b: e.target.value }))}>
+                {Object.entries(LABEL_SCHEMES).map(([key, s]) => <option key={key} value={key}>{s.title}</option>)}
+              </select>
+            </label>
+            <span style={{ fontSize: '0.7rem', color: 'var(--gray-500)', alignSelf: 'center' }}>
+              Match whatever the answer options below already say (e.g. "A-I, B-II…").
+            </span>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
             <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
             <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>COLUMN B</div>
@@ -367,7 +403,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: '#fff' }}>
               <div style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid var(--gray-200)' }}>
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                  <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{i}.</span>
+                  <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{(LABEL_SCHEMES[form.mtc_label_a] || LABEL_SCHEMES[DEFAULT_LABEL_A]).labels[i - 1]}.</span>
                   <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
                     value={form[`col_a${i}`]}
                     onChange={e => setForm(f => ({ ...f, [`col_a${i}`]: e.target.value }))} />
@@ -381,7 +417,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               </div>
               <div style={{ padding: '0.4rem 0.6rem' }}>
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                  <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{MTC_LABELS_B[i - 1]}.</span>
+                  <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.8125rem', flexShrink: 0 }}>{(LABEL_SCHEMES[form.mtc_label_b] || LABEL_SCHEMES[DEFAULT_LABEL_B]).labels[i - 1]}.</span>
                   <input className="form-control" style={{ flex: 1, minWidth: 0, padding: '0.2rem 0.35rem', fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none' }}
                     value={form[`col_b${i}`]}
                     onChange={e => setForm(f => ({ ...f, [`col_b${i}`]: e.target.value }))} />

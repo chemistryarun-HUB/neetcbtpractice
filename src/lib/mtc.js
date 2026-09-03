@@ -15,12 +15,36 @@ export const MTC_ROWS = 6
 export const MTC_ROW_NUMS = Array.from({ length: MTC_ROWS }, (_, i) => i + 1)
 const ROW_NUMS = MTC_ROW_NUMS
 
-// Column A is numbered, Column B lettered from p — the convention Arun's
-// questions and their answer options already use ("1-r, 2-s, 3-p, 4-q").
-export const MTC_LABELS_A = ['1', '2', '3', '4', '5', '6']
-export const MTC_LABELS_B = ['p', 'q', 'r', 's', 't', 'u']
-const LABELS_A = MTC_LABELS_A
-const LABELS_B = MTC_LABELS_B
+// Which alphabet a column's labels are drawn from — editable per question
+// (see migration_mtc_label_schemes.sql) because source books don't agree:
+// some number Column A with roman numerals and letter Column B, some do the
+// reverse, some are plain numbers throughout. Six presets cover every style
+// actually seen in the bank as of 2026-09-03. Storing a SCHEME rather than six
+// free-text labels keeps a question's labels internally consistent — there's
+// no way to end up with two items both labelled "B".
+export const LABEL_SCHEMES = {
+  num:         { title: '1, 2, 3…', labels: ['1', '2', '3', '4', '5', '6'] },
+  upper:       { title: 'A, B, C…', labels: ['A', 'B', 'C', 'D', 'E', 'F'] },
+  lower:       { title: 'a, b, c…', labels: ['a', 'b', 'c', 'd', 'e', 'f'] },
+  roman_upper: { title: 'I, II, III…', labels: ['I', 'II', 'III', 'IV', 'V', 'VI'] },
+  roman_lower: { title: 'i, ii, iii…', labels: ['i', 'ii', 'iii', 'iv', 'v', 'vi'] },
+  // The app's original default for Column B, kept as a named preset (rather
+  // than folded into 'lower') because it's the one scheme that doesn't start
+  // at the first letter — matches the label Arun asked for at the start of
+  // this feature and every already-converted question in the bank.
+  lower_pu:    { title: 'p, q, r…', labels: ['p', 'q', 'r', 's', 't', 'u'] },
+}
+export const DEFAULT_LABEL_A = 'num'
+export const DEFAULT_LABEL_B = 'lower_pu'
+
+function labelsForScheme(key) {
+  return (LABEL_SCHEMES[key] || LABEL_SCHEMES[DEFAULT_LABEL_A]).labels
+}
+
+// Back-compat presets for any caller still importing the old fixed arrays —
+// identical to what num/lower_pu resolve to.
+export const MTC_LABELS_A = LABEL_SCHEMES[DEFAULT_LABEL_A].labels
+export const MTC_LABELS_B = LABEL_SCHEMES[DEFAULT_LABEL_B].labels
 
 export function hasStructuredMtc(q) {
   if (!q || q.question_type !== 'Match the Column') return false
@@ -42,8 +66,11 @@ export function mtcColumns(q) {
     text: q[`col_${side}${n}`] || '',
     image: q[`col_${side}${n}_image`] || null,
   }))
-  const colA = build('a', LABELS_A)
-  const colB = build('b', LABELS_B)
+  // Falls back to the original hardcoded schemes for any row from before this
+  // migration ran, or a legacy row that has never been given a scheme at all —
+  // same labels those questions have always rendered with.
+  const colA = build('a', labelsForScheme(q?.mtc_label_a || DEFAULT_LABEL_A))
+  const colB = build('b', labelsForScheme(q?.mtc_label_b || DEFAULT_LABEL_B))
 
   const lastUsed = rows => {
     let last = -1

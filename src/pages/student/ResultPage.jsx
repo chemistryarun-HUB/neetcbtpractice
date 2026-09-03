@@ -37,7 +37,7 @@ export default function ResultPage() {
       // Fetch ALL question objects for this attempt using question_ids array
       const { data: qs } = await supabase
         .from('questions')
-        .select('id, qid, question, question_type, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, topic, col_a1, col_a2, col_a3, col_a4, col_a5, col_a6, col_b1, col_b2, col_b3, col_b4, col_b5, col_b6, col_a1_image, col_a2_image, col_a3_image, col_a4_image, col_a5_image, col_a6_image, col_b1_image, col_b2_image, col_b3_image, col_b4_image, col_b5_image, col_b6_image')
+        .select('id, qid, question, question_type, question_image, option1, option2, option3, option4, option1_image, option2_image, option3_image, option4_image, correct_option, difficulty_level, question_tag, topic, col_a1, col_a2, col_a3, col_a4, col_a5, col_a6, col_b1, col_b2, col_b3, col_b4, col_b5, col_b6, col_a1_image, col_a2_image, col_a3_image, col_a4_image, col_a5_image, col_a6_image, col_b1_image, col_b2_image, col_b3_image, col_b4_image, col_b5_image, col_b6_image, mtc_label_a, mtc_label_b')
         .in('id', att.question_ids)
       setQuestions(qs || [])
 
