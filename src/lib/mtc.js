@@ -7,11 +7,11 @@
 // any MTC-specific handling (the existing generic `question` render already
 // does the right thing for legacy rows).
 
-// Six rows, not four. Measured across the real bank on 2026-08-31: Column A
-// runs to 5 items and Column B to 6, and 6 of the 11 non-empty MTC questions
-// exceeded the original 4-slot schema — which is exactly why every MTC row in
-// the bank was still an unstructured blob. See migration_mtc_six_rows.sql.
-export const MTC_ROWS = 6
+// Ten rows. Started at six (measured against the real bank on 2026-08-31,
+// where the largest question needed 5x6 — see migration_mtc_six_rows.sql),
+// widened to ten on request so both columns can be labelled the full "1 to
+// 10" — see migration_mtc_ten_rows.sql for the matching column set.
+export const MTC_ROWS = 10
 export const MTC_ROW_NUMS = Array.from({ length: MTC_ROWS }, (_, i) => i + 1)
 const ROW_NUMS = MTC_ROW_NUMS
 
@@ -19,20 +19,22 @@ const ROW_NUMS = MTC_ROW_NUMS
 // (see migration_mtc_label_schemes.sql) because source books don't agree:
 // some number Column A with roman numerals and letter Column B, some do the
 // reverse, some are plain numbers throughout. Six presets cover every style
-// actually seen in the bank as of 2026-09-03. Storing a SCHEME rather than six
+// actually seen in the bank as of 2026-09-03, each carrying MTC_ROWS labels so
+// no scheme runs out before the table does. Storing a SCHEME rather than ten
 // free-text labels keeps a question's labels internally consistent — there's
 // no way to end up with two items both labelled "B".
 export const LABEL_SCHEMES = {
-  num:         { title: '1, 2, 3…', labels: ['1', '2', '3', '4', '5', '6'] },
-  upper:       { title: 'A, B, C…', labels: ['A', 'B', 'C', 'D', 'E', 'F'] },
-  lower:       { title: 'a, b, c…', labels: ['a', 'b', 'c', 'd', 'e', 'f'] },
-  roman_upper: { title: 'I, II, III…', labels: ['I', 'II', 'III', 'IV', 'V', 'VI'] },
-  roman_lower: { title: 'i, ii, iii…', labels: ['i', 'ii', 'iii', 'iv', 'v', 'vi'] },
+  num:         { title: '1, 2, 3…', labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] },
+  upper:       { title: 'A, B, C…', labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] },
+  lower:       { title: 'a, b, c…', labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'] },
+  roman_upper: { title: 'I, II, III…', labels: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'] },
+  roman_lower: { title: 'i, ii, iii…', labels: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'] },
   // The app's original default for Column B, kept as a named preset (rather
   // than folded into 'lower') because it's the one scheme that doesn't start
   // at the first letter — matches the label Arun asked for at the start of
   // this feature and every already-converted question in the bank.
-  lower_pu:    { title: 'p, q, r…', labels: ['p', 'q', 'r', 's', 't', 'u'] },
+  // p..y is exactly 10 letters, so it reaches MTC_ROWS without wrapping past z.
+  lower_pu:    { title: 'p, q, r…', labels: ['p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y'] },
 }
 export const DEFAULT_LABEL_A = 'num'
 export const DEFAULT_LABEL_B = 'lower_pu'
