@@ -136,16 +136,22 @@ export default function QuestionReviewer({
           )}
         </div>
 
-        {/* Unit name and the level's full topic used to sit on this line too
-            ("Unit 24 - Physical Properties · Level 1: Physical Properties"),
-            which wrapped the header onto two lines on a real screen. Same
-            text, same "·" the header used — just moved into the ⓘ tooltip
-            instead of spelled out on a header that has little room already.
-            (The panel's white-space is `normal`, not `pre`, so this has to
-            stay one flowing string — a literal "\n" here would collapse to a
-            single space instead of a line break.) */}
+        {/* The unit's descriptive NAME and the level's full topic used to sit
+            on this line too ("Unit 24 - Physical Properties · Level 1:
+            Physical Properties"), which wrapped the header onto two lines on
+            a real screen. The unit NUMBER stays — only the "- Physical
+            Properties" half of it and the level's topic move into the ⓘ
+            tooltip (same "·" the header used, so nothing is lost, just not
+            spelled out twice on a header with no room for it).
+            "Unit 24" then "Level 1" butt two numbers together with nothing
+            between them — the exact "Level 3 2 times" misread this app has
+            hit before (see report_level_number_adjacency memory) — so this
+            keeps the "·" between them, same as it always separated unit from
+            level here. */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flexShrink: 0 }}>
-          <span title={q.unit}>{levelBadge(unitIdOf(q.unit), q.level)}</span>
+          <span>Unit {unitIdOf(q.unit)}</span>
+          <span style={{ opacity: 0.5 }}>·</span>
+          <span>{levelBadge(unitIdOf(q.unit), q.level)}</span>
           <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level) || q.topic}`} />
         </div>
 
