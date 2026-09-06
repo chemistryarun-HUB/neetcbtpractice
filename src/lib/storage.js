@@ -1,12 +1,15 @@
 import { supabase } from './supabase'
+import { createShortLink } from './shortLinks'
 
 // Uploads one image to the public `question-images` bucket and returns its
 // public URL. Shared by every surface that attaches an image to a question
 // (Add Manually, the edit panel) so the path/naming scheme stays in one place.
 /**
- * Uploads a generated parent report and returns its public URL.
+ * Uploads a generated parent report and returns a link to it — a short one
+ * on this app's own domain (see lib/shortLinks.js) rather than the raw
+ * storage URL, whose filename carries the student's name.
  *
- * The path carries a random UUID because the bucket is public — see
+ * The storage path carries a random UUID because the bucket is public — see
  * migration_student_reports_bucket.sql for why it's public and what that
  * means. Reports are never overwritten (each send is its own file), so an
  * older link a parent already has keeps working after a newer report is sent.
@@ -18,7 +21,17 @@ export async function uploadStudentReport(blob, studentId, fileName) {
     .upload(path, blob, { contentType: 'application/pdf', upsert: false })
   if (error) throw new Error(`Could not upload the report: ${error.message}`)
   const { data: { publicUrl } } = supabase.storage.from('student-reports').getPublicUrl(path)
-  return publicUrl
+
+  // Shortening is a nicety, not a requirement — a parent report going out is
+  // what actually matters, so a short-link hiccup (migration not yet run,
+  // a transient network blip) falls back to the long URL rather than blocking
+  // the send entirely.
+  try {
+    return await createShortLink(publicUrl)
+  } catch (err) {
+    console.error('Short link creation failed, falling back to the long URL:', err)
+    return publicUrl
+  }
 }
 
 export async function uploadQuestionImage(file) {

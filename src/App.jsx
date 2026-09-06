@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './hooks/useAuth'
 import LoginPage from './pages/LoginPage'
 import StudentLoginPage from './pages/StudentLoginPage'
 import FacultyLoginPage from './pages/FacultyLoginPage'
+import ShortLinkRedirect from './pages/ShortLinkRedirect'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
@@ -45,6 +46,9 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
+      {/* Public, deliberately outside ProtectedRoute — a parent opening this
+          from WhatsApp has no NEETCBT account at all. See lib/shortLinks.js. */}
+      <Route path="/r/:code" element={<ShortLinkRedirect />} />
       <Route path="/student/login" element={<StudentLoginPage />} />
       <Route path="/faculty/login" element={<FacultyLoginPage />} />
 
