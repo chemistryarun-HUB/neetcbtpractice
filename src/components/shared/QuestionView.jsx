@@ -16,6 +16,7 @@ export default function QuestionView({ q, mode = 'student', size = 'full' }) {
   const full = size === 'full'
   const correctKey = correctOptionKey(q)
   const opts = optionEntries(q)
+  const hasImageOptions = opts.some(o => o.image)
 
   const S = full
     ? { stem: '1.1875rem', stemLead: 1.75, gap: '1.5rem', qImg: '42vh', optImg: 300,
@@ -38,7 +39,16 @@ export default function QuestionView({ q, mode = 'student', size = 'full' }) {
 
       {hasStructuredMtc(q) && <MatchTable q={q} />}
 
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: S.optGap }}>
+      {/* Image options (structure-comparison questions especially) are narrow
+          — stacked one-per-row they leave most of a laptop screen's width
+          empty. A grid lets several sit side by side when there's room and
+          folds back to one column as the viewport narrows, with no separate
+          mobile rule needed. Plain-text options keep the single-column list
+          they've always had — wrapping text across grid cells of uneven
+          height reads worse than it solves. */}
+      <ul style={hasImageOptions
+        ? { listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${full ? 260 : 160}px, 1fr))`, gap: S.optGap }
+        : { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: S.optGap }}>
         {opts.map((opt, i) => {
           const isCorrect = mode === 'admin' && opt.key === correctKey
           return (
