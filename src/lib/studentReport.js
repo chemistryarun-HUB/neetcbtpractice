@@ -19,7 +19,12 @@ export function buildUnitReport({
   student, unitId, attempts, classAttempts = [], activeIdsByLevel = null, generatedAt = new Date(),
 }) {
   const defs = UNIT_LEVELS[unitId] || []
-  const lastLevelId = defs.length > 0 ? defs[defs.length - 1].id : null
+  // Only more-than-one-level units have a real CCT — same guard as
+  // isChapterTestLevel() in constants.js. Units 24-36's mechanism modules
+  // carry a single level each; without this, that level's own id equals
+  // "the last level" and gets filtered OUT of ladderDefs below, so the report
+  // showed "0 / 0 levels" for a student who had genuinely cleared it.
+  const lastLevelId = defs.length > 1 ? defs[defs.length - 1].id : null
   // The Complete Chapter Test is open from day one and draws from the whole
   // chapter, so it isn't a rung on the ladder — reported separately, and
   // deliberately without any "cleared" verdict, because there is no gate to

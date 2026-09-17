@@ -158,7 +158,14 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
   )
 
   const levels = useMemo(() => UNIT_LEVELS[unitId] || [], [unitId])
-  const lastLevelId = levels.length > 0 ? levels[levels.length - 1].id : null
+  // A unit's last level is only a Complete Chapter Test when there's more
+  // than one level to draw from — same guard as isChapterTestLevel() in
+  // constants.js. Units 24-36's mechanism modules carry a single level each;
+  // without this, that one level gets mistaken for "the CCT" below: excluded
+  // from the cleared ladder and its pool swapped for a same-unit union that
+  // doesn't exist for a one-level unit. Both silently produced "0 / 0" here
+  // even for a student who'd genuinely cleared it (reported by Arun, 2026-09-17).
+  const lastLevelId = levels.length > 1 ? levels[levels.length - 1].id : null
 
   // Only the per-level question totals need fetching, and only for the
   // selected unit — a few hundred rows, cheap enough to refetch on every unit

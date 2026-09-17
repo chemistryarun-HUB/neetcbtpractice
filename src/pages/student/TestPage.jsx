@@ -62,9 +62,12 @@ export default function TestPage() {
       const skippedIds = (used || []).filter(u => u.status === 'skipped').map(u => u.question_id)
       const correctIds = (used || []).filter(u => u.status === 'correct').map(u => u.question_id)
 
-      // Last level of this unit = Complete Chapter Test: draw from ALL levels of this unit
+      // Last level of this unit = Complete Chapter Test: draw from ALL levels of this unit.
+      // Only when there's more than one level — same guard as isChapterTestLevel()
+      // in constants.js — else a single-level unit's (units 24-36) only level
+      // would equal "the last level" and be mistaken for a CCT here.
       const unitLevelDefs = UNIT_LEVELS[unitNum] || []
-      const lastLevelId = unitLevelDefs.length > 0 ? unitLevelDefs[unitLevelDefs.length - 1].id : null
+      const lastLevelId = unitLevelDefs.length > 1 ? unitLevelDefs[unitLevelDefs.length - 1].id : null
       const isChapterTest = levelNum === lastLevelId
 
       // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry"
