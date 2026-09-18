@@ -122,6 +122,15 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',                        topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                topic: 'Complete Chapter Test' },
   ],
+  4: [
+    { id: 1, name: 'Thermodynamic Terms & First Law',   topic: "Thermodynamic terms: System and surroundings, Types of system, The state of the system, The internal energy as a state function : Work & Heat, First law of thermodynamics" },
+    { id: 2, name: 'Thermodynamic Processes & Enthalpy', topic: "Thermodynamic process, Reversible and irreversible process, pressure-volume work, Isothermal and free expansion of an ideal gas. Extensive and intensive properties, enthalpy H" },
+    { id: 3, name: 'Heat Capacity & Calorimetry',       topic: "Heat capacity, Relation between Cv & Cp for an ideal gas; Calorimetry" },
+    { id: 4, name: "Thermochemistry / Hess's Law",      topic: "Enthalpy and thermo chemical equation. Hess's law of constant heat summation, Enthalpy of combustion, Atomization, Bond-dissociation, Solution, Lattice and neutralisation." },
+    { id: 5, name: 'Entropy & Free Energy',             topic: "Spontaneity and entropy, Second law of thermodynamics, Free energy change and criteria for spontaneity, Third law of thermodynamics." },
+    { id: 6, name: 'Multilevel Questions',              topic: 'Miscellaneous' },
+    { id: 7, name: 'Complete Chapter Test',             topic: 'Complete Chapter Test' },
+  ],
   5: [
     { id: 1, name: 'Types of Solutions',                topic: "Types of solutions, Expressing concentration of solutions." },
     { id: 2, name: 'Solubility & Raoult\'s Law',         topic: "Solubility of a solid in a liquid and gas in a liquid (Henry-law), Vapour pressure of liquid solutions, Raoult's law for binary solutions. Ideal and non-ideal solutions" },
