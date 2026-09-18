@@ -12,6 +12,7 @@ import { MTC_ROW_NUMS, MTC_LABELS_B } from '../../lib/mtc'
 import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
+import DifficultyReport from './DifficultyReport'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
@@ -886,6 +887,7 @@ export default function QuestionUploader({ uploadedBy }) {
         <button className={`tab-btn ${tab === 'manual' ? 'active' : ''}`} onClick={() => setTab('manual')}>Add Manually</button>
         <button className={`tab-btn ${tab === 'excel' ? 'active' : ''}`} onClick={() => setTab('excel')}>Upload Excel</button>
         <button className={`tab-btn ${tab === 'dupes' ? 'active' : ''}`} onClick={() => { setTab('dupes'); if (!dupeGroups) loadDuplicates() }}>Find Duplicates</button>
+        <button className={`tab-btn ${tab === 'difficulty' ? 'active' : ''}`} onClick={() => setTab('difficulty')}>Difficulty Coverage</button>
       </div>
 
       {/* Full-screen reviewer. It walks visibleQuestions — whatever the filters
@@ -1816,6 +1818,8 @@ export default function QuestionUploader({ uploadedBy }) {
           ))}
         </div>
       )}
+
+      {tab === 'difficulty' && <DifficultyReport />}
     </div>
   )
 }
