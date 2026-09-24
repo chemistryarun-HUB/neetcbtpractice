@@ -231,36 +231,45 @@ tbody tr:hover td { background: var(--gray-50); }
 .modal-body { padding: 1.5rem; }
 .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gray-200); display: flex; gap: 0.75rem; justify-content: flex-end; }
 
-/* ── Review modals (post-test result + attempt review) ──────────────────────
-   These hold far more than a normal dialog: a 25-question review measures
-   ~10,000px of scroll, so the default 560px/85vh box turns it into a porthole
-   students scroll for a very long time. Two escapes, because the two contexts
-   want different things:
-
-   • Desktop/tablet — an expand toggle in the header (.modal-review.expanded).
-     Default stays the old size so the admin's review, which nobody complained
-     about, is unchanged until they ask for more.
-   • Phones — full-screen, no toggle. At 375px wide the dialog framing costs
-     15% of the screen height and 32px of width to show dimmed overlay around
-     a box that is already the whole width; there is nothing to expand *into*,
-     so the button is hidden and the modal simply takes the screen.           */
-.modal-review { max-width: 720px; }
-.modal-review.expanded { max-width: min(1180px, 96vw); max-height: 94vh; }
+/* ── Attempt reviewer (post-test result + Performance attempt review) ────────
+   Full-screen, one question at a time — the same shape as the admin's
+   QuestionReviewer. Replaced a modal holding all 25 questions as one
+   ~10,000px scrolling list. See components/performance/AttemptReviewer.jsx. */
+.attempt-reviewer { position: fixed; inset: 0; z-index: 500; background: var(--gray-50); display: flex; flex-direction: column; }
+.ar-header { background: var(--primary); color: #fff; flex-shrink: 0; display: flex; align-items: center; gap: 0.875rem; padding: 0.55rem 1rem; flex-wrap: wrap; }
+.ar-close { background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: var(--radius); padding: 0.35rem 0.5rem; cursor: pointer; display: flex; align-items: center; }
+.ar-close:hover { background: rgba(255,255,255,0.28); }
+.ar-stats { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ar-stats > span { background: rgba(255,255,255,0.14); border-radius: 999px; padding: 0.2rem 0.7rem; font-size: 0.8125rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ar-stats small { font-size: 0.7rem; font-weight: 500; opacity: 0.8; margin-right: 0.2rem; }
+.ar-stats em { font-style: normal; font-weight: 500; opacity: 0.7; }
+.ar-filterbar { flex-shrink: 0; background: #fff; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: center; gap: 0.5rem; padding: 0.55rem 1rem; overflow-x: auto; }
+.ar-filter { font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; border: 1.5px solid; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+.ar-filter strong { font-weight: 800; }
+.ar-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.ar-content { flex: 1; overflow-y: auto; padding: 1.5rem 1rem 2rem; }
+.ar-card { background: #fff; border-radius: 14px; border: 1px solid var(--gray-200); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 1.75rem 2.25rem 2rem; }
+.ar-footer { flex-shrink: 0; background: #fff; border-top: 1px solid var(--gray-200); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; }
+/* Padding so the current chip's ring isn't clipped by the scroll box. */
+.ar-palette { flex: 1; min-width: 0; display: flex; gap: 0.35rem; overflow-x: auto; padding: 0.35rem 0.3rem; }
+.ar-chip { position: relative; flex-shrink: 0; min-width: 32px; height: 30px; padding: 0 0.35rem; border-radius: 7px; border: 1.5px solid; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-variant-numeric: tabular-nums; transition: transform 0.1s; }
+.ar-chip:hover { transform: translateY(-1px); }
+.ar-chip-flag { position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; border: 1px solid #fff; }
+.ar-count { flex-shrink: 0; font-size: 0.8125rem; color: var(--gray-500); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ar-hints { flex-shrink: 0; background: var(--gray-100); border-top: 1px solid var(--gray-200); padding: 0.25rem 1rem; font-size: 0.7rem; color: var(--gray-500); display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
 @media (max-width: 640px) {
-  .modal-overlay.overlay-review { padding: 0; }
-  .modal-review, .modal-review.expanded {
-    max-width: 100%; width: 100%; border-radius: 0;
-    /* dvh first-choice: 100vh on mobile Safari/Chrome sits *behind* the URL
-       bar, which would hide the bottom of the list. vh stays as the fallback
-       for anything without dvh support. */
-    height: 100vh; height: 100dvh;
-    max-height: 100vh; max-height: 100dvh;
-  }
-  /* 1.5rem of body padding either side is 26% of a 375px screen. */
-  .modal-review .modal-body { padding: 1rem; }
-  .modal-review .modal-header { padding: 0.875rem 1rem; }
-  .modal-expand-btn { display: none; }
+  .ar-header { gap: 0.6rem; padding: 0.5rem 0.75rem; }
+  .ar-stats { margin-left: 0; width: 100%; }
+  .ar-stats > span { font-size: 0.75rem; padding: 0.15rem 0.6rem; }
+  .ar-filterbar { justify-content: flex-start; padding: 0.5rem 0.75rem; }
+  /* 2.25rem of card padding either side is a quarter of a 375px screen. */
+  .ar-content { padding: 0.75rem 0.5rem 1.25rem; }
+  .ar-card { padding: 1.1rem 1rem 1.25rem; border-radius: 10px; }
+  .ar-footer { gap: 0.4rem; padding: 0.45rem 0.5rem; }
+  .ar-nav-label, .ar-count { display: none; }
+  /* Keyboard shortcuts mean nothing on a phone. */
+  .ar-hints { display: none; }
 }
 
 /* ── Level lecture videos ── */
