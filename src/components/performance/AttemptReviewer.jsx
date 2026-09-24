@@ -104,52 +104,58 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
 
   return (
     <div className="attempt-reviewer" role="dialog" aria-label="Attempt review">
-      {/* ── Header: which attempt, and how it went ── */}
+      {/* ── Header: ONE slim row — which attempt · filter · how it went. It
+             used to be a two-line header plus a separate filter bar, ~160px of
+             chrome before the question even started. ── */}
       <div className="ar-header">
         <button onClick={onClose} title="Close (Esc)" className="ar-close" aria-label="Close review">
           <X size={18} />
         </button>
 
-        <div style={{ minWidth: 0 }}>
-          {/* "·" between every pair: "Unit 01 Level 03" butts two numbers
-              together — the "Level 3 2 times" misread this app has hit before. */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontWeight: 700, fontSize: '0.9375rem', flexWrap: 'wrap' }}>
-            <span>Unit {String(attempt.unit_id).padStart(2, '0')}</span>
-            <span style={{ opacity: 0.5 }}>·</span>
-            <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
-            <InfoTooltip text={syllabus} align="left" />
-            {attemptNo != null && <><span style={{ opacity: 0.5 }}>·</span><span>Attempt #{attemptNo}</span></>}
-          </div>
-          {studentName && <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '0.05rem' }}>{studentName}</div>}
+        {/* "·" between every pair: "Unit 01 Level 03" butts two numbers
+            together — the "Level 3 2 times" misread this app has hit before. */}
+        <div className="ar-title">
+          <span>Unit {String(attempt.unit_id).padStart(2, '0')}</span>
+          <span className="ar-sep">·</span>
+          <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
+          <InfoTooltip text={syllabus} align="left" />
+          {attemptNo != null && (
+            <span className="ar-attempt"><span className="ar-sep">·</span><span className="ar-wide-only">Attempt </span>#{attemptNo}</span>
+          )}
+          {studentName && <span className="ar-student" title={studentName}><span className="ar-sep">·</span>{studentName}</span>}
         </div>
 
-        <div className="ar-stats">
-          <span><small>Score</small> {attempt.score ?? 0}<em>/{maxScore}</em></span>
-          <span><small>Accuracy</small> {accuracyOf(attempt).toFixed(0)}%</span>
-          <span><small>Time</small> {fmtDuration(attempt.time_taken)}</span>
+        {/* Correct/Wrong/Skipped — the old result tiles, as a switch in the
+            bar. Narrow screens get the same choice as a dropdown. */}
+        <div className="ar-seg" role="tablist" aria-label="Filter questions">
+          {FILTERS.map(([key, label]) => {
+            const active = filter === key
+            const tone = key ? STATUS[key] : null
+            return (
+              <button key={label} role="tab" aria-selected={active} onClick={() => pickFilter(key)}
+                className={`ar-seg-btn${active ? ' active' : ''}`}
+                title={`Show ${key ? label.toLowerCase() : 'all'} questions (${label[0]})`}
+                style={active && tone ? { color: tone.fg } : undefined}>
+                {tone && <span className="ar-dot" style={{ background: tone.solid }} />}
+                {/* Status words drop to just the coloured dot when space runs short. */}
+                <span className={tone ? 'ar-seg-label' : undefined}>{label}</span>
+                <strong>{key ? counts[key] : counts.all}</strong>
+              </button>
+            )
+          })}
         </div>
-      </div>
+        <select className="ar-seg-select" aria-label="Filter questions"
+          value={filter ?? 'all'} onChange={e => pickFilter(e.target.value === 'all' ? null : e.target.value)}>
+          {FILTERS.map(([key, label]) => (
+            <option key={label} value={key ?? 'all'}>{label} · {key ? counts[key] : counts.all}</option>
+          ))}
+        </select>
 
-      {/* ── Filter: the old Correct/Wrong/Skipped tiles, as one segmented row ── */}
-      <div className="ar-filterbar">
-        {FILTERS.map(([key, label]) => {
-          const active = filter === key
-          const tone = key ? STATUS[key] : null
-          const n = key ? counts[key] : counts.all
-          return (
-            <button key={label} onClick={() => pickFilter(key)} className="ar-filter"
-              title={`Show ${key ? label.toLowerCase() : 'all'} questions (${label[0]})`}
-              style={{
-                borderColor: active ? (tone ? tone.solid : 'var(--primary)') : 'var(--gray-200)',
-                background: active ? (tone ? tone.bg : 'var(--primary-light)') : '#fff',
-                color: active ? (tone ? tone.fg : 'var(--primary-dark)') : 'var(--gray-600)',
-              }}>
-              {tone && <span className="ar-dot" style={{ background: tone.solid }} />}
-              {label}
-              <strong style={{ color: tone ? tone.solid : 'inherit' }}>{n}</strong>
-            </button>
-          )
-        })}
+        <div className="ar-stats" title={`Score ${attempt.score ?? 0}/${maxScore} · Accuracy ${accuracyOf(attempt).toFixed(0)}% · Time ${fmtDuration(attempt.time_taken)}`}>
+          <span><small className="ar-wide-only">Score</small> {attempt.score ?? 0}<em>/{maxScore}</em></span>
+          <span className="ar-stat-extra"><small>Accuracy</small> {accuracyOf(attempt).toFixed(0)}%</span>
+          <span className="ar-stat-extra"><small>Time</small> {fmtDuration(attempt.time_taken)}</span>
+        </div>
       </div>
 
       {/* ── The question itself ── */}
@@ -174,7 +180,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
             </div>
           ) : (
             <div className="ar-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
                 <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{cur.num}.</span>
                 <code style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)' }}>{cur.q.qid}</code>
                 {cur.q.difficulty_level && (

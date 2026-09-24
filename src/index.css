@@ -236,19 +236,48 @@ tbody tr:hover td { background: var(--gray-50); }
    QuestionReviewer. Replaced a modal holding all 25 questions as one
    ~10,000px scrolling list. See components/performance/AttemptReviewer.jsx. */
 .attempt-reviewer { position: fixed; inset: 0; z-index: 500; background: var(--gray-50); display: flex; flex-direction: column; }
-.ar-header { background: var(--primary); color: #fff; flex-shrink: 0; display: flex; align-items: center; gap: 0.875rem; padding: 0.55rem 1rem; flex-wrap: wrap; }
-.ar-close { background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: var(--radius); padding: 0.35rem 0.5rem; cursor: pointer; display: flex; align-items: center; }
+/* One row, never wraps: title flexes and shrinks, the filter switch sits in the
+   middle, stats hug the right. Title and stats both take flex:1 so the switch
+   stays centred however long the student's name is. */
+.ar-header { background: var(--primary); color: #fff; flex-shrink: 0; display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.75rem; min-height: 48px; }
+.ar-close { flex-shrink: 0; background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: var(--radius); padding: 0.35rem 0.45rem; cursor: pointer; display: flex; align-items: center; }
 .ar-close:hover { background: rgba(255,255,255,0.28); }
-.ar-stats { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.ar-stats > span { background: rgba(255,255,255,0.14); border-radius: 999px; padding: 0.2rem 0.7rem; font-size: 0.8125rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ar-title { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 0.4rem; font-weight: 700; font-size: 0.9375rem; white-space: nowrap; }
+/* The title's nowrap would otherwise flow into the syllabus popover too. */
+.ar-title .info-tooltip-panel { white-space: normal; font-weight: 400; }
+.ar-sep { opacity: 0.5; margin-right: 0.4rem; }
+.ar-title > .ar-sep { margin-right: 0; }
+/* Only the name truncates — an overflow:hidden on the whole title would clip the ⓘ popover. */
+.ar-student { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 500; opacity: 0.85; }
+.ar-seg { flex-shrink: 0; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.15); }
+.ar-seg-btn { font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.8rem; border-radius: 999px; border: none; background: transparent; color: rgba(255,255,255,0.88); white-space: nowrap; transition: background 0.15s, color 0.15s; }
+.ar-seg-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+.ar-seg-btn.active { background: #fff; color: var(--primary-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.ar-seg-btn strong { font-weight: 800; font-variant-numeric: tabular-nums; }
+.ar-seg-select { display: none; flex-shrink: 0; font: inherit; font-size: 0.8125rem; font-weight: 700; color: var(--primary-dark); background: #fff; border: none; border-radius: 999px; padding: 0.3rem 0.6rem; cursor: pointer; }
+.ar-stats { flex: 1 1 0; min-width: 0; display: flex; justify-content: flex-end; gap: 0.4rem; }
+.ar-stats > span { background: rgba(255,255,255,0.14); border-radius: 999px; padding: 0.22rem 0.65rem; font-size: 0.8125rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ar-stats small { font-size: 0.7rem; font-weight: 500; opacity: 0.8; margin-right: 0.2rem; }
 .ar-stats em { font-style: normal; font-weight: 500; opacity: 0.7; }
-.ar-filterbar { flex-shrink: 0; background: #fff; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: center; gap: 0.5rem; padding: 0.55rem 1rem; overflow-x: auto; }
-.ar-filter { font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; border: 1.5px solid; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
-.ar-filter strong { font-weight: 800; }
-.ar-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.ar-content { flex: 1; overflow-y: auto; padding: 1.5rem 1rem 2rem; }
-.ar-card { background: #fff; border-radius: 14px; border: 1px solid var(--gray-200); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 1.75rem 2.25rem 2rem; }
+.ar-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.ar-content { flex: 1; overflow-y: auto; padding: 1rem 1rem 2rem; }
+.ar-card { background: #fff; border-radius: 14px; border: 1px solid var(--gray-200); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 1.25rem 2.25rem 1.75rem; }
+
+/* Squeezing, widest first: drop the student name and extra stats, then the
+   status words (dots + counts stay), then swap the switch for a dropdown. */
+@media (max-width: 1180px) {
+  .ar-stat-extra { display: none; }
+}
+@media (max-width: 1000px) {
+  .ar-seg-label { display: none; }
+  .ar-student { display: none; }
+}
+@media (max-width: 760px) {
+  .ar-seg { display: none; }
+  .ar-seg-select { display: block; }
+  .ar-wide-only { display: none; }
+  .ar-stats { flex: 0 0 auto; }
+}
 .ar-footer { flex-shrink: 0; background: #fff; border-top: 1px solid var(--gray-200); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; }
 /* Padding so the current chip's ring isn't clipped by the scroll box. */
 .ar-palette { flex: 1; min-width: 0; display: flex; gap: 0.35rem; overflow-x: auto; padding: 0.35rem 0.3rem; }
@@ -259,10 +288,14 @@ tbody tr:hover td { background: var(--gray-50); }
 .ar-hints { flex-shrink: 0; background: var(--gray-100); border-top: 1px solid var(--gray-200); padding: 0.25rem 1rem; font-size: 0.7rem; color: var(--gray-500); display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
 @media (max-width: 640px) {
-  .ar-header { gap: 0.6rem; padding: 0.5rem 0.75rem; }
-  .ar-stats { margin-left: 0; width: 100%; }
-  .ar-stats > span { font-size: 0.75rem; padding: 0.15rem 0.6rem; }
-  .ar-filterbar { justify-content: flex-start; padding: 0.5rem 0.75rem; }
+  .ar-header { gap: 0.4rem; padding: 0.35rem 0.5rem; min-height: 44px; }
+  .ar-title { font-size: 0.8125rem; gap: 0.3rem; }
+  .ar-seg-select { font-size: 0.75rem; padding: 0.25rem 0.35rem; }
+  /* The syllabus popover, anchored to an ⓘ mid-bar, can't fit either side of
+     it on a phone — drop it as a full-width panel under the bar instead. */
+  .ar-header .info-tooltip-panel { position: fixed; top: 46px; left: 0.5rem; right: 0.5rem; width: auto; max-width: none; transform: none; }
+  .ar-header .info-tooltip-panel::before { display: none; }
+  .ar-stats > span { font-size: 0.75rem; padding: 0.18rem 0.5rem; }
   /* 2.25rem of card padding either side is a quarter of a 375px screen. */
   .ar-content { padding: 0.75rem 0.5rem 1.25rem; }
   .ar-card { padding: 1.1rem 1rem 1.25rem; border-radius: 10px; }
@@ -270,6 +303,11 @@ tbody tr:hover td { background: var(--gray-50); }
   .ar-nav-label, .ar-count { display: none; }
   /* Keyboard shortcuts mean nothing on a phone. */
   .ar-hints { display: none; }
+}
+@media (max-width: 480px) {
+  /* The attempt number is the first thing to go on a phone — the student
+     just opened this attempt, and it's on the result screen underneath. */
+  .ar-attempt { display: none; }
 }
 
 /* ── Level lecture videos ── */
