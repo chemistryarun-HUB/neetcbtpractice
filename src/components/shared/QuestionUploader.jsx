@@ -1326,8 +1326,8 @@ export default function QuestionUploader({ uploadedBy }) {
                             }}>
                             {String.fromCharCode(64 + i)}
                           </button>
-                          <input className="form-control" required placeholder={`Option ${i}${isCorrect ? ' (correct)' : ''}`}
-                            style={{ flex: 1, border: 'none', background: 'transparent', boxShadow: 'none', padding: '0.15rem 0', fontSize: '0.9rem' }}
+                          <textarea className="form-control" rows={1} required placeholder={`Option ${i}${isCorrect ? ' (correct)' : ''}`}
+                            style={{ flex: 1, border: 'none', background: 'transparent', boxShadow: 'none', padding: '0.15rem 0', fontSize: '0.9rem', resize: 'vertical' }}
                             value={form[`option${i}`]}
                             onChange={e => setForm(f => ({ ...f, [`option${i}`]: e.target.value }))} />
                           <ImageField label="" file={form[`option${i}_image_file`]}

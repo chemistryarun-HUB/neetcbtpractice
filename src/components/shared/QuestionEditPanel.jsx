@@ -447,7 +447,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
                   onChange={() => setForm(f => ({ ...f, correct_option_key: key }))} />
                 Option {i}{isCorrect ? ' ✓ correct' : ''}
               </label>
-              <input className="form-control" style={{ fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none', padding: '0' }}
+              <textarea className="form-control" rows={2} style={{ fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none', padding: '0', resize: 'vertical' }}
                 value={form[key]}
                 onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
               <EditImageField
