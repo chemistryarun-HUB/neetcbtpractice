@@ -435,7 +435,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
       )}
 
       {/* Options */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.5rem', marginBottom: '0.75rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '0.5rem', marginBottom: '0.75rem' }}>
         {[1, 2, 3, 4].map(i => {
           const key = `option${i}`
           const imgKey = `option${i}_image`
