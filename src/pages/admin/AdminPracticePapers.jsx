@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Plus, ChevronDown, ChevronUp, Pencil, Upload } from 'lucide-react'
+import { Plus, ChevronDown, ChevronUp, Pencil, Upload, RefreshCw } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import AnswerGrid from '../../components/shared/AnswerGrid'
-import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions } from '../../lib/practicePapers'
+import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions, scorePaper } from '../../lib/practicePapers'
 
 const Q_HEADER_KEYS = ['q no', 'q.no', 'qno', 'question no', 'question number', 'q']
 const A_HEADER_KEYS = ['answer', 'ans', 'correct answer', 'key', 'correct option']
@@ -142,6 +142,7 @@ export default function AdminPracticePapers() {
   const [keyOpenId, setKeyOpenId] = useState(null) // which paper's Answer Key grid is expanded (collapsed by default — admin opens a paper mainly to see submissions)
   const [submissions, setSubmissions] = useState({}) // paperId -> rows
   const [savingKey, setSavingKey] = useState(false)
+  const [regradingId, setRegradingId] = useState(null) // paperId currently being re-graded
   const [editingId, setEditingId] = useState(null)
   const [editForm, setEditForm] = useState(BLANK_FORM)
   const [editSaving, setEditSaving] = useState(false)
@@ -227,6 +228,50 @@ export default function AdminPracticePapers() {
       .order('score', { ascending: false })
     if (error) { toast.error(error.message); return }
     setSubmissions(prev => ({ ...prev, [paperId]: data || [] }))
+  }
+
+  // Student scores are computed once at submission time and stored statically
+  // (see scorePaper in lib/practicePapers.js) — there's no live join against
+  // the key, so a key correction after students have already submitted does
+  // nothing to their stored marks on its own. This re-runs scorePaper for
+  // every existing submission against whatever the key currently says and
+  // overwrites the stored score fields, using each attempt's saved raw
+  // `responses` (nothing needs to be re-collected from students).
+  async function regradeAttempts(paper) {
+    await flushSave(paper.id) // make sure any in-flight key edit is saved first, or we'd regrade against a stale key
+    setRegradingId(paper.id)
+    try {
+      const { data: attempts, error } = await supabase
+        .from('practice_paper_attempts')
+        .select('id, responses, score, correct_count, wrong_count, skipped_count')
+        .eq('paper_id', paper.id)
+      if (error) throw error
+      if (!attempts.length) { toast('No submissions to re-grade yet.'); return }
+
+      const currentPaper = papers.find(p => p.id === paper.id) || paper
+      const changed = []
+      for (const a of attempts) {
+        const r = scorePaper(currentPaper, a.responses || {})
+        if (r.score !== a.score || r.correct !== a.correct_count || r.wrong !== a.wrong_count || r.skipped !== a.skipped_count) {
+          changed.push({ id: a.id, ...r })
+        }
+      }
+      if (!changed.length) { toast.success(`All ${attempts.length} submission(s) already match the current key.`); return }
+
+      for (const c of changed) {
+        const { error: uerr } = await supabase.from('practice_paper_attempts').update({
+          score: c.score, correct_count: c.correct, wrong_count: c.wrong, skipped_count: c.skipped,
+          subject_breakdown: c.subject_breakdown,
+        }).eq('id', c.id)
+        if (uerr) throw uerr
+      }
+      toast.success(`Re-graded ${changed.length} of ${attempts.length} submission(s) against the current key.`, { duration: 6000 })
+      loadSubmissions(paper.id)
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setRegradingId(null)
+    }
   }
 
   async function handleAddPaper(e) {
@@ -407,7 +452,18 @@ export default function AdminPracticePapers() {
 
                   {isOpen && editingId !== paper.id && (
                     <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid var(--gray-100)' }}>
-                      <h3 style={{ fontSize: '0.9rem', margin: '1rem 0 0.5rem' }}>Submissions</h3>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', margin: '1rem 0 0.5rem' }}>
+                        <h3 style={{ fontSize: '0.9rem', margin: 0 }}>Submissions</h3>
+                        {rows.length > 0 && (
+                          <button className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                            disabled={regradingId === paper.id}
+                            title="Re-score every existing submission against the current answer key — use this after fixing a wrong key"
+                            onClick={() => regradeAttempts(paper)}>
+                            <RefreshCw size={14} />
+                            {regradingId === paper.id ? 'Re-grading…' : 'Regrade Submissions'}
+                          </button>
+                        )}
+                      </div>
                       {rows.length === 0 ? (
                         <div className="empty-state">No student submissions yet</div>
                       ) : (
