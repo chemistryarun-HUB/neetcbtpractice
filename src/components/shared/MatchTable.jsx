@@ -10,8 +10,8 @@ export default function MatchTable({ q }) {
   return (
     <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)', margin: '0.75rem 0' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
-        <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
-        <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>COLUMN B</div>
+        <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>LIST-I</div>
+        <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>LIST-II</div>
       </div>
       {/* Driven by the rows mtcColumns() actually returns, never a fixed count:
           it already trims trailing empties, so a 3-item question shows three

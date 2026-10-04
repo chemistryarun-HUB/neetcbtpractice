@@ -303,7 +303,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         </select>
         {form.question_type === 'Match the Column' && q.question_type !== 'Match the Column' && (
           <div style={{ marginTop: '0.35rem', fontSize: '0.7rem', color: '#92400e', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 4, padding: '0.35rem 0.5rem' }}>
-            Converting to Match the Column. Fill the Column A / Column B rows below — the answer options stay exactly as they are.
+            Converting to Match the Column. Fill the List-I / List-II rows below — the answer options stay exactly as they are.
           </div>
         )}
       </div>
@@ -341,7 +341,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               onClick={() => {
                 const r = parseMtcFromText(form.question)
                 if (!r.colA.length && !r.colB.length) {
-                  toast.error('Could not find a Column I / Column II list in the question text — fill the rows in by hand.', { duration: 6000 })
+                  toast.error('Could not find a List-I / List-II list in the question text — fill the rows in by hand.', { duration: 6000 })
                   return
                 }
                 setForm(f => {
@@ -363,11 +363,11 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               ⤓ Fill rows from question text
             </button>
             <span style={{ fontSize: '0.7rem', color: 'var(--gray-500)' }}>
-              Reads the Column I / Column II list above into these boxes. Nothing saves until you press Save.
+              Reads the List-I / List-II list above into these boxes. Nothing saves until you press Save.
             </span>
           </div>
           {/* Label scheme, per column. Source books don't agree on one — some
-              number Column A with roman numerals and letter Column B, some the
+              number List-I with roman numerals and letter List-II, some the
               reverse, some plain numbers throughout — and the table used to
               always print 1-6 / p-u regardless, disagreeing with the question's
               own answer options ("A-I, B-II…") on anything that wasn't already
@@ -376,7 +376,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               switching schemes can't move an answer or touch correct_option. */}
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: '0.5rem 0.75rem', background: '#f8faff', borderBottom: '1px solid var(--gray-200)' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6' }}>
-              Column A labels
+              List-I labels
               <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.2rem 0.4rem', width: 'auto' }}
                 value={form.mtc_label_a}
                 onChange={e => setForm(f => ({ ...f, mtc_label_a: e.target.value }))}>
@@ -384,7 +384,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               </select>
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: '#16a34a' }}>
-              Column B labels
+              List-II labels
               <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.2rem 0.4rem', width: 'auto' }}
                 value={form.mtc_label_b}
                 onChange={e => setForm(f => ({ ...f, mtc_label_b: e.target.value }))}>
@@ -396,8 +396,8 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
             </span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
-            <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
-            <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>COLUMN B</div>
+            <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>LIST-I</div>
+            <div style={{ padding: '0.4rem 0.75rem', fontWeight: 700, color: '#fff', fontSize: '0.75rem' }}>LIST-II</div>
           </div>
           {MTC_ROW_NUMS.map(i => (
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--gray-150, #e8ecf0)', background: '#fff' }}>

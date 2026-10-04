@@ -1420,8 +1420,8 @@ export default function QuestionUploader({ uploadedBy }) {
                 {/* Match table */}
                 <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', border: '1.5px solid var(--gray-200)' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--gray-700, #374151)' }}>
-                    <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>COLUMN A</div>
-                    <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>COLUMN B</div>
+                    <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem', borderRight: '1px solid rgba(255,255,255,0.15)' }}>LIST-I</div>
+                    <div style={{ padding: '0.5rem 0.875rem', fontWeight: 700, color: '#fff', fontSize: '0.8125rem' }}>LIST-II</div>
                   </div>
                   {MTC_ROW_NUMS.map(i => {
                     const bLabel = MTC_LABELS_B[i - 1]
