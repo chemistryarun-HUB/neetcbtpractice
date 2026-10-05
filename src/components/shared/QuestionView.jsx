@@ -99,7 +99,7 @@ export default function QuestionView({ q, mode = 'student', size = 'full', optio
                 color: tone ? '#fff' : 'var(--gray-600)',
                 border: `1.5px solid ${tone ? tone.solid : 'var(--gray-300)'}`,
               }}>
-                {String.fromCharCode(65 + i)}
+                {i + 1}
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
                 {opt.text && <span style={{ whiteSpace: 'pre-wrap' }}>{opt.text}</span>}

@@ -301,8 +301,8 @@ export default function TestPage() {
       if (e.key === 'ArrowRight') { e.preventDefault(); goNext() }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() }
       else if (e.key === 'Backspace') { setAnswers(a => { const n = { ...a }; delete n[q.id]; return n }) }
-      else if (/^[a-dA-D]$/.test(e.key)) {
-        const opt = q.shuffledOptions[e.key.toUpperCase().charCodeAt(0) - 65]
+      else if (/^[1-4]$/.test(e.key)) {
+        const opt = q.shuffledOptions[Number(e.key) - 1]
         if (opt) setAnswers(a => ({ ...a, [q.id]: opt.key }))
       }
     }
@@ -423,7 +423,7 @@ export default function TestPage() {
 
       <div className="ar-hints">
         <span><kbd>←</kbd> <kbd>→</kbd> prev / next</span>
-        <span><kbd>A</kbd>–<kbd>D</kbd> choose option</span>
+        <span><kbd>1</kbd>–<kbd>4</kbd> choose option</span>
         <span><kbd>Backspace</kbd> clear</span>
       </div>
     </div>

@@ -133,7 +133,7 @@ export function analyseAnswerKeys({ attempts, questions }) {
     const labelOf = k => {
       const idx = opts.findIndex(o => o.key === k)
       const o = opts[idx]
-      return { letter: idx >= 0 ? String.fromCharCode(65 + idx) : '?', text: o?.text || '(image option)' }
+      return { letter: idx >= 0 ? String(idx + 1) : '?', text: o?.text || '(image option)' }
     }
 
     rows.push({
