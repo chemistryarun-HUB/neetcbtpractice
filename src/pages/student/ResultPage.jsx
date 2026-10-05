@@ -87,16 +87,25 @@ export default function ResultPage() {
       </header>
 
       <div className="page-content" style={{ maxWidth: '720px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ fontSize: '0.875rem', color: 'var(--gray-400)', marginBottom: '0.25rem' }}>
+        <div className="rp-hero">
+          <div className="rp-hero-label">
             {isChapterTestLevel(unitId, level) ? 'CCT' : `${levelBadge(unitId, level)}: ${levelInfo?.name}`} · Attempt #{attemptsForLevel}
           </div>
-          <div style={{ fontSize: '3rem', fontWeight: 900, color: score >= 0 ? 'var(--green)' : 'var(--red)', lineHeight: 1 }}>
-            {score}
+          <div className="rp-ring" style={{ '--p': Math.max(0, Math.min(100, pct)), '--c': score >= 0 ? (pct >= 60 ? '#16a34a' : '#d97706') : '#dc2626' }}>
+            <div className="rp-ring-inner">
+              <div className="rp-score">{score}</div>
+              <div className="rp-outof">out of {maxScore}</div>
+            </div>
           </div>
-          <div style={{ color: 'var(--gray-500)', marginTop: '0.25rem' }}>out of {maxScore} · {pct}% score</div>
-          <div style={{ color: 'var(--gray-400)', fontSize: '0.8125rem', marginTop: '0.25rem' }}>
-            Time: {mins}m {secs}s
+          <div className="rp-meta">
+            <span><strong>{pct}%</strong> score</span>
+            <span><strong>{totalQ ? Math.round((correct / totalQ) * 100) : 0}%</strong> correct</span>
+            <span><strong>{mins}m {secs}s</strong> time</span>
+          </div>
+          <div className="rp-bar" aria-hidden="true">
+            <span style={{ width: `${totalQ ? (correct / totalQ) * 100 : 0}%`, background: '#16a34a' }} />
+            <span style={{ width: `${totalQ ? (wrong / totalQ) * 100 : 0}%`, background: '#dc2626' }} />
+            <span style={{ width: `${totalQ ? (skipped / totalQ) * 100 : 0}%`, background: '#f59e0b' }} />
           </div>
         </div>
 
@@ -136,7 +145,7 @@ export default function ResultPage() {
           </div>
         </div>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <button className="btn btn-ghost btn-sm" style={{ color: 'var(--primary)', fontWeight: 700 }} onClick={() => setReview('all')}>
+          <button className="btn btn-primary" onClick={() => setReview('all')}>
             Review all {totalQ} questions →
           </button>
         </div>

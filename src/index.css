@@ -437,3 +437,20 @@ kbd {
 .perf-lb-student { display: flex; align-items: center; gap: 0.625rem; cursor: pointer; background: none; border: none; font: inherit; color: inherit; padding: 0; text-align: left; }
 .perf-lb-student:hover .perf-s-name, .perf-lb-student:hover span > span:first-child { text-decoration: underline; }
 .perf-you-tag { font-size: 0.625rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em; margin-left: 0.4rem; }
+
+/* Live test screen (TestPage) reuses the reviewer shell above */
+.test-run .tp-progress { flex: 0 0 auto; }
+.test-run .tp-timer { flex: 0 0 auto; font-size: 1.05rem; background: rgba(255,255,255,0.14); border-radius: 999px; padding: 0.2rem 0.8rem; }
+@media (max-width: 640px) { .test-run .tp-timer { font-size: 0.9rem; padding: 0.15rem 0.55rem; } }
+
+/* Result page hero */
+.rp-hero { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; box-shadow: var(--shadow); padding: 1.5rem 1.25rem 1.25rem; text-align: center; margin-bottom: 1.25rem; }
+.rp-hero-label { font-size: 0.875rem; color: var(--gray-500); font-weight: 600; margin-bottom: 1rem; }
+.rp-ring { --p: 0; --c: #16a34a; width: 150px; height: 150px; margin: 0 auto 1rem; border-radius: 50%; background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--gray-100) 0); display: grid; place-items: center; }
+.rp-ring-inner { width: 122px; height: 122px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.rp-score { font-size: 2.75rem; font-weight: 900; line-height: 1; color: var(--c, #16a34a); }
+.rp-outof { font-size: 0.75rem; color: var(--gray-400); margin-top: 0.2rem; }
+.rp-meta { display: flex; justify-content: center; gap: 0.5rem 1.5rem; flex-wrap: wrap; font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 1rem; }
+.rp-meta strong { color: var(--gray-800); font-size: 1rem; margin-right: 0.2rem; }
+.rp-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--gray-100); }
+.rp-bar span { display: block; height: 100%; }

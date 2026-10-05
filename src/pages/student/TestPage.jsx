@@ -5,9 +5,9 @@ import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
 import { correctOptionKey } from '../../lib/questionOptions'
 import { orderOptionsForAttempt } from '../../lib/optionShuffle'
-import { hasStructuredMtc } from '../../lib/mtc'
 import InfoTooltip from '../../components/shared/InfoTooltip'
-import MatchTable from '../../components/shared/MatchTable'
+import QuestionView from '../../components/shared/QuestionView'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 // Question ORDER still shuffles unconditionally — only option order needs the
@@ -36,6 +36,8 @@ export default function TestPage() {
   const [submitting, setSubmitting] = useState(false)
   const [attemptId, setAttemptId] = useState(null)
   const timerRef = useRef(null)
+  const contentRef = useRef(null)
+  const paletteRef = useRef(null)
 
   useEffect(() => {
     loadQuestions()
@@ -284,6 +286,30 @@ export default function TestPage() {
     if (currentIdx > 0) setCurrentIdx(i => i - 1)
   }
 
+  // Fresh question, fresh scroll; keep the current chip in view in the palette.
+  useEffect(() => {
+    if (contentRef.current) contentRef.current.scrollTop = 0
+    paletteRef.current?.querySelector('[data-current="true"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'center' })
+  }, [currentIdx])
+
+  useEffect(() => {
+    function onKey(e) {
+      if (loading || submitting || e.ctrlKey || e.metaKey || e.altKey) return
+      const q = questions[currentIdx]
+      if (!q) return
+      if (e.key === 'ArrowRight') { e.preventDefault(); goNext() }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() }
+      else if (e.key === 'Backspace') { setAnswers(a => { const n = { ...a }; delete n[q.id]; return n }) }
+      else if (/^[a-dA-D]$/.test(e.key)) {
+        const opt = q.shuffledOptions[e.key.toUpperCase().charCodeAt(0) - 65]
+        if (opt) setAnswers(a => ({ ...a, [q.id]: opt.key }))
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
 
   const current = questions[currentIdx]
@@ -293,94 +319,112 @@ export default function TestPage() {
   const isLastQ = currentIdx === questions.length - 1
   const answeredCount = Object.keys(answers).length
 
+  const unanswered = questions.length - answeredCount
+
+  function confirmSubmit() {
+    if (unanswered > 0 && !window.confirm(`${unanswered} question${unanswered === 1 ? ' is' : 's are'} still unanswered (they score 0). Submit anyway?`)) return
+    handleSubmit()
+  }
+
+  // Same shell as the post-test review (AttemptReviewer): slim blue bar,
+  // one question card, palette + prev/next footer. Keeps the test and its
+  // review looking like one product.
   return (
-    <div className="test-layout">
-      <div className="test-header">
-        <div>
-          <div style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            {isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadge(unitNum, levelNum)}: ${levelInfo?.name}`}
-            <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
-          </div>
-          <div style={{ fontSize: '0.8rem', opacity: 0.8 }} className="q-counter">
-            Question {currentIdx + 1} of {questions.length} · {answeredCount} answered
-          </div>
+    <div className="attempt-reviewer test-run" role="main">
+      <div className="ar-header">
+        <div className="ar-title">
+          <span>{isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadge(unitNum, levelNum)}: ${levelInfo?.name}`}</span>
+          <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
         </div>
-        <div className="stopwatch">⏱ {mins}:{secs}</div>
+        <div className="ar-stats tp-progress">
+          <span><small>Answered</small> {answeredCount}<em>/{questions.length}</em></span>
+        </div>
+        <div className="stopwatch tp-timer">⏱ {mins}:{secs}</div>
       </div>
 
-      <div className="test-body">
-        {/* Question navigator */}
-        <div className="q-navigator">
-          {questions.map((_, i) => (
-            <button
-              key={i}
-              className={`q-nav-btn ${answers[questions[i].id] ? 'answered' : ''} ${i === currentIdx ? 'current' : ''}`}
-              onClick={() => setCurrentIdx(i)}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-
-        <div className="question-card">
-          <div className="question-text">
-            <span style={{ color: 'var(--gray-400)', marginRight: '0.5rem', fontSize: '0.875rem' }}>Q{currentIdx + 1}.</span>
-            <span style={{ whiteSpace: 'pre-wrap' }}>{current.question}</span>
-          </div>
-          {current.question_image && (
-            <div style={{ margin: '0.75rem 0' }}>
-              <img src={current.question_image} alt="Question" style={{ maxWidth: '100%', maxHeight: 280, borderRadius: 8, border: '1px solid var(--gray-200)' }} />
-            </div>
-          )}
-          {hasStructuredMtc(current) && <MatchTable q={current} />}
-
-          <ul className="options-list">
-            {current.shuffledOptions.map((opt, i) => (
-              <li
-                key={opt.key}
-                className={`option-item ${answers[current.id] === opt.key ? 'selected' : ''}`}
-                onClick={() => selectOption(opt.key)}
-              >
-                <div className="option-circle">{String.fromCharCode(65 + i)}</div>
-                <div>
-                  {opt.text && <span style={{ whiteSpace: 'pre-wrap' }}>{opt.text}</span>}
-                  {opt.image && <img src={opt.image} alt={`Option ${i + 1}`} style={{ maxWidth: '100%', maxHeight: 160, marginTop: opt.text ? '0.5rem' : 0, display: 'block', borderRadius: 6 }} />}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-          <button className="btn btn-ghost" onClick={goPrev} disabled={currentIdx === 0}>
-            ← Previous
-          </button>
-
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            {answers[current.id] && (
-              <button className="btn btn-ghost btn-sm" onClick={() => {
-                const a = { ...answers }
-                delete a[current.id]
-                setAnswers(a)
+      <div ref={contentRef} className="ar-content">
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <div className="ar-card">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{currentIdx + 1}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>of {questions.length}</span>
+              <span className="badge" style={{
+                marginLeft: 'auto', fontSize: '0.8rem', padding: '0.25rem 0.75rem',
+                background: answers[current.id] ? 'var(--primary-light)' : 'var(--gray-100)',
+                color: answers[current.id] ? 'var(--primary-dark)' : 'var(--gray-500)',
               }}>
-                Clear
-              </button>
-            )}
-            {!isLastQ ? (
-              <button className="btn btn-primary" onClick={goNext}>
-                Next →
-              </button>
-            ) : (
-              <button className="btn btn-success" onClick={handleSubmit} disabled={submitting}>
-                {submitting ? 'Submitting...' : '✓ Submit Test'}
-              </button>
-            )}
+                {answers[current.id] ? '✓ Answered' : 'Not answered'}
+              </span>
+            </div>
+
+            <QuestionView
+              q={current}
+              mode="attempt"
+              size="full"
+              options={current.shuffledOptions}
+              selectedKey={answers[current.id]}
+              onSelect={selectOption}
+            />
+          </div>
+          <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--gray-400)', textAlign: 'center' }}>
+            +4 for correct · −1 for wrong · 0 for skipped
           </div>
         </div>
+      </div>
 
-        <div style={{ marginTop: '1.5rem', fontSize: '0.8125rem', color: 'var(--gray-400)', textAlign: 'center' }}>
-          +4 for correct · −1 for wrong · 0 for skipped
+      <div className="ar-footer">
+        <button className="btn btn-ghost btn-sm" onClick={goPrev} disabled={currentIdx === 0}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Previous question">
+          <ChevronLeft size={16} /> <span className="ar-nav-label">Previous</span>
+        </button>
+
+        <div ref={paletteRef} className="ar-palette">
+          {questions.map((qq, i) => {
+            const isCur = i === currentIdx
+            const done = !!answers[qq.id]
+            return (
+              <button key={qq.id} data-current={isCur} onClick={() => setCurrentIdx(i)}
+                title={`Q${i + 1} · ${done ? 'answered' : 'not answered'}`}
+                className="ar-chip"
+                style={{
+                  background: isCur ? 'var(--primary)' : done ? 'var(--primary-light)' : '#fff',
+                  color: isCur ? '#fff' : done ? 'var(--primary-dark)' : 'var(--gray-600)',
+                  borderColor: isCur || done ? 'var(--primary)' : 'var(--gray-300)',
+                  boxShadow: isCur ? '0 0 0 2px #fff, 0 0 0 4px var(--primary)' : 'none',
+                }}>
+                {i + 1}
+              </button>
+            )
+          })}
         </div>
+
+        {answers[current.id] && (
+          <button className="btn btn-ghost btn-sm" style={{ flexShrink: 0 }} onClick={() => {
+            const a = { ...answers }
+            delete a[current.id]
+            setAnswers(a)
+          }}>
+            Clear
+          </button>
+        )}
+        <div className="ar-count">{currentIdx + 1} of {questions.length}</div>
+
+        {!isLastQ ? (
+          <button className="btn btn-primary btn-sm" onClick={goNext}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Next question">
+            <span className="ar-nav-label">Next</span> <ChevronRight size={16} />
+          </button>
+        ) : (
+          <button className="btn btn-success btn-sm" onClick={confirmSubmit} disabled={submitting} style={{ flexShrink: 0 }}>
+            {submitting ? 'Submitting...' : '✓ Submit'}
+          </button>
+        )}
+      </div>
+
+      <div className="ar-hints">
+        <span><kbd>←</kbd> <kbd>→</kbd> prev / next</span>
+        <span><kbd>A</kbd>–<kbd>D</kbd> choose option</span>
+        <span><kbd>Backspace</kbd> clear</span>
       </div>
     </div>
   )

@@ -8,7 +8,9 @@ import MatchTable from './MatchTable'
 // "Student Preview" really is what the student sees; three hand-maintained
 // copies of this markup had already drifted apart in spacing and image sizes.
 //
-//   mode  'student' — mirrors the test screen, answer NOT revealed
+//   mode  'attempt' — the live test screen: options are tappable, the picked
+//                     one (`selectedKey`) is highlighted blue, nothing revealed
+//         'student' — mirrors the test screen, answer NOT revealed
 //         'admin'   — same layout, correct option highlighted green
 //         'review'  — a submitted attempt read back: correct option green,
 //                     the student's pick marked (red when it was wrong)
@@ -18,7 +20,8 @@ import MatchTable from './MatchTable'
 // `options` overrides the authored option order — an attempt review passes
 // the order that student actually saw, so "I picked C" still points at C.
 // `isChosen(opt)` marks the student's own answer in 'review' mode.
-export default function QuestionView({ q, mode = 'student', size = 'full', options, isChosen }) {
+export default function QuestionView({ q, mode = 'student', size = 'full', options, isChosen, selectedKey, onSelect }) {
+  const attempt = mode === 'attempt'
   const full = size === 'full'
   const correctKey = correctOptionKey(q)
   const opts = options || optionEntries(q)
@@ -61,7 +64,10 @@ export default function QuestionView({ q, mode = 'student', size = 'full', optio
           const picked = mode === 'review' && !!isChosen?.(opt)
           const pickedWrong = picked && !isCorrect
           // green = the right answer, red = the student's wrong pick, else plain
-          const tone = isCorrect
+          const selected = attempt && opt.key === selectedKey
+          const tone = selected
+            ? { border: 'var(--primary)', bg: 'var(--primary-light)', fg: 'var(--primary-dark)', solid: 'var(--primary)' }
+            : isCorrect
             ? { border: '#86efac', bg: '#f0fdf4', fg: '#15803d', solid: '#16a34a' }
             : pickedWrong
               ? { border: '#fca5a5', bg: '#fef2f2', fg: '#b91c1c', solid: '#dc2626' }
@@ -74,9 +80,12 @@ export default function QuestionView({ q, mode = 'student', size = 'full', optio
             : (isCorrect ? '✓ Correct' : null)
           return (
             <li key={opt.key}
+              onClick={attempt ? () => onSelect?.(opt.key) : undefined}
+              role={attempt ? 'radio' : undefined}
+              aria-checked={attempt ? !!selected : undefined}
               style={{
                 display: 'flex', alignItems: 'flex-start', gap: '0.875rem', padding: S.optPad,
-                borderRadius: S.radius, fontSize: S.optFont, cursor: 'default',
+                borderRadius: S.radius, fontSize: S.optFont, cursor: attempt ? 'pointer' : 'default', transition: 'border-color .12s, background .12s',
                 border: `${tone ? 2 : 1.5}px solid ${tone ? tone.border : 'var(--gray-200)'}`,
                 background: tone ? tone.bg : '#fff',
                 color: tone ? tone.fg : 'var(--gray-800)',
