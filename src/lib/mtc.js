@@ -35,6 +35,8 @@ export const LABEL_SCHEMES = {
   // this feature and every already-converted question in the bank.
   // p..y is exactly 10 letters, so it reaches MTC_ROWS without wrapping past z.
   lower_pu:    { title: 'p, q, r…', labels: ['p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y'] },
+  // Capital P, Q, R, S… — the JEE/NEET printed-paper style for List-II.
+  upper_pu:    { title: 'P, Q, R…', labels: ['P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'] },
 }
 export const DEFAULT_LABEL_A = 'num'
 export const DEFAULT_LABEL_B = 'lower_pu'
