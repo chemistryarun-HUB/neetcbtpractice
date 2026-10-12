@@ -109,5 +109,5 @@ Run `migration_gseb_papers.sql`, then `migration_gseb_question_bank.sql`, once e
 6. **Paper Generator** (button on the GSEB Papers list): pick chapters, years and how many 1/2/3/4-mark questions,
    swap any question, then **Print / Save PDF** with an answer key at the end.
 
-Students get three tabs: **Year-wise papers** (Part A test + Part B with model answers), **Chapter-wise**
-(all board MCQs of a chapter as one test, Part B grouped by marks) and **Make my test** (chapters + length, random board MCQs).
+Students get two tabs: **Year-wise papers** (Part A test + Part B with model answers) and **Chapter-wise**
+(all board MCQs of a chapter as one test, Part B grouped by marks). The paper generator is for the teacher only.

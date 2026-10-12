@@ -12,7 +12,7 @@ import { paperTitle, paperTag, gradeGsebAttempt } from '../../lib/gseb'
 // in board order, options in printed order (no shuffling, so a student can
 // check against the paper and GSEB's key), a countdown that auto-submits at
 // zero, and no negative marking. Same shell as the NEET TestPage.
-// At /student/gseb/practice/:attemptId it runs a chapter-wise or custom test
+// At /student/gseb/practice/:attemptId it runs a chapter-wise test
 // instead: the attempt was created beforehand with its questions and time,
 // and each question shows which paper it came from.
 export default function GsebTestPage() {

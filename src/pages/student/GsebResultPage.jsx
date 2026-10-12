@@ -29,7 +29,7 @@ export default function GsebResultPage() {
       const { data: att } = await supabase.from('gseb_attempts').select('*')
         .eq('id', attemptId).eq('student_id', user.id).eq('submitted', true).single()
       if (!att) { navigate('/student/gseb', { replace: true }); return }
-      // Chapter-wise and custom tests have no paper_id; their questions carry
+      // Chapter-wise tests have no paper_id; their questions carry
       // their own paper so the review can say which year each came from.
       const [{ data: p }, { data: qs }] = await Promise.all([
         att.paper_id ? supabase.from('gseb_papers').select('*').eq('id', att.paper_id).single() : { data: null },

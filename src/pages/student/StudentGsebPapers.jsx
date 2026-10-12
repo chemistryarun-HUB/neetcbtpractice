@@ -5,12 +5,11 @@ import { LogOut, ArrowLeft, PlayCircle, FileText } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import { GSEB_SUBJECTS, GSEB_SESSION_LABELS, GSEB_MEDIUM_LABELS } from '../../lib/gseb'
-import { GsebChapterList, GsebCustomTest } from './GsebBankViews'
+import { GsebChapterList } from './GsebBankViews'
 
 const VIEWS = [
   { id: 'years', label: 'Year-wise papers' },
   { id: 'chapters', label: 'Chapter-wise' },
-  { id: 'custom', label: 'Make my test' },
 ]
 
 export default function StudentGsebPapers() {
@@ -98,8 +97,6 @@ export default function StudentGsebPapers() {
 
         {view === 'chapters' ? (
           <GsebChapterList subject={shownSubject} />
-        ) : view === 'custom' ? (
-          <GsebCustomTest subject={shownSubject} />
         ) : shown.length === 0 ? (
           <div className="empty-state">No papers for this subject yet.</div>
         ) : (

@@ -45,7 +45,7 @@ export function byYearThenNumber(a, b) {
 }
 
 /**
- * Creates a chapter-wise or custom MCQ attempt and returns its id; the test
+ * Creates a chapter-wise MCQ attempt and returns its id; the test
  * screen at /student/gseb/practice/:attemptId takes it from there.
  */
 export async function startGsebPractice({ studentId, subject, mode, title, questionIds, durationMin }) {

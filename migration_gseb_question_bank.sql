@@ -4,8 +4,7 @@
 --   * Part B (subjective) questions per paper, with marks, section and a
 --     model answer, tagged by chapter like the MCQs.
 --   * The paper's Part B choice rules ("answer any 8 of Q1-12").
---   * Chapter-wise and custom (student-built) MCQ tests, stored as
---     gseb_attempts with no paper_id.
+--   * Chapter-wise MCQ tests, stored as gseb_attempts with no paper_id.
 -- ============================================================
 
 create table if not exists gseb_subjective (
@@ -30,13 +29,11 @@ create index if not exists idx_gseb_questions_chapter on gseb_questions(chapter_
 -- [{ "section": "A", "from": 1, "to": 12, "attempt": 8, "marks": 2 }, …]
 alter table gseb_papers add column if not exists part_b_rules jsonb not null default '[]'::jsonb;
 
--- Chapter-wise / custom tests have no paper, so the attempt carries what the
+-- Chapter-wise tests have no paper, so the attempt carries what the
 -- test and result screens need on their own.
 alter table gseb_attempts add column if not exists subject text;
 alter table gseb_attempts add column if not exists title text;
 alter table gseb_attempts add column if not exists duration_min integer;
-alter table gseb_attempts drop constraint if exists gseb_attempts_mode_check;
-alter table gseb_attempts add constraint gseb_attempts_mode_check check (mode in ('full', 'chapter', 'custom'));
 
 -- Same open policy as the other GSEB tables (see migration_gseb_papers.sql).
 alter table gseb_subjective enable row level security;
