@@ -74,11 +74,6 @@ create table if not exists gseb_attempts (
 
 create index if not exists idx_gseb_attempts_student on gseb_attempts(student_id, started_at desc);
 
--- Which sections a student sees. Everyone existing stays NEET-only; the admin
--- turns on 'gseb' per student.
-alter table students
-  add column if not exists programs text[] not null default '{neet}';
-
 -- Same open policies as the rest of the schema (students use the anon role).
 -- Tighten together with the rest once student login moves off anon.
 alter table gseb_papers enable row level security;

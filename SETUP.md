@@ -102,4 +102,4 @@ Run `migration_gseb_papers.sql` once in the Supabase SQL Editor first.
    Columns: `Q No`, `Question`, `Option A`–`Option D`, `Answer` (A–D or 1–4), `Chapter No` (see the template's Chapters sheet), `Explanation` (optional).
    Re-uploading the same paper updates text/answers and keeps any images already attached.
 3. Attach formula/diagram images per question, fix answers or chapters inline.
-4. **Publish** once every question has text and an answer. Set **Key: Final** when GSEB releases the final key.
+4. **Publish** once every question has text and an answer. Every logged-in student can then see it. Set **Key: Final** when GSEB releases the final key.
