@@ -6,18 +6,21 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import QuestionView from '../../components/shared/QuestionView'
 import { optionEntries } from '../../lib/questionOptions'
-import { paperTitle, gradeGsebAttempt } from '../../lib/gseb'
+import { paperTitle, paperTag, gradeGsebAttempt } from '../../lib/gseb'
 
 // Full Part A of one GSEB board paper, sat like the real exam: every question
 // in board order, options in printed order (no shuffling, so a student can
 // check against the paper and GSEB's key), a countdown that auto-submits at
 // zero, and no negative marking. Same shell as the NEET TestPage.
+// At /student/gseb/practice/:attemptId it runs a chapter-wise or custom test
+// instead: the attempt was created beforehand with its questions and time,
+// and each question shows which paper it came from.
 export default function GsebTestPage() {
-  const { paperId } = useParams()
+  const { paperId, attemptId: practiceId } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const [paper, setPaper] = useState(null)
+  const [meta, setMeta] = useState(null) // { title, durationMin, practice }
   const [questions, setQuestions] = useState([])
   const [answers, setAnswers] = useState({})   // questionId -> 'option1'..'option4'
   const [marked, setMarked] = useState({})     // questionId -> true (mark for review)
@@ -37,8 +40,27 @@ export default function GsebTestPage() {
   answersRef.current = answers
 
   useEffect(() => {
+    async function resume() {
+      const { data: att } = await supabase.from('gseb_attempts').select('*')
+        .eq('id', practiceId).eq('student_id', user.id).single()
+      if (!att) throw new Error('This test was not found')
+      if (att.submitted) { navigate(`/student/gseb/result/${att.id}`, { replace: true }); return }
+      const { data: qs, error } = await supabase.from('gseb_questions')
+        .select('*, paper:gseb_papers(year, session)').in('id', att.question_ids)
+      if (error) throw error
+      const byId = Object.fromEntries(qs.map(q => [q.id, q]))
+      const ordered = att.question_ids.map(id => byId[id]).filter(Boolean)
+      if (!ordered.length) throw new Error('This test has no questions')
+      setMeta({ title: att.title, durationMin: att.duration_min, practice: true })
+      setQuestions(ordered)
+      setAttemptId(att.id)
+      setRemaining(att.duration_min * 60)
+      setLoading(false)
+    }
+
     async function start() {
       try {
+        if (practiceId) return await resume()
         const [{ data: p, error: pErr }, { data: qs, error: qErr }] = await Promise.all([
           supabase.from('gseb_papers').select('*').eq('id', paperId).eq('is_published', true).single(),
           supabase.from('gseb_questions').select('*').eq('paper_id', paperId).order('q_no'),
@@ -57,7 +79,7 @@ export default function GsebTestPage() {
         }).select().single()
         if (error) throw error
 
-        setPaper(p)
+        setMeta({ title: paperTitle(p), durationMin: p.duration_min, practice: false })
         setQuestions(qs)
         setAttemptId(attempt.id)
         setRemaining(p.duration_min * 60)
@@ -69,7 +91,7 @@ export default function GsebTestPage() {
     }
     start()
     return () => clearInterval(timerRef.current)
-  }, [paperId, user.id, navigate])
+  }, [paperId, practiceId, user.id, navigate])
 
   async function submit() {
     if (submittedRef.current) return
@@ -78,7 +100,7 @@ export default function GsebTestPage() {
     clearInterval(timerRef.current)
     try {
       const graded = gradeGsebAttempt(questions, answersRef.current)
-      const timeTaken = paper.duration_min * 60 - Math.max(remainingRef.current ?? 0, 0)
+      const timeTaken = meta.durationMin * 60 - Math.max(remainingRef.current ?? 0, 0)
       const { error } = await supabase.from('gseb_attempts').update({
         ...graded,
         time_taken: timeTaken,
@@ -161,7 +183,7 @@ export default function GsebTestPage() {
   return (
     <div className="attempt-reviewer test-run" role="main">
       <div className="ar-header">
-        <div className="ar-title"><span>{paperTitle(paper)}</span></div>
+        <div className="ar-title"><span>{meta.title}</span></div>
         <div className="ar-stats tp-progress">
           <span><small>Answered</small> {answeredCount}<em>/{questions.length}</em></span>
         </div>
@@ -172,8 +194,13 @@ export default function GsebTestPage() {
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <div className="ar-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{current.q_no}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{meta.practice ? currentIdx + 1 : current.q_no}</span>
               <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>of {questions.length}</span>
+              {meta.practice && current.paper && (
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', background: 'var(--gray-100)', borderRadius: 999, padding: '0.1rem 0.5rem' }}>
+                  GSEB {paperTag(current.paper)} · Q{current.q_no}
+                </span>
+              )}
               <button className="btn btn-ghost btn-sm" onClick={toggleMark}
                 style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: marked[current.id] ? '#b45309' : undefined }}>
                 <Flag size={14} /> {marked[current.id] ? 'Marked' : 'Mark for review'}
@@ -215,7 +242,7 @@ export default function GsebTestPage() {
             const flagged = !!marked[qq.id]
             return (
               <button key={qq.id} data-current={isCur} onClick={() => setCurrentIdx(i)}
-                title={`Q${qq.q_no} · ${done ? 'answered' : 'not answered'}${flagged ? ' · marked' : ''}`}
+                title={`Q${meta.practice ? i + 1 : qq.q_no} · ${done ? 'answered' : 'not answered'}${flagged ? ' · marked' : ''}`}
                 className="ar-chip"
                 style={{
                   background: isCur ? 'var(--primary)' : flagged ? '#fffbeb' : done ? 'var(--primary-light)' : '#fff',
@@ -223,7 +250,7 @@ export default function GsebTestPage() {
                   borderColor: isCur || done ? 'var(--primary)' : flagged ? '#fcd34d' : 'var(--gray-300)',
                   boxShadow: isCur ? '0 0 0 2px #fff, 0 0 0 4px var(--primary)' : 'none',
                 }}>
-                {qq.q_no}
+                {meta.practice ? i + 1 : qq.q_no}
               </button>
             )
           })}

@@ -455,3 +455,27 @@ kbd {
 .rp-meta strong { color: var(--gray-800); font-size: 1rem; margin-right: 0.2rem; }
 .rp-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--gray-100); }
 .rp-bar span { display: block; height: 100%; }
+
+/* GSEB paper generator: on-screen preview reads like the printed sheet */
+.gseb-print { background: #fff; color: #111; border: 1px solid var(--gray-200); border-radius: 8px; padding: 2rem 2.25rem; max-width: 860px; margin: 0 auto; font-size: 0.95rem; line-height: 1.5; }
+.gseb-print .gp-head { text-align: center; border-bottom: 2px solid #111; padding-bottom: 0.75rem; margin-bottom: 1rem; }
+.gseb-print .gp-title { font-size: 1.35rem; font-weight: 800; }
+.gseb-print .gp-meta { display: flex; justify-content: space-between; font-weight: 600; margin-top: 0.5rem; }
+.gseb-print .gp-section { font-weight: 800; margin: 1.25rem 0 0.5rem; padding: 0.3rem 0.5rem; background: #f3f4f6; }
+.gseb-print .gp-list { margin: 0; padding-left: 1.75rem; }
+.gseb-print .gp-list > li { margin-bottom: 0.85rem; break-inside: avoid; }
+.gseb-print .gp-q, .gseb-print .gp-key li { white-space: pre-wrap; }
+.gseb-print .gp-tag { font-size: 0.75rem; color: #555; white-space: nowrap; }
+.gseb-print .gp-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.15rem 1.5rem; margin-top: 0.25rem; }
+.gseb-print .gp-img { display: block; max-width: 100%; max-height: 260px; margin: 0.35rem 0; }
+.gseb-print .gp-swap { margin-left: 0.4rem; border: 1px solid var(--gray-300); background: #fff; border-radius: 6px; padding: 0.05rem 0.3rem; cursor: pointer; color: var(--gray-500); vertical-align: middle; }
+.gseb-print .gp-key { margin-top: 2rem; padding-top: 1rem; border-top: 2px dashed #999; }
+.gseb-print .gp-keygrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.25rem; margin-top: 0.5rem; font-weight: 600; }
+@media (max-width: 640px) { .gseb-print { padding: 1rem; } .gseb-print .gp-opts { grid-template-columns: 1fr; } }
+@media print {
+  .no-print { display: none !important; }
+  body, .dashboard { background: #fff !important; }
+  .page-content { padding: 0 !important; max-width: none !important; }
+  .gseb-print { border: none; padding: 0; max-width: none; }
+  .gseb-print .gp-key { break-before: page; border-top: none; }
+}

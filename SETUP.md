@@ -95,7 +95,7 @@ Students can always click "Practice More" even after unlocking.
 
 ## GSEB Std 12 Board Papers (Admin → GSEB Papers)
 
-Run `migration_gseb_papers.sql` once in the Supabase SQL Editor first.
+Run `migration_gseb_papers.sql`, then `migration_gseb_question_bank.sql`, once each in the Supabase SQL Editor first.
 
 1. **Add Paper**: subject, year, session, medium, set number and paper code (054 Physics, 052 Chemistry, 056 Biology, 050 Maths).
 2. Open the paper → **Download Template** → fill one row per MCQ → **Upload Excel**.
@@ -103,3 +103,11 @@ Run `migration_gseb_papers.sql` once in the Supabase SQL Editor first.
    Re-uploading the same paper updates text/answers and keeps any images already attached.
 3. Attach formula/diagram images per question, fix answers or chapters inline.
 4. **Publish** once every question has text and an answer. Every logged-in student can then see it. Set **Key: Final** when GSEB releases the final key.
+5. **Part B (subjective)** goes in the template's `Part B` sheet, uploaded with the same file:
+   `Section`, `Q No`, `Question`, `Marks`, `Chapter No`, `Model Answer` (optional), `Choice rule` (e.g. `Any 8 of Q1-12`, once per section).
+   Edit text, marks, chapter and model answers on the paper's **Part B** tab.
+6. **Paper Generator** (button on the GSEB Papers list): pick chapters, years and how many 1/2/3/4-mark questions,
+   swap any question, then **Print / Save PDF** with an answer key at the end.
+
+Students get three tabs: **Year-wise papers** (Part A test + Part B with model answers), **Chapter-wise**
+(all board MCQs of a chapter as one test, Part B grouped by marks) and **Make my test** (chapters + length, random board MCQs).
