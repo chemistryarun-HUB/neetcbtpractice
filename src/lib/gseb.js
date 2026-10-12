@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import { resolveCorrectOptionValue } from './questionOptions'
+import { resolveCorrectOptionValue, correctOptionKey } from './questionOptions'
 
 // GSEB Std 12 Science board papers (Part A MCQs). Separate from the NEET
 // level-wise bank — see migration_gseb_papers.sql for why.
@@ -156,4 +156,42 @@ export function publishProblems(paper, questions) {
   const empty = questions.filter(q => !q.question && !q.question_image).map(q => q.q_no)
   if (empty.length) problems.push(`Empty question text: Q${empty.slice(0, 10).join(', Q')}`)
   return problems
+}
+
+// Board Part A marking: 1 mark per correct answer, no negative marking.
+export const GSEB_MARKS_CORRECT = 1
+
+/**
+ * Grades a GSEB attempt. `responses` is { [questionId]: 'option1'..'option4' }.
+ * The returned `answers` payload uses the same shape as test_attempts.answers
+ * (responses + correct/wrong/skipped id lists), so lib/attemptGrading.js can
+ * read it back unchanged.
+ */
+export function gradeGsebAttempt(questions, responses) {
+  const correct_ids = [], wrong_ids = [], skipped_ids = []
+  for (const q of questions) {
+    const selected = responses[q.id]
+    if (!selected) skipped_ids.push(q.id)
+    else if (selected === correctOptionKey(q)) correct_ids.push(q.id)
+    else wrong_ids.push(q.id)
+  }
+  return {
+    answers: { responses, correct_ids, wrong_ids, skipped_ids },
+    correct_count: correct_ids.length,
+    wrong_count: wrong_ids.length,
+    skipped_count: skipped_ids.length,
+    score: correct_ids.length * GSEB_MARKS_CORRECT,
+  }
+}
+
+// { chapterNo|'none': { name, total, correct } } for the result screen.
+export function chapterBreakdown(subject, questions, statusOf) {
+  const out = {}
+  for (const q of questions) {
+    const k = q.chapter_no || 'none'
+    if (!out[k]) out[k] = { chapterNo: q.chapter_no || null, name: chapterName(subject, q.chapter_no) || 'Other', total: 0, correct: 0 }
+    out[k].total++
+    if (statusOf(q) === 'correct') out[k].correct++
+  }
+  return Object.values(out).sort((a, b) => (a.chapterNo ?? 999) - (b.chapterNo ?? 999))
 }

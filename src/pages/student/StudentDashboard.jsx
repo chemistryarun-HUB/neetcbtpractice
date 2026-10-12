@@ -297,6 +297,9 @@ export default function StudentDashboard() {
             <Link to="/student/practice-papers" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <FileText size={15} /> Practice Papers
             </Link>
+            <Link to="/student/gseb" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+              <FileText size={15} /> GSEB Board Papers
+            </Link>
             <button className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
               onClick={() => setTourOpen(true)}>
               <HelpCircle size={15} /> How levels work

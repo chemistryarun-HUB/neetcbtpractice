@@ -31,6 +31,9 @@ import ResultPage from './pages/student/ResultPage'
 import ChangePassword from './pages/student/ChangePassword'
 import StudentPerformance from './pages/student/StudentPerformance'
 import StudentPracticePapers from './pages/student/StudentPracticePapers'
+import StudentGsebPapers from './pages/student/StudentGsebPapers'
+import GsebTestPage from './pages/student/GsebTestPage'
+import GsebResultPage from './pages/student/GsebResultPage'
 
 import './index.css'
 
@@ -78,6 +81,9 @@ function AppRoutes() {
       <Route path="/student/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><ResultPage /></ProtectedRoute>} />
       <Route path="/student/performance" element={<ProtectedRoute allowedRoles={['student']}><StudentPerformance /></ProtectedRoute>} />
       <Route path="/student/practice-papers" element={<ProtectedRoute allowedRoles={['student']}><StudentPracticePapers /></ProtectedRoute>} />
+      <Route path="/student/gseb" element={<ProtectedRoute allowedRoles={['student']}><StudentGsebPapers /></ProtectedRoute>} />
+      <Route path="/student/gseb/test/:paperId" element={<ProtectedRoute allowedRoles={['student']}><GsebTestPage /></ProtectedRoute>} />
+      <Route path="/student/gseb/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><GsebResultPage /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
