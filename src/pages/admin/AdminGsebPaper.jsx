@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import * as XLSX from 'xlsx'
 import toast from 'react-hot-toast'
-import { ArrowLeft, Upload, Download, Pencil } from 'lucide-react'
+import { ArrowLeft, Upload, Download, Pencil, Images } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import QuestionView from '../../components/shared/QuestionView'
 import ImageButton from '../../components/shared/ImageButton'
@@ -131,6 +131,38 @@ export default function AdminGsebPaper() {
     await updateQuestion(q, { correct_option: resolveCorrectOptionValue(`option${n}`, texts) })
   }
 
+  // Many diagrams at once, matched to questions by file name: a name ending
+  // in A7 / _A7 goes on Part A Q7, B14 on Part B Q14 (e.g. p4_A19.png).
+  async function handleImages(e) {
+    const files = [...e.target.files]
+    e.target.value = ''
+    if (!files.length) return
+    setUploading(true)
+    let done = 0
+    const unmatched = []
+    for (const file of files) {
+      const m = file.name.match(/([AB])\s*(\d+)\.(png|jpe?g|webp|gif)$/i)
+      const part = m?.[1].toUpperCase()
+      const qNo = m ? Number(m[2]) : null
+      const target = part === 'A' ? questions.find(q => q.q_no === qNo) : part === 'B' ? subjective.find(q => q.q_no === qNo) : null
+      if (!target) { unmatched.push(file.name); continue }
+      try {
+        const url = await uploadQuestionImage(file)
+        const table = part === 'A' ? 'gseb_questions' : 'gseb_subjective'
+        const { error } = await supabase.from(table).update({ question_image: url }).eq('id', target.id)
+        if (error) throw error
+        done++
+      } catch (err) {
+        unmatched.push(`${file.name} (${err.message})`)
+      }
+    }
+    setUploading(false)
+    const parts = [`Attached ${done} image(s).`]
+    if (unmatched.length) parts.push(`Not attached: ${unmatched.slice(0, 5).join(', ')}${unmatched.length > 5 ? '…' : ''}. Name files like A7.png or B14.png.`)
+    toast[unmatched.length ? 'error' : 'success'](parts.join(' '), { duration: 10000 })
+    load()
+  }
+
   async function attachImage(q, field, file) {
     try {
       const url = await uploadQuestionImage(file)
@@ -210,6 +242,11 @@ export default function AdminGsebPaper() {
             <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
               <Upload size={15} /> {uploading ? 'Uploading…' : 'Upload Excel'}
               <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={handleFile} disabled={uploading} />
+            </label>
+            <label className="btn btn-ghost btn-sm" title="Select many images; A7.png goes on MCQ 7, B14.png on Part B Q14"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+              <Images size={15} /> Upload Diagrams
+              <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleImages} disabled={uploading} />
             </label>
             <select className="form-control" style={{ width: 'auto' }} value={paper.key_status}
               onChange={e => updatePaper({ key_status: e.target.value })}>

@@ -102,6 +102,9 @@ Run `migration_gseb_papers.sql`, then `migration_gseb_question_bank.sql`, once e
    Columns: `Q No`, `Question`, `Option A`–`Option D`, `Answer` (A–D or 1–4), `Chapter No` (see the template's Chapters sheet), `Explanation` (optional).
    Re-uploading the same paper updates text/answers and keeps any images already attached.
 3. Attach formula/diagram images per question, fix answers or chapters inline.
+   An Excel cell can't carry a picture into the app, so diagrams go separately: **Upload Diagrams**
+   takes many images at once and attaches each by its file name (`A19.png` or `p4_A19.png` → MCQ 19,
+   `B14.png` → Part B Q14). Upload the Excel first so the questions exist.
 4. **Publish** once every question has text and an answer. Every logged-in student can then see it. Set **Key: Final** when GSEB releases the final key.
 5. **Part B (subjective)** goes in the template's `Part B` sheet, uploaded with the same file:
    `Section`, `Q No`, `Question`, `Marks`, `Chapter No`, `Model Answer` (optional), `Choice rule` (e.g. `Any 8 of Q1-12`, once per section).
