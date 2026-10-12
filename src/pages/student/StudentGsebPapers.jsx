@@ -74,10 +74,10 @@ export default function StudentGsebPapers() {
           <ArrowLeft size={15} /> Back to Dashboard
         </Link>
         <div className="page-header">
-          <h2>GSEB Std 12 Board Papers</h2>
+          <h2>GSEB Std 12 Board Papers · Group B</h2>
         </div>
         <p className="text-muted" style={{ marginTop: '-0.5rem', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
-          Past Gujarat board papers. MCQ tests are timed like the real exam: 1 mark each, no negative marking.
+          Past Gujarat board papers for Physics, Chemistry and Biology. MCQ tests are timed like the real exam: 1 mark each, no negative marking.
         </p>
 
         <div className="tabs">

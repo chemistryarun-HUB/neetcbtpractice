@@ -4,13 +4,17 @@ import { resolveCorrectOptionValue, correctOptionKey } from './questionOptions'
 // GSEB Std 12 Science board papers (Part A MCQs). Separate from the NEET
 // level-wise bank — see migration_gseb_papers.sql for why.
 
-export const GSEB_SUBJECTS = [
-  { id: 'physics',   label: 'Physics',   paperCode: '054' },
-  { id: 'chemistry', label: 'Chemistry', paperCode: '052' },
-  { id: 'biology',   label: 'Biology',   paperCode: '056' },
-  { id: 'maths',     label: 'Maths',     paperCode: '050' },
+// Group B (Physics, Chemistry, Biology) is live. Maths (Group A) keeps its
+// chapters below but stays out of every tab and dropdown until it has papers:
+// flip `live` to bring it back.
+const ALL_GSEB_SUBJECTS = [
+  { id: 'physics',   label: 'Physics',   paperCode: '054', live: true },
+  { id: 'chemistry', label: 'Chemistry', paperCode: '052', live: true },
+  { id: 'biology',   label: 'Biology',   paperCode: '056', live: true },
+  { id: 'maths',     label: 'Maths',     paperCode: '050', live: false },
 ]
-export const GSEB_SUBJECT_LABELS = Object.fromEntries(GSEB_SUBJECTS.map(s => [s.id, s.label]))
+export const GSEB_SUBJECTS = ALL_GSEB_SUBJECTS.filter(s => s.live)
+export const GSEB_SUBJECT_LABELS = Object.fromEntries(ALL_GSEB_SUBJECTS.map(s => [s.id, s.label]))
 export const GSEB_MEDIUM_LABELS = { en: 'English', gu: 'Gujarati' }
 export const GSEB_SESSION_LABELS = { march: 'March', july: 'July (Supplementary)' }
 

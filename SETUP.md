@@ -97,7 +97,7 @@ Students can always click "Practice More" even after unlocking.
 
 Run `migration_gseb_papers.sql`, then `migration_gseb_question_bank.sql`, once each in the Supabase SQL Editor first.
 
-1. **Add Paper**: subject, year, session, medium, set number and paper code (054 Physics, 052 Chemistry, 056 Biology, 050 Maths).
+1. **Add Paper**: subject, year, session, medium, set number and paper code (054 Physics, 052 Chemistry, 056 Biology; Maths 050 is hidden until it has papers, see `live` in src/lib/gseb.js).
 2. Open the paper → **Download Template** → fill one row per MCQ → **Upload Excel**.
    Columns: `Q No`, `Question`, `Option A`–`Option D`, `Answer` (A–D or 1–4), `Chapter No` (see the template's Chapters sheet), `Explanation` (optional).
    Re-uploading the same paper updates text/answers and keeps any images already attached.
