@@ -1,13 +1,5 @@
 import { supabase } from './supabase'
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from './constants'
 import { clearSession } from './session'
-
-export async function loginAsAdmin(email, password) {
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-    throw new Error('Invalid admin credentials')
-  }
-  return { role: 'admin', email }
-}
 
 export async function loginAsStudent(rollNumber, password) {
   const { data, error } = await supabase

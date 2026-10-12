@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../lib/constants'
-import { loadSession, saveStudentSession, saveAdminSession, updateStoredStudent, clearSession } from '../lib/session'
+import { loadSession, saveStudentSession, updateStoredStudent, clearSession } from '../lib/session'
 
 const AuthContext = createContext(null)
 
@@ -10,16 +9,31 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)  // faculty supabase user or student object
   const [loading, setLoading] = useState(true)
 
+  // Admin and faculty both sign in through Supabase Auth; what tells them
+  // apart is a row in `admins` (see migration_admin_auth.sql). Checked first,
+  // so an admin is never mistaken for a faculty member who still needs setup.
+  async function resolveSupabaseUser(authUser) {
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('email')
+      .eq('user_id', authUser.id)
+      .maybeSingle()
+    if (admin) return { role: 'admin', user: { email: admin.email } }
+
+    const { data: faculty } = await supabase
+      .from('faculty')
+      .select('*')
+      .eq('user_id', authUser.id)
+      .single()
+    if (faculty) return { role: 'faculty', user: faculty }
+    return null
+  }
+
   useEffect(() => {
     // Restore session from storage — localStorage ("remember me") first, then
-    // the per-tab one. See lib/session.js.
+    // the per-tab one. See lib/session.js. Only students live there now;
+    // admin and faculty sessions are Supabase's own.
     const stored = loadSession()
-    if (stored?.role === 'admin') {
-      setRole('admin')
-      setUser({ email: ADMIN_EMAIL })
-      setLoading(false)
-      return
-    }
     if (stored?.role === 'student') {
       setRole('student')
       setUser(stored.student)
@@ -27,41 +41,32 @@ export function AuthProvider({ children }) {
       return
     }
 
-    // Check Supabase session for faculty
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check Supabase session for admin / faculty
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
-        supabase.from('faculty').select('*').eq('user_id', session.user.id).single()
-          .then(({ data: faculty }) => {
-            if (faculty) {
-              setRole('faculty')
-              setUser(faculty)
-            }
-            setLoading(false)
-          })
-      } else {
-        setLoading(false)
+        const resolved = await resolveSupabaseUser(session.user)
+        if (resolved) {
+          setRole(resolved.role)
+          setUser(resolved.user)
+        }
       }
+      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
-        const { data: faculty } = await supabase
-          .from('faculty')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single()
-
-        if (faculty) {
-          setRole('faculty')
-          setUser(faculty)
+        const resolved = await resolveSupabaseUser(session.user)
+        if (resolved) {
+          setRole(resolved.role)
+          setUser(resolved.user)
         } else {
           // New faculty — needs profile setup
           setRole('faculty_setup')
           setUser({ supabase_user: session.user })
         }
       } else {
-        // A Supabase sign-out must not knock out an admin/student session,
-        // which doesn't use Supabase auth at all.
+        // A Supabase sign-out must not knock out a student session, which
+        // doesn't use Supabase auth at all.
         if (!loadSession()) {
           setRole(null)
           setUser(null)
@@ -72,14 +77,23 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  function adminLogin(email, password, remember = true) {
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      saveAdminSession(remember)
-      setRole('admin')
-      setUser({ email: ADMIN_EMAIL })
-      return true
+  // Returns true only for a valid Supabase login that is also in `admins`.
+  // Anyone else who gets the password right is signed straight back out, so
+  // a faculty account can't wander into the admin portal through this form.
+  // The Supabase session persists across tabs on its own; logout ends it.
+  async function adminLogin(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    if (error || !data?.user) return false
+
+    const resolved = await resolveSupabaseUser(data.user)
+    if (resolved?.role !== 'admin') {
+      await supabase.auth.signOut()
+      return false
     }
-    return false
+    clearSession()
+    setRole('admin')
+    setUser(resolved.user)
+    return true
   }
 
   function studentLogin(student, remember = true) {
