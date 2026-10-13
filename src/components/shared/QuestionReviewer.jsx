@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
 import { deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { levelBadge } from '../../lib/constants'
@@ -26,6 +26,12 @@ function isTyping(target) {
  * onSaved) so the underlying list is updated in place. Nothing here triggers a
  * refetch, which is what keeps the admin's scroll position and place in the
  * level intact for the whole review session.
+ *
+ * The NEET bank uses it as is. GSEB board papers reuse the same screen with
+ * their own pieces passed in: idOf (the header label), numberOf (the palette
+ * chip, the printed Q No for a board paper), renderMeta (what sits
+ * after it), renderBody (the question card) and renderEdit (the edit form).
+ * Leaving onToggleActive out hides the Active toggle and its A key.
  */
 export default function QuestionReviewer({
   questions,
@@ -36,6 +42,11 @@ export default function QuestionReviewer({
   onTogglePublished,
   onSaved,
   startInEdit = false,
+  idOf = item => item.qid,
+  numberOf = (item, i) => i + 1,
+  renderMeta,
+  renderBody,
+  renderEdit,
 }) {
   const [mode, setMode] = useState('student')   // 'student' | 'admin'
   const [editing, setEditing] = useState(startInEdit)
@@ -94,7 +105,7 @@ export default function QuestionReviewer({
         case 'End':        e.preventDefault(); onIndexChange(total - 1); break
         case 'e': case 'E': e.preventDefault(); setEditing(v => !v); break
         case 'v': case 'V': e.preventDefault(); setMode(m => (m === 'student' ? 'admin' : 'student')); break
-        case 'a': case 'A': e.preventDefault(); onToggleActive(q); break
+        case 'a': case 'A': if (onToggleActive) { e.preventDefault(); onToggleActive(q) } break
         case 'p': case 'P': e.preventDefault(); if (onTogglePublished) onTogglePublished(q); break
         default: break
       }
@@ -125,7 +136,7 @@ export default function QuestionReviewer({
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
-          <code style={{ fontWeight: 700, fontSize: '0.9375rem', letterSpacing: '0.02em' }}>{q.qid}</code>
+          <code style={{ fontWeight: 700, fontSize: '0.9375rem', letterSpacing: '0.02em' }}>{idOf(q)}</code>
           {(q.content_locked || hasAnyFieldLock(q)) && <Lock size={13} style={{ opacity: 0.8 }} title={lockSummary(q)} />}
           {isInactive && (
             <span style={{ background: '#fee2e2', color: '#b91c1c', borderRadius: 4, padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>INACTIVE</span>
@@ -148,16 +159,18 @@ export default function QuestionReviewer({
             hit before (see report_level_number_adjacency memory) — so this
             keeps the "·" between them, same as it always separated unit from
             level here. */}
+        {renderMeta ? renderMeta(q) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flexShrink: 0 }}>
           <span>Unit {unitIdOf(q.unit)}</span>
           <span style={{ opacity: 0.5 }}>·</span>
           <span>{levelBadge(unitIdOf(q.unit), q.level)}</span>
           <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level) || q.topic}`} />
         </div>
+        )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
-          <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>{q.question_type}</span>
-          <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
+          {q.question_type && <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>{q.question_type}</span>}
+          {q.difficulty_level && <span className={`badge badge-${q.difficulty_level.toLowerCase()}`}>{q.difficulty_level}</span>}
           {mode === 'admin' && q.question_tag && (
             <span className="badge" style={{ background: 'rgba(255,255,255,0.18)', color: '#fff' }}>{q.question_tag}</span>
           )}
@@ -184,7 +197,7 @@ export default function QuestionReviewer({
           </div>
 
           {/* Active / Inactive toggle (A) */}
-          <button onClick={() => onToggleActive(q)}
+          {onToggleActive && <button onClick={() => onToggleActive(q)}
             title={isInactive ? 'Click to restore this question (A)' : 'Click to deactivate this question (A)'}
             style={{
               fontSize: '0.7rem', fontWeight: 700, padding: '0.3rem 0.6rem', borderRadius: 'var(--radius)', cursor: 'pointer',
@@ -193,7 +206,7 @@ export default function QuestionReviewer({
               border: `1.5px solid ${isInactive ? '#fca5a5' : '#86efac'}`,
             }}>
             {isInactive ? 'Inactive' : 'Active'}
-          </button>
+          </button>}
 
           {/* Publish (P). This screen is where a question actually gets checked,
               so it is where releasing it belongs — the level-wide button in the
@@ -229,13 +242,15 @@ export default function QuestionReviewer({
       <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem 2rem' }}>
         <div style={{ maxWidth: editing ? 1100 : 860, margin: '0 auto' }}>
           {editing ? (
-            <QuestionEditPanel
-              key={q.id}
-              q={q}
-              onSaved={row => { onSaved(row); setEditing(false) }}
-              onCancel={() => setEditing(false)}
-            />
-          ) : (
+            // Keyed by question so the form resets when ← / → moves on.
+            <Fragment key={q.id}>
+              {(renderEdit || (props => <QuestionEditPanel {...props} />))({
+                q,
+                onSaved: row => { onSaved(row); setEditing(false) },
+                onCancel: () => setEditing(false),
+              })}
+            </Fragment>
+          ) : renderBody ? renderBody(q, mode, index) : (
             <div style={{
               background: '#fff', borderRadius: 14, border: '1px solid var(--gray-200)',
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '2rem 2.25rem',
@@ -272,7 +287,7 @@ export default function QuestionReviewer({
             const inactive = item.is_active === false
             return (
               <button key={item.id} data-current={current} onClick={() => onIndexChange(i)}
-                title={`${item.qid} — ${(item.question || '').slice(0, 70)}`}
+                title={`${idOf(item)} — ${(item.question || '').slice(0, 70)}`}
                 style={{
                   flexShrink: 0, minWidth: 30, height: 28, padding: '0 0.35rem', borderRadius: 6,
                   fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
@@ -280,7 +295,7 @@ export default function QuestionReviewer({
                   background: current ? 'var(--primary)' : inactive ? '#fef2f2' : '#fff',
                   color: current ? '#fff' : inactive ? '#b91c1c' : 'var(--gray-600)',
                 }}>
-                {i + 1}
+                {numberOf(item, i)}
               </button>
             )
           })}
@@ -304,7 +319,7 @@ export default function QuestionReviewer({
         <span><kbd>←</kbd> <kbd>→</kbd> prev / next</span>
         <span><kbd>V</kbd> admin ↔ student</span>
         <span><kbd>E</kbd> edit</span>
-        <span><kbd>A</kbd> active / inactive</span>
+        {onToggleActive && <span><kbd>A</kbd> active / inactive</span>}
         {onTogglePublished && isPending && <span><kbd>P</kbd> publish</span>}
         <span><kbd>Home</kbd> <kbd>End</kbd> first / last</span>
         <span><kbd>Esc</kbd> back to list</span>
