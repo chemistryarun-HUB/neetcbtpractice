@@ -51,7 +51,7 @@ Set environment variables in Vercel dashboard:
 
 | Role    | How to login                      | Credentials                        |
 |---------|-----------------------------------|------------------------------------|
-| Admin   | /student/login?admin=1 (Admin btn)| admin@neetcbt.in / Admin@2025       |
+| Admin   | /student/login?admin=1 (Admin btn)| Supabase Auth user listed in `admins` (see `migration_admin_auth.sql`) |
 | Faculty | Google OAuth                      | Any Gmail (needs profile setup)    |
 | Student | Roll Number + Password            | Added by Faculty via Excel import  |
 

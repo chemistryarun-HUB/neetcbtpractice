@@ -1,6 +1,3 @@
-export const ADMIN_EMAIL = 'admin@neetcbt.in'
-export const ADMIN_PASSWORD = 'Admin@2025'
-
 export const NEET_CHEMISTRY_SYLLABUS = [
   {
     section: 'Physical Chemistry',

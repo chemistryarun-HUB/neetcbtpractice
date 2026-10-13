@@ -30,7 +30,7 @@ export default function StudentLoginPage() {
     setLoading(true)
     try {
       if (isAdmin) {
-        const ok = adminLogin(form.identifier, form.password, remember)
+        const ok = await adminLogin(form.identifier, form.password)
         if (!ok) throw new Error('Invalid admin credentials')
         // replace, not push — see the redirect above; this keeps the login page
         // out of history entirely so Back skips over it.
@@ -97,26 +97,31 @@ export default function StudentLoginPage() {
           {/* On by default: students reach this from a WhatsApp link, so almost
               every visit is a fresh tab, and staying signed in is what they
               expect. Unticking it keeps the session to this tab only — the
-              right choice on a borrowed or shared phone. */}
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1rem', cursor: 'pointer', fontSize: '0.9375rem', color: 'var(--gray-700)' }}>
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={e => setRemember(e.target.checked)}
-              style={{ width: '1.05rem', height: '1.05rem', cursor: 'pointer', accentColor: 'var(--primary)', flexShrink: 0 }}
-            />
-            Keep me signed in
-          </label>
+              right choice on a borrowed or shared phone. Hidden for admin,
+              whose Supabase session stays until Logout. */}
+          {!isAdmin && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1rem', cursor: 'pointer', fontSize: '0.9375rem', color: 'var(--gray-700)' }}>
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={e => setRemember(e.target.checked)}
+                style={{ width: '1.05rem', height: '1.05rem', cursor: 'pointer', accentColor: 'var(--primary)', flexShrink: 0 }}
+              />
+              Keep me signed in
+            </label>
+          )}
 
           <button className="btn btn-primary btn-lg" type="submit" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
 
-          <p style={{ margin: '0.6rem 0 0', fontSize: '0.75rem', color: 'var(--gray-500)', lineHeight: 1.5 }}>
-            {remember
-              ? 'You’ll stay signed in on this device for 30 days. Use Logout to sign out, especially on a shared phone.'
-              : 'You’ll be signed out as soon as you close this tab.'}
-          </p>
+          {!isAdmin && (
+            <p style={{ margin: '0.6rem 0 0', fontSize: '0.75rem', color: 'var(--gray-500)', lineHeight: 1.5 }}>
+              {remember
+                ? 'You’ll stay signed in on this device for 30 days. Use Logout to sign out, especially on a shared phone.'
+                : 'You’ll be signed out as soon as you close this tab.'}
+            </p>
+          )}
         </form>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>

@@ -59,15 +59,6 @@ export function saveStudentSession(student, remember) {
   } catch { /* storage unavailable; the session just won't outlive the page */ }
 }
 
-export function saveAdminSession(remember) {
-  clearSession()
-  const store = remember ? localStorage : sessionStorage
-  try {
-    store.setItem(ROLE_KEY, 'admin')
-    if (remember) store.setItem(EXPIRES_KEY, String(Date.now() + REMEMBER_DAYS * 864e5))
-  } catch { /* as above */ }
-}
-
 // Keeps the stored copy in step with an updated student row (e.g. after a
 // password change flips is_first_login) without caring which store holds it.
 export function updateStoredStudent(student) {
@@ -99,7 +90,10 @@ export function loadSession() {
 
     if (expires && Date.now() > Number(expires)) { clearSession(); return null }
 
-    if (role === 'admin') return { role: 'admin', student: null }
+    // Admin used to be a bare 'admin' flag stored here, which anyone could
+    // set by hand in devtools. Admin now rides on a Supabase Auth session
+    // (see hooks/useAuth.jsx), so a leftover flag is just cleared.
+    if (role === 'admin') { clearSession(); return null }
     if (role === 'student') {
       try {
         const student = JSON.parse(raw || 'null')
