@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import * as XLSX from 'xlsx'
 import toast from 'react-hot-toast'
-import { ArrowLeft, Upload, Download, ImagePlus, Pencil } from 'lucide-react'
+import { ArrowLeft, Upload, Download, Pencil, Images } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import QuestionView from '../../components/shared/QuestionView'
+import ImageButton from '../../components/shared/ImageButton'
+import AdminGsebPartB from './AdminGsebPartB'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -36,18 +38,12 @@ function downloadTemplate(paper) {
   const chapters = chaptersOf(paper.subject).map(c => ({ 'Chapter No': c.id, 'Chapter': c.name }))
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, ws, 'Questions')
+  // Part B: one row per printed question. "Choice rule" only needs filling on
+  // one row per section, e.g. "Any 8 of Q1-12".
+  const partB = [{ 'Section': 'A', 'Q No': 1, 'Question': '', 'Marks': 2, 'Chapter No': '', 'Model Answer': '', 'Choice rule': 'Any 8 of Q1-12' }]
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partB), 'Part B')
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(chapters), 'Chapters')
   XLSX.writeFile(wb, `GSEB_${paper.subject}_${paper.year}_${paper.medium}${paper.set_no ? `_set${paper.set_no}` : ''}.xlsx`)
-}
-
-function ImageButton({ label, onFile }) {
-  return (
-    <label className="btn btn-ghost btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
-      <ImagePlus size={14} /> {label}
-      <input type="file" accept="image/*" style={{ display: 'none' }}
-        onChange={e => { const f = e.target.files[0]; e.target.value = ''; if (f) onFile(f) }} />
-    </label>
-  )
 }
 
 export default function AdminGsebPaper() {
@@ -55,6 +51,8 @@ export default function AdminGsebPaper() {
   const navigate = useNavigate()
   const [paper, setPaper] = useState(null)
   const [questions, setQuestions] = useState([])
+  const [subjective, setSubjective] = useState([])
+  const [part, setPart] = useState('A')
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -64,13 +62,15 @@ export default function AdminGsebPaper() {
 
   async function load() {
     setLoading(true)
-    const [{ data: p, error }, { data: qs }] = await Promise.all([
+    const [{ data: p, error }, { data: qs }, { data: sub }] = await Promise.all([
       supabase.from('gseb_papers').select('*').eq('id', paperId).single(),
       supabase.from('gseb_questions').select('*').eq('paper_id', paperId).order('q_no'),
+      supabase.from('gseb_subjective').select('*').eq('paper_id', paperId).order('q_no'),
     ])
     if (error) toast.error(error.message)
     setPaper(p || null)
     setQuestions(qs || [])
+    setSubjective(sub || [])
     setLoading(false)
   }
 
@@ -99,20 +99,29 @@ export default function AdminGsebPaper() {
       toast.error('Could not read that file: ' + err.message)
       return
     }
-    if (parsed.questions.length === 0) {
-      toast.error('No questions found. The sheet needs "Q No" and "Question" columns — use Download Template.', { duration: 8000 })
+    const partB = parsed.partB
+    if (parsed.questions.length === 0 && partB.questions.length === 0) {
+      toast.error('No questions found. Part A needs "Q No", "Question" and "Option A" columns, Part B needs "Q No", "Question" and "Marks". Use Download Template.', { duration: 8000 })
       return
     }
-    if (questions.length && !window.confirm(`Overwrite the text, options, answer and chapter of ${parsed.questions.length} question(s) with this file? Images already attached are kept.`)) return
+    const existing = (parsed.questions.length && questions.length) || (partB.questions.length && subjective.length)
+    if (existing && !window.confirm(`Overwrite ${parsed.questions.length} MCQ(s) and ${partB.questions.length} Part B question(s) with this file? Images already attached are kept.`)) return
     setUploading(true)
     // Upsert on (paper_id, q_no): image columns are not in the payload, so a
     // re-upload to fix a typo never wipes images attached in this screen.
-    const { error } = await supabase.from('gseb_questions')
-      .upsert(parsed.questions.map(q => ({ ...q, paper_id: paper.id })), { onConflict: 'paper_id,q_no' })
+    const results = await Promise.all([
+      parsed.questions.length && supabase.from('gseb_questions')
+        .upsert(parsed.questions.map(q => ({ ...q, paper_id: paper.id })), { onConflict: 'paper_id,q_no' }),
+      partB.questions.length && supabase.from('gseb_subjective')
+        .upsert(partB.questions.map(q => ({ ...q, paper_id: paper.id })), { onConflict: 'paper_id,q_no' }),
+      partB.questions.length && supabase.from('gseb_papers').update({ part_b_rules: partB.rules }).eq('id', paper.id),
+    ])
     setUploading(false)
-    if (error) { toast.error(error.message); return }
-    const parts = [`Saved ${parsed.questions.length} question(s).`]
-    if (parsed.skipped.length) parts.push(`Skipped ${parsed.skipped.length}: ${parsed.skipped.slice(0, 4).join('; ')}${parsed.skipped.length > 4 ? '…' : ''}`)
+    const failed = results.find(r => r && r.error)
+    if (failed) { toast.error(failed.error.message); return }
+    const parts = [`Saved ${parsed.questions.length} MCQ(s) and ${partB.questions.length} Part B question(s).`]
+    const skipped = [...parsed.skipped, ...partB.skipped]
+    if (skipped.length) parts.push(`Skipped ${skipped.length}: ${skipped.slice(0, 4).join('; ')}${skipped.length > 4 ? '…' : ''}`)
     toast.success(parts.join(' '), { duration: 8000 })
     load()
   }
@@ -120,6 +129,38 @@ export default function AdminGsebPaper() {
   async function setAnswer(q, n) {
     const texts = [q.option1, q.option2, q.option3, q.option4]
     await updateQuestion(q, { correct_option: resolveCorrectOptionValue(`option${n}`, texts) })
+  }
+
+  // Many diagrams at once, matched to questions by file name: a name ending
+  // in A7 / _A7 goes on Part A Q7, B14 on Part B Q14 (e.g. p4_A19.png).
+  async function handleImages(e) {
+    const files = [...e.target.files]
+    e.target.value = ''
+    if (!files.length) return
+    setUploading(true)
+    let done = 0
+    const unmatched = []
+    for (const file of files) {
+      const m = file.name.match(/([AB])\s*(\d+)\.(png|jpe?g|webp|gif)$/i)
+      const part = m?.[1].toUpperCase()
+      const qNo = m ? Number(m[2]) : null
+      const target = part === 'A' ? questions.find(q => q.q_no === qNo) : part === 'B' ? subjective.find(q => q.q_no === qNo) : null
+      if (!target) { unmatched.push(file.name); continue }
+      try {
+        const url = await uploadQuestionImage(file)
+        const table = part === 'A' ? 'gseb_questions' : 'gseb_subjective'
+        const { error } = await supabase.from(table).update({ question_image: url }).eq('id', target.id)
+        if (error) throw error
+        done++
+      } catch (err) {
+        unmatched.push(`${file.name} (${err.message})`)
+      }
+    }
+    setUploading(false)
+    const parts = [`Attached ${done} image(s).`]
+    if (unmatched.length) parts.push(`Not attached: ${unmatched.slice(0, 5).join(', ')}${unmatched.length > 5 ? '…' : ''}. Name files like A7.png or B14.png.`)
+    toast[unmatched.length ? 'error' : 'success'](parts.join(' '), { duration: 10000 })
+    load()
   }
 
   async function attachImage(q, field, file) {
@@ -190,7 +231,7 @@ export default function AdminGsebPaper() {
           <div>
             <h2 style={{ margin: 0 }}>{paperTitle(paper)}</h2>
             <div style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginTop: '0.25rem' }}>
-              {questions.length}/{paper.mcq_count} questions · {keyed} keyed · {paper.duration_min} min ·{' '}
+              {questions.length}/{paper.mcq_count} MCQs · {keyed} keyed · {subjective.length} Part B · {paper.duration_min} min ·{' '}
               <span className={`badge ${paper.is_published ? 'badge-green' : 'badge-locked'}`}>{paper.is_published ? 'Published' : 'Draft'}</span>
             </div>
           </div>
@@ -201,6 +242,11 @@ export default function AdminGsebPaper() {
             <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
               <Upload size={15} /> {uploading ? 'Uploading…' : 'Upload Excel'}
               <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={handleFile} disabled={uploading} />
+            </label>
+            <label className="btn btn-ghost btn-sm" title="Select many images; A7.png goes on MCQ 7, B14.png on Part B Q14"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+              <Images size={15} /> Upload Diagrams
+              <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleImages} disabled={uploading} />
             </label>
             <select className="form-control" style={{ width: 'auto' }} value={paper.key_status}
               onChange={e => updatePaper({ key_status: e.target.value })}>
@@ -220,7 +266,14 @@ export default function AdminGsebPaper() {
           </div>
         )}
 
-        {questions.length === 0 ? (
+        <div className="tabs">
+          <button className={`tab-btn ${part === 'A' ? 'active' : ''}`} onClick={() => setPart('A')}>Part A · MCQ ({questions.length})</button>
+          <button className={`tab-btn ${part === 'B' ? 'active' : ''}`} onClick={() => setPart('B')}>Part B · Subjective ({subjective.length})</button>
+        </div>
+
+        {part === 'B' ? (
+          <AdminGsebPartB paper={paper} questions={subjective} setQuestions={setSubjective} />
+        ) : questions.length === 0 ? (
           <div className="empty-state">
             No questions yet. Download the template, fill in the {paper.mcq_count} questions, then Upload Excel.
             Formulas and diagrams can be attached as images per question after uploading.

@@ -15,6 +15,7 @@ import AdminPerformance from './pages/admin/AdminPerformance'
 import AdminPracticePapers from './pages/admin/AdminPracticePapers'
 import AdminGsebPapers from './pages/admin/AdminGsebPapers'
 import AdminGsebPaper from './pages/admin/AdminGsebPaper'
+import AdminGsebGenerator from './pages/admin/AdminGsebGenerator'
 import AdminVideos from './pages/admin/AdminVideos'
 import AdminKeyChanges from './pages/admin/AdminKeyChanges'
 
@@ -34,6 +35,8 @@ import StudentPracticePapers from './pages/student/StudentPracticePapers'
 import StudentGsebPapers from './pages/student/StudentGsebPapers'
 import GsebTestPage from './pages/student/GsebTestPage'
 import GsebResultPage from './pages/student/GsebResultPage'
+import GsebPartBPage from './pages/student/GsebPartBPage'
+import GsebChapterPage from './pages/student/GsebChapterPage'
 
 import './index.css'
 
@@ -64,6 +67,7 @@ function AppRoutes() {
       <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />
       <Route path="/admin/practice-papers" element={<ProtectedRoute allowedRoles={['admin']}><AdminPracticePapers /></ProtectedRoute>} />
       <Route path="/admin/gseb" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPapers /></ProtectedRoute>} />
+      <Route path="/admin/gseb/generate" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebGenerator /></ProtectedRoute>} />
       <Route path="/admin/gseb/:paperId" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPaper /></ProtectedRoute>} />
       <Route path="/admin/videos" element={<ProtectedRoute allowedRoles={['admin']}><AdminVideos /></ProtectedRoute>} />
       <Route path="/admin/key-changes" element={<ProtectedRoute allowedRoles={['admin']}><AdminKeyChanges /></ProtectedRoute>} />
@@ -84,6 +88,9 @@ function AppRoutes() {
       <Route path="/student/gseb" element={<ProtectedRoute allowedRoles={['student']}><StudentGsebPapers /></ProtectedRoute>} />
       <Route path="/student/gseb/test/:paperId" element={<ProtectedRoute allowedRoles={['student']}><GsebTestPage /></ProtectedRoute>} />
       <Route path="/student/gseb/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><GsebResultPage /></ProtectedRoute>} />
+      <Route path="/student/gseb/practice/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><GsebTestPage /></ProtectedRoute>} />
+      <Route path="/student/gseb/paper/:paperId/part-b" element={<ProtectedRoute allowedRoles={['student']}><GsebPartBPage /></ProtectedRoute>} />
+      <Route path="/student/gseb/chapter/:subject/:chapterNo" element={<ProtectedRoute allowedRoles={['student']}><GsebChapterPage /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

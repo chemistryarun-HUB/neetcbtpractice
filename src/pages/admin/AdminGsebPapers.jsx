@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Plus } from 'lucide-react'
+import { Plus, Shuffle } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_SESSION_LABELS, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
@@ -80,10 +80,15 @@ export default function AdminGsebPapers() {
       <div className="page-content">
         <div className="page-header">
           <h2>GSEB Std 12 Board Papers</h2>
-          <button className="btn btn-primary btn-sm" onClick={() => setShowForm(s => !s)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-            <Plus size={15} /> Add Paper
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <Link to="/admin/gseb/generate" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Shuffle size={15} /> Paper Generator
+            </Link>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowForm(s => !s)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Plus size={15} /> Add Paper
+            </button>
+          </div>
         </div>
 
         {showForm && (

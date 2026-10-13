@@ -4,13 +4,17 @@ import { resolveCorrectOptionValue, correctOptionKey } from './questionOptions'
 // GSEB Std 12 Science board papers (Part A MCQs). Separate from the NEET
 // level-wise bank — see migration_gseb_papers.sql for why.
 
-export const GSEB_SUBJECTS = [
-  { id: 'physics',   label: 'Physics',   paperCode: '054' },
-  { id: 'chemistry', label: 'Chemistry', paperCode: '052' },
-  { id: 'biology',   label: 'Biology',   paperCode: '056' },
-  { id: 'maths',     label: 'Maths',     paperCode: '050' },
+// Group B (Physics, Chemistry, Biology) is live. Maths (Group A) keeps its
+// chapters below but stays out of every tab and dropdown until it has papers:
+// flip `live` to bring it back.
+const ALL_GSEB_SUBJECTS = [
+  { id: 'physics',   label: 'Physics',   paperCode: '054', live: true },
+  { id: 'chemistry', label: 'Chemistry', paperCode: '052', live: true },
+  { id: 'biology',   label: 'Biology',   paperCode: '056', live: true },
+  { id: 'maths',     label: 'Maths',     paperCode: '050', live: false },
 ]
-export const GSEB_SUBJECT_LABELS = Object.fromEntries(GSEB_SUBJECTS.map(s => [s.id, s.label]))
+export const GSEB_SUBJECTS = ALL_GSEB_SUBJECTS.filter(s => s.live)
+export const GSEB_SUBJECT_LABELS = Object.fromEntries(ALL_GSEB_SUBJECTS.map(s => [s.id, s.label]))
 export const GSEB_MEDIUM_LABELS = { en: 'English', gu: 'Gujarati' }
 export const GSEB_SESSION_LABELS = { march: 'March', july: 'July (Supplementary)' }
 
@@ -76,6 +80,32 @@ const HEADERS = {
   explanation: ['explanation', 'solution'],
 }
 
+const PART_B_HEADERS = {
+  q_no: HEADERS.q_no,
+  question: HEADERS.question,
+  section: ['section', 'sec'],
+  marks: ['marks', 'mark'],
+  chapter_no: HEADERS.chapter_no,
+  answer: ['model answer', 'answer', 'solution'],
+  rule: ['choice rule', 'choice', 'rule'],
+}
+
+// Finds the first sheet whose header row has every one of `required`.
+function sheetRows(wb, required) {
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: '' })
+    const keys = rows[0] ? Object.keys(rows[0]).map(k => k.trim().toLowerCase()) : []
+    if (required.every(alts => alts.some(k => keys.includes(k)))) return rows
+  }
+  return []
+}
+
+function normalise(row) {
+  const norm = {}
+  for (const [k, v] of Object.entries(row)) norm[k.trim().toLowerCase()] = v
+  return norm
+}
+
 function pick(norm, keys) {
   for (const k of keys) {
     const v = norm[k]
@@ -95,29 +125,21 @@ export function parseAnswer(raw) {
 }
 
 /**
- * Reads one paper's questions from an Excel/CSV workbook — the first sheet
- * that has "Q No" and "Question" headers (so a leading instructions sheet is
- * fine). Returns rows ready to upsert into gseb_questions (minus paper_id)
- * and a list of rows that were skipped, with the reason.
+ * Reads one paper from an Excel/CSV workbook. Part A comes from the first
+ * sheet with "Q No", "Question" and option columns (so a leading instructions
+ * sheet is fine); Part B, if present, from the first sheet with "Q No",
+ * "Question" and "Marks". Returns rows ready to upsert (minus paper_id) and
+ * the rows that were skipped, with the reason.
  */
 export function parseGsebQuestionsFile(arrayBuffer, mcqCount) {
   const wb = XLSX.read(arrayBuffer, { type: 'array' })
-  let rows = []
-  for (const name of wb.SheetNames) {
-    const candidate = XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: '' })
-    const keys = candidate[0] ? Object.keys(candidate[0]).map(k => k.trim().toLowerCase()) : []
-    if (HEADERS.q_no.some(k => keys.includes(k)) && HEADERS.question.some(k => keys.includes(k))) {
-      rows = candidate
-      break
-    }
-  }
+  const rows = sheetRows(wb, [HEADERS.q_no, HEADERS.question, HEADERS.option1])
 
   const questions = []
   const skipped = []
   const seen = new Set()
   for (const row of rows) {
-    const norm = {}
-    for (const [k, v] of Object.entries(row)) norm[k.trim().toLowerCase()] = v
+    const norm = normalise(row)
     const qRaw = pick(norm, HEADERS.q_no)
     if (!qRaw) continue // blank row
     const qNo = parseInt(qRaw, 10)
@@ -141,7 +163,64 @@ export function parseGsebQuestionsFile(arrayBuffer, mcqCount) {
     })
   }
   questions.sort((a, b) => a.q_no - b.q_no)
-  return { questions, skipped, rowCount: rows.length }
+  return { questions, skipped, rowCount: rows.length, partB: parsePartB(wb) }
+}
+
+function parsePartB(wb) {
+  const rows = sheetRows(wb, [PART_B_HEADERS.q_no, PART_B_HEADERS.question, PART_B_HEADERS.marks])
+  const questions = []
+  const skipped = []
+  const seen = new Set()
+  const ruleText = {}
+  for (const row of rows) {
+    const norm = normalise(row)
+    const qRaw = pick(norm, PART_B_HEADERS.q_no)
+    if (!qRaw) continue
+    const qNo = parseInt(qRaw, 10)
+    const marks = parseInt(pick(norm, PART_B_HEADERS.marks), 10)
+    if (!qNo || qNo < 1) { skipped.push(`Part B Q${qRaw}: not a question number`); continue }
+    if (!marks || marks < 1) { skipped.push(`Part B Q${qNo}: marks missing`); continue }
+    if (seen.has(qNo)) { skipped.push(`Part B Q${qNo}: appears twice, kept the first`); continue }
+    seen.add(qNo)
+    const section = pick(norm, PART_B_HEADERS.section).replace(/^section\s*/i, '').toUpperCase()
+    const chapterRaw = parseInt(pick(norm, PART_B_HEADERS.chapter_no), 10)
+    const rule = pick(norm, PART_B_HEADERS.rule)
+    if (rule && !ruleText[section]) ruleText[section] = rule
+    questions.push({
+      q_no: qNo,
+      section,
+      marks,
+      question: pick(norm, PART_B_HEADERS.question),
+      answer: pick(norm, PART_B_HEADERS.answer) || null,
+      chapter_no: Number.isFinite(chapterRaw) && chapterRaw > 0 ? chapterRaw : null,
+    })
+  }
+  questions.sort((a, b) => a.q_no - b.q_no)
+  return { questions, skipped, rules: partBRules(questions, ruleText) }
+}
+
+// One rule per section: its question range, marks and how many to attempt.
+// "Any 8 of Q1–12" in the sheet's Choice rule column sets `attempt`;
+// without it every question in the section is compulsory.
+export function partBRules(questions, ruleText = {}) {
+  const bySection = {}
+  for (const q of questions) {
+    const r = bySection[q.section] ||= { section: q.section, from: q.q_no, to: q.q_no, count: 0, marks: q.marks }
+    r.from = Math.min(r.from, q.q_no)
+    r.to = Math.max(r.to, q.q_no)
+    r.count++
+  }
+  return Object.values(bySection).sort((a, b) => a.from - b.from).map(({ count, ...r }) => {
+    const any = String(ruleText[r.section] || '').match(/any\s+(\d+)/i)
+    return { ...r, attempt: any ? Math.min(Number(any[1]), count) : count }
+  })
+}
+
+// "Answer any 8 of Q1–12 (2 marks each)"
+export function ruleLabel(r) {
+  const total = r.to - r.from + 1
+  const which = r.attempt < total ? `Answer any ${r.attempt} of Q${r.from}–${r.to}` : `Answer all of Q${r.from}–${r.to}`
+  return `${which} (${r.marks} mark${r.marks === 1 ? '' : 's'} each)`
 }
 
 // What still blocks publishing a paper, as plain sentences. Empty = ready.
@@ -194,4 +273,59 @@ export function chapterBreakdown(subject, questions, statusOf) {
     if (statusOf(q) === 'correct') out[k].correct++
   }
   return Object.values(out).sort((a, b) => (a.chapterNo ?? 999) - (b.chapterNo ?? 999))
+}
+
+// "March 2026" tag shown next to a question pulled out of its paper.
+export function paperTag(p) {
+  if (!p) return ''
+  return `${GSEB_SESSION_LABELS[p.session]?.split(' ')[0] || ''} ${p.year}`.trim()
+}
+
+// Fisher–Yates on a copy; `n` caps the length.
+export function pickRandom(list, n = list.length) {
+  const a = [...list]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, n)
+}
+
+// Board pace: 60 minutes for 50 MCQs, rounded up, at least 5 minutes.
+export function minutesFor(mcqCount) {
+  return Math.max(5, Math.ceil(mcqCount * 1.2))
+}
+
+/**
+ * Picks questions for a custom paper. `spec` = { mcq: n, subjective: { [marks]: n } }.
+ * Spreads picks across chapters in turn so one big chapter can't crowd out the
+ * rest, then returns them sorted by chapter (the order a printed paper reads in).
+ * `short` lists what the pool could not fill, e.g. ['3-mark: 4 of 6'].
+ */
+export function buildCustomPaper(mcqPool, subjectivePool, spec) {
+  const short = []
+  const mcq = spreadAcrossChapters(mcqPool, spec.mcq || 0)
+  if (mcq.length < (spec.mcq || 0)) short.push(`MCQ: ${mcq.length} of ${spec.mcq}`)
+  const subjective = {}
+  for (const [marks, n] of Object.entries(spec.subjective || {})) {
+    if (!n) continue
+    const picked = spreadAcrossChapters(subjectivePool.filter(q => q.marks === Number(marks)), n)
+    if (picked.length < n) short.push(`${marks}-mark: ${picked.length} of ${n}`)
+    subjective[marks] = picked
+  }
+  return { mcq, subjective, short }
+}
+
+function spreadAcrossChapters(pool, n) {
+  const byChapter = {}
+  for (const q of pickRandom(pool)) (byChapter[q.chapter_no ?? 0] ||= []).push(q)
+  const queues = Object.values(byChapter)
+  const out = []
+  while (out.length < n && queues.some(qs => qs.length)) {
+    for (const qs of pickRandom(queues)) {
+      if (out.length >= n) break
+      if (qs.length) out.push(qs.shift())
+    }
+  }
+  return out.sort((a, b) => (a.chapter_no ?? 99) - (b.chapter_no ?? 99))
 }

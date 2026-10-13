@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { LogOut, ArrowLeft, PlayCircle } from 'lucide-react'
+import { LogOut, ArrowLeft, PlayCircle, FileText } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import { GSEB_SUBJECTS, GSEB_SESSION_LABELS, GSEB_MEDIUM_LABELS } from '../../lib/gseb'
+import { GsebChapterList } from './GsebBankViews'
+
+const VIEWS = [
+  { id: 'years', label: 'Year-wise papers' },
+  { id: 'chapters', label: 'Chapter-wise' },
+]
 
 export default function StudentGsebPapers() {
   const { user, logout } = useAuth()
@@ -12,12 +18,18 @@ export default function StudentGsebPapers() {
   const [papers, setPapers] = useState([])
   const [attempts, setAttempts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [subject, setSubject] = useState('physics')
+  const [params, setParams] = useSearchParams()
+  const view = VIEWS.some(v => v.id === params.get('view')) ? params.get('view') : 'years'
+  const subject = GSEB_SUBJECTS.some(s => s.id === params.get('subject')) ? params.get('subject') : null
+  // View and subject live in the URL so "back" from a test lands on the same tab.
+  function setParam(key, value) {
+    setParams(p => { const n = new URLSearchParams(p); n.set(key, value); return n }, { replace: true })
+  }
 
   useEffect(() => {
     async function load() {
       const [papersRes, attemptsRes] = await Promise.all([
-        supabase.from('gseb_papers').select('*').eq('is_published', true)
+        supabase.from('gseb_papers').select('*, gseb_subjective(count)').eq('is_published', true)
           .order('year', { ascending: false }).order('session').order('set_no'),
         supabase.from('gseb_attempts').select('id, paper_id, score, submitted_at')
           .eq('student_id', user.id).eq('submitted', true).order('submitted_at', { ascending: false }),
@@ -26,13 +38,13 @@ export default function StudentGsebPapers() {
       const list = papersRes.data || []
       setPapers(list)
       setAttempts(attemptsRes.data || [])
-      // Open on the first subject that actually has a paper.
-      const first = GSEB_SUBJECTS.find(s => list.some(p => p.subject === s.id))
-      if (first) setSubject(first.id)
       setLoading(false)
     }
     load()
   }, [user.id])
+
+  // Open on the first subject that actually has a paper.
+  const shownSubject = subject || GSEB_SUBJECTS.find(s => papers.some(p => p.subject === s.id))?.id || 'physics'
 
   async function handleLogout() {
     await logout()
@@ -41,7 +53,7 @@ export default function StudentGsebPapers() {
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
 
-  const shown = papers.filter(p => p.subject === subject)
+  const shown = papers.filter(p => p.subject === shownSubject)
   const attemptsByPaper = {}
   for (const a of attempts) (attemptsByPaper[a.paper_id] ||= []).push(a)
 
@@ -62,21 +74,30 @@ export default function StudentGsebPapers() {
           <ArrowLeft size={15} /> Back to Dashboard
         </Link>
         <div className="page-header">
-          <h2>GSEB Std 12 Board Papers</h2>
+          <h2>GSEB Std 12 Board Papers · Group B</h2>
         </div>
         <p className="text-muted" style={{ marginTop: '-0.5rem', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
-          Part A (MCQ) of past Gujarat board papers, timed like the real exam. 1 mark each, no negative marking.
+          Past Gujarat board papers for Physics, Chemistry and Biology. MCQ tests are timed like the real exam: 1 mark each, no negative marking.
         </p>
 
         <div className="tabs">
+          {VIEWS.map(v => (
+            <button key={v.id} className={`tab-btn ${view === v.id ? 'active' : ''}`} onClick={() => setParam('view', v.id)}>
+              {v.label}
+            </button>
+          ))}
+        </div>
+        <div className="tabs">
           {GSEB_SUBJECTS.map(s => (
-            <button key={s.id} className={`tab-btn ${subject === s.id ? 'active' : ''}`} onClick={() => setSubject(s.id)}>
+            <button key={s.id} className={`tab-btn ${shownSubject === s.id ? 'active' : ''}`} onClick={() => setParam('subject', s.id)}>
               {s.label}
             </button>
           ))}
         </div>
 
-        {shown.length === 0 ? (
+        {view === 'chapters' ? (
+          <GsebChapterList subject={shownSubject} />
+        ) : shown.length === 0 ? (
           <div className="empty-state">No papers for this subject yet.</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
@@ -107,6 +128,11 @@ export default function StudentGsebPapers() {
                     </button>
                     {mine[0] && (
                       <Link to={`/student/gseb/result/${mine[0].id}`} className="btn btn-ghost btn-sm">Last result</Link>
+                    )}
+                    {p.gseb_subjective?.[0]?.count > 0 && (
+                      <Link to={`/student/gseb/paper/${p.id}/part-b`} className="btn btn-ghost btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <FileText size={14} /> Part B
+                      </Link>
                     )}
                   </div>
                 </div>
