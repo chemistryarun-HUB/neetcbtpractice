@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Plus, Shuffle } from 'lucide-react'
+import { Plus, Shuffle, BarChart3 } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_SESSION_LABELS, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
@@ -80,7 +80,10 @@ export default function AdminGsebPapers() {
       <div className="page-content">
         <div className="page-header">
           <h2>GSEB Std 12 Board Papers</h2>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Link to="/admin/gseb/performance" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <BarChart3 size={15} /> Student Performance
+            </Link>
             <Link to="/admin/gseb/generate" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
               <Shuffle size={15} /> Paper Generator
             </Link>

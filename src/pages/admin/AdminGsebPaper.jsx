@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import * as XLSX from 'xlsx'
 import toast from 'react-hot-toast'
-import { ArrowLeft, Upload, Download, Images, Search, Maximize2, Image as ImageIcon } from 'lucide-react'
+import { ArrowLeft, Upload, Download, Images, Search, Maximize2, Image as ImageIcon, FileDown, Printer, X } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import QuestionView from '../../components/shared/QuestionView'
 import QuestionReviewer from '../../components/shared/QuestionReviewer'
 import { GsebMcqEditPanel, GsebSubjectiveEditPanel } from '../../components/shared/GsebEditPanels'
+import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
 import { correctOptionKey } from '../../lib/questionOptions'
-import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems, ruleLabel } from '../../lib/gseb'
+import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems, ruleLabel, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -64,6 +65,13 @@ export default function AdminGsebPaper() {
   // Same full-screen reviewer as the NEET question bank, walking whatever
   // the list is currently showing.
   const [reviewIndex, setReviewIndex] = useState(null)
+  // Ticked rows (Part A and Part B together) for "Download PDF", and the
+  // printable sheet built from them.
+  const [selected, setSelected] = useState(() => new Set())
+  const [sheet, setSheet] = useState(null) // { mcq, subjective } while the PDF view is open
+  const [sheetTitle, setSheetTitle] = useState('')
+  const [sheetKey, setSheetKey] = useState(true)
+  const [sheetQNo, setSheetQNo] = useState(true)
 
   useEffect(() => { load() }, [paperId])
 
@@ -206,12 +214,87 @@ export default function AdminGsebPaper() {
   const checkCount = rows.filter(q => needsCheck(q, part)).length
   const tag = q => `${part === 'A' ? 'Part A' : 'Part B'} · Q${q.q_no}`
 
+  const allVisibleTicked = visible.length > 0 && visible.every(q => selected.has(q.id))
+  function toggleRow(id) {
+    setSelected(prev => { const s = new Set(prev); if (s.has(id)) s.delete(id); else s.add(id); return s })
+  }
+  function toggleVisible() {
+    setSelected(prev => {
+      const s = new Set(prev)
+      visible.forEach(q => allVisibleTicked ? s.delete(q.id) : s.add(q.id))
+      return s
+    })
+  }
+  const pickedA = questions.filter(q => selected.has(q.id))
+  const pickedB = subjective.filter(q => selected.has(q.id))
+
+  // With nothing ticked, the PDF holds whatever the list is showing.
+  function openSheet() {
+    const mcq = selected.size ? pickedA : part === 'A' ? visible : []
+    const sub = selected.size ? pickedB : part === 'B' ? visible : []
+    setSheetTitle(`${GSEB_SUBJECT_LABELS[paper.subject]} · Selected questions`)
+    setSheet({ mcq, subjective: sub })
+    setReviewIndex(null)
+    window.scrollTo(0, 0)
+  }
+
   function changeTab(t) {
     setTab(t); setSearch(''); setChapterFilter(''); setStatusFilter('all'); setReviewIndex(null)
   }
 
   const cell = { fontSize: '0.8rem', color: 'var(--gray-500)' }
   const clip = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }
+
+  if (sheet) {
+    // Part B keeps the paper's own sections (A, B, C, D of Part B).
+    const sections = [...new Set(sheet.subjective.map(q => q.section || '-'))].sort()
+    const groups = sections.map(sec => {
+      const items = sheet.subjective.filter(q => (q.section || '-') === sec)
+      const marks = items.reduce((t, q) => t + (q.marks || 0), 0)
+      return { key: sec, label: `Part B · Section ${sec}`, heading: `Part B · Section ${sec} · Answer the following (${items.length} question${items.length === 1 ? '' : 's'}, ${marks} marks)`, items }
+    })
+    const totalMarks = sheet.mcq.length + sheet.subjective.reduce((t, q) => t + (q.marks || 0), 0)
+    const count = sheet.mcq.length + sheet.subjective.length
+    return (
+      <div className="dashboard">
+        <div className="no-print"><Topbar links={NAV} /></div>
+        <div className="page-content">
+          <div className="no-print">
+            <button className="back-btn" style={{ marginBottom: '0.75rem', display: 'inline-flex', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setSheet(null)}>
+              <ArrowLeft size={16} /> Back to questions
+            </button>
+            <div className="card card-body" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', fontSize: '0.8125rem', fontWeight: 600 }}>
+                Title on the PDF
+                <input className="form-control" value={sheetTitle} onChange={e => setSheetTitle(e.target.value)} style={{ width: 300 }} />
+              </label>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={sheetQNo} onChange={e => setSheetQNo(e.target.checked)} /> Show board Q no.
+              </label>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={sheetKey} onChange={e => setSheetKey(e.target.checked)} /> Answer key at the end
+              </label>
+              <button className="btn btn-primary" onClick={() => window.print()} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
+                <Printer size={16} /> Download PDF
+              </button>
+              <div style={{ flexBasis: '100%', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
+                {count} question{count === 1 ? '' : 's'}. In the print window choose <strong>Save as PDF</strong> as the printer.
+              </div>
+            </div>
+          </div>
+          <GsebPrintSheet
+            title={sheetTitle}
+            subtitle={`From ${paperTitle(paper)}`}
+            meta={[`Questions: ${count}`, `Total marks: ${totalMarks}`]}
+            mcq={sheet.mcq}
+            groups={groups}
+            withKey={sheetKey}
+            tag={q => sheetQNo ? <span className="gp-tag">[{sheet.mcq.includes(q) ? 'A' : 'B'}-Q{q.q_no}]</span> : null}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="dashboard">
@@ -356,7 +439,22 @@ export default function AdminGsebPaper() {
                     <Maximize2 size={14} /> Review {visible.length} full screen
                   </button>
                 )}
+                {visible.length > 0 && (
+                  <button className="btn btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
+                    onClick={openSheet} title={selected.size ? 'PDF of the ticked questions (Part A and Part B)' : 'Tick questions first, or get a PDF of everything listed'}>
+                    <FileDown size={14} /> {selected.size ? `PDF of ${selected.size} selected` : `PDF of ${visible.length} listed`}
+                  </button>
+                )}
               </div>
+              {selected.size > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: 'var(--primary-light)', borderRadius: 'var(--radius)', padding: '0.35rem 0.7rem', fontSize: '0.8125rem' }}>
+                  <strong>{selected.size} selected</strong>
+                  <span style={{ color: 'var(--gray-500)' }}>Part A: {pickedA.length} · Part B: {pickedB.length}. You can tick in both tabs, they go in one PDF.</span>
+                  <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', fontSize: '0.75rem', padding: '0.15rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }} onClick={() => setSelected(new Set())}>
+                    <X size={12} /> Clear
+                  </button>
+                </div>
+              )}
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 <select className="form-control" style={{ width: '280px', flex: '1 1 240px', maxWidth: '340px' }} value={chapterFilter} onChange={e => setChapterFilter(e.target.value)}>
                   <option value="">All Chapters</option>
@@ -383,6 +481,9 @@ export default function AdminGsebPaper() {
               <table>
                 <thead>
                   <tr>
+                    <th style={{ width: '36px' }} onClick={e => e.stopPropagation()}>
+                      <input type="checkbox" checked={allVisibleTicked} onChange={toggleVisible} title="Tick all listed" aria-label="Tick all listed" />
+                    </th>
                     <th style={{ width: '64px' }}>Q No</th>
                     {part === 'B' && <th style={{ width: '64px' }}>Section</th>}
                     {part === 'B' && <th style={{ width: '64px' }}>Marks</th>}
@@ -398,8 +499,11 @@ export default function AdminGsebPaper() {
                     const key = correctOptionKey(q)
                     const flag = needsCheck(q, part)
                     return (
-                      <tr key={q.id} style={{ cursor: 'pointer', background: flag ? '#fffbeb' : undefined }}
+                      <tr key={q.id} style={{ cursor: 'pointer', background: selected.has(q.id) ? 'var(--primary-light)' : flag ? '#fffbeb' : undefined }}
                         onClick={() => setReviewIndex(i)} title="Click to review full screen">
+                        <td onClick={e => e.stopPropagation()}>
+                          <input type="checkbox" checked={selected.has(q.id)} onChange={() => toggleRow(q.id)} aria-label={`Tick Q${q.q_no}`} />
+                        </td>
                         <td><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>Q{q.q_no}</code></td>
                         {part === 'B' && <td style={cell}>{q.section}</td>}
                         {part === 'B' && <td style={cell}>{q.marks}</td>}
