@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import * as XLSX from 'xlsx'
 import toast from 'react-hot-toast'
-import { ArrowLeft, Upload, Download, Pencil, Images } from 'lucide-react'
+import { ArrowLeft, Upload, Download, Images, Search, Maximize2, Image as ImageIcon, FileDown, Printer, X } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import QuestionView from '../../components/shared/QuestionView'
-import ImageButton from '../../components/shared/ImageButton'
-import AdminGsebPartB from './AdminGsebPartB'
+import QuestionReviewer from '../../components/shared/QuestionReviewer'
+import { GsebMcqEditPanel, GsebSubjectiveEditPanel } from '../../components/shared/GsebEditPanels'
+import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
-import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
-import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems } from '../../lib/gseb'
+import { correctOptionKey } from '../../lib/questionOptions'
+import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems, ruleLabel, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -25,7 +26,10 @@ const NAV = [
 ]
 
 const LETTERS = ['A', 'B', 'C', 'D']
-const TEXT_FIELDS = ['question', 'option1', 'option2', 'option3', 'option4', 'explanation']
+
+// Rows that still need the teacher: no answer key, or no chapter (which keeps
+// the question out of chapter-wise practice and the paper generator).
+const needsCheck = (q, part) => !q.chapter_no || (part === 'A' ? !correctOptionKey(q) : false)
 
 // Blank workbook with the exact headers parseGsebQuestionsFile() looks for,
 // pre-numbered 1..mcqCount so the typist only fills cells.
@@ -52,11 +56,22 @@ export default function AdminGsebPaper() {
   const [paper, setPaper] = useState(null)
   const [questions, setQuestions] = useState([])
   const [subjective, setSubjective] = useState([])
-  const [part, setPart] = useState('A')
+  const [tab, setTab] = useState('A')            // 'A' | 'B' | 'upload'
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
-  const [editingId, setEditingId] = useState(null)
-  const [editForm, setEditForm] = useState({})
+  const [search, setSearch] = useState('')
+  const [chapterFilter, setChapterFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'check' | 'image'
+  // Same full-screen reviewer as the NEET question bank, walking whatever
+  // the list is currently showing.
+  const [reviewIndex, setReviewIndex] = useState(null)
+  // Ticked rows (Part A and Part B together) for "Download PDF", and the
+  // printable sheet built from them.
+  const [selected, setSelected] = useState(() => new Set())
+  const [sheet, setSheet] = useState(null) // { mcq, subjective } while the PDF view is open
+  const [sheetTitle, setSheetTitle] = useState('')
+  const [sheetKey, setSheetKey] = useState(true)
+  const [sheetQNo, setSheetQNo] = useState(true)
 
   useEffect(() => { load() }, [paperId])
 
@@ -78,13 +93,6 @@ export default function AdminGsebPaper() {
     const { error } = await supabase.from('gseb_papers').update(fields).eq('id', paper.id)
     if (error) { toast.error(error.message); return false }
     setPaper(p => ({ ...p, ...fields }))
-    return true
-  }
-
-  async function updateQuestion(q, fields) {
-    const { error } = await supabase.from('gseb_questions').update(fields).eq('id', q.id)
-    if (error) { toast.error(error.message); return false }
-    setQuestions(prev => prev.map(x => x.id === q.id ? { ...x, ...fields } : x))
     return true
   }
 
@@ -126,11 +134,6 @@ export default function AdminGsebPaper() {
     load()
   }
 
-  async function setAnswer(q, n) {
-    const texts = [q.option1, q.option2, q.option3, q.option4]
-    await updateQuestion(q, { correct_option: resolveCorrectOptionValue(`option${n}`, texts) })
-  }
-
   // Many diagrams at once, matched to questions by file name: a name ending
   // in A7 / _A7 goes on Part A Q7, B14 on Part B Q14 (e.g. p4_A19.png).
   async function handleImages(e) {
@@ -163,30 +166,11 @@ export default function AdminGsebPaper() {
     load()
   }
 
-  async function attachImage(q, field, file) {
-    try {
-      const url = await uploadQuestionImage(file)
-      if (await updateQuestion(q, { [field]: url })) toast.success('Image attached')
-    } catch (err) {
-      toast.error(err.message)
-    }
-  }
-
-  function startEdit(q) {
-    setEditingId(q.id)
-    setEditForm(Object.fromEntries(TEXT_FIELDS.map(f => [f, q[f] || ''])))
-  }
-
-  async function saveEdit(q) {
-    // Keep the same option marked correct even if its text was just edited.
-    const key = correctOptionKey(q)
-    const texts = [editForm.option1, editForm.option2, editForm.option3, editForm.option4]
-    const fields = {
-      ...editForm,
-      explanation: editForm.explanation || null,
-      correct_option: key ? resolveCorrectOptionValue(key, texts) : '',
-    }
-    if (await updateQuestion(q, fields)) setEditingId(null)
+  // The reviewer hands back the saved row; patch it into the list in place
+  // so the admin keeps their place.
+  function patchRow(row) {
+    const set = tab === 'B' ? setSubjective : setQuestions
+    set(prev => prev.map(x => x.id === row.id ? row : x))
   }
 
   async function togglePublish() {
@@ -216,8 +200,101 @@ export default function AdminGsebPaper() {
   )
 
   const chapters = chaptersOf(paper.subject)
+  const chapterName = n => chapters.find(c => c.id === n)?.name
   const keyed = questions.filter(q => q.correct_option).length
   const problems = publishProblems(paper, questions)
+
+  const part = tab === 'B' ? 'B' : 'A'
+  const rows = part === 'A' ? questions : subjective
+  const term = search.trim().toLowerCase()
+  const visible = rows.filter(q =>
+    (!chapterFilter || String(q.chapter_no || '') === chapterFilter) &&
+    (statusFilter === 'all' || (statusFilter === 'check' ? needsCheck(q, part) : !!q.question_image)) &&
+    (!term || String(q.q_no) === term || (q.question || '').toLowerCase().includes(term)))
+  const checkCount = rows.filter(q => needsCheck(q, part)).length
+  const tag = q => `${part === 'A' ? 'Part A' : 'Part B'} · Q${q.q_no}`
+
+  const allVisibleTicked = visible.length > 0 && visible.every(q => selected.has(q.id))
+  function toggleRow(id) {
+    setSelected(prev => { const s = new Set(prev); if (s.has(id)) s.delete(id); else s.add(id); return s })
+  }
+  function toggleVisible() {
+    setSelected(prev => {
+      const s = new Set(prev)
+      visible.forEach(q => allVisibleTicked ? s.delete(q.id) : s.add(q.id))
+      return s
+    })
+  }
+  const pickedA = questions.filter(q => selected.has(q.id))
+  const pickedB = subjective.filter(q => selected.has(q.id))
+
+  // With nothing ticked, the PDF holds whatever the list is showing.
+  function openSheet() {
+    const mcq = selected.size ? pickedA : part === 'A' ? visible : []
+    const sub = selected.size ? pickedB : part === 'B' ? visible : []
+    setSheetTitle(`${GSEB_SUBJECT_LABELS[paper.subject]} · Selected questions`)
+    setSheet({ mcq, subjective: sub })
+    setReviewIndex(null)
+    window.scrollTo(0, 0)
+  }
+
+  function changeTab(t) {
+    setTab(t); setSearch(''); setChapterFilter(''); setStatusFilter('all'); setReviewIndex(null)
+  }
+
+  const cell = { fontSize: '0.8rem', color: 'var(--gray-500)' }
+  const clip = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }
+
+  if (sheet) {
+    // Part B keeps the paper's own sections (A, B, C, D of Part B).
+    const sections = [...new Set(sheet.subjective.map(q => q.section || '-'))].sort()
+    const groups = sections.map(sec => {
+      const items = sheet.subjective.filter(q => (q.section || '-') === sec)
+      const marks = items.reduce((t, q) => t + (q.marks || 0), 0)
+      return { key: sec, label: `Part B · Section ${sec}`, heading: `Part B · Section ${sec} · Answer the following (${items.length} question${items.length === 1 ? '' : 's'}, ${marks} marks)`, items }
+    })
+    const totalMarks = sheet.mcq.length + sheet.subjective.reduce((t, q) => t + (q.marks || 0), 0)
+    const count = sheet.mcq.length + sheet.subjective.length
+    return (
+      <div className="dashboard">
+        <div className="no-print"><Topbar links={NAV} /></div>
+        <div className="page-content">
+          <div className="no-print">
+            <button className="back-btn" style={{ marginBottom: '0.75rem', display: 'inline-flex', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setSheet(null)}>
+              <ArrowLeft size={16} /> Back to questions
+            </button>
+            <div className="card card-body" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', fontSize: '0.8125rem', fontWeight: 600 }}>
+                Title on the PDF
+                <input className="form-control" value={sheetTitle} onChange={e => setSheetTitle(e.target.value)} style={{ width: 300 }} />
+              </label>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={sheetQNo} onChange={e => setSheetQNo(e.target.checked)} /> Show board Q no.
+              </label>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={sheetKey} onChange={e => setSheetKey(e.target.checked)} /> Answer key at the end
+              </label>
+              <button className="btn btn-primary" onClick={() => window.print()} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
+                <Printer size={16} /> Download PDF
+              </button>
+              <div style={{ flexBasis: '100%', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
+                {count} question{count === 1 ? '' : 's'}. In the print window choose <strong>Save as PDF</strong> as the printer.
+              </div>
+            </div>
+          </div>
+          <GsebPrintSheet
+            title={sheetTitle}
+            subtitle={`From ${paperTitle(paper)}`}
+            meta={[`Questions: ${count}`, `Total marks: ${totalMarks}`]}
+            mcq={sheet.mcq}
+            groups={groups}
+            withKey={sheetKey}
+            tag={q => sheetQNo ? <span className="gp-tag">[{sheet.mcq.includes(q) ? 'A' : 'B'}-Q{q.q_no}]</span> : null}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="dashboard">
@@ -227,7 +304,7 @@ export default function AdminGsebPaper() {
           <ArrowLeft size={16} /> All GSEB papers
         </Link>
 
-        <div className="page-header" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div className="page-header" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
           <div>
             <h2 style={{ margin: 0 }}>{paperTitle(paper)}</h2>
             <div style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginTop: '0.25rem' }}>
@@ -236,18 +313,6 @@ export default function AdminGsebPaper() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-ghost btn-sm" onClick={() => downloadTemplate(paper)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Download size={15} /> Download Template
-            </button>
-            <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
-              <Upload size={15} /> {uploading ? 'Uploading…' : 'Upload Excel'}
-              <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={handleFile} disabled={uploading} />
-            </label>
-            <label className="btn btn-ghost btn-sm" title="Select many images; A7.png goes on MCQ 7, B14.png on Part B Q14"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
-              <Images size={15} /> Upload Diagrams
-              <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleImages} disabled={uploading} />
-            </label>
             <select className="form-control" style={{ width: 'auto' }} value={paper.key_status}
               onChange={e => updatePaper({ key_status: e.target.value })}>
               <option value="provisional">Key: Provisional</option>
@@ -261,89 +326,210 @@ export default function AdminGsebPaper() {
         </div>
 
         {!paper.is_published && questions.length > 0 && problems.length > 0 && (
-          <div className="card card-body" style={{ marginBottom: '1rem', background: '#fffbeb', borderColor: '#fde68a', fontSize: '0.875rem' }}>
-            <strong>Before publishing:</strong> {problems.join('. ')}.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 'var(--radius)', padding: '0.6rem 0.875rem', marginBottom: '0.75rem', fontSize: '0.875rem', color: '#92400e' }}>
+            <span><strong>Before publishing:</strong> {problems.join('. ')}.</span>
           </div>
         )}
 
-        <div className="tabs">
-          <button className={`tab-btn ${part === 'A' ? 'active' : ''}`} onClick={() => setPart('A')}>Part A · MCQ ({questions.length})</button>
-          <button className={`tab-btn ${part === 'B' ? 'active' : ''}`} onClick={() => setPart('B')}>Part B · Subjective ({subjective.length})</button>
+        <div className="tabs" style={{ marginBottom: '0.75rem' }}>
+          <button className={`tab-btn ${tab === 'A' ? 'active' : ''}`} onClick={() => changeTab('A')}>Part A · MCQ ({questions.length})</button>
+          <button className={`tab-btn ${tab === 'B' ? 'active' : ''}`} onClick={() => changeTab('B')}>Part B · Subjective ({subjective.length})</button>
+          <button className={`tab-btn ${tab === 'upload' ? 'active' : ''}`} onClick={() => changeTab('upload')}>Upload Excel</button>
         </div>
 
-        {part === 'B' ? (
-          <AdminGsebPartB paper={paper} questions={subjective} setQuestions={setSubjective} />
-        ) : questions.length === 0 ? (
+        {tab !== 'upload' && reviewIndex != null && visible[reviewIndex] && (
+          <QuestionReviewer
+            questions={visible}
+            index={reviewIndex}
+            onIndexChange={setReviewIndex}
+            onClose={() => setReviewIndex(null)}
+            onSaved={patchRow}
+            idOf={tag}
+            numberOf={q => q.q_no}
+            renderMeta={q => (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0 }}>
+                {part === 'B' && <span>Section {q.section} · {q.marks} marks ·</span>}
+                <span style={clip}>{q.chapter_no ? `Ch ${q.chapter_no} ${chapterName(q.chapter_no) || ''}` : 'Chapter not set'}</span>
+              </div>
+            )}
+            renderBody={(q, mode) => (
+              <div style={{ background: '#fff', borderRadius: 14, border: '1px solid var(--gray-200)', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '2rem 2.25rem' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', fontWeight: 600, marginBottom: '0.75rem' }}>
+                  Q{q.q_no}.{part === 'B' && ` (${q.marks} marks)`}
+                </div>
+                {part === 'A' ? (
+                  <>
+                    <QuestionView q={q} mode={mode} size="full" />
+                    {mode === 'admin' && q.explanation && (
+                      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}><strong>Explanation:</strong> {q.explanation}</div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.0625rem', lineHeight: 1.6 }}>{q.question}</div>
+                    {q.question_image && <img src={q.question_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.75rem' }} />}
+                    {mode === 'admin' && (
+                      <div style={{ marginTop: '1.25rem', padding: '0.875rem 1rem', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, fontSize: '0.9375rem', whiteSpace: 'pre-wrap' }}>
+                        <strong>Model answer:</strong> {q.answer || <span style={{ color: 'var(--gray-400)' }}>not written yet. Press E to add one.</span>}
+                        {q.answer_image && <img src={q.answer_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
+                      </div>
+                    )}
+                  </>
+                )}
+                {mode === 'student' && (
+                  <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
+                    How a student sees this question. Press <strong>V</strong> to show the {part === 'A' ? 'answer key' : 'model answer'}.
+                  </div>
+                )}
+              </div>
+            )}
+            renderEdit={props => part === 'A'
+              ? <GsebMcqEditPanel {...props} subject={paper.subject} title={tag(props.q)} />
+              : <GsebSubjectiveEditPanel {...props} subject={paper.subject} title={tag(props.q)} />}
+          />
+        )}
+
+        {tab === 'upload' ? (
+          <div className="card card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: 760 }}>
+            {[
+              { n: 1, title: 'Download the template', text: 'Sheets "Questions" (50 MCQs), "Part B" and "Chapters". Skip this if you already have the filled Excel.',
+                action: <button className="btn btn-ghost btn-sm" onClick={() => downloadTemplate(paper)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><Download size={15} /> Download Template</button> },
+              { n: 2, title: 'Upload the Excel', text: 'Saves Part A and Part B together. Uploading again updates the text and keeps images already attached.',
+                action: (
+                  <label className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+                    <Upload size={15} /> {uploading ? 'Uploading…' : 'Upload Excel'}
+                    <input type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={handleFile} disabled={uploading} />
+                  </label>) },
+              { n: 3, title: 'Upload diagrams', text: 'Select all images at once. A19.png (or p4_A19.png) goes on MCQ 19, B14.png on Part B Q14.',
+                action: (
+                  <label className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+                    <Images size={15} /> Upload Diagrams
+                    <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleImages} disabled={uploading} />
+                  </label>) },
+              { n: 4, title: 'Check, then publish', text: 'Open Part A and Part B, review each question full screen (← / → to move, E to edit), then press Publish at the top.' },
+            ].map(step => (
+              <div key={step.n} style={{ display: 'flex', gap: '0.875rem', alignItems: 'flex-start' }}>
+                <span style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: 'var(--primary)', color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem' }}>{step.n}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700 }}>{step.title}</div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--gray-500)', margin: '0.15rem 0 0.5rem' }}>{step.text}</div>
+                  {step.action}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : rows.length === 0 ? (
           <div className="empty-state">
-            No questions yet. Download the template, fill in the {paper.mcq_count} questions, then Upload Excel.
-            Formulas and diagrams can be attached as images per question after uploading.
+            No {part === 'A' ? 'MCQs' : 'Part B questions'} yet.{' '}
+            <button className="btn btn-primary btn-sm" onClick={() => changeTab('upload')}>Upload Excel</button>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {questions.map(q => {
-              const key = correctOptionKey(q)
-              const editing = editingId === q.id
-              return (
-                <div key={q.id} className="card card-body">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-                    <strong>Q{q.q_no}</strong>
-                    <div style={{ display: 'inline-flex', gap: '0.25rem' }} title="Correct answer">
-                      {LETTERS.map((l, i) => (
-                        <button key={l} className={`btn btn-sm ${key === `option${i + 1}` ? 'btn-success' : 'btn-ghost'}`}
-                          style={{ minWidth: '2.25rem' }} onClick={() => setAnswer(q, i + 1)}>{l}</button>
-                      ))}
-                    </div>
-                    <select className="form-control" style={{ width: 'auto', maxWidth: '100%' }} value={q.chapter_no || ''}
-                      onChange={e => updateQuestion(q, { chapter_no: e.target.value ? Number(e.target.value) : null })}>
-                      <option value="">Chapter: not set</option>
-                      {chapters.map(c => <option key={c.id} value={c.id}>{c.id}. {c.name}</option>)}
-                    </select>
-                    {!editing && (
-                      <button className="btn btn-ghost btn-sm" onClick={() => startEdit(q)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <Pencil size={14} /> Edit text
-                      </button>
-                    )}
-                  </div>
-
-                  {editing ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {TEXT_FIELDS.map(f => (
-                        <div key={f} className="form-group" style={{ margin: 0 }}>
-                          <label style={{ fontWeight: 600, fontSize: '0.8125rem' }}>
-                            {f === 'question' ? 'Question' : f === 'explanation' ? 'Explanation (optional)' : `Option ${LETTERS[Number(f.slice(-1)) - 1]}`}
-                          </label>
-                          <textarea className="form-control" rows={f === 'question' || f === 'explanation' ? 3 : 1}
-                            value={editForm[f]} onChange={e => setEditForm(v => ({ ...v, [f]: e.target.value }))} />
-                        </div>
-                      ))}
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button className="btn btn-primary btn-sm" onClick={() => saveEdit(q)}>Save</button>
-                        <button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <QuestionView q={q} mode="admin" size="compact" />
-                      {q.explanation && (
-                        <div style={{ marginTop: '0.5rem', fontSize: '0.8125rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}>
-                          <strong>Explanation:</strong> {q.explanation}
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
-                    <ImageButton label="Question image" onFile={f => attachImage(q, 'question_image', f)} />
-                    {LETTERS.map((l, i) => (
-                      <ImageButton key={l} label={`Option ${l}`} onFile={f => attachImage(q, `option${i + 1}_image`, f)} />
-                    ))}
-                    {q.question_image && (
-                      <button className="btn btn-ghost btn-sm" onClick={() => updateQuestion(q, { question_image: null })}>Remove question image</button>
-                    )}
-                  </div>
+          <div className="card">
+            <div className="card-header" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', padding: '0.6rem 0.875rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: '200px' }}>
+                  <Search size={16} />
+                  <input className="form-control" style={{ border: 'none', boxShadow: 'none', padding: 0, fontSize: '1rem' }}
+                    placeholder="Search by Q No or question text…" value={search} onChange={e => setSearch(e.target.value)} />
                 </div>
-              )
-            })}
+                <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{visible.length} questions</span>
+                {visible.length > 0 && (
+                  <button className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
+                    onClick={() => setReviewIndex(0)} title="Open the first question full screen, then walk the list with ← / →">
+                    <Maximize2 size={14} /> Review {visible.length} full screen
+                  </button>
+                )}
+                {visible.length > 0 && (
+                  <button className="btn btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
+                    onClick={openSheet} title={selected.size ? 'PDF of the ticked questions (Part A and Part B)' : 'Tick questions first, or get a PDF of everything listed'}>
+                    <FileDown size={14} /> {selected.size ? `PDF of ${selected.size} selected` : `PDF of ${visible.length} listed`}
+                  </button>
+                )}
+              </div>
+              {selected.size > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: 'var(--primary-light)', borderRadius: 'var(--radius)', padding: '0.35rem 0.7rem', fontSize: '0.8125rem' }}>
+                  <strong>{selected.size} selected</strong>
+                  <span style={{ color: 'var(--gray-500)' }}>Part A: {pickedA.length} · Part B: {pickedB.length}. You can tick in both tabs, they go in one PDF.</span>
+                  <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', fontSize: '0.75rem', padding: '0.15rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }} onClick={() => setSelected(new Set())}>
+                    <X size={12} /> Clear
+                  </button>
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <select className="form-control" style={{ width: '280px', flex: '1 1 240px', maxWidth: '340px' }} value={chapterFilter} onChange={e => setChapterFilter(e.target.value)}>
+                  <option value="">All Chapters</option>
+                  {chapters.map(c => <option key={c.id} value={c.id}>Ch {c.id} - {c.name} ({rows.filter(q => q.chapter_no === c.id).length})</option>)}
+                </select>
+                {(chapterFilter || statusFilter !== 'all' || search) && (
+                  <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }} onClick={() => { setChapterFilter(''); setStatusFilter('all'); setSearch('') }}>✕ Reset filters</button>
+                )}
+                {part === 'B' && (paper.part_b_rules || []).length > 0 && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
+                    {(paper.part_b_rules || []).map(r => `Sec ${r.section}: ${ruleLabel(r)}`).join(' · ')}
+                  </span>
+                )}
+                <select className="form-control" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+                  style={{ width: '190px', flex: '0 0 190px', marginLeft: 'auto', fontWeight: statusFilter !== 'all' ? 700 : 400, color: statusFilter === 'check' ? '#92400e' : undefined }}>
+                  <option value="all">All questions</option>
+                  <option value="check">Needs check ({checkCount})</option>
+                  <option value="image">With diagram</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="table-wrap" style={{ maxHeight: 'max(360px, calc(100vh - 300px))' }}>
+              <table>
+                <thead>
+                  <tr>
+                    <th style={{ width: '36px' }} onClick={e => e.stopPropagation()}>
+                      <input type="checkbox" checked={allVisibleTicked} onChange={toggleVisible} title="Tick all listed" aria-label="Tick all listed" />
+                    </th>
+                    <th style={{ width: '64px' }}>Q No</th>
+                    {part === 'B' && <th style={{ width: '64px' }}>Section</th>}
+                    {part === 'B' && <th style={{ width: '64px' }}>Marks</th>}
+                    <th style={{ width: '220px' }}>Chapter</th>
+                    <th>Question</th>
+                    <th style={{ width: '90px', textAlign: 'center' }}>{part === 'A' ? 'Answer' : 'Model ans.'}</th>
+                    <th style={{ width: '64px', textAlign: 'center' }}>Diagram</th>
+                    <th style={{ width: '96px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visible.map((q, i) => {
+                    const key = correctOptionKey(q)
+                    const flag = needsCheck(q, part)
+                    return (
+                      <tr key={q.id} style={{ cursor: 'pointer', background: selected.has(q.id) ? 'var(--primary-light)' : flag ? '#fffbeb' : undefined }}
+                        onClick={() => setReviewIndex(i)} title="Click to review full screen">
+                        <td onClick={e => e.stopPropagation()}>
+                          <input type="checkbox" checked={selected.has(q.id)} onChange={() => toggleRow(q.id)} aria-label={`Tick Q${q.q_no}`} />
+                        </td>
+                        <td><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>Q{q.q_no}</code></td>
+                        {part === 'B' && <td style={cell}>{q.section}</td>}
+                        {part === 'B' && <td style={cell}>{q.marks}</td>}
+                        <td style={{ ...cell, ...clip, maxWidth: '220px', color: q.chapter_no ? 'var(--gray-500)' : '#b45309' }} title={chapterName(q.chapter_no)}>
+                          {q.chapter_no ? `${q.chapter_no}. ${chapterName(q.chapter_no) || ''}` : 'not set'}
+                        </td>
+                        <td style={{ ...clip, maxWidth: '420px', fontSize: '0.875rem' }}>{q.question}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {part === 'A'
+                            ? (key ? <span className="badge badge-green">{LETTERS[Number(key.slice(-1)) - 1]}</span> : <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>none</span>)
+                            : (q.answer || q.answer_image ? <span className="badge badge-green">✓</span> : <span style={cell}>—</span>)}
+                        </td>
+                        <td style={{ textAlign: 'center', color: 'var(--gray-400)' }}>{q.question_image ? <ImageIcon size={15} /> : ''}</td>
+                        <td onClick={e => e.stopPropagation()} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <button className="btn btn-outline btn-sm" style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                            onClick={() => setReviewIndex(i)}>
+                            <Maximize2 size={12} /> Review
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+              {visible.length === 0 && <div className="empty-state">No questions match these filters</div>}
+            </div>
           </div>
         )}
       </div>

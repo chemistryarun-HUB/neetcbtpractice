@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Printer, Shuffle, RefreshCw } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
-import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
 import { GSEB_SUBJECTS, GSEB_SUBJECT_LABELS, chaptersOf, paperTag, buildCustomPaper } from '../../lib/gseb'
 import { fetchGsebBank } from '../../lib/gsebBank'
 
@@ -19,7 +19,6 @@ const NAV = [
   { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
-const LETTERS = ['A', 'B', 'C', 'D']
 const SUB_MARKS = [2, 3, 4]
 const SECTION_NAMES = ['B', 'C', 'D', 'E']
 
@@ -184,79 +183,22 @@ export default function AdminGsebGenerator() {
         </div>
 
         {paper && (
-          <div className="gseb-print">
-            <div className="gp-head">
-              <div className="gp-title">{title}</div>
-              <div>{GSEB_SUBJECT_LABELS[subject]} · Std 12 Science</div>
-              <div className="gp-meta"><span>Time: {minutes} min</span><span>Total marks: {totalMarks}</span></div>
-            </div>
-
-            {paper.mcq.length > 0 && (
-              <section>
-                <div className="gp-section">Section A · Choose the correct option ({paper.mcq.length} × 1 = {paper.mcq.length} marks)</div>
-                <ol className="gp-list">
-                  {paper.mcq.map(q => (
-                    <li key={q.id}>
-                      <div className="gp-q">{q.question}{' '}{tag(q)}
-                        <button className="no-print gp-swap" title="Swap for another question" onClick={() => swap('mcq', 1, q)}><Shuffle size={13} /></button>
-                      </div>
-                      {q.question_image && <img src={q.question_image} alt="" className="gp-img" />}
-                      <div className="gp-opts">
-                        {optionEntries(q).map((o, i) => (
-                          <div key={o.key}>({LETTERS[i]}) {o.text}{o.image && <img src={o.image} alt="" className="gp-img" />}</div>
-                        ))}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </section>
+          <GsebPrintSheet
+            title={title}
+            subtitle={`${GSEB_SUBJECT_LABELS[subject]} · Std 12 Science`}
+            meta={[`Time: ${minutes} min`, `Total marks: ${totalMarks}`]}
+            mcq={paper.mcq}
+            groups={sections.map((m, i) => ({
+              key: m,
+              heading: `Section ${SECTION_NAMES[i]} · Answer the following (${paper.subjective[m].length} × ${m} = ${paper.subjective[m].length * m} marks)`,
+              items: paper.subjective[m],
+            }))}
+            withKey={withKey}
+            tag={tag}
+            extra={(q, kind, m) => (
+              <button className="no-print gp-swap" title="Swap for another question" onClick={() => swap(kind, m ?? 1, q)}><Shuffle size={13} /></button>
             )}
-
-            {sections.map((m, i) => (
-              <section key={m}>
-                <div className="gp-section">
-                  Section {SECTION_NAMES[i]} · Answer the following ({paper.subjective[m].length} × {m} = {paper.subjective[m].length * m} marks)
-                </div>
-                <ol className="gp-list">
-                  {paper.subjective[m].map(q => (
-                    <li key={q.id}>
-                      <div className="gp-q">{q.question}{' '}{tag(q)}
-                        <button className="no-print gp-swap" title="Swap for another question" onClick={() => swap('sub', m, q)}><Shuffle size={13} /></button>
-                      </div>
-                      {q.question_image && <img src={q.question_image} alt="" className="gp-img" />}
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            ))}
-
-            {withKey && (
-              <section className="gp-key">
-                <div className="gp-title" style={{ fontSize: '1.1rem' }}>Answer key · {title}</div>
-                {paper.mcq.length > 0 && (
-                  <div className="gp-keygrid">
-                    {paper.mcq.map((q, i) => {
-                      const k = correctOptionKey(q)
-                      return <span key={q.id}>{i + 1}. {k ? LETTERS[Number(k.slice(-1)) - 1] : '?'}</span>
-                    })}
-                  </div>
-                )}
-                {sections.map((m, i) => paper.subjective[m].some(q => q.answer || q.answer_image) && (
-                  <div key={m}>
-                    <div className="gp-section">Section {SECTION_NAMES[i]} · model answers</div>
-                    <ol className="gp-list">
-                      {paper.subjective[m].map(q => (
-                        <li key={q.id}>
-                          {q.answer || <em>No model answer added.</em>}
-                          {q.answer_image && <img src={q.answer_image} alt="" className="gp-img" />}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                ))}
-              </section>
-            )}
-          </div>
+          />
         )}
       </div>
     </div>

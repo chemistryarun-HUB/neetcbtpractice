@@ -43,7 +43,7 @@ function FieldLock({ locked, onToggle, label }) {
 }
 
 // Image field that works with already-uploaded URLs (not File objects).
-function EditImageField({ label, url, uploading, onUpload, onRemove }) {
+export function EditImageField({ label, url, uploading, onUpload, onRemove }) {
   return (
     <div style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
       {url && (
