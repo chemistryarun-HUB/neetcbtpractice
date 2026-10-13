@@ -17,6 +17,7 @@ const NAV = [
   { to: '/admin/videos', label: 'Lectures' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
+  { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
 const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'

@@ -17,6 +17,7 @@ const NAV = [
   { to: '/admin/videos', label: 'Lectures' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
+  { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
 const QUESTION_COLUMNS = 'id, qid, question, unit, level, option1, option2, option3, option4, correct_option, is_active'

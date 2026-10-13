@@ -13,6 +13,8 @@ import AdminFaculty from './pages/admin/AdminFaculty'
 import AdminQuestions from './pages/admin/AdminQuestions'
 import AdminPerformance from './pages/admin/AdminPerformance'
 import AdminPracticePapers from './pages/admin/AdminPracticePapers'
+import AdminGsebPapers from './pages/admin/AdminGsebPapers'
+import AdminGsebPaper from './pages/admin/AdminGsebPaper'
 import AdminVideos from './pages/admin/AdminVideos'
 import AdminKeyChanges from './pages/admin/AdminKeyChanges'
 
@@ -58,6 +60,8 @@ function AppRoutes() {
       <Route path="/admin/questions" element={<ProtectedRoute allowedRoles={['admin']}><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />
       <Route path="/admin/practice-papers" element={<ProtectedRoute allowedRoles={['admin']}><AdminPracticePapers /></ProtectedRoute>} />
+      <Route path="/admin/gseb" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPapers /></ProtectedRoute>} />
+      <Route path="/admin/gseb/:paperId" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPaper /></ProtectedRoute>} />
       <Route path="/admin/videos" element={<ProtectedRoute allowedRoles={['admin']}><AdminVideos /></ProtectedRoute>} />
       <Route path="/admin/key-changes" element={<ProtectedRoute allowedRoles={['admin']}><AdminKeyChanges /></ProtectedRoute>} />
 

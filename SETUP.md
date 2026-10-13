@@ -92,3 +92,14 @@ Each level allows up to 3 unlock attempts:
 - Attempt 3: score ≥ 40% → next level unlocks
 
 Students can always click "Practice More" even after unlocking.
+
+## GSEB Std 12 Board Papers (Admin → GSEB Papers)
+
+Run `migration_gseb_papers.sql` once in the Supabase SQL Editor first.
+
+1. **Add Paper**: subject, year, session, medium, set number and paper code (054 Physics, 052 Chemistry, 056 Biology, 050 Maths).
+2. Open the paper → **Download Template** → fill one row per MCQ → **Upload Excel**.
+   Columns: `Q No`, `Question`, `Option A`–`Option D`, `Answer` (A–D or 1–4), `Chapter No` (see the template's Chapters sheet), `Explanation` (optional).
+   Re-uploading the same paper updates text/answers and keeps any images already attached.
+3. Attach formula/diagram images per question, fix answers or chapters inline.
+4. **Publish** once every question has text and an answer. Every logged-in student can then see it. Set **Key: Final** when GSEB releases the final key.

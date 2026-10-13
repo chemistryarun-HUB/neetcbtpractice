@@ -124,6 +124,7 @@ const NAV = [
   { to: '/admin/videos', label: 'Lectures' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
+  { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
 const BLANK_FORM = {
