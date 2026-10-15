@@ -1,4 +1,5 @@
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
+import MathText from './MathText'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -38,11 +39,11 @@ export default function GsebPrintSheet({ title, subtitle, meta = [], mcq = [], g
           <ol className="gp-list">
             {mcq.map(q => (
               <li key={q.id}>
-                <div className="gp-q">{q.question}{' '}{tag?.(q)}{extra?.(q, 'mcq')}</div>
+                <div className="gp-q"><MathText text={q.question} />{' '}{tag?.(q)}{extra?.(q, 'mcq')}</div>
                 {q.question_image && <img src={q.question_image} alt="" className="gp-img" />}
                 <div className="gp-opts">
                   {optionEntries(q).map((o, i) => (
-                    <div key={o.key}>({LETTERS[i]}) {o.text}{o.image && <img src={o.image} alt="" className="gp-img" />}</div>
+                    <div key={o.key}>({LETTERS[i]}) {o.text && <MathText text={o.text} />}{o.image && <img src={o.image} alt="" className="gp-img" />}</div>
                   ))}
                 </div>
               </li>
@@ -57,7 +58,7 @@ export default function GsebPrintSheet({ title, subtitle, meta = [], mcq = [], g
           <ol className="gp-list" start={g.start}>
             {g.items.map(q => (
               <li key={q.id}>
-                <div className="gp-q">{q.question}{' '}{tag?.(q)}{extra?.(q, 'sub', g.key)}</div>
+                <div className="gp-q"><MathText text={q.question} />{' '}{tag?.(q)}{extra?.(q, 'sub', g.key)}</div>
                 {q.question_image && <img src={q.question_image} alt="" className="gp-img" />}
               </li>
             ))}
@@ -82,7 +83,7 @@ export default function GsebPrintSheet({ title, subtitle, meta = [], mcq = [], g
               <ol className="gp-list" start={g.start}>
                 {g.items.map(q => (
                   <li key={q.id}>
-                    {q.answer || <em>No model answer added.</em>}
+                    {q.answer ? <MathText text={q.answer} /> : <em>No model answer added.</em>}
                     {q.answer_image && <img src={q.answer_image} alt="" className="gp-img" />}
                   </li>
                 ))}

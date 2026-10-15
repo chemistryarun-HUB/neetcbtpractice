@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { ArrowLeft, Upload, Download, Images, Search, Maximize2, Image as ImageIcon, FileDown, Printer, X } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import QuestionView from '../../components/shared/QuestionView'
+import MathText from '../../components/shared/MathText'
 import QuestionReviewer from '../../components/shared/QuestionReviewer'
 import { GsebMcqEditPanel, GsebSubjectiveEditPanel } from '../../components/shared/GsebEditPanels'
 import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
@@ -361,16 +362,16 @@ export default function AdminGsebPaper() {
                   <>
                     <QuestionView q={q} mode={mode} size="full" />
                     {mode === 'admin' && q.explanation && (
-                      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}><strong>Explanation:</strong> {q.explanation}</div>
+                      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap' }}><strong>Explanation:</strong> <MathText text={q.explanation} /></div>
                     )}
                   </>
                 ) : (
                   <>
-                    <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.0625rem', lineHeight: 1.6 }}>{q.question}</div>
+                    <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.0625rem', lineHeight: 1.6 }}><MathText text={q.question} /></div>
                     {q.question_image && <img src={q.question_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.75rem' }} />}
                     {mode === 'admin' && (
                       <div style={{ marginTop: '1.25rem', padding: '0.875rem 1rem', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, fontSize: '0.9375rem', whiteSpace: 'pre-wrap' }}>
-                        <strong>Model answer:</strong> {q.answer || <span style={{ color: 'var(--gray-400)' }}>not written yet. Press E to add one.</span>}
+                        <strong>Model answer:</strong> {(q.answer && <MathText text={q.answer} />) || <span style={{ color: 'var(--gray-400)' }}>not written yet. Press E to add one.</span>}
                         {q.answer_image && <img src={q.answer_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
                       </div>
                     )}

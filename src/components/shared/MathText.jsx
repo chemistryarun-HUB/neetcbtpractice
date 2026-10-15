@@ -61,3 +61,15 @@ export default function MathText({ text, style, className }) {
     </span>
   )
 }
+
+// Live render of any $…$ maths under the box being typed in, so a typo in the
+// LaTeX shows up here rather than on a student's screen.
+export function MathPreview({ text }) {
+  if (!hasMath(text)) return null
+  return (
+    <div style={{ marginTop: '0.3rem', padding: '0.4rem 0.6rem', background: '#fff', border: '1px dashed var(--gray-300)', borderRadius: 6, fontSize: '0.9rem' }}>
+      <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gray-400)', marginRight: '0.4rem' }}>PREVIEW</span>
+      <MathText text={text} />
+    </div>
+  )
+}

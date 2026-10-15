@@ -8,7 +8,7 @@ import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
 import { MTC_ROW_NUMS, LABEL_SCHEMES, DEFAULT_LABEL_A, DEFAULT_LABEL_B, parseMtcFromText } from '../../lib/mtc'
-import MathText, { hasMath } from './MathText'
+import { MathPreview } from './MathText'
 import InfoTooltip from './InfoTooltip'
 
 // Exactly the types already in the bank — nothing here can introduce a value
@@ -563,14 +563,3 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
   )
 }
 
-// Live render of any $…$ maths under the box being typed in, so a typo in the
-// LaTeX shows up here rather than on a student's screen.
-function MathPreview({ text }) {
-  if (!hasMath(text)) return null
-  return (
-    <div style={{ marginTop: '0.3rem', padding: '0.4rem 0.6rem', background: '#fff', border: '1px dashed var(--gray-300)', borderRadius: 6, fontSize: '0.9rem' }}>
-      <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gray-400)', marginRight: '0.4rem' }}>PREVIEW</span>
-      <MathText text={text} />
-    </div>
-  )
-}

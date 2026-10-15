@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import MathText from './MathText'
 
 // One Part B question for a student: write the answer in the notebook first,
 // then open the model answer to check it.
@@ -13,7 +14,7 @@ export default function GsebSubjectiveCard({ q, label, tag }) {
         <span className="badge badge-medium">{q.marks} mark{q.marks === 1 ? '' : 's'}</span>
         {tag && <span style={{ marginLeft: 'auto', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)' }}>{tag}</span>}
       </div>
-      <div style={{ whiteSpace: 'pre-wrap' }}>{q.question}</div>
+      <div><MathText text={q.question} /></div>
       {q.question_image && <img src={q.question_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
       <div style={{ marginTop: '0.75rem' }}>
         {hasAnswer ? (
@@ -26,7 +27,7 @@ export default function GsebSubjectiveCard({ q, label, tag }) {
       </div>
       {open && hasAnswer && (
         <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'var(--gray-50)', borderRadius: 8, fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
-          {q.answer}
+          <MathText text={q.answer} />
           {q.answer_image && <img src={q.answer_image} alt="" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
         </div>
       )}

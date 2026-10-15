@@ -5,6 +5,7 @@ import { ArrowLeft, RotateCcw } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import QuestionView from '../../components/shared/QuestionView'
+import MathText from '../../components/shared/MathText'
 import { attemptGrading } from '../../lib/attemptGrading'
 import { optionEntries } from '../../lib/questionOptions'
 import { fmtDuration } from '../../lib/performanceMetrics'
@@ -156,7 +157,7 @@ export default function GsebResultPage() {
                 )}
                 {(q.explanation || q.explanation_image) && (
                   <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--gray-50)', borderRadius: 8, fontSize: '0.875rem', whiteSpace: 'pre-wrap' }}>
-                    <strong>Explanation:</strong> {q.explanation}
+                    <strong>Explanation:</strong> <MathText text={q.explanation} />
                     {q.explanation_image && <img src={q.explanation_image} alt="Explanation" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
                   </div>
                 )}

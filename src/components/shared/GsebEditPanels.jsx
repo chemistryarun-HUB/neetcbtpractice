@@ -5,6 +5,7 @@ import { uploadQuestionImage } from '../../lib/storage'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
 import { chaptersOf } from '../../lib/gseb'
 import { EditImageField } from './QuestionEditPanel'
+import { MathPreview } from './MathText'
 
 // Edit forms for GSEB board-paper questions, shown inside QuestionReviewer in
 // place of the NEET QuestionEditPanel. Same look (yellow panel, option cards
@@ -123,6 +124,7 @@ export function GsebMcqEditPanel({ q, subject, title, onSaved, onCancel }) {
         <label style={label}>Question Text</label>
         <textarea className="form-control" rows={3} style={{ fontSize: '0.875rem', resize: 'vertical' }}
           value={form.question} onChange={e => set('question', e.target.value)} />
+        <MathPreview text={form.question} />
         {imageField('question_image', 'Question Image')}
       </div>
 
@@ -138,6 +140,7 @@ export function GsebMcqEditPanel({ q, subject, title, onSaved, onCancel }) {
               </label>
               <textarea className="form-control" rows={2} style={{ fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none', padding: 0, resize: 'vertical' }}
                 value={form[key]} onChange={e => set(key, e.target.value)} />
+              <MathPreview text={form[key]} />
               {imageField(`${key}_image`, `Option ${LETTERS[i - 1]} Image`)}
             </div>
           )
@@ -153,6 +156,7 @@ export function GsebMcqEditPanel({ q, subject, title, onSaved, onCancel }) {
           <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Explanation (optional, shown on the result screen)</label>
           <textarea className="form-control" rows={2} style={{ fontSize: '0.8125rem', resize: 'vertical' }}
             value={form.explanation} onChange={e => set('explanation', e.target.value)} />
+        <MathPreview text={form.explanation} />
         </div>
       </div>
     </Shell>
@@ -199,12 +203,14 @@ export function GsebSubjectiveEditPanel({ q, subject, title, onSaved, onCancel }
         <label style={label}>Question Text</label>
         <textarea className="form-control" rows={4} style={{ fontSize: '0.875rem', resize: 'vertical' }}
           value={form.question} onChange={e => set('question', e.target.value)} />
+        <MathPreview text={form.question} />
         {imageField('question_image', 'Question Image')}
       </div>
       <div className="form-group" style={{ margin: '0 0 0.75rem', padding: '0.5rem 0.625rem', borderRadius: 'var(--radius)', background: '#f0fdf4', border: '1.5px solid #86efac' }}>
         <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#15803d' }}>Model Answer (students open it after trying)</label>
         <textarea className="form-control" rows={6} style={{ fontSize: '0.875rem', resize: 'vertical' }}
           value={form.answer} onChange={e => set('answer', e.target.value)} />
+        <MathPreview text={form.answer} />
         {imageField('answer_image', 'Answer Image')}
       </div>
     </Shell>
