@@ -1,3 +1,4 @@
+import MathText from './MathText'
 import { mtcColumns } from '../../lib/mtc'
 
 // Read-only Column A / Column B display for a structured "Match the Column"
@@ -22,7 +23,7 @@ export default function MatchTable({ q }) {
           <div style={{ padding: '0.5rem 0.75rem', borderRight: '1px solid var(--gray-200)', display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
             <span style={{ color: '#3b82f6', fontWeight: 700, fontSize: '0.875rem', flexShrink: 0 }}>{colA[i].label}.</span>
             <div style={{ minWidth: 0 }}>
-              {colA[i].text && <span style={{ fontSize: '0.875rem', whiteSpace: 'pre-wrap' }}>{colA[i].text}</span>}
+              {colA[i].text && <MathText text={colA[i].text} style={{ fontSize: '0.875rem' }} />}
               {colA[i].image && (
                 <img src={colA[i].image} alt={`Item ${colA[i].label}`}
                   style={{ maxWidth: '100%', maxHeight: 120, marginTop: colA[i].text ? '0.35rem' : 0, display: 'block', borderRadius: 4 }} />
@@ -32,7 +33,7 @@ export default function MatchTable({ q }) {
           <div style={{ padding: '0.5rem 0.75rem', display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
             <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.875rem', flexShrink: 0 }}>{colB[i].label}.</span>
             <div style={{ minWidth: 0 }}>
-              {colB[i].text && <span style={{ fontSize: '0.875rem', whiteSpace: 'pre-wrap' }}>{colB[i].text}</span>}
+              {colB[i].text && <MathText text={colB[i].text} style={{ fontSize: '0.875rem' }} />}
               {colB[i].image && (
                 <img src={colB[i].image} alt={`Item ${colB[i].label}`}
                   style={{ maxWidth: '100%', maxHeight: 120, marginTop: colB[i].text ? '0.35rem' : 0, display: 'block', borderRadius: 4 }} />

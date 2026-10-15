@@ -8,6 +8,7 @@ import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
 import { MTC_ROW_NUMS, LABEL_SCHEMES, DEFAULT_LABEL_A, DEFAULT_LABEL_B, parseMtcFromText } from '../../lib/mtc'
+import MathText, { hasMath } from './MathText'
 import InfoTooltip from './InfoTooltip'
 
 // Exactly the types already in the bank — nothing here can introduce a value
@@ -314,6 +315,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         <textarea className="form-control" rows={3} style={{ fontSize: '0.875rem', resize: 'vertical' }}
           value={form.question}
           onChange={e => setForm(f => ({ ...f, question: e.target.value }))} />
+        <MathPreview text={form.question} />
         <EditImageField
           label="Question Image"
           url={imgUrls.question_image}
@@ -450,6 +452,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               <textarea className="form-control" rows={2} style={{ fontSize: '0.8125rem', border: 'none', background: 'transparent', boxShadow: 'none', padding: '0', resize: 'vertical' }}
                 value={form[key]}
                 onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
+              <MathPreview text={form[key]} />
               <EditImageField
                 label={`Option ${i} Image`}
                 url={imgUrls[imgKey]}
@@ -556,6 +559,18 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           Ctrl+S to save · Esc to cancel
         </span>
       </div>
+    </div>
+  )
+}
+
+// Live render of any $…$ maths under the box being typed in, so a typo in the
+// LaTeX shows up here rather than on a student's screen.
+function MathPreview({ text }) {
+  if (!hasMath(text)) return null
+  return (
+    <div style={{ marginTop: '0.3rem', padding: '0.4rem 0.6rem', background: '#fff', border: '1px dashed var(--gray-300)', borderRadius: 6, fontSize: '0.9rem' }}>
+      <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gray-400)', marginRight: '0.4rem' }}>PREVIEW</span>
+      <MathText text={text} />
     </div>
   )
 }

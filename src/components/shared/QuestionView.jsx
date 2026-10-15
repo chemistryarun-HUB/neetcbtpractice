@@ -1,6 +1,7 @@
 import { optionEntries, correctOptionKey } from '../../lib/questionOptions'
 import { hasStructuredMtc } from '../../lib/mtc'
 import MatchTable from './MatchTable'
+import MathText from './MathText'
 
 // One renderer for a question's *content* (stem, image, match table, options),
 // used by every admin surface that shows a question — the full-screen reviewer
@@ -37,7 +38,7 @@ export default function QuestionView({ q, mode = 'student', size = 'full', optio
   return (
     <div>
       <div style={{ fontWeight: 500, fontSize: S.stem, color: 'var(--gray-800)', whiteSpace: 'pre-wrap', lineHeight: S.stemLead, marginBottom: S.gap }}>
-        {q.question}
+        <MathText text={q.question} />
       </div>
 
       {q.question_image && (
@@ -102,7 +103,7 @@ export default function QuestionView({ q, mode = 'student', size = 'full', optio
                 {i + 1}
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
-                {opt.text && <span style={{ whiteSpace: 'pre-wrap' }}>{opt.text}</span>}
+                {opt.text && <MathText text={opt.text} />}
                 {opt.image && (
                   <img src={opt.image} alt={`Option ${i + 1}`}
                     style={{ maxWidth: '100%', maxHeight: S.optImg, marginTop: opt.text ? '0.5rem' : 0, display: 'block', borderRadius: 6, border: '1px solid var(--gray-200)', background: '#fff' }} />
