@@ -27,11 +27,23 @@ function loadKatex() {
 // "$$…$$" first, then "$…$". A backslash-escaped \$ stays a literal dollar.
 const SPLIT = /(\$\$[\s\S]+?\$\$|(?<!\\)\$(?:\\\$|[^$])+?(?<!\\)\$)/g
 
-export function hasMath(text) {
-  return typeof text === 'string' && /(?<!\\)\$/.test(text)
+// A line with no "$" but with LaTeX commands in it (\frac{, \text{,
+// \xrightarrow{, \ce{ …) — what ChatGPT and most equation tools paste — is
+// treated as one maths line, so pasted LaTeX works without adding dollars.
+const LATEX_LINE = /\\(?:text|frac|dfrac|tfrac|xrightarrow|xleftarrow|ce|pu|sqrt|mathrm|mathbf|overset|underset|rightarrow|leftarrow|rightleftharpoons|longrightarrow|Delta|alpha|beta|gamma|theta|lambda|mu|pi|sigma|omega|times|cdot|degree|circ|int|sum|lim|log|ln|sin|cos|tan|left|right|vec|hat|bar|pm|le|ge|neq|approx|infty|partial)(?![a-zA-Z])/
+function autoWrap(text) {
+  if (typeof text !== 'string' || !text.includes('\\')) return text
+  return text.split('\n').map(line =>
+    (!/(?<!\\)\$/.test(line) && LATEX_LINE.test(line)) ? `$${line.trim()}$` : line
+  ).join('\n')
 }
 
-export default function MathText({ text, style, className }) {
+export function hasMath(text) {
+  return typeof text === 'string' && /(?<!\\)\$/.test(autoWrap(text))
+}
+
+export default function MathText({ text: raw, style, className }) {
+  const text = autoWrap(raw)
   const needs = hasMath(text)
   const [, setReady] = useState(!!katexMod)
 
