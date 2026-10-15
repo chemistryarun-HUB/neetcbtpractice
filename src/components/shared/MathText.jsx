@@ -33,9 +33,22 @@ const SPLIT = /(\$\$[\s\S]+?\$\$|(?<!\\)\$(?:\\\$|[^$])+?(?<!\\)\$)/g
 const LATEX_LINE = /\\(?:text|frac|dfrac|tfrac|xrightarrow|xleftarrow|ce|pu|sqrt|mathrm|mathbf|overset|underset|rightarrow|leftarrow|rightleftharpoons|longrightarrow|Delta|alpha|beta|gamma|theta|lambda|mu|pi|sigma|omega|times|cdot|degree|circ|int|sum|lim|log|ln|sin|cos|tan|left|right|vec|hat|bar|pm|le|ge|neq|approx|infty|partial)(?![a-zA-Z])/
 function autoWrap(text) {
   if (typeof text !== 'string' || !text.includes('\\')) return text
-  return text.split('\n').map(line =>
-    (!/(?<!\\)\$/.test(line) && LATEX_LINE.test(line)) ? `$${line.trim()}$` : line
-  ).join('\n')
+  const isTex = line => !/(?<!\\)\$/.test(line) && LATEX_LINE.test(line)
+  const lines = text.split('\n')
+  const out = []
+  for (let i = 0; i < lines.length; i++) {
+    if (!isTex(lines[i])) { out.push(lines[i]); continue }
+    // Consecutive LaTeX lines are one equation (a "\\" at a line end is a
+    // LaTeX line break, so the next line belongs to the same block).
+    const group = [lines[i].trim()]
+    while (i + 1 < lines.length && lines[i + 1].trim() &&
+           (isTex(lines[i + 1]) || /\\\\\s*$/.test(lines[i]))) {
+      group.push(lines[++i].trim())
+    }
+    // Trailing space keeps a closing "\\" from escaping the "$".
+    out.push(`$${group.join(' ')} $`)
+  }
+  return out.join('\n')
 }
 
 export function hasMath(text) {
