@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 // Renders question/option text with LaTeX between $…$ (inline) or $$…$$
 // (own line). Chemistry uses mhchem: $\ce{CH3CH=CHCO2CH3 ->[LiAlH4] CH3CH=CHCH2OH}$,
@@ -149,10 +149,7 @@ export default function MathText({ text: raw, style, className }) {
         if (!display && !inline) return <span key={i}>{part.replace(/\\\$/g, '$')}</span>
         const tex = display ? part.slice(2, -2) : part.slice(1, -1)
         const html = katexMod.renderToString(tex, { displayMode: display, throwOnError: false, strict: 'ignore' })
-        // inline-block + max-width: a long equation wraps at its arrows/operators
-        // where KaTeX allows, and otherwise scrolls inside the card instead of
-        // spilling out of it.
-        return <span key={i} style={{ display: display ? 'block' : 'inline-block', maxWidth: '100%', overflowX: 'auto', overflowY: 'hidden', verticalAlign: 'middle' }} dangerouslySetInnerHTML={{ __html: html }} />
+        return <MathSpan key={i} html={html} display={display} />
       })}
     </span>
   )
@@ -167,5 +164,29 @@ export function MathPreview({ text }) {
       <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--gray-400)', marginRight: '0.4rem' }}>PREVIEW</span>
       <MathText text={text} />
     </div>
+  )
+}
+
+// One rendered equation. It wraps at its arrows/operators where KaTeX allows;
+// only when it is still wider than the card does it get a sideways scroll —
+// switching that on always made Windows draw an empty scrollbar under short
+// formulas whose glyphs overhang their box by a few pixels.
+function MathSpan({ html, display }) {
+  const ref = useRef(null)
+  const [scroll, setScroll] = useState(false)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const check = () => setScroll(el.scrollWidth - el.clientWidth > 24)
+    check()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(check) : null
+    ro?.observe(el)
+    return () => ro?.disconnect()
+  }, [html])
+  return (
+    <span ref={ref}
+      style={{ display: display ? 'block' : 'inline-block', maxWidth: '100%', verticalAlign: 'middle',
+        overflowX: scroll ? 'auto' : 'visible', overflowY: scroll ? 'hidden' : 'visible' }}
+      dangerouslySetInnerHTML={{ __html: html }} />
   )
 }
