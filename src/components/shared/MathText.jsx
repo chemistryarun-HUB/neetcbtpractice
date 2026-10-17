@@ -38,11 +38,15 @@ function autoWrap(text) {
   const out = []
   for (let i = 0; i < lines.length; i++) {
     if (!isTex(lines[i])) { out.push(lines[i]); continue }
-    // Consecutive LaTeX lines are one equation (a "\\" at a line end is a
-    // LaTeX line break, so the next line belongs to the same block).
+    // A line that is only \text{…} is a sentence, not maths: show it as
+    // ordinary text so it wraps with the card like any other sentence.
+    const only = lines[i].trim().match(/^\\text\{([^{}]*)\}\s*(?:\\\\)?\s*$/)
+    if (only) { out.push(only[1]); continue }
+    // A "\\" at a line end is a LaTeX line break: the next line belongs to
+    // the same equation. Otherwise each LaTeX line is its own equation.
     const group = [lines[i].trim()]
     while (i + 1 < lines.length && lines[i + 1].trim() &&
-           (isTex(lines[i + 1]) || /\\\\\s*$/.test(lines[i]))) {
+           /\\\\\s*$/.test(group[group.length - 1])) {
       group.push(lines[++i].trim())
     }
     // Trailing space keeps a closing "\\" from escaping the "$".
@@ -81,7 +85,10 @@ export default function MathText({ text: raw, style, className }) {
         if (!display && !inline) return <span key={i}>{part.replace(/\\\$/g, '$')}</span>
         const tex = display ? part.slice(2, -2) : part.slice(1, -1)
         const html = katexMod.renderToString(tex, { displayMode: display, throwOnError: false, strict: 'ignore' })
-        return <span key={i} dangerouslySetInnerHTML={{ __html: html }} />
+        // inline-block + max-width: a long equation wraps at its arrows/operators
+        // where KaTeX allows, and otherwise scrolls inside the card instead of
+        // spilling out of it.
+        return <span key={i} style={{ display: display ? 'block' : 'inline-block', maxWidth: '100%', overflowX: 'auto', overflowY: 'hidden', verticalAlign: 'middle' }} dangerouslySetInnerHTML={{ __html: html }} />
       })}
     </span>
   )
