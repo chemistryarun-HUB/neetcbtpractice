@@ -27,32 +27,96 @@ function loadKatex() {
 // "$$…$$" first, then "$…$". A backslash-escaped \$ stays a literal dollar.
 const SPLIT = /(\$\$[\s\S]+?\$\$|(?<!\\)\$(?:\\\$|[^$])+?(?<!\\)\$)/g
 
-// A line with no "$" but with LaTeX commands in it (\frac{, \text{,
-// \xrightarrow{, \ce{ …) — what ChatGPT and most equation tools paste — is
-// treated as one maths line, so pasted LaTeX works without adding dollars.
-const LATEX_LINE = /\\(?:text|frac|dfrac|tfrac|xrightarrow|xleftarrow|ce|pu|sqrt|mathrm|mathbf|overset|underset|rightarrow|leftarrow|rightleftharpoons|longrightarrow|Delta|alpha|beta|gamma|theta|lambda|mu|pi|sigma|omega|times|cdot|degree|circ|int|sum|lim|log|ln|sin|cos|tan|left|right|vec|hat|bar|pm|le|ge|neq|approx|infty|partial)(?![a-zA-Z])/
+// Text with LaTeX commands but no "$" — what ChatGPT and most equation tools
+// paste — is rendered without the author adding dollars. Only the maths runs
+// are wrapped, so English around them stays ordinary, wrapping text:
+//   "\ce{A -> B}. The first step is an aldol" -> "$\ce{A -> B}.$ The first step is an aldol"
+// and a sentence typed as \text{…} is shown as plain text.
+const LATEX_LINE = /\\(?:text|textbf|textit|frac|dfrac|tfrac|xrightarrow|xleftarrow|ce|pu|sqrt|mathrm|mathbf|overset|underset|rightarrow|leftarrow|rightleftharpoons|longrightarrow|Delta|alpha|beta|gamma|theta|lambda|mu|pi|sigma|omega|times|cdot|degree|circ|int|sum|lim|log|ln|sin|cos|tan|left|right|vec|hat|bar|pm|le|ge|neq|approx|infty|partial|quad|qquad)(?![a-zA-Z])/
+const MATH_CHAR = /[0-9=+\-*/().,:;'<>|!~^_&]/
+
+// End index of a balanced {…} or […] group starting at s[i].
+function groupEnd(s, i) {
+  const open = s[i], close = open === '{' ? '}' : ']'
+  let depth = 0
+  for (let j = i; j < s.length; j++) {
+    if (s[j] === '\\') { j++; continue }
+    if (s[j] === open) depth++
+    else if (s[j] === close && --depth === 0) return j + 1
+  }
+  return s.length
+}
+
+// A short letter run (≤3) that is not an everyday English word is a maths
+// symbol (P, x, mv, mgh); anything else ends the maths run.
+const STOP = new Set('a an and the of to in on at by as or if it is be are was for has its not but can all two one use per via so we he she you how why who'.split(' '))
+const wordEnd = (s, i) => { let j = i; while (/[a-zA-Z]/.test(s[j] || '')) j++; return j }
+function isSymbol(s, i) {
+  const w = s.slice(i, wordEnd(s, i))
+  return w.length === 1 ? true : w.length <= 3 && !STOP.has(w.toLowerCase())
+}
+
+// End index of the maths run that starts with the command at s[i].
+function mathRun(s, i) {
+  let j = i
+  while (j < s.length) {
+    const c = s[j]
+    if (c === '\\' && /[a-zA-Z]/.test(s[j + 1] || '')) {
+      j++
+      while (j < s.length && /[a-zA-Z]/.test(s[j])) j++
+      while (s[j] === '{' || s[j] === '[') j = groupEnd(s, j)
+    } else if (c === '\\') {
+      j += 2                                      // \\ \, \{ …
+    } else if (c === '{') {
+      j = groupEnd(s, j)
+    } else if ((c === '_' || c === '^') && s[j + 1] === '{') {
+      j = groupEnd(s, j + 1)
+    } else if (c === ' ') {
+      // Keep going across a space only if maths follows it.
+      let k = j
+      while (s[k] === ' ') k++
+      const n = s[k]
+      if (n === '\\' || (n && MATH_CHAR.test(n) && n !== '.' && n !== ',') ||
+          (n && /[a-zA-Z]/.test(n) && isSymbol(s, k))) j = k
+      else break
+    } else if (MATH_CHAR.test(c)) {
+      j++
+    } else if (/[a-zA-Z]/.test(c) && isSymbol(s, j)) {
+      j = wordEnd(s, j)                           // maths symbol: P, Q, x, mv, mgh
+    } else break
+  }
+  return j
+}
+
+function wrapLine(line) {
+  if (/(?<!\\)\$/.test(line) || !LATEX_LINE.test(line)) return line
+  // A LaTeX line break at the end is just the newline that already follows.
+  let s = line.replace(/\s*\\\\\s*$/, '')
+  // Sentences typed as \text{…}/\textbf{…} (3+ words) at the top level of
+  // the line become plain text; \text inside a formula (an arrow label,
+  // a subscript) is left alone.
+  s = s.replace(/\\text(?:bf|it|rm)?\{([^{}]*)\}/g, (m, inner, at) => {
+    let depth = 0
+    for (let k = 0; k < at; k++) { if (s[k] === '{' || s[k] === '[') depth++; else if (s[k] === '}' || s[k] === ']') depth-- }
+    return depth === 0 && (inner.match(/[A-Za-z]{2,}/g) || []).length >= 3 ? ` ${inner.trim()} ` : m
+  })
+  if (!LATEX_LINE.test(s)) return s.replace(/ {2,}/g, ' ').trim()
+  let out = '', i = 0
+  while (i < s.length) {
+    if (s[i] === '\\' && /[a-zA-Z]/.test(s[i + 1] || '')) {
+      const end = mathRun(s, i)
+      const run = s.slice(i, end).trimEnd()
+      // Trailing space keeps a closing "\" from escaping the "$".
+      out += `$${run} $` + s.slice(i + run.length, end)
+      i = end
+    } else out += s[i++]
+  }
+  return out.replace(/ {2,}/g, ' ').trim()
+}
+
 function autoWrap(text) {
   if (typeof text !== 'string' || !text.includes('\\')) return text
-  const isTex = line => !/(?<!\\)\$/.test(line) && LATEX_LINE.test(line)
-  const lines = text.split('\n')
-  const out = []
-  for (let i = 0; i < lines.length; i++) {
-    if (!isTex(lines[i])) { out.push(lines[i]); continue }
-    // A line that is only \text{…} is a sentence, not maths: show it as
-    // ordinary text so it wraps with the card like any other sentence.
-    const only = lines[i].trim().match(/^\\text\{([^{}]*)\}\s*(?:\\\\)?\s*$/)
-    if (only) { out.push(only[1]); continue }
-    // A "\\" at a line end is a LaTeX line break: the next line belongs to
-    // the same equation. Otherwise each LaTeX line is its own equation.
-    const group = [lines[i].trim()]
-    while (i + 1 < lines.length && lines[i + 1].trim() &&
-           /\\\\\s*$/.test(group[group.length - 1])) {
-      group.push(lines[++i].trim())
-    }
-    // Trailing space keeps a closing "\\" from escaping the "$".
-    out.push(`$${group.join(' ')} $`)
-  }
-  return out.join('\n')
+  return text.split('\n').map(wrapLine).join('\n')
 }
 
 export function hasMath(text) {
