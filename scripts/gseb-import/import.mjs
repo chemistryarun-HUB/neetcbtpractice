@@ -59,21 +59,23 @@ for (const subj of GSEB_SUBJECTS) {
     let paper = (await q(sb.from('gseb_papers').select('*, gseb_questions(count), gseb_subjective(count)').match(key)))[0]
     const existingMcq = paper?.gseb_questions?.[0]?.count || 0
     const existingB = paper?.gseb_subjective?.[0]?.count || 0
-    if (paper && (existingMcq || existingB)) {
-      summary.push({ ...row, status: `ALREADY THERE (${existingMcq} MCQ, ${existingB} Part B) — left alone` })
+    const already = paper && (existingMcq || existingB)
+    if (!APPLY) {
+      summary.push({ ...row, status: already ? `ALREADY THERE (${existingMcq} MCQ, ${existingB} Part B) — questions left alone, would only add missing diagrams` : paper ? 'would fill empty paper' : 'would create' })
       continue
     }
-    if (!APPLY) { summary.push({ ...row, status: paper ? 'would fill empty paper' : 'would create' }); continue }
 
     if (!paper) {
       paper = (await q(sb.from('gseb_papers').insert({
         ...key, paper_code: subj.paperCode, duration_min: 60, mcq_count: 50, is_published: false,
       }).select()))[0]
     }
-    if (parsed.questions.length) {
+    // An existing paper keeps its questions (the admin may have edited them);
+    // it only gets diagrams on questions that have none yet.
+    if (!already && parsed.questions.length) {
       await q(sb.from('gseb_questions').upsert(parsed.questions.map(x => ({ ...x, paper_id: paper.id })), { onConflict: 'paper_id,q_no' }))
     }
-    if (partB.questions.length) {
+    if (!already && partB.questions.length) {
       await q(sb.from('gseb_subjective').upsert(partB.questions.map(x => ({ ...x, paper_id: paper.id })), { onConflict: 'paper_id,q_no' }))
       await q(sb.from('gseb_papers').update({ part_b_rules: partB.rules }).eq('id', paper.id))
     }
@@ -85,16 +87,18 @@ for (const subj of GSEB_SUBJECTS) {
       const m = img.match(/([AB])\s*(\d+)\.(png|jpe?g|webp|gif)$/i)
       if (!m) { failed.push(`${img} (name)`); continue }
       const table = m[1].toUpperCase() === 'A' ? 'gseb_questions' : 'gseb_subjective'
+      const target = (await q(sb.from(table).select('id, question_image').eq('paper_id', paper.id).eq('q_no', Number(m[2]))))[0]
+      if (!target) { failed.push(`${img} (no such question)`); continue }
+      if (target.question_image) continue // already has a diagram: keep it
       const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${m[3].toLowerCase()}`
       const { error } = await sb.storage.from('question-images')
         .upload(path, readFileSync(new URL(`images/${img}`, dir)), { contentType: 'image/png', upsert: false })
       if (error) { failed.push(`${img} (${error.message})`); continue }
       const { data: { publicUrl } } = sb.storage.from('question-images').getPublicUrl(path)
-      const hit = await q(sb.from(table).update({ question_image: publicUrl })
-        .eq('paper_id', paper.id).eq('q_no', Number(m[2])).select('id'))
-      if (hit.length) attached++; else failed.push(`${img} (no such question)`)
+      await q(sb.from(table).update({ question_image: publicUrl }).eq('id', target.id))
+      attached++
     }
-    summary.push({ ...row, status: `UPLOADED, ${attached}/${myImages.length} diagrams${failed.length ? ' — failed: ' + failed.join(', ') : ''}` })
+    summary.push({ ...row, status: `${already ? 'ALREADY THERE, questions kept' : 'UPLOADED'}, ${attached} new diagram(s)${failed.length ? ' — failed: ' + failed.join(', ') : ''}` })
   }
 }
 
