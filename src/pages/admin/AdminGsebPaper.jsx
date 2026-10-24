@@ -356,9 +356,9 @@ export default function AdminGsebPaper() {
             )}
             renderBody={(q, mode) => (
               <div style={{ background: '#fff', borderRadius: 14, border: '1px solid var(--gray-200)', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '2rem 2.25rem' }}>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', fontWeight: 600, marginBottom: '0.75rem' }}>
-                  Q{q.q_no}.{part === 'B' && ` (${q.marks} marks)`} <code style={{ marginLeft: '0.35rem', color: 'var(--primary)' }}>{qidOf(q)}</code>
-                </div>
+                {part === 'B' && (
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', fontWeight: 600, marginBottom: '0.75rem' }}>{q.marks} marks</div>
+                )}
                 {part === 'A' ? (
                   <>
                     <QuestionView q={q} mode={mode} size="full" />
