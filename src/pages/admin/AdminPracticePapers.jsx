@@ -133,7 +133,9 @@ const BLANK_FORM = {
   syllabus_physics: '', syllabus_chemistry: '', syllabus_botany: '', syllabus_zoology: '',
 }
 
-export default function AdminPracticePapers() {
+// Also the faculty Practice Papers page: with `facultyId` it lists and
+// creates only that faculty member's own papers.
+export default function AdminPracticePapers({ nav = NAV, facultyId = null }) {
   const [papers, setPapers] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
@@ -215,7 +217,12 @@ export default function AdminPracticePapers() {
 
   async function loadPapers() {
     setLoading(true)
-    const { data, error } = await supabase.from('practice_papers').select('*').order('created_at', { ascending: false })
+    let q = facultyId
+      ? supabase.from('practice_papers').select('*').eq('created_by', facultyId)
+      : supabase.from('practice_papers').select('*, author:created_by(name, faculty_code)')
+    let { data, error } = await q.order('created_at', { ascending: false })
+    // Before migration_faculty_portal.sql there is no created_by to join on.
+    if (error && !facultyId) ({ data, error } = await supabase.from('practice_papers').select('*').order('created_at', { ascending: false }))
     if (error) toast.error(error.message)
     setPapers(data || [])
     setLoading(false)
@@ -290,6 +297,7 @@ export default function AdminPracticePapers() {
         syllabus_chemistry: form.syllabus_chemistry,
         syllabus_botany: form.syllabus_botany,
         syllabus_zoology: form.syllabus_zoology,
+        ...(facultyId ? { created_by: facultyId } : {}),
       }
       const { error } = await supabase.from('practice_papers').insert([record])
       if (error) throw error
@@ -372,7 +380,7 @@ export default function AdminPracticePapers() {
 
   return (
     <div className="dashboard">
-      <Topbar links={NAV} />
+      <Topbar links={nav} />
       <div className="page-content">
         <div className="page-header">
           <h2>Practice Papers</h2>
@@ -416,7 +424,10 @@ export default function AdminPracticePapers() {
                   <div style={{ padding: '0.875rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', cursor: 'pointer' }}
                     onClick={() => openPaper(paper)}>
                     <div>
-                      <div style={{ fontWeight: 700 }}>{paper.name}</div>
+                      <div style={{ fontWeight: 700 }}>
+                        {paper.name}
+                        {paper.author && <span className="badge" style={{ marginLeft: '0.5rem', background: '#eef2ff', color: '#4338ca', fontWeight: 600 }}>by {paper.author.name} · {paper.author.faculty_code}</span>}
+                      </div>
                       <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
                         {total} questions · key {keyFilled}/{total} filled · {rows.length || (submissions[paper.id] ? 0 : '—')} submissions
                       </div>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 
@@ -21,9 +21,11 @@ import AdminKeyChanges from './pages/admin/AdminKeyChanges'
 
 import FacultyDashboard from './pages/faculty/FacultyDashboard'
 import FacultyStudents from './pages/faculty/FacultyStudents'
-import FacultyUploadQuestions from './pages/faculty/FacultyUploadQuestions'
+import FacultyQuestions from './pages/faculty/FacultyQuestions'
+import FacultyPerformance from './pages/faculty/FacultyPerformance'
+import FacultyPracticePapers from './pages/faculty/FacultyPracticePapers'
+import AdminFacultyReview from './pages/admin/AdminFacultyReview'
 import FacultyProfile from './pages/faculty/FacultyProfile'
-import StudentProgress from './pages/faculty/StudentProgress'
 
 import StudentDashboard from './pages/student/StudentDashboard'
 import TestPage from './pages/student/TestPage'
@@ -38,6 +40,12 @@ import GsebPartBPage from './pages/student/GsebPartBPage'
 import GsebChapterPage from './pages/student/GsebChapterPage'
 
 import './index.css'
+
+// Old faculty links to a single student now open that student in Performance.
+function OldStudentLink() {
+  const { studentId } = useParams()
+  return <Navigate to={`/faculty/performance?student=${studentId}`} replace />
+}
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { role, user, loading } = useAuth()
@@ -67,6 +75,7 @@ function AppRoutes() {
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />
       <Route path="/admin/faculty" element={<ProtectedRoute allowedRoles={['admin']}><AdminFaculty /></ProtectedRoute>} />
+      <Route path="/admin/faculty-review" element={<ProtectedRoute allowedRoles={['admin']}><AdminFacultyReview /></ProtectedRoute>} />
       <Route path="/admin/questions" element={<ProtectedRoute allowedRoles={['admin']}><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />
       <Route path="/admin/practice-papers" element={<ProtectedRoute allowedRoles={['admin']}><AdminPracticePapers /></ProtectedRoute>} />
@@ -80,9 +89,11 @@ function AppRoutes() {
       <Route path="/faculty/change-password" element={<ProtectedRoute allowedRoles={['faculty']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/faculty/dashboard" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyDashboard /></ProtectedRoute>} />
       <Route path="/faculty/students" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyStudents /></ProtectedRoute>} />
-      <Route path="/faculty/questions" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyUploadQuestions /></ProtectedRoute>} />
+      <Route path="/faculty/questions" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyQuestions /></ProtectedRoute>} />
       <Route path="/faculty/profile" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyProfile /></ProtectedRoute>} />
-      <Route path="/faculty/student/:studentId" element={<ProtectedRoute allowedRoles={['faculty']}><StudentProgress /></ProtectedRoute>} />
+      <Route path="/faculty/performance" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyPerformance /></ProtectedRoute>} />
+      <Route path="/faculty/practice-papers" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyPracticePapers /></ProtectedRoute>} />
+      <Route path="/faculty/student/:studentId" element={<OldStudentLink />} />
 
       <Route path="/student/change-password" element={<ProtectedRoute allowedRoles={['student']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />

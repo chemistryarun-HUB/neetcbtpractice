@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { Users, BookOpen, FileQuestion, BarChart3 } from 'lucide-react'
+import { Users, BookOpen, FileQuestion, BarChart3, Inbox } from 'lucide-react'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -18,6 +18,7 @@ const NAV = [
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ students: 0, faculty: 0, questions: 0, pending: 0 })
+  const [facultyReview, setFacultyReview] = useState(0)
 
   useEffect(() => {
     async function load() {
@@ -34,6 +35,11 @@ export default function AdminDashboard() {
       setStats({ students: s.count || 0, faculty: f.count || 0, questions: q.count || 0, pending: p.count || 0 })
     }
     load()
+    // Faculty drafts + suggested corrections waiting for the admin.
+    Promise.all([
+      supabase.from('questions').select('id', { count: 'exact', head: true }).eq('review_status', 'pending'),
+      supabase.from('question_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'open'),
+    ]).then(([a, b]) => setFacultyReview((a.count || 0) + (b.count || 0)))
   }, [])
 
   return (
@@ -83,7 +89,19 @@ export default function AdminDashboard() {
               <BookOpen size={32} color="var(--primary)" />
               <div>
                 <div style={{ fontWeight: 700 }}>Manage Faculty</div>
-                <div className="text-muted">Add / remove faculty</div>
+                <div className="text-muted">Add faculty · Faculty IDs</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/faculty-review" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', border: facultyReview ? '1.5px solid #f59e0b' : undefined }}>
+              <Inbox size={32} color={facultyReview ? '#d97706' : 'var(--primary)'} />
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  Faculty Review
+                  {facultyReview > 0 && <span className="badge" style={{ background: '#dc2626', color: '#fff', marginLeft: 6 }}>{facultyReview}</span>}
+                </div>
+                <div className="text-muted">New questions & corrections from faculty</div>
               </div>
             </div>
           </Link>

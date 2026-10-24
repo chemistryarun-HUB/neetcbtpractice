@@ -8,6 +8,7 @@ import {
 } from '../../lib/performanceMetrics'
 import { UNIT_LEVELS } from '../../lib/constants'
 import { LANGS } from '../../lib/reportI18n'
+import { useContactsHidden } from './contactsContext'
 // Statically imported: storage.js is already in the main bundle via the question
 // uploader, so dynamically importing it here would split nothing.
 import { uploadStudentReport } from '../../lib/storage'
@@ -35,6 +36,7 @@ const PILL = {
 // generates a PDF, uploads it and sends a link to it. Keeping the recipient
 // choice in the pill you press is what keeps either mode a single click.
 function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel, mode, lang, cachedUrl, onCacheUrl }) {
+  const contactsHidden = useContactsHidden()
   const [busy, setBusy] = useState(false)
 
   const nudge = () => buildActivityMessage({
@@ -97,6 +99,7 @@ function WaPills({ student, allAttempts, classAttempts, unitId, activeIdsByLevel
     }
   }
 
+  if (contactsHidden) return <span style={{ color: 'var(--gray-300)' }}>—</span>
   return (
     <div style={{ display: 'flex', gap: '0.2rem', justifyContent: 'center' }}>
       {targets.map(([letter, phone, who]) => {

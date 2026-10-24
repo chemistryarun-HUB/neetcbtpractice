@@ -5,22 +5,18 @@ import { supabase } from './supabase'
 // through the SECURITY DEFINER functions in migration_faculty_login.sql — the
 // table itself is admin-only, because it holds password hashes.
 
-// Display order is the order the subject letter is picked in when a faculty
-// member teaches across groups (Physics + Chemistry → FP…).
+// Display order is the order the ID letter is picked in when a faculty
+// member teaches more than one subject (Physics + Chemistry → FP…).
 export const FACULTY_SUBJECTS = [
-  { id: 'Physics',             group: 'P' },
-  { id: 'Physical Chemistry',  group: 'C' },
-  { id: 'Organic Chemistry',   group: 'C' },
-  { id: 'Inorganic Chemistry', group: 'C' },
-  { id: 'Complete Chemistry',  group: 'C' },
-  { id: 'Mathematics',         group: 'M' },
-  { id: 'Botany',              group: 'B' },
-  { id: 'Zoology',             group: 'B' },
-  { id: 'Biology',             group: 'B' },
+  { id: 'Physics',     group: 'P' },
+  { id: 'Chemistry',   group: 'C' },
+  { id: 'Mathematics', group: 'M' },
+  { id: 'Botany',      group: 'B' },
+  { id: 'Zoology',     group: 'Z' },
 ]
 export const FACULTY_EXAMS = ['JEE Main', 'JEE Advanced', 'NEET', 'CBSE Board', 'ICSE Board', 'Gujarat Board']
 
-export const GROUP_NAME = { P: 'Physics', C: 'Chemistry', M: 'Mathematics', B: 'Biology' }
+export const GROUP_NAME = { P: 'Physics', C: 'Chemistry', M: 'Mathematics', B: 'Botany', Z: 'Zoology' }
 
 export const digitsOnly = s => String(s || '').replace(/\D/g, '')
 
@@ -54,7 +50,7 @@ export function defaultFacultyPassword(phone) {
   return p.length === 10 ? p.slice(4, 8) : null
 }
 
-export const FACULTY_CODE_RE = /^F[PCMB]\d{6}[A-Z]?$/i
+export const FACULTY_CODE_RE = /^F[PCMBZ]\d{6}[A-Z]?$/i
 
 // Aadhaar is kept for records only; the UI never shows more than the last 4.
 export const maskAadhaar = a => {
@@ -106,6 +102,36 @@ export async function adminSetFacultyPassword(facultyId, password) {
   const { error } = await supabase.rpc('admin_set_faculty_password', { p_faculty_id: facultyId, p_password: password })
   if (error) throw rpcError(error)
 }
+
+export const FACULTY_NAV = [
+  { to: '/faculty/dashboard', label: 'Dashboard', end: true },
+  { to: '/faculty/students', label: 'Students' },
+  { to: '/faculty/performance', label: 'Performance' },
+  { to: '/faculty/questions', label: 'Questions' },
+  { to: '/faculty/practice-papers', label: 'Practice Papers' },
+  { to: '/faculty/profile', label: 'Profile' },
+]
+
+// ── Questions: drafts and suggestions (migration_faculty_portal.sql) ──
+export async function facultyAddQuestion(token, q) {
+  const { data, error } = await supabase.rpc('faculty_add_question', { p_token: token, p: q })
+  if (error) throw rpcError(error)
+  return data   // { id, qid }
+}
+export async function facultyUpdateQuestion(token, id, q) {
+  const { error } = await supabase.rpc('faculty_update_question', { p_token: token, p_id: id, p: q })
+  if (error) throw rpcError(error)
+}
+export async function facultySuggest(token, questionId, kind, proposedOption, message) {
+  const { error } = await supabase.rpc('faculty_suggest', { p_token: token, p_question_id: questionId, p_kind: kind, p_proposed: proposedOption, p_message: message })
+  if (error) throw rpcError(error)
+}
+export async function facultyMySuggestions(token) {
+  const { data, error } = await supabase.rpc('faculty_my_suggestions', { p_token: token })
+  if (error) throw rpcError(error)
+  return data || []
+}
+export const SUGGESTION_KINDS = { answer_key: 'Wrong answer key', typo: 'Typo / wording', image: 'Image problem', other: 'Other' }
 
 export const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 

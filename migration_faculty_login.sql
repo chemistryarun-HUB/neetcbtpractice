@@ -5,7 +5,7 @@
 --
 -- Faculty are created by the admin on Admin → Faculty. The app generates:
 --   Faculty ID  F + subject letter + YYMM + last two digits of the phone
---               (FC261045 = Chemistry, Oct 2026, phone ending 45)
+--               (FC261045 = Chemistry, Oct 2026, phone ending 45; letters P C M B Z)
 --   Password    digits 5–8 of the phone number; the faculty member must set
 --               their own on first login, exactly like a student.
 --

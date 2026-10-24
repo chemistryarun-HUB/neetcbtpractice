@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Plus, X, Search, Pencil, Trash2, KeyRound, Copy, MessageCircle, Check, UserCheck, UserX } from 'lucide-react'
+import { Plus, X, Search, Pencil, Trash2, KeyRound, Copy, MessageCircle, Check, UserCheck, UserX, Inbox } from 'lucide-react'
 import {
   FACULTY_SUBJECTS, FACULTY_EXAMS, GROUP_NAME, normalisePhone, digitsOnly, subjectLetter,
   facultyBaseCode, defaultFacultyPassword, maskAadhaar, adminNextFacultyCode, adminSetFacultyPassword,
@@ -31,6 +32,7 @@ const GROUP_TONE = {
   C: { bg: '#eff6ff', fg: '#1d4ed8' },
   M: { bg: '#fdf4ff', fg: '#a21caf' },
   B: { bg: '#f0fdf4', fg: '#15803d' },
+  Z: { bg: '#fff7ed', fg: '#c2410c' },
 }
 const groupOf = s => FACULTY_SUBJECTS.find(x => x.id === s)?.group
 
@@ -96,6 +98,7 @@ export default function AdminFaculty() {
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [credentials, setCredentials] = useState(null)   // { fac, password }
+  const [reviewCount, setReviewCount] = useState(0)
 
   async function load() {
     const { data, error } = await supabase.from('faculty').select(COLUMNS).order('created_at', { ascending: false })
@@ -103,7 +106,13 @@ export default function AdminFaculty() {
     setFaculty(data || [])
     setLoading(false)
   }
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    Promise.all([
+      supabase.from('questions').select('id', { count: 'exact', head: true }).eq('review_status', 'pending'),
+      supabase.from('question_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'open'),
+    ]).then(([a, b]) => setReviewCount((a.count || 0) + (b.count || 0)))
+  }, [])
 
   function openNew() { setForm(EMPTY); setEditing('new') }
   function openEdit(f) {
@@ -218,6 +227,10 @@ export default function AdminFaculty() {
               <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
               <input className="form-control" style={{ paddingLeft: 32, width: 240 }} placeholder="Search name, ID, phone, subject" value={query} onChange={e => setQuery(e.target.value)} />
             </div>
+            <Link to="/admin/faculty-review" className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Inbox size={16} /> Review queue
+              {reviewCount > 0 && <span className="badge" style={{ background: '#dc2626', color: '#fff' }}>{reviewCount}</span>}
+            </Link>
             <button className="btn btn-primary" onClick={openNew} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
               <Plus size={16} /> Add Faculty
             </button>
@@ -323,7 +336,7 @@ export default function AdminFaculty() {
                   <label>Exams * <span className="text-muted">(select all that apply)</span></label>
                   <div>
                     {FACULTY_EXAMS.map(x => (
-                      <Chip key={x} tone={{ bg: '#fff7ed', fg: '#c2410c' }} active={form.exams.includes(x)} onClick={() => toggle('exams', x)}>{x}</Chip>
+                      <Chip key={x} tone={{ bg: '#fefce8', fg: '#a16207' }} active={form.exams.includes(x)} onClick={() => toggle('exams', x)}>{x}</Chip>
                     ))}
                   </div>
                 </div>
@@ -342,7 +355,7 @@ export default function AdminFaculty() {
                   )}
                   <div className="text-muted" style={{ fontSize: '0.75rem', flex: '1 1 220px', lineHeight: 1.45 }}>
                     {isNew
-                      ? <>F + subject letter (P · C · M · B) + this year &amp; month + last 2 digits of the phone. Password = phone digits 5–8; they change it on first login.</>
+                      ? <>F + subject letter (P · C · M · B · Z) + this year &amp; month + last 2 digits of the phone. Password = phone digits 5–8; they change it on first login.</>
                       : <>The Faculty ID stays the same when you edit. Use the key icon in the list to reset the password.</>}
                   </div>
                 </div>

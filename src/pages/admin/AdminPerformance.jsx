@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
@@ -7,6 +8,7 @@ import StudentProfile from '../../components/performance/StudentProfile'
 import ClassLeaderboard from '../../components/performance/ClassLeaderboard'
 import ClassReport from '../../components/performance/ClassReport'
 import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
+import { ContactsHiddenContext } from '../../components/performance/contactsContext'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -22,13 +24,17 @@ const NAV = [
 
 const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'
 
-export default function AdminPerformance() {
+// Also the faculty Performance page: `nav`/`crumb` swap the chrome, and
+// `hideContacts` strips every phone number before it reaches the components.
+export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideContacts = false }) {
   const [students, setStudents] = useState([])
   const [attempts, setAttempts] = useState([])
   const [progressByStudent, setProgressByStudent] = useState({})
   const [loading, setLoading] = useState(true)
 
-  const [selectedStudentId, setSelectedStudentId] = useState(null)
+  // ?student=<id> opens that student straight away (linked from Students).
+  const [params] = useSearchParams()
+  const [selectedStudentId, setSelectedStudentId] = useState(params.get('student'))
   const [selectedClass, setSelectedClass] = useState('all')
   const [view, setView] = useState('profile')
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -42,7 +48,11 @@ export default function AdminPerformance() {
       // everyone.
       const { data: studentRows } = await supabase
         .from('students').select('*').order('name')
-      const rows = studentRows || []
+      const rows = (studentRows || []).map(s => {
+        if (!hideContacts) return s
+        const { phone_student: _a, phone_mother: _b, phone_father: _c, password_hash: _d, ...safe } = s
+        return safe
+      })
       setStudents(rows)
 
       const ids = rows.map(s => s.id)
@@ -101,8 +111,9 @@ export default function AdminPerformance() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
 
   return (
+    <ContactsHiddenContext.Provider value={hideContacts}>
     <div className="dashboard">
-      <Topbar links={NAV} />
+      <Topbar links={nav} />
       <div className="perf-shell">
         <StudentSidebar
           students={students}
@@ -122,7 +133,7 @@ export default function AdminPerformance() {
                 <Menu size={18} />
               </button>
               <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', margin: 0 }}>
-                <strong style={{ color: 'var(--gray-600)' }}>Admin</strong> / Students
+                <strong style={{ color: 'var(--gray-600)' }}>{crumb}</strong> / Students
                 {view === 'profile' && selectedStudent && <> / <strong style={{ color: 'var(--gray-600)' }}>{selectedStudent.name}</strong></>}
                 {view === 'leaderboard' && <> / <strong style={{ color: 'var(--gray-600)' }}>Leaderboard</strong></>}
                 {view === 'classReport' && <> / <strong style={{ color: 'var(--gray-600)' }}>Class Report</strong></>}
@@ -157,6 +168,7 @@ export default function AdminPerformance() {
                 progress={progressByStudent[selectedStudent.id]}
                 attempts={attemptsByStudent[selectedStudent.id] || []}
                 onOpenReview={setReviewAttempt}
+                showContactActions={!hideContacts}
               />
             ) : (
               <div className="empty-state">Select a student from the sidebar</div>
@@ -173,5 +185,6 @@ export default function AdminPerformance() {
         />
       )}
     </div>
+    </ContactsHiddenContext.Provider>
   )
 }

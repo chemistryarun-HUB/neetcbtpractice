@@ -4,14 +4,9 @@ import Topbar from '../../components/shared/Topbar'
 import { useAuth } from '../../hooks/useAuth'
 import { facultyUpdateProfile } from '../../lib/faculty'
 import toast from 'react-hot-toast'
+import { FACULTY_NAV } from '../../lib/faculty'
 import { KeyRound } from 'lucide-react'
 
-const NAV = [
-  { to: '/faculty/dashboard', label: 'Dashboard', end: true },
-  { to: '/faculty/students', label: 'Students' },
-  { to: '/faculty/questions', label: 'Questions' },
-  { to: '/faculty/profile', label: 'Profile' },
-]
 
 const chip = { display: 'inline-block', padding: '0.2rem 0.6rem', borderRadius: 999, fontSize: '0.78rem', fontWeight: 600, margin: '0 0.35rem 0.35rem 0' }
 
@@ -43,7 +38,7 @@ export default function FacultyProfile() {
 
   return (
     <div className="dashboard">
-      <Topbar links={NAV} />
+      <Topbar links={FACULTY_NAV} />
       <div className="page-content">
         <div className="page-header">
           <h2>My Profile</h2>

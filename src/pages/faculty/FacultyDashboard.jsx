@@ -1,70 +1,75 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Users, BarChart3, FileQuestion, ClipboardList, User } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { Users, FileQuestion, User } from 'lucide-react'
-
-const NAV = [
-  { to: '/faculty/dashboard', label: 'Dashboard', end: true },
-  { to: '/faculty/students', label: 'Students' },
-  { to: '/faculty/questions', label: 'Questions' },
-  { to: '/faculty/profile', label: 'Profile' },
-]
+import { FACULTY_NAV, facultyMySuggestions } from '../../lib/faculty'
 
 export default function FacultyDashboard() {
-  const { user } = useAuth()
-  const [stats, setStats] = useState({ students: 0, questions: 0 })
+  const { user, facultyToken } = useAuth()
+  const [stats, setStats] = useState({ students: '—', active: '—', drafts: '—', suggestions: '—', papers: '—' })
 
   useEffect(() => {
-    async function load() {
-      const [s, q] = await Promise.all([
-        supabase.from('students').select('id', { count: 'exact', head: true }).eq('added_by', user?.id),
-        supabase.from('questions').select('id', { count: 'exact', head: true }),
+    if (!user?.id) return
+    (async () => {
+      const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString()
+      const [s, a, d, p] = await Promise.all([
+        supabase.from('students').select('id', { count: 'exact', head: true }),
+        supabase.from('test_attempts').select('student_id').eq('submitted', true).gte('submitted_at', weekAgo).limit(5000),
+        supabase.from('questions').select('id', { count: 'exact', head: true }).eq('uploaded_by', user.id).eq('is_published', false).eq('review_status', 'pending'),
+        supabase.from('practice_papers').select('id', { count: 'exact', head: true }).eq('created_by', user.id),
       ])
-      setStats({ students: s.count || 0, questions: q.count || 0 })
-    }
-    if (user?.id) load()
+      let open = '—'
+      try { open = (await facultyMySuggestions(facultyToken)).filter(x => x.status === 'open').length } catch { /* not migrated yet */ }
+      setStats({
+        students: s.count ?? '—',
+        active: a.data ? new Set(a.data.map(r => r.student_id)).size : '—',
+        drafts: d.error ? '—' : d.count ?? 0,
+        suggestions: open,
+        papers: p.error ? '—' : p.count ?? 0,
+      })
+    })()
   }, [user?.id])
+
+  const cards = [
+    { to: '/faculty/performance', icon: BarChart3, title: 'Student Performance', sub: 'Scores, weak units, leaderboard' },
+    { to: '/faculty/students', icon: Users, title: 'Students', sub: 'All students and their last practice' },
+    { to: '/faculty/questions', icon: FileQuestion, title: 'Questions', sub: 'Browse, suggest corrections, add drafts' },
+    { to: '/faculty/practice-papers', icon: ClipboardList, title: 'Practice Papers', sub: 'Make papers and see submissions' },
+    { to: '/faculty/profile', icon: User, title: 'My Profile', sub: 'Details and password' },
+  ]
 
   return (
     <div className="dashboard">
-      <Topbar links={NAV} />
+      <Topbar links={FACULTY_NAV} />
       <div className="page-content">
-        <div className="page-header">
-          <h2>Welcome, {user?.name || 'Faculty'} 👋</h2>
+        <div className="page-header" style={{ alignItems: 'flex-end' }}>
+          <div>
+            <h2 style={{ marginBottom: 2 }}>Welcome, {user?.name || 'Faculty'} 👋</h2>
+            <div className="text-muted" style={{ fontSize: '0.85rem' }}>
+              <code>{user?.faculty_code}</code>{(user?.subjects || []).length ? ` · ${user.subjects.join(', ')}` : ''}{(user?.exams || []).length ? ` · ${user.exams.join(', ')}` : ''}
+            </div>
+          </div>
         </div>
 
         <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-value">{stats.students}</div>
-            <div className="stat-label">My Students</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{stats.questions}</div>
-            <div className="stat-label">Questions in Bank</div>
-          </div>
+          <div className="stat-card"><div className="stat-value">{stats.students}</div><div className="stat-label">Students</div></div>
+          <div className="stat-card"><div className="stat-value">{stats.active}</div><div className="stat-label">Practised this week</div></div>
+          <div className="stat-card"><div className="stat-value">{stats.drafts}</div><div className="stat-label">My drafts awaiting review</div></div>
+          <div className="stat-card"><div className="stat-value">{stats.suggestions}</div><div className="stat-label">My open corrections</div></div>
+          <div className="stat-card"><div className="stat-value">{stats.papers}</div><div className="stat-label">My practice papers</div></div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-          <Link to="/faculty/students" style={{ textDecoration: 'none' }}>
-            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
-              <Users size={32} color="var(--primary)" />
-              <div><div style={{ fontWeight: 700 }}>Manage Students</div><div className="text-muted">Add & track students</div></div>
-            </div>
-          </Link>
-          <Link to="/faculty/questions" style={{ textDecoration: 'none' }}>
-            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
-              <FileQuestion size={32} color="var(--primary)" />
-              <div><div style={{ fontWeight: 700 }}>Upload Questions</div><div className="text-muted">Add to question bank</div></div>
-            </div>
-          </Link>
-          <Link to="/faculty/profile" style={{ textDecoration: 'none' }}>
-            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
-              <User size={32} color="var(--primary)" />
-              <div><div style={{ fontWeight: 700 }}>My Profile</div><div className="text-muted">Update your info</div></div>
-            </div>
-          </Link>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1rem' }}>
+          {cards.map(({ to, icon: Icon, title, sub }) => (
+            <Link key={to} to={to} style={{ textDecoration: 'none' }}>
+              <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', height: '100%' }}>
+                <Icon size={30} color="var(--primary)" />
+                <div><div style={{ fontWeight: 700, color: 'var(--gray-800)' }}>{title}</div><div className="text-muted">{sub}</div></div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
