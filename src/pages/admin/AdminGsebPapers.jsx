@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { Plus, Shuffle, BarChart3 } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_SESSION_LABELS, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
+import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_EXAM_LABELS, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -117,7 +117,7 @@ export default function AdminGsebPapers() {
                   <label style={{ fontWeight: 600 }}>Session</label>
                   <select className="form-control" value={form.session}
                     onChange={e => setForm(f => ({ ...f, session: e.target.value }))}>
-                    {Object.entries(GSEB_SESSION_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                    {Object.entries(GSEB_EXAM_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
                 <div className="form-group" style={{ margin: 0 }}>
@@ -173,7 +173,7 @@ export default function AdminGsebPapers() {
             <div className="table-wrap">
               <table>
                 <thead>
-                  <tr><th>Subject</th><th>Year</th><th>Medium</th><th>Set</th><th>Questions</th><th>Key</th><th>Status</th></tr>
+                  <tr><th>Subject</th><th>Year</th><th>Medium</th><th>Questions</th><th>Key</th><th>Status</th></tr>
                 </thead>
                 <tbody>
                   {shown.map(p => (
@@ -182,9 +182,8 @@ export default function AdminGsebPapers() {
                         <Link to={`/admin/gseb/${p.id}`} style={{ fontWeight: 600 }}>{GSEB_SUBJECT_LABELS[p.subject]}</Link>
                         {p.paper_code && <span style={{ color: 'var(--gray-500)' }}> ({p.paper_code})</span>}
                       </td>
-                      <td>{GSEB_SESSION_LABELS[p.session]?.split(' ')[0]} {p.year}</td>
+                      <td>{p.year} · {GSEB_EXAM_LABELS[p.session]}</td>
                       <td>{GSEB_MEDIUM_LABELS[p.medium]}</td>
-                      <td>{p.set_no || '—'}</td>
                       <td>{counts[p.id] || 0}/{p.mcq_count}</td>
                       <td>{p.key_status === 'final' ? 'Final' : 'Provisional'}</td>
                       <td>
