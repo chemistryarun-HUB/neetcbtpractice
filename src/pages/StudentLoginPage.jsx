@@ -4,11 +4,13 @@ import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import { ArrowLeft } from 'lucide-react'
+import { facultyLogin, FACULTY_CODE_RE } from '../lib/faculty'
 
 export default function StudentLoginPage() {
   const [params] = useSearchParams()
   const isAdmin = params.get('admin') === '1'
-  const { adminLogin, studentLogin, role } = useAuth()
+  const isFacultyMode = params.get('faculty') === '1'
+  const { adminLogin, studentLogin, facultySignIn, role, user } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({ identifier: '', password: '' })
@@ -23,7 +25,7 @@ export default function StudentLoginPage() {
   // (The other half was the session dying with the tab — see lib/session.js.)
   if (role === 'student') return <Navigate to="/student/dashboard" replace />
   if (role === 'admin') return <Navigate to="/admin" replace />
-  if (role === 'faculty') return <Navigate to="/faculty/dashboard" replace />
+  if (role === 'faculty') return <Navigate to={user?.must_change_password ? '/faculty/change-password' : '/faculty/dashboard'} replace />
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -35,6 +37,12 @@ export default function StudentLoginPage() {
         // replace, not push — see the redirect above; this keeps the login page
         // out of history entirely so Back skips over it.
         navigate('/admin', { replace: true })
+      } else if (isFacultyMode || FACULTY_CODE_RE.test(form.identifier.trim())) {
+        // Faculty IDs (FC261045) never look like a roll number, so a faculty
+        // member who opens the student login still gets in.
+        const result = await facultyLogin(form.identifier, form.password)
+        facultySignIn(result, remember)
+        navigate(result.faculty.must_change_password ? '/faculty/change-password' : '/faculty/dashboard', { replace: true })
       } else {
         const { data, error } = await supabase
           .from('students')
@@ -65,17 +73,18 @@ export default function StudentLoginPage() {
       <div className="auth-card">
         <div className="auth-logo">
           <h1>NEETCBT</h1>
-          <p>{isAdmin ? 'Admin Portal' : 'Student Portal'}</p>
+          <p>{isAdmin ? 'Admin Portal' : isFacultyMode ? 'Faculty Portal' : 'Student Portal'}</p>
         </div>
 
-        <p className="auth-title">{isAdmin ? 'Admin Login' : 'Student Login'}</p>
+        <p className="auth-title">{isAdmin ? 'Admin Login' : isFacultyMode ? 'Faculty Login' : 'Student Login'}</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>{isAdmin ? 'Email' : 'Roll Number'}</label>
+            <label>{isAdmin ? 'Email' : isFacultyMode ? 'Faculty ID' : 'Roll Number'}</label>
             <input
               className="form-control"
-              placeholder={isAdmin ? 'admin@neetcbt.in' : 'Enter Roll Number'}
+              placeholder={isAdmin ? 'admin@neetcbt.in' : isFacultyMode ? 'e.g. FC261045' : 'Enter Roll Number'}
+              autoCapitalize={isFacultyMode ? 'characters' : undefined}
               value={form.identifier}
               onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
               required

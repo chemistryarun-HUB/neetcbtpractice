@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 
 import LoginPage from './pages/LoginPage'
 import StudentLoginPage from './pages/StudentLoginPage'
-import FacultyLoginPage from './pages/FacultyLoginPage'
 import ShortLinkRedirect from './pages/ShortLinkRedirect'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -24,7 +23,6 @@ import FacultyDashboard from './pages/faculty/FacultyDashboard'
 import FacultyStudents from './pages/faculty/FacultyStudents'
 import FacultyUploadQuestions from './pages/faculty/FacultyUploadQuestions'
 import FacultyProfile from './pages/faculty/FacultyProfile'
-import FacultySetup from './pages/faculty/FacultySetup'
 import StudentProgress from './pages/faculty/StudentProgress'
 
 import StudentDashboard from './pages/student/StudentDashboard'
@@ -42,9 +40,14 @@ import GsebChapterPage from './pages/student/GsebChapterPage'
 import './index.css'
 
 function ProtectedRoute({ children, allowedRoles }) {
-  const { role, loading } = useAuth()
+  const { role, user, loading } = useAuth()
+  const location = useLocation()
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
   if (!role || !allowedRoles.includes(role)) return <Navigate to="/" replace />
+  // A faculty member still on the admin-issued password goes nowhere else first.
+  if (role === 'faculty' && user?.must_change_password && location.pathname !== '/faculty/change-password') {
+    return <Navigate to="/faculty/change-password" replace />
+  }
   return children
 }
 
@@ -59,7 +62,7 @@ function AppRoutes() {
           from WhatsApp has no NEETCBT account at all. See lib/shortLinks.js. */}
       <Route path="/r/:code" element={<ShortLinkRedirect />} />
       <Route path="/student/login" element={<StudentLoginPage />} />
-      <Route path="/faculty/login" element={<FacultyLoginPage />} />
+      <Route path="/faculty/login" element={<Navigate to="/student/login?faculty=1" replace />} />
 
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />
@@ -74,7 +77,7 @@ function AppRoutes() {
       <Route path="/admin/videos" element={<ProtectedRoute allowedRoles={['admin']}><AdminVideos /></ProtectedRoute>} />
       <Route path="/admin/key-changes" element={<ProtectedRoute allowedRoles={['admin']}><AdminKeyChanges /></ProtectedRoute>} />
 
-      <Route path="/faculty/setup" element={<FacultySetup />} />
+      <Route path="/faculty/change-password" element={<ProtectedRoute allowedRoles={['faculty']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/faculty/dashboard" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyDashboard /></ProtectedRoute>} />
       <Route path="/faculty/students" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyStudents /></ProtectedRoute>} />
       <Route path="/faculty/questions" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyUploadQuestions /></ProtectedRoute>} />

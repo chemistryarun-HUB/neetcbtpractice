@@ -13,6 +13,9 @@
 const ROLE_KEY = 'neetcbt_role'
 const STUDENT_KEY = 'neetcbt_student'
 const EXPIRES_KEY = 'neetcbt_expires'
+// A faculty session is the profile plus the server-side session token from
+// faculty_login (migration_faculty_login.sql) — never the password.
+const FACULTY_KEY = 'neetcbt_faculty'
 
 // A remembered session is not forever. Long enough that a student never thinks
 // about it during a course, short enough that one left on a shared computer
@@ -45,6 +48,7 @@ export function clearSession() {
       s.removeItem(ROLE_KEY)
       s.removeItem(STUDENT_KEY)
       s.removeItem(EXPIRES_KEY)
+      s.removeItem(FACULTY_KEY)
     } catch { /* private mode — nothing to clear */ }
   }
 }
@@ -57,6 +61,27 @@ export function saveStudentSession(student, remember) {
     store.setItem(STUDENT_KEY, JSON.stringify(withoutCredentials(student)))
     if (remember) store.setItem(EXPIRES_KEY, String(Date.now() + REMEMBER_DAYS * 864e5))
   } catch { /* storage unavailable; the session just won't outlive the page */ }
+}
+
+export function saveFacultySession(faculty, token, remember) {
+  clearSession()
+  const store = remember ? localStorage : sessionStorage
+  try {
+    store.setItem(ROLE_KEY, 'faculty')
+    store.setItem(FACULTY_KEY, JSON.stringify({ faculty, token }))
+    if (remember) store.setItem(EXPIRES_KEY, String(Date.now() + REMEMBER_DAYS * 864e5))
+  } catch { /* storage unavailable */ }
+}
+
+export function updateStoredFaculty(faculty) {
+  for (const s of stores()) {
+    try {
+      if (s.getItem(ROLE_KEY) === 'faculty') {
+        const cur = JSON.parse(s.getItem(FACULTY_KEY) || 'null')
+        if (cur) s.setItem(FACULTY_KEY, JSON.stringify({ ...cur, faculty }))
+      }
+    } catch { /* ignore */ }
+  }
 }
 
 // Keeps the stored copy in step with an updated student row (e.g. after a
@@ -94,6 +119,12 @@ export function loadSession() {
     // set by hand in devtools. Admin now rides on a Supabase Auth session
     // (see hooks/useAuth.jsx), so a leftover flag is just cleared.
     if (role === 'admin') { clearSession(); return null }
+    if (role === 'faculty') {
+      try {
+        const v = JSON.parse(store.getItem(FACULTY_KEY) || 'null')
+        if (v?.faculty && v?.token) return { role: 'faculty', faculty: v.faculty, token: v.token }
+      } catch { /* corrupt entry */ }
+    }
     if (role === 'student') {
       try {
         const student = JSON.parse(raw || 'null')

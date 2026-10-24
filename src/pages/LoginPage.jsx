@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { GraduationCap, Shield, ArrowRight, LogOut } from 'lucide-react'
+import { GraduationCap, Shield, ArrowRight, LogOut, BookOpen } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 const DASHBOARD_FOR = {
   student: '/student/dashboard',
   admin: '/admin',
-  faculty: '/faculty',
+  faculty: '/faculty/dashboard',
 }
 
 export default function LoginPage() {
@@ -30,7 +30,7 @@ export default function LoginPage() {
           <h1>NEETCBT</h1>
           <p className="tagline">
             Signed in as <strong>{user?.name || user?.email}</strong>
-            {user?.roll_number ? ` (${user.roll_number})` : ''}
+            {user?.roll_number ? ` (${user.roll_number})` : user?.faculty_code ? ` (${user.faculty_code})` : ''}
           </p>
 
           <div className="role-buttons">
@@ -67,6 +67,14 @@ export default function LoginPage() {
             <div style={{ textAlign: 'left' }}>
               <div>Student Login</div>
               <div style={{ fontSize: '0.8rem', fontWeight: 400, opacity: 0.85 }}>Login with Roll Number</div>
+            </div>
+          </Link>
+
+          <Link to="/student/login?faculty=1" className="role-btn faculty">
+            <BookOpen size={24} />
+            <div style={{ textAlign: 'left' }}>
+              <div>Faculty Login</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 400, opacity: 0.85 }}>Login with Faculty ID</div>
             </div>
           </Link>
 

@@ -3,9 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
+import { facultyChangePassword } from '../../lib/faculty'
 
 export default function ChangePassword() {
-  const { user, updateStudentUser } = useAuth()
+  // Shared by students and faculty: both start on a password the admin knows
+  // and set their own here.
+  const { user, role, facultyToken, updateStudentUser, updateFacultyUser } = useAuth()
+  const isFaculty = role === 'faculty'
+  const firstLogin = isFaculty ? user?.must_change_password : user?.is_first_login
   const navigate = useNavigate()
   const [form, setForm] = useState({ newPassword: '', confirm: '' })
   const [loading, setLoading] = useState(false)
@@ -18,6 +23,13 @@ export default function ChangePassword() {
 
     setLoading(true)
     try {
+      if (isFaculty) {
+        const fresh = await facultyChangePassword(facultyToken, form.newPassword)
+        updateFacultyUser(fresh)
+        toast.success('Password changed successfully!')
+        navigate('/faculty/dashboard', { replace: true })
+        return
+      }
       const { error } = await supabase.from('students')
         .update({ password_hash: form.newPassword, is_first_login: false })
         .eq('id', user.id)
@@ -42,12 +54,12 @@ export default function ChangePassword() {
       <div className="auth-card">
         <div className="auth-logo">
           <h1>NEETCBT</h1>
-          <p>First Login — Change Password</p>
+          <p>{firstLogin ? 'First Login — Change Password' : 'Change Password'}</p>
         </div>
 
-        <div style={{ background: '#fef9c3', border: '1.5px solid #d97706', borderRadius: 'var(--radius)', padding: '0.875rem', marginBottom: '1.5rem', fontSize: '0.875rem', color: '#92400e' }}>
+        {firstLogin && <div style={{ background: '#fef9c3', border: '1.5px solid #d97706', borderRadius: 'var(--radius)', padding: '0.875rem', marginBottom: '1.5rem', fontSize: '0.875rem', color: '#92400e' }}>
           This is your first login. Please set a new password to continue.
-        </div>
+        </div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
