@@ -155,7 +155,14 @@ export default function AdminFaculty() {
         const code = await adminNextFacultyCode(previewCode)
         const { data, error } = await supabase.from('faculty').insert({ ...row, faculty_code: code, is_active: true }).select(COLUMNS).single()
         if (error) throw error
-        await adminSetFacultyPassword(data.id, previewPw)
+        try {
+          await adminSetFacultyPassword(data.id, previewPw)
+        } catch (pwErr) {
+          // A faculty row without a password can never log in — undo it
+          // rather than leave a half-made account behind.
+          await supabase.from('faculty').delete().eq('id', data.id)
+          throw new Error(`Could not set the password, so the faculty was not created: ${pwErr.message}`)
+        }
         setEditing(null)
         setCredentials({ fac: data, password: previewPw })
         toast.success(`${data.name} added as ${data.faculty_code}`)
