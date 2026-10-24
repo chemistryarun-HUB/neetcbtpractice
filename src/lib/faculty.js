@@ -135,14 +135,18 @@ export const SUGGESTION_KINDS = { answer_key: 'Wrong answer key', typo: 'Typo / 
 
 export const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 
-export function facultyWhatsAppUrl({ phone, name, faculty_code }, password) {
+// The password is only ever stored hashed, but until the faculty member sets
+// their own it is still the admin-issued one (phone digits 5–8), so the
+// message can include it. After that they log in with what they chose.
+export function facultyWhatsAppUrl({ phone, name, faculty_code, must_change_password }, password) {
+  const pw = password || (must_change_password !== false ? defaultFacultyPassword(phone) : null)
   const lines = [
     `Hello ${name},`,
     `Your NEETCBT faculty login:`,
     `Faculty ID: ${faculty_code}`,
-    password ? `Password: ${password}` : null,
+    pw ? `Password: ${pw}` : `Password: the one you set (ask the admin to reset it if you forgot)`,
     `Login: ${LOGIN_URL}`,
-    password ? `You will be asked to set your own password on first login.` : null,
+    pw ? `You will be asked to set your own password on first login.` : null,
   ].filter(Boolean)
   return `https://wa.me/91${normalisePhone(phone)}?text=${encodeURIComponent(lines.join('\n'))}`
 }

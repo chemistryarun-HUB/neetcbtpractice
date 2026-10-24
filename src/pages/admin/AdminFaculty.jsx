@@ -81,7 +81,7 @@ function CredentialCard({ fac, password, onClose }) {
             </div>
             <div style={{ fontSize: '0.78rem', opacity: 0.85, marginTop: '0.6rem' }}>Digits 5–8 of their phone number. They must set their own password on first login.</div>
           </div>
-          <a href={facultyWhatsAppUrl(fac, password)} target="_blank" rel="noreferrer" className="btn btn-success" style={{ width: '100%', justifyContent: 'center', display: 'flex', gap: '0.4rem' }}>
+          <a href={facultyWhatsAppUrl(fac, password)} target="_blank" rel="noreferrer" className="btn" style={{ width: '100%', justifyContent: 'center', display: 'flex', gap: '0.4rem', background: '#25d366', color: '#fff' }}>
             <MessageCircle size={16} /> Send on WhatsApp
           </a>
         </div>
@@ -278,7 +278,8 @@ export default function AdminFaculty() {
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <button className="btn btn-ghost btn-sm" title="Edit" onClick={() => openEdit(f)}><Pencil size={14} /></button>
-                        <a className="btn btn-ghost btn-sm" title="Send Faculty ID on WhatsApp" href={facultyWhatsAppUrl(f)} target="_blank" rel="noreferrer"><MessageCircle size={14} /></a>
+                        <a className="btn btn-sm" title={f.must_change_password ? 'Send Faculty ID and password on WhatsApp' : 'Send Faculty ID on WhatsApp (they have set their own password)'} href={facultyWhatsAppUrl(f)} target="_blank" rel="noreferrer"
+                          style={{ background: '#25d366', color: '#fff', margin: '0 0.15rem' }}><MessageCircle size={14} /></a>
                         <button className="btn btn-ghost btn-sm" title="Reset password" onClick={() => resetPassword(f)}><KeyRound size={14} /></button>
                         <button className="btn btn-ghost btn-sm" title={f.is_active ? 'Disable login' : 'Enable login'} onClick={() => toggleActive(f)}>
                           {f.is_active ? <UserX size={14} /> : <UserCheck size={14} />}
