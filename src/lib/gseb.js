@@ -278,15 +278,15 @@ export function chapterBreakdown(subject, questions, statusOf) {
 // Question ID, like the NEET bank's Q ID but built from the paper, so nothing
 // is typed or stored: G + subject letter + 2-digit year + exam (M = main,
 // S = supplementary; letters, not months, since the months move year to year)
-// + part + 3-digit Q no. Chemistry March 2024 Part A Q7 → "GC24MA007". A
+// + part + 2-digit Q no. Chemistry March 2024 Part A Q7 → "GC24MA07". A
 // Gujarati paper or a numbered set gets a suffix ("-GU", "-SET2") so two papers
 // of the same exam never share an ID.
 export function gsebQid(paper, part, qNo) {
-  if (!paper?.subject || !paper.year) return `${part}${String(qNo).padStart(3, '0')}`
+  if (!paper?.subject || !paper.year) return `${part}${String(qNo).padStart(2, '0')}`
   const subj = { physics: 'P', chemistry: 'C', biology: 'B', maths: 'M' }[paper.subject] || '?'
   const sess = paper.session === 'july' ? 'S' : 'M'
   const extra = (paper.medium && paper.medium !== 'en' ? `-${paper.medium.toUpperCase()}` : '') + (paper.set_no ? `-SET${paper.set_no}` : '')
-  return `G${subj}${String(paper.year).slice(-2)}${sess}${part}${String(qNo).padStart(3, '0')}${extra}`
+  return `G${subj}${String(paper.year).slice(-2)}${sess}${part}${String(qNo).padStart(2, '0')}${extra}`
 }
 
 // "March 2026" tag shown next to a question pulled out of its paper.

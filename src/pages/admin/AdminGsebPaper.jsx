@@ -486,7 +486,7 @@ export default function AdminGsebPaper() {
                     <th style={{ width: '36px' }} onClick={e => e.stopPropagation()}>
                       <input type="checkbox" checked={allVisibleTicked} onChange={toggleVisible} title="Tick all listed" aria-label="Tick all listed" />
                     </th>
-                    <th style={{ width: '120px' }}>Q ID</th>
+                    <th style={{ width: '110px' }}>Q ID</th>
                     {part === 'B' && <th style={{ width: '64px' }}>Section</th>}
                     {part === 'B' && <th style={{ width: '64px' }}>Marks</th>}
                     <th style={{ width: '220px' }}>Chapter</th>
