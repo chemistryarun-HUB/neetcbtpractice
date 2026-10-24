@@ -12,7 +12,7 @@ import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
 import { correctOptionKey } from '../../lib/questionOptions'
-import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems, ruleLabel, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
+import { chaptersOf, paperTitle, parseGsebQuestionsFile, publishProblems, ruleLabel, gsebQid, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -207,13 +207,14 @@ export default function AdminGsebPaper() {
 
   const part = tab === 'B' ? 'B' : 'A'
   const rows = part === 'A' ? questions : subjective
+  const qidOf = q => gsebQid(paper, part, q.q_no)
   const term = search.trim().toLowerCase()
   const visible = rows.filter(q =>
     (!chapterFilter || String(q.chapter_no || '') === chapterFilter) &&
     (statusFilter === 'all' || (statusFilter === 'check' ? needsCheck(q, part) : !!q.question_image)) &&
-    (!term || String(q.q_no) === term || (q.question || '').toLowerCase().includes(term)))
+    (!term || String(q.q_no) === term || qidOf(q).toLowerCase() === term || (q.question || '').toLowerCase().includes(term)))
   const checkCount = rows.filter(q => needsCheck(q, part)).length
-  const tag = q => `${part === 'A' ? 'Part A' : 'Part B'} · Q${q.q_no}`
+  const tag = q => `${qidOf(q)} · ${part === 'A' ? 'Part A' : 'Part B'} Q${q.q_no}`
 
   const allVisibleTicked = visible.length > 0 && visible.every(q => selected.has(q.id))
   function toggleRow(id) {
@@ -356,7 +357,7 @@ export default function AdminGsebPaper() {
             renderBody={(q, mode) => (
               <div style={{ background: '#fff', borderRadius: 14, border: '1px solid var(--gray-200)', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '2rem 2.25rem' }}>
                 <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', fontWeight: 600, marginBottom: '0.75rem' }}>
-                  Q{q.q_no}.{part === 'B' && ` (${q.marks} marks)`}
+                  Q{q.q_no}.{part === 'B' && ` (${q.marks} marks)`} <code style={{ marginLeft: '0.35rem', color: 'var(--primary)' }}>{qidOf(q)}</code>
                 </div>
                 {part === 'A' ? (
                   <>
@@ -431,7 +432,7 @@ export default function AdminGsebPaper() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: '200px' }}>
                   <Search size={16} />
                   <input className="form-control" style={{ border: 'none', boxShadow: 'none', padding: 0, fontSize: '1rem' }}
-                    placeholder="Search by Q No or question text…" value={search} onChange={e => setSearch(e.target.value)} />
+                    placeholder="Search by Q ID, Q No or question text…" value={search} onChange={e => setSearch(e.target.value)} />
                 </div>
                 <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{visible.length} questions</span>
                 {visible.length > 0 && (
@@ -485,7 +486,7 @@ export default function AdminGsebPaper() {
                     <th style={{ width: '36px' }} onClick={e => e.stopPropagation()}>
                       <input type="checkbox" checked={allVisibleTicked} onChange={toggleVisible} title="Tick all listed" aria-label="Tick all listed" />
                     </th>
-                    <th style={{ width: '64px' }}>Q No</th>
+                    <th style={{ width: '120px' }}>Q ID</th>
                     {part === 'B' && <th style={{ width: '64px' }}>Section</th>}
                     {part === 'B' && <th style={{ width: '64px' }}>Marks</th>}
                     <th style={{ width: '220px' }}>Chapter</th>
@@ -505,7 +506,7 @@ export default function AdminGsebPaper() {
                         <td onClick={e => e.stopPropagation()}>
                           <input type="checkbox" checked={selected.has(q.id)} onChange={() => toggleRow(q.id)} aria-label={`Tick Q${q.q_no}`} />
                         </td>
-                        <td><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>Q{q.q_no}</code></td>
+                        <td title={`Q${q.q_no}`}><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>{qidOf(q)}</code></td>
                         {part === 'B' && <td style={cell}>{q.section}</td>}
                         {part === 'B' && <td style={cell}>{q.marks}</td>}
                         <td style={{ ...cell, ...clip, maxWidth: '220px', color: q.chapter_no ? 'var(--gray-500)' : '#b45309' }} title={chapterName(q.chapter_no)}>
