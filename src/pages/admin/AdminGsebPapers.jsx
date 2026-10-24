@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { Plus, Shuffle, BarChart3 } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_EXAM_LABELS, GSEB_SUBJECT_LABELS } from '../../lib/gseb'
+import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, GSEB_EXAM_LABELS, GSEB_SUBJECT_LABELS, paperExam } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -182,7 +182,7 @@ export default function AdminGsebPapers() {
                         <Link to={`/admin/gseb/${p.id}`} style={{ fontWeight: 600 }}>{GSEB_SUBJECT_LABELS[p.subject]}</Link>
                         {p.paper_code && <span style={{ color: 'var(--gray-500)' }}> ({p.paper_code})</span>}
                       </td>
-                      <td>{p.year} · {GSEB_EXAM_LABELS[p.session]}</td>
+                      <td>{paperExam(p)}</td>
                       <td>{GSEB_MEDIUM_LABELS[p.medium]}</td>
                       <td>{counts[p.id] || 0}/{p.mcq_count}</td>
                       <td>{p.key_status === 'final' ? 'Final' : 'Provisional'}</td>

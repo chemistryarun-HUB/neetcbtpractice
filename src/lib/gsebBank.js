@@ -19,7 +19,7 @@ async function fetchAll(build) {
 
 /**
  * { papers, mcq, subjective } for one subject. Each question carries its
- * paper as `paper` (year, session, set_no) so it can be tagged "March 2026".
+ * paper as `paper` (year, session, set_no) so it can be tagged "2026 · Main Paper".
  * Pass narrower selects when only counts are needed.
  */
 export async function fetchGsebBank(subject, { mcqSelect = '*', subjectiveSelect = '*' } = {}) {

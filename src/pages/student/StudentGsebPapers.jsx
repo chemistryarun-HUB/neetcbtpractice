@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { LogOut, ArrowLeft, PlayCircle, FileText } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
-import { GSEB_SUBJECTS, GSEB_SESSION_LABELS, GSEB_MEDIUM_LABELS } from '../../lib/gseb'
+import { GSEB_SUBJECTS, GSEB_MEDIUM_LABELS, paperExam } from '../../lib/gseb'
 import { GsebChapterList } from './GsebBankViews'
 
 const VIEWS = [
@@ -108,7 +108,7 @@ export default function StudentGsebPapers() {
                 <div key={p.id} className="card card-body" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                   <div>
                     <div style={{ fontWeight: 800, fontSize: '1.125rem' }}>
-                      {GSEB_SESSION_LABELS[p.session]?.split(' ')[0]} {p.year}
+                      {paperExam(p)}
                     </div>
                     <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
                       {GSEB_MEDIUM_LABELS[p.medium]}{p.set_no ? ` · Set ${p.set_no}` : ''}{p.paper_code ? ` · Code ${p.paper_code}` : ''}
