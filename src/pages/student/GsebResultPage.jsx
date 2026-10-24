@@ -9,7 +9,7 @@ import MathText from '../../components/shared/MathText'
 import { attemptGrading } from '../../lib/attemptGrading'
 import { optionEntries } from '../../lib/questionOptions'
 import { fmtDuration } from '../../lib/performanceMetrics'
-import { paperTitle, paperTag, chapterBreakdown } from '../../lib/gseb'
+import { paperTitle, paperTag, chapterBreakdown, gsebQid } from '../../lib/gseb'
 import { startGsebPractice } from '../../lib/gsebBank'
 
 const STATUS_LABEL = { correct: 'Correct', wrong: 'Wrong', skipped: 'Skipped' }
@@ -34,7 +34,7 @@ export default function GsebResultPage() {
       // their own paper so the review can say which year each came from.
       const [{ data: p }, { data: qs }] = await Promise.all([
         att.paper_id ? supabase.from('gseb_papers').select('*').eq('id', att.paper_id).single() : { data: null },
-        supabase.from('gseb_questions').select('*, paper:gseb_papers(year, session)').in('id', att.question_ids),
+        supabase.from('gseb_questions').select('*, paper:gseb_papers(year, session, subject, medium, set_no)').in('id', att.question_ids),
       ])
       const byId = Object.fromEntries((qs || []).map(q => [q.id, q]))
       setAttempt(att)
@@ -145,6 +145,7 @@ export default function GsebResultPage() {
                   {practice && q.paper && (
                     <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>GSEB {paperTag(q.paper)} · Q{q.q_no}</span>
                   )}
+                  <code style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)' }}>{gsebQid(q.paper || paper, 'A', q.q_no)}</code>
                   <span style={{ marginLeft: 'auto', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: STATUS_COLOR[status] }}>
                     {STATUS_LABEL[status]}
                   </span>
