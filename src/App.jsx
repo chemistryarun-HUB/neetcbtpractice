@@ -16,6 +16,7 @@ import AdminGsebPapers from './pages/admin/AdminGsebPapers'
 import AdminGsebPaper from './pages/admin/AdminGsebPaper'
 import AdminGsebGenerator from './pages/admin/AdminGsebGenerator'
 import AdminGsebPerformance from './pages/admin/AdminGsebPerformance'
+import AdminGsebChapters from './pages/admin/AdminGsebChapters'
 import AdminVideos from './pages/admin/AdminVideos'
 import AdminKeyChanges from './pages/admin/AdminKeyChanges'
 
@@ -82,6 +83,7 @@ function AppRoutes() {
       <Route path="/admin/gseb" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPapers /></ProtectedRoute>} />
       <Route path="/admin/gseb/generate" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebGenerator /></ProtectedRoute>} />
       <Route path="/admin/gseb/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPerformance /></ProtectedRoute>} />
+      <Route path="/admin/gseb/chapters" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebChapters /></ProtectedRoute>} />
       <Route path="/admin/gseb/:paperId" element={<ProtectedRoute allowedRoles={['admin']}><AdminGsebPaper /></ProtectedRoute>} />
       <Route path="/admin/videos" element={<ProtectedRoute allowedRoles={['admin']}><AdminVideos /></ProtectedRoute>} />
       <Route path="/admin/key-changes" element={<ProtectedRoute allowedRoles={['admin']}><AdminKeyChanges /></ProtectedRoute>} />
