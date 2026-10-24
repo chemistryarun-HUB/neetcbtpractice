@@ -70,7 +70,7 @@ function AppRoutes() {
           from WhatsApp has no NEETCBT account at all. See lib/shortLinks.js. */}
       <Route path="/r/:code" element={<ShortLinkRedirect />} />
       <Route path="/student/login" element={<StudentLoginPage />} />
-      <Route path="/faculty/login" element={<Navigate to="/student/login?faculty=1" replace />} />
+      <Route path="/faculty/login" element={<Navigate to="/" replace />} />
 
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />

@@ -1,45 +1,56 @@
 import { useState } from 'react'
-import { useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
-import { ArrowLeft } from 'lucide-react'
+import { GraduationCap, BookOpen, Shield, Eye, EyeOff } from 'lucide-react'
 import { facultyLogin, FACULTY_CODE_RE } from '../lib/faculty'
 
+// One login for everyone. Who is signing in is read from what they type:
+//   an email address          → admin
+//   a Faculty ID (FC261045)   → faculty
+//   anything else             → student roll number
+export function accountTypeOf(identifier) {
+  const id = (identifier || '').trim()
+  if (!id) return null
+  if (id.includes('@')) return 'admin'
+  if (FACULTY_CODE_RE.test(id)) return 'faculty'
+  return 'student'
+}
+
+const TYPE_HINT = {
+  student: { icon: GraduationCap, label: 'Student', color: '#1d4ed8', bg: '#eff6ff' },
+  faculty: { icon: BookOpen, label: 'Faculty', color: '#7c3aed', bg: '#f5f3ff' },
+  admin:   { icon: Shield, label: 'Admin', color: '#334155', bg: '#f1f5f9' },
+}
+
 export default function StudentLoginPage() {
-  const [params] = useSearchParams()
-  const isAdmin = params.get('admin') === '1'
-  const isFacultyMode = params.get('faculty') === '1'
   const { adminLogin, studentLogin, facultySignIn, role, user } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({ identifier: '', password: '' })
   const [remember, setRemember] = useState(true)
+  const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Half of the "I have to log in every time" complaint was this: logging in
-  // pushed the dashboard on top of the login page, so Back landed here — and
-  // this page rendered its form regardless of already being signed in, which
-  // looks exactly like being logged out. Sending an authenticated visitor
-  // straight on means Back can no longer strand anyone on a login form.
-  // (The other half was the session dying with the tab — see lib/session.js.)
+  // A signed-in visitor goes straight on, so Back from a dashboard can never
+  // strand anyone on a login form that looks like they were logged out.
   if (role === 'student') return <Navigate to="/student/dashboard" replace />
   if (role === 'admin') return <Navigate to="/admin" replace />
   if (role === 'faculty') return <Navigate to={user?.must_change_password ? '/faculty/change-password' : '/faculty/dashboard'} replace />
+
+  const type = accountTypeOf(form.identifier)
+  const hint = type && TYPE_HINT[type]
 
   async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
     try {
-      if (isAdmin) {
+      if (type === 'admin') {
         const ok = await adminLogin(form.identifier, form.password)
-        if (!ok) throw new Error('Invalid admin credentials')
-        // replace, not push — see the redirect above; this keeps the login page
-        // out of history entirely so Back skips over it.
+        if (!ok) throw new Error('Incorrect email or password')
         navigate('/admin', { replace: true })
-      } else if (isFacultyMode || FACULTY_CODE_RE.test(form.identifier.trim())) {
-        // Faculty IDs (FC261045) never look like a roll number, so a faculty
-        // member who opens the student login still gets in.
+      } else if (type === 'faculty') {
         const result = await facultyLogin(form.identifier, form.password)
         facultySignIn(result, remember)
         navigate(result.faculty.must_change_password ? '/faculty/change-password' : '/faculty/dashboard', { replace: true })
@@ -49,17 +60,10 @@ export default function StudentLoginPage() {
           .select('*')
           .eq('roll_number', form.identifier.trim())
           .single()
-
         if (error || !data) throw new Error('Roll number not found')
         if (data.password_hash !== form.password) throw new Error('Incorrect password')
-
         studentLogin(data, remember)
-
-        if (data.is_first_login) {
-          navigate('/student/change-password', { replace: true })
-        } else {
-          navigate('/student/dashboard', { replace: true })
-        }
+        navigate(data.is_first_login ? '/student/change-password' : '/student/dashboard', { replace: true })
       }
     } catch (err) {
       toast.error(err.message)
@@ -73,71 +77,73 @@ export default function StudentLoginPage() {
       <div className="auth-card">
         <div className="auth-logo">
           <h1>NEETCBT</h1>
-          <p>{isAdmin ? 'Admin Portal' : isFacultyMode ? 'Faculty Portal' : 'Student Portal'}</p>
+          <p>A Practice Platform for NEET &amp; Board Exam</p>
         </div>
-
-        <p className="auth-title">{isAdmin ? 'Admin Login' : isFacultyMode ? 'Faculty Login' : 'Student Login'}</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>{isAdmin ? 'Email' : isFacultyMode ? 'Faculty ID' : 'Roll Number'}</label>
+            <label>Roll No. / Faculty ID / Admin Email</label>
             <input
               className="form-control"
-              placeholder={isAdmin ? 'admin@neetcbt.in' : isFacultyMode ? 'e.g. FC261045' : 'Enter Roll Number'}
-              autoCapitalize={isFacultyMode ? 'characters' : undefined}
+              placeholder="Enter your login ID"
+              autoComplete="username"
+              autoCapitalize="none"
+              autoFocus
               value={form.identifier}
               onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
               required
             />
+            {/* Live confirmation of who the app thinks is signing in. */}
+            <div style={{ minHeight: 24, marginTop: 6 }}>
+              {hint && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', fontWeight: 600, color: hint.color, background: hint.bg, padding: '0.15rem 0.6rem', borderRadius: 999 }}>
+                  <hint.icon size={13} /> {hint.label} login
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPwd ? 'text' : 'password'}
+                className="form-control"
+                placeholder="Enter password"
+                autoComplete="current-password"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                style={{ paddingRight: 40 }}
+                required
+              />
+              <button type="button" onClick={() => setShowPwd(s => !s)} aria-label={showPwd ? 'Hide password' : 'Show password'}
+                style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', padding: 4 }}>
+                {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
           </div>
 
-          {/* On by default: students reach this from a WhatsApp link, so almost
-              every visit is a fresh tab, and staying signed in is what they
-              expect. Unticking it keeps the session to this tab only — the
-              right choice on a borrowed or shared phone. Hidden for admin,
-              whose Supabase session stays until Logout. */}
-          {!isAdmin && (
+          {/* Admin sessions are Supabase's own and last until Logout. */}
+          {type !== 'admin' && (
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1rem', cursor: 'pointer', fontSize: '0.9375rem', color: 'var(--gray-700)' }}>
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={e => setRemember(e.target.checked)}
-                style={{ width: '1.05rem', height: '1.05rem', cursor: 'pointer', accentColor: 'var(--primary)', flexShrink: 0 }}
-              />
+              <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
+                style={{ width: '1.05rem', height: '1.05rem', cursor: 'pointer', accentColor: 'var(--primary)', flexShrink: 0 }} />
               Keep me signed in
             </label>
           )}
 
           <button className="btn btn-primary btn-lg" type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
 
-          {!isAdmin && (
+          {type !== 'admin' && (
             <p style={{ margin: '0.6rem 0 0', fontSize: '0.75rem', color: 'var(--gray-500)', lineHeight: 1.5 }}>
               {remember
-                ? 'You’ll stay signed in on this device for 30 days. Use Logout to sign out, especially on a shared phone.'
+                ? 'You’ll stay signed in on this device for 30 days. Use Logout on a shared phone.'
                 : 'You’ll be signed out as soon as you close this tab.'}
             </p>
           )}
         </form>
-
-        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-          <Link to="/" className="back-btn">
-            <ArrowLeft size={16} /> Back to Home
-          </Link>
-        </div>
       </div>
     </div>
   )
