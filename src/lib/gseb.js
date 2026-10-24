@@ -16,10 +16,14 @@ const ALL_GSEB_SUBJECTS = [
 export const GSEB_SUBJECTS = ALL_GSEB_SUBJECTS.filter(s => s.live)
 export const GSEB_SUBJECT_LABELS = Object.fromEntries(ALL_GSEB_SUBJECTS.map(s => [s.id, s.label]))
 export const GSEB_MEDIUM_LABELS = { en: 'English', gu: 'Gujarati' }
-export const GSEB_SESSION_LABELS = { march: 'March', july: 'July (Supplementary)' }
-// How the papers list names the exam: March is the main paper, July the
-// supplementary one.
-export const GSEB_EXAM_LABELS = { march: 'Main Paper (March)', july: 'Supplementary Paper (July)' }
+// The exam is named without its month (the supplementary month changes year
+// to year): March is the main paper, July the supplementary one.
+export const GSEB_EXAM_LABELS = { march: 'Main Paper', july: 'Supplementary Paper' }
+
+// "2025 · Supplementary Paper"
+export function paperExam(p) {
+  return [p.year, GSEB_EXAM_LABELS[p.session]].filter(Boolean).join(' · ')
+}
 
 // GSEB Std 12 Science follows the NCERT (rationalised) textbooks, so chapters
 // are the NCERT Class 12 chapters. chapter_no on a question is the `id` here.
@@ -61,11 +65,11 @@ export function chapterName(subject, chapterNo) {
   return GSEB_XII_SYLLABUS[subject]?.[Number(chapterNo) - 1] || ''
 }
 
-// "Physics · March 2025 · English · Set 15 (054)"
+// "Physics · 2025 · Main Paper · English · Set 15 (054)"
 export function paperTitle(p) {
   return [
     GSEB_SUBJECT_LABELS[p.subject],
-    `${GSEB_SESSION_LABELS[p.session]?.split(' ')[0] || ''} ${p.year}`.trim(),
+    paperExam(p),
     GSEB_MEDIUM_LABELS[p.medium],
     p.set_no ? `Set ${p.set_no}` : null,
   ].filter(Boolean).join(' · ') + (p.paper_code ? ` (${p.paper_code})` : '')
@@ -292,10 +296,10 @@ export function gsebQid(paper, part, qNo) {
   return `G${subj}${String(paper.year).slice(-2)}${sess}${part}${String(qNo).padStart(2, '0')}${extra}`
 }
 
-// "March 2026" tag shown next to a question pulled out of its paper.
+// "2026 · Main Paper" tag shown next to a question pulled out of its paper.
 export function paperTag(p) {
   if (!p) return ''
-  return `${GSEB_SESSION_LABELS[p.session]?.split(' ')[0] || ''} ${p.year}`.trim()
+  return paperExam(p)
 }
 
 // Fisher–Yates on a copy; `n` caps the length.

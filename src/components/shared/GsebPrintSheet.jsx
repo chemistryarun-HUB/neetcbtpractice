@@ -15,7 +15,7 @@ const LETTERS = ['A', 'B', 'C', 'D']
  * - mcq: MCQ rows (gseb_questions)
  * - groups: [{ key, heading, label, items }] of written rows (gseb_subjective);
  *   numbering runs on across groups, label names the group in the key
- * - tag(q): small grey note after a question, e.g. "(March 2025)"
+ * - tag(q): small grey note after a question, e.g. "(2025 · Main Paper)"
  * - extra(q, kind, groupKey): on-screen-only controls after a question
  */
 export default function GsebPrintSheet({ title, subtitle, meta = [], mcq = [], groups = [], withKey, tag, extra }) {
