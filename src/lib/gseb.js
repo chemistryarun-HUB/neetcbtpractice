@@ -17,6 +17,9 @@ export const GSEB_SUBJECTS = ALL_GSEB_SUBJECTS.filter(s => s.live)
 export const GSEB_SUBJECT_LABELS = Object.fromEntries(ALL_GSEB_SUBJECTS.map(s => [s.id, s.label]))
 export const GSEB_MEDIUM_LABELS = { en: 'English', gu: 'Gujarati' }
 export const GSEB_SESSION_LABELS = { march: 'March', july: 'July (Supplementary)' }
+// How the papers list names the exam: March is the main paper, July the
+// supplementary one.
+export const GSEB_EXAM_LABELS = { march: 'Main Paper (March)', july: 'Supplementary Paper (July)' }
 
 // GSEB Std 12 Science follows the NCERT (rationalised) textbooks, so chapters
 // are the NCERT Class 12 chapters. chapter_no on a question is the `id` here.
