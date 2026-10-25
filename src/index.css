@@ -77,6 +77,19 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .topbar-nav { display: flex; align-items: center; gap: 0.5rem; }
 .topbar-nav a, .topbar-nav button { color: rgba(255,255,255,0.85); text-decoration: none; padding: 0.4rem 0.75rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 500; background: none; border: none; cursor: pointer; transition: all 0.15s; }
 .topbar-nav a:hover, .topbar-nav a.active, .topbar-nav button:hover { color: #fff; background: rgba(255,255,255,0.15); }
+.topbar-only-menu { display: none; }
+.topbar-menu { display: none; background: none; border: none; color: #fff; cursor: pointer; padding: 0.4rem; border-radius: var(--radius); }
+/* Phones and small tablets: the nav folds into a drop-down under the bar. */
+@media (max-width: 1100px) {
+  .topbar { padding: 0 1rem; }
+  .topbar-menu { display: inline-flex; }
+  .topbar-nav { display: none; position: absolute; top: 60px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0.15rem; padding: 0.5rem 0.75rem 0.75rem; background: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.18); max-height: calc(100vh - 60px); overflow-y: auto; }
+  .topbar-nav.open { display: flex; }
+  .topbar-nav a, .topbar-nav button { padding: 0.7rem 0.85rem; font-size: 0.95rem; text-align: left; }
+  .topbar-nav > span { padding: 0.5rem 0.85rem 0 !important; }
+  .topbar-nav button { display: flex; align-items: center; gap: 0.4rem; }
+  .topbar-only-menu { display: inline; }
+}
 
 .page-content { flex: 1; padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
@@ -531,13 +544,14 @@ kbd {
 .gx-link { margin-left: auto; font-weight: 600; color: var(--c); text-decoration: none; }
 .gx-link:hover { text-decoration: underline; }
 .gx-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: auto; }
-.gx-go { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; padding: 0.62rem 0.9rem; border: none; border-radius: 11px; background: var(--c); color: #fff; font: inherit; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: filter 0.15s, transform 0.15s; }
+.gx-go { flex: 1; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; padding: 0.62rem 0.9rem; border: none; border-radius: 11px; background: var(--c); color: #fff; font: inherit; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: filter 0.15s, transform 0.15s; }
 .gx-go:hover:not(:disabled) { filter: brightness(1.1); }
 .gx-go:active:not(:disabled) { transform: scale(0.98); }
 .gx-go:disabled { opacity: 0.45; cursor: not-allowed; }
 .gx-ghost { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.56rem 0.8rem; border: 1px solid var(--gray-200); border-radius: 11px; background: #fff; color: var(--gray-700); font-weight: 600; font-size: 0.8125rem; text-decoration: none; white-space: nowrap; transition: border-color 0.15s, color 0.15s; }
 .gx-ghost:hover { border-color: var(--c); color: var(--c); }
 button.gx-ghost { font-family: inherit; cursor: pointer; }
+.gx-admin-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 .gx-empty { padding: 3rem 1rem; text-align: center; color: var(--gray-500); background: #fff; border: 1px dashed var(--gray-300); border-radius: 16px; }
 .gx-chip.hot { background: #fff1e6; border-color: #fed7aa; color: #c2410c; }
 .gx-vs { padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }

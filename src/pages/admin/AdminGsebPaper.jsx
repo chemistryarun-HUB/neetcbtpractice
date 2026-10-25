@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import * as XLSX from 'xlsx'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Upload, Download, Images, Search, Maximize2, Image as ImageIcon, FileDown, Printer, X } from 'lucide-react'
@@ -58,7 +58,8 @@ export default function AdminGsebPaper() {
   const [paper, setPaper] = useState(null)
   const [questions, setQuestions] = useState([])
   const [subjective, setSubjective] = useState([])
-  const [tab, setTab] = useState('A')            // 'A' | 'B' | 'upload'
+  const [params] = useSearchParams()
+  const [tab, setTab] = useState(params.get('tab') === 'B' ? 'B' : 'A') // 'A' | 'B' | 'upload'
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [search, setSearch] = useState('')
