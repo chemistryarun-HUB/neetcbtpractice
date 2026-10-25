@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Search, Maximize2, Image as ImageIcon } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
@@ -85,6 +85,8 @@ export default function AdminGsebChapters() {
     return () => { live = false }
   }, [subject])
 
+  // The chapter list itself lives on the GSEB papers page (Chapter-wise view).
+  if (!chapterNo) return <Navigate to={`/admin/gseb?view=chapters&subject=${subject}`} replace />
   const chapters = chaptersOf(subject)
   const chapter = chapters.find(c => c.id === chapterNo)
 
@@ -282,8 +284,8 @@ export default function AdminGsebChapters() {
     <div className="dashboard">
       <Topbar links={NAV} />
       <div className="page-content">
-        <Link to="/admin/gseb" className="back-btn" style={{ marginBottom: '0.75rem', display: 'inline-flex' }}>
-          <ArrowLeft size={16} /> All GSEB papers
+        <Link to={`/admin/gseb?view=chapters&subject=${subject}`} className="back-btn" style={{ marginBottom: '0.75rem', display: 'inline-flex' }}>
+          <ArrowLeft size={16} /> All chapters
         </Link>
         <div className="page-header" style={{ marginBottom: '0.75rem' }}>
           <h2 style={{ margin: 0 }}>Chapter-wise · All papers</h2>
