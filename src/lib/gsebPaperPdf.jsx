@@ -13,7 +13,8 @@ import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import MathText, { ensureKatex } from '../components/shared/MathText'
 import { supabase } from './supabase'
-import { GSEB_SUBJECT_LABELS, paperExam, partBRules, ruleLabel } from './gseb'
+import { GSEB_SUBJECT_LABELS, paperExam, partBRules, ruleLabel, chapterName, minutesFor } from './gseb'
+import { byYearThenNumber } from './gsebBank'
 import { optionEntries, correctOptionKey } from './questionOptions'
 
 // A4 at 96 px per inch; all sizes below are CSS px.
@@ -69,23 +70,26 @@ function shrinkMath(root) {
   })
 }
 
-function Head({ paper, part, time, marks, note }) {
+function Head({ board = 'GSEB · Std 12 Science · Board Paper', title, sub, time, marks, note }) {
   return (
     <div className="pp-head">
-      <div className="pp-board">GSEB · Std 12 Science · Board Paper</div>
-      <div className="pp-title">{GSEB_SUBJECT_LABELS[paper.subject]?.toUpperCase()}{paper.paper_code ? ` (${paper.paper_code})` : ''}</div>
-      <div className="pp-sub">{paperExam(paper)} · {part}</div>
+      <div className="pp-board">{board}</div>
+      <div className="pp-title">{title}</div>
+      {sub && <div className="pp-sub">{sub}</div>}
       <div className="pp-meta"><span>Time: {time}</span><span>Total Marks: {marks}</span></div>
       {note && <div className="pp-note">{note}</div>}
     </div>
   )
 }
 
-function Mcq({ q }) {
+// A question pulled out of its paper says where it came from.
+const Tag = ({ tag }) => tag ? <div className="pp-tag">[{tag}]</div> : null
+
+function Mcq({ q, no, tag }) {
   const opts = optionEntries(q)
   return (
     <div className="pp-q">
-      <span className="pp-no">{q.q_no}.</span>
+      <span className="pp-no">{no}.</span>
       <div className="pp-body">
         <MathText text={q.question} />
         {q.question_image && <img src={q.question_image} alt="" className="pp-img" />}
@@ -97,71 +101,164 @@ function Mcq({ q }) {
             </div>
           ))}
         </div>
+        <Tag tag={tag} />
       </div>
     </div>
   )
 }
 
-function Written({ q, text, image }) {
+function Written({ no, text, image, tag }) {
   return (
     <div className="pp-q">
-      <span className="pp-no">{q.q_no}.</span>
+      <span className="pp-no">{no}.</span>
       <div className="pp-body">
         {text ? <MathText text={text} /> : <em>No model answer added.</em>}
         {image && <img src={image} alt="" className="pp-img" />}
+        <Tag tag={tag} />
       </div>
     </div>
   )
 }
 
-function Key({ paper, mcq }) {
+function Key({ sub, items }) {
   return (
     <div className="pp-head">
       <div className="pp-title">ANSWER KEY</div>
-      <div className="pp-sub">{GSEB_SUBJECT_LABELS[paper.subject]} · {paperExam(paper)} · Part A</div>
+      <div className="pp-sub">{sub}</div>
       <div className="pp-key">
-        {mcq.map(q => {
+        {items.map(({ q, no }) => {
           const k = correctOptionKey(q)
-          return <span key={q.id}><b>{q.q_no}</b> {k ? LETTERS[Number(k.slice(-1)) - 1] : '–'}</span>
+          return <span key={q.id}><b>{no}</b> {k ? LETTERS[Number(k.slice(-1)) - 1] : '–'}</span>
         })}
       </div>
     </div>
   )
 }
 
-// The paper as a list of blocks: 'full' spans the page (headers, the key),
-// 'col' sits in one column. breakBefore starts a new page; keep holds a
-// section heading on the same column as its first question.
-function paperBlocks(paper, mcq, subjective, { partA, partB, withKey }) {
+const Section = ({ title, rule }) => <div className="pp-sec"><b>{title}</b>{rule && <span>{rule}</span>}</div>
+
+/*
+ * What goes on the pages, independent of where the questions came from:
+ *
+ *   { footer, keySub,
+ *     parts: [{ head: <Head> props, groups: [{ title?, rule?, mcq: bool, items: [{ q, no, tag? }] }] }] }
+ *
+ * Each part starts a new page. The answer key (when asked for) lists every
+ * MCQ, then the model answers of the written questions.
+ */
+function sheetBlocks({ parts, keySub }, withKey) {
   const blocks = []
-  const a = partA ? mcq : []
-  const b = partB ? subjective : []
-  if (a.length) {
-    blocks.push({ kind: 'full', breakBefore: true, el: <Head paper={paper} part="Part A (MCQ)" time={hours(paper.duration_min || 60)} marks={a.length}
-      note={`Part A has ${a.length} multiple choice questions (Q. 1 to ${a.length}), 1 mark each. Choose the correct option.`} /> })
-    a.forEach(q => blocks.push({ kind: 'col', el: <Mcq q={q} /> }))
-  }
-  if (b.length) {
-    const rules = paper.part_b_rules?.length ? paper.part_b_rules : partBRules(b)
-    const marks = rules.reduce((t, r) => t + (r.attempt ?? r.to - r.from + 1) * (r.marks || 0), 0)
-    blocks.push({ kind: 'full', breakBefore: true, el: <Head paper={paper} part="Part B (Written)" time="2 Hours" marks={marks || '–'}
-      note="Write the answers in your answer book. Each section says how many of its questions to answer." /> })
-    for (const r of rules) {
-      const qs = b.filter(q => !r.section || q.section === r.section)
-      if (!qs.length) continue
-      if (r.section) blocks.push({ kind: 'col', keep: true, el: <div className="pp-sec"><b>SECTION {r.section}</b><span>{ruleLabel(r)}</span></div> })
-      qs.forEach(q => blocks.push({ kind: 'col', el: <Written q={q} text={q.question} image={q.question_image} /> }))
+  const mcqs = [], written = []
+  for (const part of parts) {
+    const groups = part.groups.filter(g => g.items.length)
+    if (!groups.length) continue
+    blocks.push({ kind: 'full', breakBefore: true, el: <Head {...part.head} /> })
+    for (const g of groups) {
+      if (g.title) blocks.push({ kind: 'col', keep: true, el: <Section title={g.title} rule={g.rule} /> })
+      for (const it of g.items) {
+        blocks.push({ kind: 'col', el: g.mcq ? <Mcq {...it} /> : <Written no={it.no} text={it.q.question} image={it.q.question_image} tag={it.tag} /> })
+        ;(g.mcq ? mcqs : written).push(it)
+      }
     }
   }
   if (withKey) {
-    if (a.length) blocks.push({ kind: 'full', breakBefore: true, el: <Key paper={paper} mcq={a} /> })
-    const answered = b.filter(q => q.answer || q.answer_image)
+    if (mcqs.length) blocks.push({ kind: 'full', breakBefore: true, el: <Key sub={keySub} items={mcqs} /> })
+    const answered = written.filter(({ q }) => q.answer || q.answer_image)
     if (answered.length) {
-      blocks.push({ kind: 'col', keep: true, breakBefore: !a.length, el: <div className="pp-sec"><b>PART B · MODEL ANSWERS</b></div> })
-      answered.forEach(q => blocks.push({ kind: 'col', el: <Written q={q} text={q.answer} image={q.answer_image} /> }))
+      blocks.push({ kind: 'col', keep: true, breakBefore: !mcqs.length, el: <Section title="MODEL ANSWERS · WRITTEN QUESTIONS" /> })
+      answered.forEach(({ q, no }) => blocks.push({ kind: 'col', el: <Written no={no} text={q.answer} image={q.answer_image} /> }))
     }
   }
   return blocks
+}
+
+const subjectTitle = subject => GSEB_SUBJECT_LABELS[subject]?.toUpperCase() || ''
+const sourceTag = q => q.paper ? `GSEB ${paperExam(q.paper)}` : null
+const totalOf = rules => rules.reduce((t, r) => t + (r.attempt ?? r.to - r.from + 1) * (r.marks || 0), 0)
+
+// One board paper, as printed: Part A, then Part B section by section.
+function paperSheet(paper, mcq, subjective, { partA = true, partB = true }) {
+  const a = partA ? mcq : []
+  const b = partB ? subjective : []
+  const rules = paper.part_b_rules?.length ? paper.part_b_rules : partBRules(b)
+  const title = `${subjectTitle(paper.subject)}${paper.paper_code ? ` (${paper.paper_code})` : ''}`
+  return {
+    footer: `NEETCBT · ${GSEB_SUBJECT_LABELS[paper.subject]} · ${paperExam(paper)}`,
+    keySub: `${GSEB_SUBJECT_LABELS[paper.subject]} · ${paperExam(paper)} · Part A`,
+    parts: [
+      { head: { title, sub: `${paperExam(paper)} · Part A (MCQ)`, time: hours(paper.duration_min || 60), marks: a.length,
+          note: `Part A has ${a.length} multiple choice questions (Q. 1 to ${a.length}), 1 mark each. Choose the correct option.` },
+        groups: [{ mcq: true, items: a.map(q => ({ q, no: q.q_no })) }] },
+      { head: { title, sub: `${paperExam(paper)} · Part B (Written)`, time: '2 Hours', marks: totalOf(rules) || '–',
+          note: 'Write the answers in your answer book. Each section says how many of its questions to answer.' },
+        groups: b.length ? rules.map(r => ({
+          title: r.section ? `SECTION ${r.section}` : null, rule: r.section ? ruleLabel(r) : null,
+          items: b.filter(q => !r.section || q.section === r.section).map(q => ({ q, no: q.q_no })),
+        })) : [] },
+    ],
+  }
+}
+
+const MARKS = [2, 3, 4]
+
+/**
+ * One chapter across every paper: its MCQs newest paper first, numbered 1..N,
+ * then its written questions grouped by marks. Each question names its paper.
+ * Questions must carry `paper` (see fetchGsebBank).
+ */
+function chapterSheet({ subject, chapter, mcq, subjective, partA = true, partB = true }) {
+  const name = `Ch ${chapter}. ${chapterName(subject, chapter)}`
+  const a = partA ? [...mcq].sort(byYearThenNumber) : []
+  const b = partB ? [...subjective].sort(byYearThenNumber) : []
+  const years = [...new Set([...a, ...b].map(q => q.paper?.year).filter(Boolean))].sort()
+  const span = years.length ? `GSEB ${years[0]}${years.length > 1 ? `–${years[years.length - 1]}` : ''}` : 'GSEB'
+  const groups = MARKS.map(m => b.filter(q => q.marks === m)).concat([b.filter(q => !MARKS.includes(q.marks))])
+  const bMarks = b.reduce((t, q) => t + (q.marks || 0), 0)
+  let n = 0
+  const board = 'GSEB · Std 12 Science · Chapter-wise Board Questions'
+  return {
+    footer: `NEETCBT · ${GSEB_SUBJECT_LABELS[subject]} · ${name}`,
+    keySub: `${GSEB_SUBJECT_LABELS[subject]} · ${name} · MCQs`,
+    parts: [
+      { head: { board, title: subjectTitle(subject), sub: `${name} · MCQs`, time: hours(minutesFor(a.length)), marks: a.length,
+          note: `${a.length} multiple choice questions from the ${span} board papers, newest first, 1 mark each. The paper each one came from is shown under it.` },
+        groups: [{ mcq: true, items: a.map((q, i) => ({ q, no: i + 1, tag: sourceTag(q) })) }] },
+      { head: { board, title: subjectTitle(subject), sub: `${name} · Written questions`, time: hours(Math.max(30, Math.ceil(bMarks * 1.5 / 10) * 10)), marks: bMarks,
+          note: `${b.length} written questions from the ${span} board papers, grouped by marks.` },
+        groups: groups.map((qs, gi) => ({
+          title: qs.length ? (MARKS[gi] ? `${MARKS[gi]}-MARK QUESTIONS` : 'OTHER QUESTIONS') : null,
+          rule: MARKS[gi] && qs.length ? `${qs.length} question${qs.length === 1 ? '' : 's'} · ${MARKS[gi]} marks each` : null,
+          items: qs.map(q => ({ q, no: ++n, tag: sourceTag(q) })),
+        })) },
+    ],
+  }
+}
+
+/**
+ * A paper built in the generator: one head, Section A MCQs, then a section
+ * per mark value, numbered straight through like GsebPrintSheet.
+ */
+function customSheet({ subject, title, minutes, mcq, subjective, showYear }) {
+  const marks = MARKS.filter(m => subjective[m]?.length)
+  const total = mcq.length + marks.reduce((t, m) => t + m * subjective[m].length, 0)
+  const tag = q => showYear ? sourceTag(q) : null
+  let n = 0
+  return {
+    footer: `NEETCBT · ${GSEB_SUBJECT_LABELS[subject]} · ${title}`,
+    keySub: `${GSEB_SUBJECT_LABELS[subject]} · ${title}`,
+    parts: [{
+      head: { board: `GSEB · Std 12 Science · ${GSEB_SUBJECT_LABELS[subject]}`, title: String(title || 'Test').toUpperCase(),
+        time: hours(minutes || 60), marks: total, note: 'Answer every question. Marks for each section are shown at its head.' },
+      groups: [
+        { mcq: true, title: mcq.length && marks.length ? 'SECTION A' : null, rule: `Choose the correct option (${mcq.length} × 1 = ${mcq.length} marks)`,
+          items: mcq.map(q => ({ q, no: ++n, tag: tag(q) })) },
+        ...marks.map((m, i) => ({
+          title: `SECTION ${'BCDE'[i]}`, rule: `Answer the following (${subjective[m].length} × ${m} = ${subjective[m].length * m} marks)`,
+          items: subjective[m].map(q => ({ q, no: ++n, tag: tag(q) })),
+        })),
+      ],
+    }],
+  }
 }
 
 // Fills columns top to bottom, left then right, a new page when both are full.
@@ -253,8 +350,12 @@ function buildPage(page, nodes, index, total, footer) {
  * Builds the PDF and returns it as a jsPDF document. Must run in a browser.
  * onProgress(done, total) is called as each page is captured.
  */
-export async function gsebPaperPdf({ paper, mcq = [], subjective = [], partA = true, partB = true, withKey = false, onProgress }) {
-  const blocks = paperBlocks(paper, mcq, subjective, { partA, partB, withKey })
+export function gsebPaperPdf({ paper, mcq = [], subjective = [], partA = true, partB = true, withKey = false, onProgress }) {
+  return sheetPdf(paperSheet(paper, mcq, subjective, { partA, partB }), { withKey, onProgress })
+}
+
+async function sheetPdf(sheet, { withKey = false, onProgress } = {}) {
+  const blocks = sheetBlocks(sheet, withKey)
   if (!blocks.length) throw new Error('Nothing to put in the PDF.')
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas'), ensureKatex()])
   await Promise.all(['15px KaTeX_Main', 'bold 15px KaTeX_Main', 'italic 15px KaTeX_Main'].map(f => document.fonts?.load(f).catch(() => {})))
@@ -277,8 +378,7 @@ export async function gsebPaperPdf({ paper, mcq = [], subjective = [], partA = t
     const nodes = []
     host.querySelectorAll('[data-i]').forEach(n => { nodes[Number(n.dataset.i)] = n })
     const pages = paginate(blocks, nodes.map(n => n.getBoundingClientRect().height))
-    const footer = `NEETCBT · ${GSEB_SUBJECT_LABELS[paper.subject]} · ${paperExam(paper)}`
-    const pageEls = pages.map((page, p) => buildPage(page, nodes, p, pages.length, footer))
+    const pageEls = pages.map((page, p) => buildPage(page, nodes, p, pages.length, sheet.footer))
     root.unmount() // html2canvas copies the whole document per page: keep it small
     host.replaceChildren()
 
@@ -303,8 +403,9 @@ export async function gsebPaperPdf({ paper, mcq = [], subjective = [], partA = t
   }
 }
 
+const clean = x => String(x || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '')
+
 export function gsebPdfFileName(paper, { partA = true, partB = true, withKey = false } = {}) {
-  const clean = x => String(x || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '')
   const part = partA && partB ? '' : partA ? 'Part-A' : 'Part-B'
   return [`GSEB-${GSEB_SUBJECT_LABELS[paper.subject]}`, paper.year, clean(paperExam(paper).split(' · ')[1]), part, withKey && 'with-Key']
     .filter(Boolean).join('-') + '.pdf'
@@ -325,4 +426,41 @@ export async function downloadGsebPaperPdf(paper, opts = {}) {
   }
   const doc = await gsebPaperPdf({ ...opts, paper, mcq, subjective })
   doc.save(gsebPdfFileName(paper, opts))
+}
+
+
+/**
+ * The questions of one chapter, from every paper of the subject. Published
+ * papers only, unless includeDrafts (the admin sees drafts in their counts).
+ */
+export async function fetchGsebChapter(subject, chapter, { includeDrafts = false } = {}) {
+  let req = supabase.from('gseb_papers').select('id, subject, year, session, set_no, medium, paper_code').eq('subject', subject)
+  if (!includeDrafts) req = req.eq('is_published', true)
+  const { data: papers, error } = await req
+  if (error) throw error
+  if (!papers.length) return { mcq: [], subjective: [] }
+  const ids = papers.map(p => p.id)
+  const byId = Object.fromEntries(papers.map(p => [p.id, p]))
+  const [m, s] = await Promise.all([
+    supabase.from('gseb_questions').select('*').in('paper_id', ids).eq('chapter_no', chapter),
+    supabase.from('gseb_subjective').select('*').in('paper_id', ids).eq('chapter_no', chapter),
+  ])
+  if (m.error) throw m.error
+  if (s.error) throw s.error
+  const tag = q => ({ ...q, paper: byId[q.paper_id] })
+  return { mcq: m.data.map(tag), subjective: s.data.map(tag) }
+}
+
+/** Chapter-wise PDF: fetches the chapter's questions when not given, then saves. */
+export async function downloadGsebChapterPdf({ subject, chapter, includeDrafts, mcq, subjective, partA = true, partB = true, withKey = false, onProgress }) {
+  if (!mcq || !subjective) ({ mcq, subjective } = await fetchGsebChapter(subject, chapter, { includeDrafts }))
+  const doc = await sheetPdf(chapterSheet({ subject, chapter, mcq, subjective, partA, partB }), { withKey, onProgress })
+  const part = partA && partB ? '' : partA ? 'MCQ' : 'Written'
+  doc.save([`GSEB-${GSEB_SUBJECT_LABELS[subject]}`, `Ch${chapter}`, clean(chapterName(subject, chapter)), part, withKey && 'with-Key'].filter(Boolean).join('-') + '.pdf')
+}
+
+/** The generator's paper ({ mcq, subjective: { 2: [], 3: [], 4: [] } }) as a PDF. */
+export async function downloadGsebCustomPdf({ subject, title, minutes, paper, showYear = true, withKey = false, onProgress }) {
+  const doc = await sheetPdf(customSheet({ subject, title, minutes, mcq: paper.mcq, subjective: paper.subjective, showYear }), { withKey, onProgress })
+  doc.save([`GSEB-${GSEB_SUBJECT_LABELS[subject]}`, clean(title) || 'Test', withKey && 'with-Key'].filter(Boolean).join('-') + '.pdf')
 }

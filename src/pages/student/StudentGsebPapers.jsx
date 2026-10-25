@@ -250,6 +250,9 @@ export default function StudentGsebPapers() {
         onClick: () => practiseChapter(x.c, x.ids), disabled: !x.mcq.length || starting !== null,
       },
       partB: x.partB > 0 && { to: `/student/gseb/chapter/${shownSubject}/${x.c.id}`, count: x.partB },
+      extra: (x.mcq.length > 0 || x.partB > 0) && (
+        <GsebPdfButton chapter={{ subject: shownSubject, chapter: x.c.id, mcqCount: x.mcq.length, writtenCount: x.partB }} className="gx-ghost" />
+      ),
     }))
     if (sort === 'asked') cards.sort((a, b) => a.order - b.order)
   }
