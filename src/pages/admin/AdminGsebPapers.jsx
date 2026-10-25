@@ -224,6 +224,9 @@ export default function AdminGsebPapers() {
       status: x.tried.length ? `Students practised it · class avg ${classAverage(x.tried, chapterPct)}%` : 'Not practised by students yet',
       primary: { label: 'Review MCQs', icon: ListTree, onClick: () => navigate(`/admin/gseb/chapters?subject=${subject}&ch=${x.c.id}&part=A`), disabled: !x.mcq },
       partB: x.partB > 0 && { to: `/admin/gseb/chapters?subject=${subject}&ch=${x.c.id}&part=B`, count: x.partB },
+      extra: (x.mcq > 0 || x.partB > 0) && (
+        <GsebPdfButton chapter={{ subject, chapter: x.c.id, mcqCount: x.mcq, writtenCount: x.partB, includeDrafts: true }} className="gx-ghost" />
+      ),
     }))
     if (sort === 'asked') cards.sort((a, b) => a.order - b.order)
   }
@@ -234,7 +237,7 @@ export default function AdminGsebPapers() {
       <div className="page-content gx" style={lookVars(subject)}>
         <div className="gx-admin-actions">
           <Link to="/admin/gseb/performance" className="btn btn-outline btn-sm"><BarChart3 size={15} /> Student Performance</Link>
-          <Link to="/admin/gseb/generate" className="btn btn-outline btn-sm"><Shuffle size={15} /> Paper Generator</Link>
+          <Link to={`/admin/gseb/generate?subject=${subject}`} className="btn btn-outline btn-sm"><Shuffle size={15} /> Paper Generator</Link>
           <button className="btn btn-primary btn-sm" onClick={() => {
             const sub = GSEB_SUBJECTS.find(x => x.id === subject)
             if (!showForm) setForm(f => ({ ...f, subject: sub.id, paper_code: sub.paperCode }))

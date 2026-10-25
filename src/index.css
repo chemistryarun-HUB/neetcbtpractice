@@ -551,6 +551,10 @@ kbd {
 .gx-ghost { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.56rem 0.8rem; border: 1px solid var(--gray-200); border-radius: 11px; background: #fff; color: var(--gray-700); font-weight: 600; font-size: 0.8125rem; text-decoration: none; white-space: nowrap; transition: border-color 0.15s, color 0.15s; }
 .gx-ghost:hover { border-color: var(--c); color: var(--c); }
 button.gx-ghost { font-family: inherit; cursor: pointer; }
+/* Three actions don't fit one row of a card: the main one gets its own row. */
+.gx-actions:has(> :nth-child(3)) { flex-wrap: wrap; }
+.gx-actions:has(> :nth-child(3)) > .gx-go { flex-basis: 100%; }
+.gx-actions:has(> :nth-child(3)) > .gx-ghost { flex: 1; justify-content: center; }
 .gx-admin-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 .gx-empty { padding: 3rem 1rem; text-align: center; color: var(--gray-500); background: #fff; border: 1px dashed var(--gray-300); border-radius: 16px; }
 .gx-chip.hot { background: #fff1e6; border-color: #fed7aa; color: #c2410c; }
@@ -612,6 +616,68 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .gx-grid { grid-template-columns: 1fr; }
 }
 
+/* GSEB paper generator (AdminGsebGenerator): numbered steps on the left, a
+   sticky "Your paper" summary with the actions on the right. */
+.gg-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.25rem; align-items: start; margin-bottom: 1.75rem; }
+.gg-steps { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.gg-step { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 1.1rem 1.15rem 1.2rem; }
+.gg-step-head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.gg-step-no { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 900; font-size: 0.9rem; }
+.gg-step-text { flex: 1 1 220px; min-width: 0; }
+.gg-step-title { font-weight: 800; color: var(--gray-900); }
+.gg-step-hint { font-size: 0.78rem; color: var(--gray-500); }
+.gg-quick { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.gg-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 0.5rem; }
+.gg-chip { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.6rem; border: 1.5px solid var(--gray-200); border-radius: 12px; background: #fff; font: inherit; font-size: 0.85rem; text-align: left; color: var(--gray-600); cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.gg-chip:hover { border-color: var(--c); }
+.gg-chip.on { border-color: var(--c); background: var(--c-soft); color: var(--gray-900); }
+.gg-chip-no { width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0; display: grid; place-items: center; background: var(--gray-100); font-weight: 800; font-size: 0.78rem; color: var(--gray-500); }
+.gg-chip.on .gg-chip-no { background: var(--c); color: #fff; }
+.gg-chip-name { flex: 1; min-width: 0; font-weight: 600; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gg-chip-n { font-size: 0.72rem; font-weight: 700; color: var(--gray-400); }
+.gg-chip.on .gg-chip-n { color: var(--c-deep); }
+.gg-counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.gg-count { border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 0.75rem; text-align: center; transition: border-color 0.15s, background 0.15s; }
+.gg-count.on { border-color: var(--c); background: linear-gradient(180deg, var(--c-soft), #fff 80%); }
+.gg-count-label { font-size: 0.78rem; font-weight: 700; color: var(--gray-600); }
+.gg-count-row { display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin: 0.4rem 0 0.25rem; }
+.gg-count-row button { width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--gray-200); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--gray-700); }
+.gg-count-row button:hover:not(:disabled) { border-color: var(--c); color: var(--c); }
+.gg-count-row button:disabled { opacity: 0.35; cursor: not-allowed; }
+.gg-count-row input { width: 52px; text-align: center; border: none; background: none; font: inherit; font-size: 1.5rem; font-weight: 900; color: var(--gray-900); -moz-appearance: textfield; }
+.gg-count-row input::-webkit-inner-spin-button, .gg-count-row input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.gg-count-max { font-size: 0.72rem; color: var(--gray-400); }
+.gg-details { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.gg-field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; font-weight: 700; color: var(--gray-600); }
+.gg-summary { position: sticky; top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; padding: 1.15rem; box-shadow: 0 18px 40px -24px var(--c); overflow: hidden; }
+.gg-summary::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--c), var(--c-soft)); }
+.gg-summary-eyebrow { display: flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); }
+.gg-summary-title { font-weight: 900; font-size: 1.15rem; color: var(--gray-900); overflow-wrap: anywhere; }
+.gg-summary-big { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.gg-summary-big div { background: var(--c-soft); border-radius: 12px; padding: 0.55rem 0.3rem; text-align: center; }
+.gg-summary-big b { display: block; font-size: 1.35rem; font-weight: 900; color: var(--c-deep); line-height: 1.1; }
+.gg-summary-big span { font-size: 0.7rem; color: var(--gray-600); }
+.gg-summary-list { list-style: none; margin: 0.15rem 0; padding: 0; font-size: 0.82rem; }
+.gg-summary-list li { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--gray-200); color: var(--gray-500); }
+.gg-summary-list b { color: var(--gray-800); text-align: right; }
+.gg-dl { background: #15803d; }
+.gg-summary-note { font-size: 0.75rem; color: var(--gray-400); text-align: center; }
+.gg-preview { scroll-margin-top: 1rem; }
+.gg-preview-head { max-width: 860px; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.gg-preview-head b { display: block; font-size: 1.05rem; color: var(--gray-900); }
+.gg-preview-head span { font-size: 0.8rem; color: var(--gray-500); }
+@media (max-width: 960px) {
+  .gg-layout { grid-template-columns: 1fr; }
+  .gg-summary { position: static; }
+}
+@media (max-width: 760px) {
+  .gg-counts { grid-template-columns: repeat(2, 1fr); }
+  .gg-chips { grid-template-columns: minmax(0, 1fr); }
+  .gx-filter.gg-wrap { flex-wrap: wrap; overflow: visible; }
+  .gg-step { padding: 0.95rem 0.9rem 1rem; }
+}
+@media print { .gg-preview-head { display: none; } }
+
 /* GSEB paper PDF (lib/gsebPaperPdf.jsx): laid out off screen at A4 size (794 x
    1123 px) and captured page by page, so these sizes are what lands on paper.
    KaTeX's own serif keeps the text and the maths in one typeface. */
@@ -654,3 +720,4 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .pdf-opt.off { opacity: 0.55; cursor: default; }
 .pdf-opt input { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
 .spinner.spinner-sm { width: 16px; height: 16px; border-width: 2px; border-color: rgba(255,255,255,0.4); border-top-color: #fff; }
+.pp-tag { font-size: 11px; font-style: italic; text-align: right; color: #333; margin-top: 1px; }
