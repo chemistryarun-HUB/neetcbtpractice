@@ -47,6 +47,7 @@ export default function AdminGsebChapters() {
   const subject = GSEB_SUBJECTS.some(s => s.id === params.get('subject')) ? params.get('subject') : GSEB_SUBJECTS[0].id
   const chapterNo = Number(params.get('ch')) || null
   const part = params.get('part') === 'B' ? 'B' : 'A'
+  const marks = Number(params.get('marks')) || null // Part B: only questions of this many marks
   const [bank, setBank] = useState(null)
   const [search, setSearch] = useState('')
   const [reviewIndex, setReviewIndex] = useState(null)
@@ -143,7 +144,11 @@ export default function AdminGsebChapters() {
       </>
     )
   } else {
-    const all = (part === 'A' ? bank.mcq : bank.subjective).filter(q => q.chapter_no === chapter.id).sort(byPaper)
+    // Part B reads best grouped by marks (2, 3, 4…), newest paper first in each.
+    const inChapter = (part === 'A' ? bank.mcq : bank.subjective).filter(q => q.chapter_no === chapter.id)
+      .sort((a, b) => (part === 'B' ? a.marks - b.marks : 0) || byPaper(a, b))
+    const marksCounts = part === 'B' ? inChapter.reduce((m, q) => { m[q.marks] = (m[q.marks] || 0) + 1; return m }, {}) : {}
+    const all = marks ? inChapter.filter(q => q.marks === marks) : inChapter
     const qidOf = q => gsebQid(q.paper, part, q.q_no)
     const term = search.trim().toLowerCase()
     const visible = all.filter(q => !term || qidOf(q).toLowerCase() === term || (q.question || '').toLowerCase().includes(term))
@@ -159,9 +164,17 @@ export default function AdminGsebChapters() {
         </button>
         <h3 style={{ margin: '0 0 0.75rem' }}>Ch {chapter.id}. {chapter.name}</h3>
         <div className="tabs" style={{ marginBottom: '0.75rem' }}>
-          <button className={`tab-btn ${part === 'A' ? 'active' : ''}`} onClick={() => go({ part: 'A' })}>Part A · MCQ ({mcqN})</button>
-          <button className={`tab-btn ${part === 'B' ? 'active' : ''}`} onClick={() => go({ part: 'B' })}>Part B · Subjective ({subN})</button>
+          <button className={`tab-btn ${part === 'A' ? 'active' : ''}`} onClick={() => go({ part: 'A', marks: null })}>Part A · MCQ ({mcqN})</button>
+          <button className={`tab-btn ${part === 'B' ? 'active' : ''}`} onClick={() => go({ part: 'B', marks: null })}>Part B · Subjective ({subN})</button>
         </div>
+        {part === 'B' && Object.keys(marksCounts).length > 0 && (
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            <button className={`btn btn-sm ${!marks ? 'btn-primary' : 'btn-outline'}`} onClick={() => go({ marks: null })}>All ({inChapter.length})</button>
+            {Object.entries(marksCounts).map(([m, n]) => (
+              <button key={m} className={`btn btn-sm ${marks === Number(m) ? 'btn-primary' : 'btn-outline'}`} onClick={() => go({ marks: m })}>{m} marks ({n})</button>
+            ))}
+          </div>
+        )}
 
         {reviewIndex != null && visible[reviewIndex] && (
           <QuestionReviewer
@@ -171,7 +184,6 @@ export default function AdminGsebChapters() {
             onClose={() => setReviewIndex(null)}
             onSaved={patchRow}
             idOf={tag}
-            numberOf={q => q.q_no}
             renderMeta={q => (
               <div style={{ fontSize: '0.8125rem', opacity: 0.9, ...clip }}>
                 {part === 'B' && `Section ${q.section} · ${q.marks} marks · `}{q.chapter_no ? `Ch ${q.chapter_no} ${chapters.find(c => c.id === q.chapter_no)?.name || ''}` : 'Chapter not set'}
@@ -226,6 +238,7 @@ export default function AdminGsebChapters() {
             <table>
               <thead>
                 <tr>
+                  <th style={{ width: '48px' }}>#</th>
                   <th style={{ width: '120px' }}>Q ID</th>
                   <th style={{ width: '200px' }}>Paper</th>
                   {part === 'B' && <th style={{ width: '64px' }}>Marks</th>}
@@ -239,7 +252,8 @@ export default function AdminGsebChapters() {
                   const key = correctOptionKey(q)
                   return (
                     <tr key={q.id} style={{ cursor: 'pointer' }} onClick={() => setReviewIndex(i)} title="Click to review full screen">
-                      <td><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>{qidOf(q)}</code></td>
+                      <td style={cell}>{i + 1}</td>
+                      <td title={`Board Q${q.q_no}`}><code style={{ fontSize: '0.8rem', fontWeight: 700 }}>{qidOf(q)}</code></td>
                       <td style={cell}>
                         <Link to={`/admin/gseb/${q.paper_id}`} onClick={e => e.stopPropagation()} style={{ color: 'inherit' }}>{paperExam(q.paper)}</Link>
                         {!q.paper.is_published && <span className="badge badge-locked" style={{ marginLeft: '0.35rem' }}>Draft</span>}
