@@ -479,3 +479,164 @@ kbd {
   .gseb-print { border: none; padding: 0; max-width: none; }
   .gseb-print .gp-key { break-before: page; border-top: none; }
 }
+
+/* GSEB student hub (StudentGsebPapers): subject-coloured hero, subject tiles,
+   and one card shape shared by Year-wise and Chapter-wise. --c / --c-deep /
+   --c-soft are set per subject on .gx and on each subject tile. */
+.gx { --c: #1a56db; --c-deep: #1e3a8a; --c-soft: #e1effe; }
+.gx-hero { position: relative; overflow: hidden; border-radius: 20px; padding: 2rem 2.25rem 3.5rem; color: #fff; display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center; background: radial-gradient(circle at 90% 0%, rgba(255,255,255,0.22), transparent 45%), linear-gradient(135deg, var(--c-deep), var(--c)); box-shadow: 0 18px 40px -18px var(--c); }
+.gx-hero > * { position: relative; }
+.gx-hero-art { position: absolute !important; right: -30px; bottom: -60px; opacity: 0.12; color: #fff; pointer-events: none; }
+.gx-eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; opacity: 0.8; }
+.gx-hero h1 { font-size: 2.1rem; font-weight: 900; line-height: 1.15; margin: 0.35rem 0 0.5rem; letter-spacing: -0.01em; }
+.gx-hero p { opacity: 0.88; max-width: 520px; font-size: 0.95rem; margin: 0; }
+.gx-stats { display: flex; gap: 0.75rem; }
+.gx-stat { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(8px); border-radius: 14px; padding: 0.8rem 1rem; min-width: 112px; }
+.gx-stat b { display: block; font-size: 1.6rem; font-weight: 900; line-height: 1.1; }
+.gx-stat b small { font-size: 0.9rem; font-weight: 700; opacity: 0.75; }
+.gx-stat span { font-size: 0.75rem; opacity: 0.85; }
+
+.gx-subjects { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: -2.1rem 1.25rem 1.75rem; }
+.gx-subject { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; background: #fff; border: 2px solid transparent; border-radius: 16px; box-shadow: 0 8px 24px rgba(15,23,42,0.08); cursor: pointer; text-align: left; font: inherit; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+.gx-subject:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15,23,42,0.12); }
+.gx-subject.on { border-color: var(--c); }
+.gx-subject-icon { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; background: var(--c-soft); color: var(--c); flex-shrink: 0; transition: background 0.15s, color 0.15s; }
+.gx-subject.on .gx-subject-icon { background: var(--c); color: #fff; }
+.gx-subject-name { display: block; font-weight: 800; font-size: 1rem; color: var(--gray-900); }
+.gx-subject-meta { display: block; font-size: 0.75rem; color: var(--gray-500); }
+
+.gx-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.gx-seg { display: inline-flex; gap: 4px; padding: 4px; background: #fff; border: 1px solid var(--gray-200); border-radius: 13px; box-shadow: var(--shadow); }
+.gx-seg button { display: inline-flex; align-items: center; gap: 0.45rem; border: none; background: none; padding: 0.55rem 1.05rem; border-radius: 9px; font: inherit; font-weight: 700; font-size: 0.875rem; color: var(--gray-500); cursor: pointer; transition: background 0.15s, color 0.15s; }
+.gx-seg button.on { background: var(--c); color: #fff; box-shadow: 0 4px 12px -4px var(--c); }
+.gx-filter { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.gx-chipbtn { display: inline-flex; align-items: center; gap: 0.3rem; border: 1px solid var(--gray-200); background: #fff; padding: 0.35rem 0.85rem; border-radius: 999px; font: inherit; font-size: 0.8125rem; font-weight: 600; color: var(--gray-600); cursor: pointer; }
+.gx-chipbtn.on { border-color: var(--c); color: var(--c); background: var(--c-soft); }
+
+.gx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.gx-card { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 0.8rem; background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 1.15rem 1.1rem 1rem; transition: transform 0.15s, box-shadow 0.15s; }
+.gx-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--c), var(--c-soft)); }
+.gx-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -12px rgba(15,23,42,0.22); }
+.gx-card-head { display: flex; gap: 0.85rem; align-items: center; }
+.gx-badge { width: 60px; height: 60px; border-radius: 15px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; background: var(--c-soft); color: var(--c-deep); }
+.gx-badge small { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+.gx-badge b { font-size: 1.3rem; font-weight: 900; margin-top: 4px; }
+.gx-card-title { font-weight: 800; font-size: 1.05rem; color: var(--gray-900); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-card-sub { font-size: 0.8rem; color: var(--gray-500); margin-top: 0.15rem; }
+.gx-ring { margin-left: auto; flex-shrink: 0; }
+.gx-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.gx-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.55rem; border-radius: 8px; background: var(--gray-50); border: 1px solid var(--gray-100); font-size: 0.75rem; font-weight: 600; color: var(--gray-600); }
+.gx-status { display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem; font-size: 0.8125rem; color: var(--gray-500); }
+.gx-status.done { color: #15803d; font-weight: 600; }
+.gx-link { margin-left: auto; font-weight: 600; color: var(--c); text-decoration: none; }
+.gx-link:hover { text-decoration: underline; }
+.gx-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: auto; }
+.gx-go { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; padding: 0.62rem 0.9rem; border: none; border-radius: 11px; background: var(--c); color: #fff; font: inherit; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: filter 0.15s, transform 0.15s; }
+.gx-go:hover:not(:disabled) { filter: brightness(1.1); }
+.gx-go:active:not(:disabled) { transform: scale(0.98); }
+.gx-go:disabled { opacity: 0.45; cursor: not-allowed; }
+.gx-ghost { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.56rem 0.8rem; border: 1px solid var(--gray-200); border-radius: 11px; background: #fff; color: var(--gray-700); font-weight: 600; font-size: 0.8125rem; text-decoration: none; white-space: nowrap; transition: border-color 0.15s, color 0.15s; }
+.gx-ghost:hover { border-color: var(--c); color: var(--c); }
+button.gx-ghost { font-family: inherit; cursor: pointer; }
+.gx-empty { padding: 3rem 1rem; text-align: center; color: var(--gray-500); background: #fff; border: 1px dashed var(--gray-300); border-radius: 16px; }
+.gx-chip.hot { background: #fff1e6; border-color: #fed7aa; color: #c2410c; }
+.gx-vs { padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }
+.gx-vs.up { background: #dcfce7; color: #15803d; }
+.gx-vs.down { background: #fee2e2; color: #b91c1c; }
+.gx-divider { width: 1px; align-self: stretch; background: var(--gray-200); margin: 0 0.2rem; }
+
+/* The score ring fills in when the card appears. */
+.gx-ring-arc { animation: gx-ring 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes gx-ring { from { stroke-dashoffset: var(--full); } }
+
+/* "Your next step": one or two suggestions above the cards. */
+.gx-next { margin-bottom: 1.5rem; padding: 1rem 1.1rem 1.1rem; border-radius: 18px; background: linear-gradient(135deg, var(--c-soft), #fff 70%); border: 1px solid var(--gray-200); }
+.gx-next-head { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-deep); margin-bottom: 0.75rem; }
+.gx-next-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0.75rem; }
+.gx-next-item { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 0.9rem; background: #fff; border-radius: 14px; box-shadow: 0 6px 18px -10px rgba(15,23,42,0.25); }
+.gx-next-icon { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center; background: var(--c); color: #fff; }
+.gx-next-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c); }
+.gx-next-title { font-weight: 800; color: var(--gray-900); font-size: 0.95rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-next-why { font-size: 0.78rem; color: var(--gray-500); margin-top: 0.1rem; }
+.gx-go-sm { flex: 0 0 auto; padding: 0.55rem 0.85rem; font-size: 0.8125rem; white-space: nowrap; }
+
+/* Skeleton cards while the chapter bank loads. */
+.gx-skel:hover { transform: none; box-shadow: none; }
+.sk { display: block; border-radius: 8px; background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-50) 50%, var(--gray-100) 75%); background-size: 200% 100%; animation: gx-shimmer 1.2s linear infinite; }
+.sk-badge { width: 60px; height: 60px; border-radius: 15px; flex-shrink: 0; }
+.sk-line { height: 12px; width: 80%; margin: 6px 0; }
+.sk-line.short { width: 45%; }
+.sk-btn { height: 38px; border-radius: 11px; margin-top: auto; }
+@keyframes gx-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gx-ring-arc, .sk { animation: none; }
+}
+
+@media (max-width: 760px) {
+  /* Suggestions and filters scroll sideways on a phone instead of stacking. */
+  .gx-next { padding: 0.85rem 0 0.85rem 0.85rem; }
+  .gx-next-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 0.85rem 0.4rem 0; scrollbar-width: none; }
+  .gx-next-grid::-webkit-scrollbar, .gx-filter::-webkit-scrollbar { display: none; }
+  .gx-next-item { flex: 0 0 88%; flex-wrap: wrap; scroll-snap-align: start; }
+  .gx-next-grid > :only-child { flex-basis: 100%; }
+  .gx-go-sm { width: 100%; }
+  .gx-filter { width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .gx-chipbtn { white-space: nowrap; flex-shrink: 0; }
+  .gx-hero { grid-template-columns: 1fr; padding: 1.4rem 1.25rem 3rem; border-radius: 16px; }
+  .gx-hero h1 { font-size: 1.5rem; }
+  .gx-stats { gap: 0.5rem; }
+  .gx-stat { flex: 1; min-width: 0; padding: 0.6rem 0.7rem; }
+  .gx-stat b { font-size: 1.25rem; }
+  .gx-stat span { font-size: 0.7rem; white-space: nowrap; }
+  .gx-hero p { font-size: 0.85rem; }
+  .gx-subjects { gap: 0.5rem; margin: -1.9rem 0.5rem 1.25rem; }
+  .gx-subject { flex-direction: column; text-align: center; gap: 0.35rem; padding: 0.7rem 0.4rem; }
+  .gx-subject-meta { display: none; }
+  .gx-seg { width: 100%; }
+  .gx-seg button { flex: 1; justify-content: center; padding: 0.55rem 0.5rem; }
+  .gx-grid { grid-template-columns: 1fr; }
+}
+
+/* GSEB paper PDF (lib/gsebPaperPdf.jsx): laid out off screen at A4 size (794 x
+   1123 px) and captured page by page, so these sizes are what lands on paper.
+   KaTeX's own serif keeps the text and the maths in one typeface. */
+.pp, .pp-page { font-family: KaTeX_Main, "Times New Roman", Times, "Noto Serif", serif; font-size: 14.5px; line-height: 1.42; color: #000; background: #fff; }
+.pp-page { width: 794px; height: 1123px; padding: 40px 40px 0; box-sizing: border-box; position: relative; overflow: hidden; }
+.pp-b { display: flow-root; padding-bottom: 9px; }
+.pp-head { text-align: center; }
+.pp-board { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.pp-title { font-size: 21px; font-weight: 700; letter-spacing: 0.04em; margin-top: 2px; }
+.pp-sub { font-size: 14px; font-weight: 700; }
+.pp-meta { display: flex; justify-content: space-between; font-weight: 700; margin-top: 8px; padding: 4px 2px; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; }
+.pp-note { text-align: left; font-size: 12.5px; font-style: italic; margin-top: 6px; }
+.pp-q { display: flex; gap: 6px; }
+.pp-no { font-weight: 700; min-width: 24px; flex-shrink: 0; }
+.pp-body { flex: 1; min-width: 0; }
+.pp-opts { display: grid; gap: 3px 10px; margin-top: 3px; }
+.pp-opts.n4 { grid-template-columns: repeat(4, 1fr); }
+.pp-opts.n2 { grid-template-columns: repeat(2, 1fr); }
+.pp-opts.n1 { grid-template-columns: 1fr; }
+.pp-opt { display: flex; gap: 4px; min-width: 0; }
+.pp-ol { flex-shrink: 0; }
+.pp-ot { min-width: 0; flex: 1; }
+.pp .katex, .pp-page .katex { font-size: 1.05em; }
+/* Paper has no scrollbars: a formula is shrunk to fit instead (shrinkMath). */
+.pp .math-span, .pp-page .math-span { overflow: visible !important; padding: 2px 0; }
+.pp-img { display: block; max-width: 100%; max-height: 230px; margin: 4px 0; }
+.pp-sec { text-align: center; padding: 2px 0 4px; border-bottom: 1px solid #000; }
+.pp-sec b { display: block; letter-spacing: 0.08em; }
+.pp-sec span { font-size: 12.5px; font-style: italic; }
+.pp-cols { display: flex; position: relative; }
+.pp-cols::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; }
+.pp-col { flex-shrink: 0; }
+.pp-foot { position: absolute; left: 40px; right: 40px; bottom: 22px; display: flex; justify-content: space-between; font-size: 11px; padding-top: 4px; border-top: 1px solid #000; }
+.pp-key { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 12px; border-top: 1px solid #000; border-left: 1px solid #000; }
+.pp-key span { padding: 5px 0; border-right: 1px solid #000; border-bottom: 1px solid #000; }
+
+/* GsebPdfButton dialog */
+.pdf-opt { display: flex; align-items: center; gap: 0.65rem; padding: 0.65rem 0.8rem; margin-bottom: 0.5rem; border: 1px solid var(--gray-200); border-radius: 10px; cursor: pointer; font-size: 0.9rem; color: var(--gray-700); }
+.pdf-opt:hover { border-color: var(--primary); }
+.pdf-opt.off { opacity: 0.55; cursor: default; }
+.pdf-opt input { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+.spinner.spinner-sm { width: 16px; height: 16px; border-width: 2px; border-color: rgba(255,255,255,0.4); border-top-color: #fff; }

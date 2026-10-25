@@ -25,6 +25,7 @@ import FacultyStudents from './pages/faculty/FacultyStudents'
 import FacultyQuestions from './pages/faculty/FacultyQuestions'
 import FacultyPerformance from './pages/faculty/FacultyPerformance'
 import FacultyPracticePapers from './pages/faculty/FacultyPracticePapers'
+import FacultyGsebPapers from './pages/faculty/FacultyGsebPapers'
 import AdminFacultyReview from './pages/admin/AdminFacultyReview'
 import FacultyProfile from './pages/faculty/FacultyProfile'
 
@@ -95,6 +96,7 @@ function AppRoutes() {
       <Route path="/faculty/profile" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyProfile /></ProtectedRoute>} />
       <Route path="/faculty/performance" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyPerformance /></ProtectedRoute>} />
       <Route path="/faculty/practice-papers" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyPracticePapers /></ProtectedRoute>} />
+      <Route path="/faculty/gseb" element={<ProtectedRoute allowedRoles={['faculty']}><FacultyGsebPapers /></ProtectedRoute>} />
       <Route path="/faculty/student/:studentId" element={<OldStudentLink />} />
 
       <Route path="/student/change-password" element={<ProtectedRoute allowedRoles={['student']}><ChangePassword /></ProtectedRoute>} />

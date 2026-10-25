@@ -109,6 +109,7 @@ export const FACULTY_NAV = [
   { to: '/faculty/performance', label: 'Performance' },
   { to: '/faculty/questions', label: 'Questions' },
   { to: '/faculty/practice-papers', label: 'Practice Papers' },
+  { to: '/faculty/gseb', label: 'GSEB Papers' },
   { to: '/faculty/profile', label: 'Profile' },
 ]
 
