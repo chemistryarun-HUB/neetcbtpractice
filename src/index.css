@@ -537,6 +537,7 @@ kbd {
 .gx-go:disabled { opacity: 0.45; cursor: not-allowed; }
 .gx-ghost { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.56rem 0.8rem; border: 1px solid var(--gray-200); border-radius: 11px; background: #fff; color: var(--gray-700); font-weight: 600; font-size: 0.8125rem; text-decoration: none; white-space: nowrap; transition: border-color 0.15s, color 0.15s; }
 .gx-ghost:hover { border-color: var(--c); color: var(--c); }
+button.gx-ghost { font-family: inherit; cursor: pointer; }
 .gx-empty { padding: 3rem 1rem; text-align: center; color: var(--gray-500); background: #fff; border: 1px dashed var(--gray-300); border-radius: 16px; }
 .gx-chip.hot { background: #fff1e6; border-color: #fed7aa; color: #c2410c; }
 .gx-vs { padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }
@@ -596,3 +597,46 @@ kbd {
   .gx-seg button { flex: 1; justify-content: center; padding: 0.55rem 0.5rem; }
   .gx-grid { grid-template-columns: 1fr; }
 }
+
+/* GSEB paper PDF (lib/gsebPaperPdf.jsx): laid out off screen at A4 size (794 x
+   1123 px) and captured page by page, so these sizes are what lands on paper.
+   KaTeX's own serif keeps the text and the maths in one typeface. */
+.pp, .pp-page { font-family: KaTeX_Main, "Times New Roman", Times, "Noto Serif", serif; font-size: 14.5px; line-height: 1.42; color: #000; background: #fff; }
+.pp-page { width: 794px; height: 1123px; padding: 40px 40px 0; box-sizing: border-box; position: relative; overflow: hidden; }
+.pp-b { display: flow-root; padding-bottom: 9px; }
+.pp-head { text-align: center; }
+.pp-board { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.pp-title { font-size: 21px; font-weight: 700; letter-spacing: 0.04em; margin-top: 2px; }
+.pp-sub { font-size: 14px; font-weight: 700; }
+.pp-meta { display: flex; justify-content: space-between; font-weight: 700; margin-top: 8px; padding: 4px 2px; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; }
+.pp-note { text-align: left; font-size: 12.5px; font-style: italic; margin-top: 6px; }
+.pp-q { display: flex; gap: 6px; }
+.pp-no { font-weight: 700; min-width: 24px; flex-shrink: 0; }
+.pp-body { flex: 1; min-width: 0; }
+.pp-opts { display: grid; gap: 3px 10px; margin-top: 3px; }
+.pp-opts.n4 { grid-template-columns: repeat(4, 1fr); }
+.pp-opts.n2 { grid-template-columns: repeat(2, 1fr); }
+.pp-opts.n1 { grid-template-columns: 1fr; }
+.pp-opt { display: flex; gap: 4px; min-width: 0; }
+.pp-ol { flex-shrink: 0; }
+.pp-ot { min-width: 0; flex: 1; }
+.pp .katex, .pp-page .katex { font-size: 1.05em; }
+/* Paper has no scrollbars: a formula is shrunk to fit instead (shrinkMath). */
+.pp .math-span, .pp-page .math-span { overflow: visible !important; padding: 2px 0; }
+.pp-img { display: block; max-width: 100%; max-height: 230px; margin: 4px 0; }
+.pp-sec { text-align: center; padding: 2px 0 4px; border-bottom: 1px solid #000; }
+.pp-sec b { display: block; letter-spacing: 0.08em; }
+.pp-sec span { font-size: 12.5px; font-style: italic; }
+.pp-cols { display: flex; position: relative; }
+.pp-cols::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; }
+.pp-col { flex-shrink: 0; }
+.pp-foot { position: absolute; left: 40px; right: 40px; bottom: 22px; display: flex; justify-content: space-between; font-size: 11px; padding-top: 4px; border-top: 1px solid #000; }
+.pp-key { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 12px; border-top: 1px solid #000; border-left: 1px solid #000; }
+.pp-key span { padding: 5px 0; border-right: 1px solid #000; border-bottom: 1px solid #000; }
+
+/* GsebPdfButton dialog */
+.pdf-opt { display: flex; align-items: center; gap: 0.65rem; padding: 0.65rem 0.8rem; margin-bottom: 0.5rem; border: 1px solid var(--gray-200); border-radius: 10px; cursor: pointer; font-size: 0.9rem; color: var(--gray-700); }
+.pdf-opt:hover { border-color: var(--primary); }
+.pdf-opt.off { opacity: 0.55; cursor: default; }
+.pdf-opt input { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+.spinner.spinner-sm { width: 16px; height: 16px; border-width: 2px; border-color: rgba(255,255,255,0.4); border-top-color: #fff; }

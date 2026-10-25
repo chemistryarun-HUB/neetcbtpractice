@@ -9,6 +9,7 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import { GSEB_SUBJECTS, GSEB_SUBJECT_LABELS, GSEB_MEDIUM_LABELS, GSEB_EXAM_LABELS, chaptersOf, minutesFor } from '../../lib/gseb'
 import { fetchGsebBank, byYearThenNumber, startGsebPractice } from '../../lib/gsebBank'
+import GsebPdfButton from '../../components/shared/GsebPdfButton'
 
 const VIEWS = [
   { id: 'years', label: 'Year-wise papers', icon: CalendarDays },
@@ -82,7 +83,7 @@ function Ring({ pct }) {
 }
 
 // One card shape for both views: a year paper and a chapter read the same way.
-function PracticeCard({ badgeTop, badgeMain, title, sub, chips, best, status, versus, lastResult, primary, partB }) {
+function PracticeCard({ badgeTop, badgeMain, title, sub, chips, best, status, versus, lastResult, primary, partB, extra }) {
   return (
     <div className="gx-card">
       <div className="gx-card-head">
@@ -109,6 +110,7 @@ function PracticeCard({ badgeTop, badgeMain, title, sub, chips, best, status, ve
           {primary.again ? <RotateCcw size={15} /> : <Play size={15} />} {primary.label}
         </button>
         {partB && <Link to={partB.to} className="gx-ghost"><FileText size={14} /> Part B{partB.count ? ` · ${partB.count}` : ''}</Link>}
+        {extra}
       </div>
     </div>
   )
@@ -302,6 +304,7 @@ export default function StudentGsebPapers() {
         lastResult: mine[0] && `/student/gseb/result/${mine[0].id}`,
         primary: { label: mine.length ? 'Attempt again' : 'Start test', again: mine.length > 0, onClick: () => navigate(`/student/gseb/test/${p.id}`) },
         partB: partBCount > 0 && { to: `/student/gseb/paper/${p.id}/part-b`, count: partBCount },
+        extra: <GsebPdfButton paper={p} className="gx-ghost" />,
       }
     })
   } else if (chapterInfo) {

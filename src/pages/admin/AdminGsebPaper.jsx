@@ -9,6 +9,7 @@ import MathText from '../../components/shared/MathText'
 import QuestionReviewer from '../../components/shared/QuestionReviewer'
 import { GsebMcqEditPanel, GsebSubjectiveEditPanel } from '../../components/shared/GsebEditPanels'
 import GsebPrintSheet from '../../components/shared/GsebPrintSheet'
+import GsebPdfButton from '../../components/shared/GsebPdfButton'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
 import { correctOptionKey } from '../../lib/questionOptions'
@@ -320,6 +321,7 @@ export default function AdminGsebPaper() {
               <option value="provisional">Key: Provisional</option>
               <option value="final">Key: Final</option>
             </select>
+            {questions.length > 0 && <GsebPdfButton paper={paper} mcq={questions} subjective={subjective} label="Paper PDF" />}
             <button className={`btn btn-sm ${paper.is_published ? 'btn-ghost' : 'btn-primary'}`} onClick={togglePublish}>
               {paper.is_published ? 'Unpublish' : 'Publish'}
             </button>

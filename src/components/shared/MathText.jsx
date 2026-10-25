@@ -24,6 +24,10 @@ function loadKatex() {
   return loading
 }
 
+// For MathText rendered off screen that must show its maths on the first
+// render (the paper PDF): resolves once KaTeX and its CSS are in.
+export const ensureKatex = loadKatex
+
 // "$$…$$" first, then "$…$". A backslash-escaped \$ stays a literal dollar.
 const SPLIT = /(\$\$[\s\S]+?\$\$|(?<!\\)\$(?:\\\$|[^$])+?(?<!\\)\$)/g
 
@@ -184,7 +188,7 @@ function MathSpan({ html, display }) {
     return () => ro?.disconnect()
   }, [html])
   return (
-    <span ref={ref}
+    <span ref={ref} className="math-span"
       style={{ display: display ? 'block' : 'inline-block', maxWidth: '100%', verticalAlign: 'middle',
         overflowX: scroll ? 'auto' : 'visible', overflowY: scroll ? 'hidden' : 'visible' }}
       dangerouslySetInnerHTML={{ __html: html }} />
