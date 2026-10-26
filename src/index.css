@@ -24,6 +24,8 @@
 }
 
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.5; }
+/* Gujarati medium screens (lang="gu"): a font made for the script. */
+:lang(gu) { font-family: "Noto Sans Gujarati", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
 .loading-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -144,6 +146,10 @@ tbody tr:hover td { background: var(--gray-50); }
 .unit-card.active { border-color: var(--primary); background: var(--primary-light); cursor: pointer; box-shadow: var(--shadow); }
 .unit-num { width: 28px; height: 28px; border-radius: 50%; background: var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
 .unit-card.active .unit-num { background: var(--primary); color: #fff; }
+/* Subject tabs above the syllabus (Chemistry / Physics), shown once a student's medium has more than one subject open. */
+.subject-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.subject-tab { border: 1.5px solid var(--gray-300); background: #fff; color: var(--gray-600); border-radius: 999px; padding: 0.4rem 1rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; font-family: inherit; }
+.subject-tab[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
 
 .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
 .level-card { background: #fff; border: 1.5px solid var(--gray-200); border-left: 4px solid var(--gray-200); border-radius: 10px; padding: 1.25rem 1.25rem 1.25rem 1.1rem; position: relative; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }

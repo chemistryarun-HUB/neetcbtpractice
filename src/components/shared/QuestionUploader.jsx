@@ -4,7 +4,9 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, ImagePlus, Lock, Maximize2 } from 'lucide-react'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
-import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { ALL_NEET_UNITS, subjectOfUnit, unitNo } from '../../lib/constants'
+import { unitsOf, unitLabel as shownUnit, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { MEDIUMS, mediumLabel, normMedium } from '../../lib/neetI18n'
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
 import { resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -94,14 +96,20 @@ function ImageField({ label, file, onChange }) {
 // have silently rejected every row. Returns null when it matches nothing,
 // which the caller reports rather than guessing: a mistyped unit landing 40
 // questions in the wrong module is far worse than being told to fix the cell.
-function resolveUnitId(raw) {
+//
+// Read within the chosen subject: a sheet says "Unit 11" for Physics
+// Electrostatics, which is stored as unit 111 (see NEET_PHYSICS_SYLLABUS), and
+// "111" itself is accepted too.
+function resolveUnitId(raw, subject) {
   const s = String(raw || '').trim()
   if (!s) return null
+  const units = unitsOf(subject)
 
-  const num = s.match(/^(?:unit[\s_.:-]*)?(\d{1,2})\b/i)
+  const num = s.match(/^(?:unit[\s_.:-]*)?(\d{1,3})\b/i)
   if (num) {
-    const id = Number(num[1])
-    if (CHEMISTRY_UNITS.some(u => u.id === id)) return id
+    const n = Number(num[1])
+    const hit = units.find(u => u.id === n) || units.find(u => u.no === n)
+    if (hit) return hit.id
   }
 
   // Name match — ignore a leading "Unit N -", punctuation and spacing, so
@@ -110,7 +118,7 @@ function resolveUnitId(raw) {
     .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim()
   const target = norm(s)
   if (!target) return null
-  const exact = CHEMISTRY_UNITS.find(u => norm(u.name) === target)
+  const exact = units.find(u => norm(u.name) === target)
   return exact ? exact.id : null
 }
 
@@ -168,6 +176,12 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
 const PAGE_SIZE = 50
 
 const SUBJECTS = ['Chemistry', 'Physics', 'Biology', 'Mathematics']
+// Subjects that have a syllabus in the app (NEET_SUBJECTS); the rest are
+// listed but not selectable yet.
+const READY_SUBJECTS = new Set(['Chemistry', 'Physics'])
+const unitById = id => ALL_NEET_UNITS.find(u => u.id === Number(id))
+// "Unit 111 - Electrostatics" — the text stored in questions.unit.
+const storedUnit = u => `Unit ${u.id} - ${u.name}`
 
 export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
@@ -179,6 +193,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const [subjectFilter, setSubjectFilter] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
+  const [mediumFilter, setMediumFilter] = useState('')   // '' | 'en' | 'gu'
   // Reviewing happens in a full-screen overlay (QuestionReviewer) rather than an
   // inline row panel — the row panel only ever got the bottom half of a window
   // whose top half was chrome, which is the wrong shape for judging a question
@@ -196,6 +211,8 @@ export default function QuestionUploader({ uploadedBy }) {
   // Upload Excel tab — subject/unit selection
   const [uploadSubject, setUploadSubject] = useState('')
   const [uploadUnitId, setUploadUnitId] = useState('')
+  // Medium for rows whose sheet has no Medium column.
+  const [uploadMedium, setUploadMedium] = useState('en')
   // Parsed sheet awaiting confirmation — nothing is written while this is set.
   const [pendingUpload, setPendingUpload] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -203,6 +220,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const [manualSubject, setManualSubject] = useState('')
   const [manualUnitId, setManualUnitId] = useState('')
   const [manualLevel, setManualLevel] = useState('')
+  const [manualMedium, setManualMedium] = useState('en')
 
   const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
 
@@ -217,11 +235,16 @@ export default function QuestionUploader({ uploadedBy }) {
       const uid = Number(unitFilter)
       if (uid === 11) {
         q = q.ilike('unit', '%f Block Elements%')
+      } else if (uid > 100) {
+        // Physics: the exact stored prefix — a name match could also hit a
+        // Chemistry unit sharing a word.
+        q = q.ilike('unit', `Unit ${uid} -%`)
       } else {
-        const unit = CHEMISTRY_UNITS.find(u => u.id === uid)
+        const unit = unitById(uid)
         if (unit) q = q.ilike('unit', `%${unit.name}%`)
       }
     }
+    if (mediumFilter) q = q.eq('medium', mediumFilter)
     if (levelFilter) q = q.eq('level', Number(levelFilter))
     // Sorting is redone client-side after fetch (see loadQuestions) so unit/level
     // grouping works correctly by numeric unit order even when browsing all units
@@ -263,7 +286,7 @@ export default function QuestionUploader({ uploadedBy }) {
   // Reset downstream filters and reload when parent filter changes
   useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
-  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
+  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter, mediumFilter])
 
   // Every single-question mutation (activate/deactivate, edit save) patches the
   // already-loaded rows in place instead of refetching. A refetch flips `loading`
@@ -469,8 +492,8 @@ export default function QuestionUploader({ uploadedBy }) {
 
     setSubmitting(true)
     try {
-      const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(manualUnitId))
-      const unitLabel = `Unit ${selectedUnit.id} - ${selectedUnit.name}`
+      const selectedUnit = unitById(manualUnitId)
+      const unitLabel = storedUnit(selectedUnit)
       const unitLevelDefs = UNIT_LEVELS[Number(manualUnitId)] || []
       const topic = unitLevelDefs.find(l => l.id === Number(manualLevel))?.name || ''
 
@@ -482,6 +505,7 @@ export default function QuestionUploader({ uploadedBy }) {
         qid:             form.qid,
         question_type:   form.question_type,
         subject:         manualSubject,
+        medium:          manualMedium,
         unit:            unitLabel,
         chapter_name:    form.chapter_name,
         topic,
@@ -576,7 +600,7 @@ export default function QuestionUploader({ uploadedBy }) {
       return
     }
 
-    const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))
+    const selectedUnit = unitById(uploadUnitId)
 
     // Returns '' for missing/blank cells instead of the literal string "undefined"
     // (String(undefined) === "undefined", which is truthy and used to slip past validation)
@@ -630,7 +654,7 @@ export default function QuestionUploader({ uploadedBy }) {
           const unitCell = cell(r, 'Unit') || cell(r, 'Unit ID')
           let unitIdNum
           if (unitCell) {
-            const resolved = resolveUnitId(unitCell)
+            const resolved = resolveUnitId(unitCell, uploadSubject)
             if (!resolved) { badUnits.push({ qid, value: unitCell }); continue }
             unitIdNum = resolved
           } else if (selectedUnit) {
@@ -639,10 +663,10 @@ export default function QuestionUploader({ uploadedBy }) {
             noUnit.push(qid); continue
           }
 
-          // Always rebuilt from CHEMISTRY_UNITS, never from the sheet's text —
+          // Always rebuilt from the syllabus, never from the sheet's text —
           // this is what keeps exactly one unit string per unit in the bank.
-          const rowUnit = CHEMISTRY_UNITS.find(u => u.id === unitIdNum)
-          const unitLabel = `Unit ${rowUnit.id} - ${rowUnit.name}`
+          const rowUnit = unitById(unitIdNum)
+          const unitLabel = storedUnit(rowUnit)
 
           const option1  = cell(r, 'Option 1')
           const option2  = cell(r, 'Option 2')
@@ -702,6 +726,8 @@ export default function QuestionUploader({ uploadedBy }) {
             // isn't a real category — see QuestionEditPanel.jsx).
             question_type:    cell(r, 'Question Type') || 'Single Choice MCQ',
             subject:          uploadSubject,
+            // A "Medium" column (English / Gujarati) wins over the dropdown.
+            medium:           cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium,
             unit:             unitLabel,
             chapter_name:     cell(r, 'Chapter Name'),
             topic,
@@ -838,6 +864,7 @@ export default function QuestionUploader({ uploadedBy }) {
   }
 
   const filtered = questions.filter(q => {
+    if (subjectFilter && !unitFilter && subjectOfUnit(unitIdOf(q.unit)) !== subjectFilter) return false
     const s = search.toLowerCase()
     return !s ||
       (q.question || '').toLowerCase().includes(s) ||
@@ -847,12 +874,12 @@ export default function QuestionUploader({ uploadedBy }) {
   })
 
   // Reset to page 1 when any filter/search changes
-  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, statusFilter])
+  useEffect(() => { setPage(1) }, [search, subjectFilter, unitFilter, levelFilter, mediumFilter, statusFilter])
 
   // When a filter is active, show all results so nothing is hidden behind pages —
   // includes a non-default status filter, since browsing "Inactive" is meant to
   // show every inactive question across the bank at a glance, not 50 at a time.
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
+  const isFiltering = search.trim() !== '' || subjectFilter !== '' || unitFilter !== '' || levelFilter !== '' || mediumFilter !== '' || statusFilter !== 'active'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
 
@@ -965,8 +992,20 @@ export default function QuestionUploader({ uploadedBy }) {
               >
                 <option value="">All Subjects</option>
                 {SUBJECTS.map(s => (
-                  <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (coming soon)' : ''}</option>
+                  <option key={s} value={s} disabled={!READY_SUBJECTS.has(s)}>{s}{!READY_SUBJECTS.has(s) ? ' (coming soon)' : ''}</option>
                 ))}
+              </select>
+
+              {/* Medium — English and Gujarati are separate banks */}
+              <select
+                className="form-control"
+                style={{ width: '140px', flex: '0 0 140px' }}
+                value={mediumFilter}
+                onChange={e => setMediumFilter(e.target.value)}
+                aria-label="Medium"
+              >
+                <option value="">All Mediums</option>
+                {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
               </select>
 
               {/* Unit — visible once a subject is chosen */}
@@ -978,8 +1017,8 @@ export default function QuestionUploader({ uploadedBy }) {
                   onChange={e => setUnitFilter(e.target.value)}
                 >
                   <option value="">All Units</option>
-                  {CHEMISTRY_UNITS.map(u => (
-                    <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
+                  {unitsOf(subjectFilter).map(u => (
+                    <option key={u.id} value={u.id}>Unit {unitNo(u.id)} - {u.name}</option>
                   ))}
                 </select>
               )}
@@ -1003,9 +1042,9 @@ export default function QuestionUploader({ uploadedBy }) {
               )}
 
               {/* Reset filters link */}
-              {(subjectFilter || unitFilter || levelFilter) && (
+              {(subjectFilter || unitFilter || levelFilter || mediumFilter) && (
                 <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }}
-                  onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter('') }}>
+                  onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter(''); setMediumFilter('') }}>
                   ✕ Reset filters
                 </button>
               )}
@@ -1068,7 +1107,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <tr>
                             <td colSpan={9} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
-                                {q.unit}
+                                {shownUnit(q.unit)}
                                 <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}>· {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
                               </div>
                             </td>
@@ -1136,7 +1175,7 @@ export default function QuestionUploader({ uploadedBy }) {
                               <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title={lockSummary(q)} />
                             )}
                           </td>
-                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</td>
+                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={shownUnit(q.unit)}>{shownUnit(q.unit)}{q.medium === 'gu' && <span className="badge" style={{ marginLeft: 4, background: '#fef3c7', color: '#92400e' }}>GU</span>}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>
                           <td style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                             {q.level}
@@ -1224,7 +1263,14 @@ export default function QuestionUploader({ uploadedBy }) {
                 <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualSubject}
                   onChange={e => { setManualSubject(e.target.value); setManualUnitId(''); setManualLevel('') }} required>
                   <option value="">— choose —</option>
-                  {SUBJECTS.map(s => <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (soon)' : ''}</option>)}
+                  {SUBJECTS.map(s => <option key={s} value={s} disabled={!READY_SUBJECTS.has(s)}>{s}{!READY_SUBJECTS.has(s) ? ' (soon)' : ''}</option>)}
+                </select>
+              </div>
+              <div className="form-group" style={{ margin: 0, minWidth: '120px' }}>
+                <label style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Medium *</label>
+                <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualMedium}
+                  onChange={e => setManualMedium(e.target.value)}>
+                  {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
                 </select>
               </div>
               {manualSubject && (
@@ -1233,7 +1279,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualUnitId}
                     onChange={e => { setManualUnitId(e.target.value); setManualLevel('') }} required>
                     <option value="">— choose —</option>
-                    {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+                    {unitsOf(manualSubject).map(u => <option key={u.id} value={u.id}>Unit {unitNo(u.id)} — {u.name}</option>)}
                   </select>
                 </div>
               )}
@@ -1500,7 +1546,7 @@ export default function QuestionUploader({ uploadedBy }) {
         <div className="card card-body">
           <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Upload Questions via Excel</h3>
           <p className="text-muted" style={{ marginBottom: '1rem' }}>
-            Pick the subject, then upload. Add a Unit column to your sheet to send one file to many units at once — you'll see exactly where every row is going before anything is saved.
+            Pick the subject and medium, then upload. Add a Unit column to your sheet to send one file to many units at once — you'll see exactly where every row is going before anything is saved.
           </p>
 
           {/* Step 1: Subject */}
@@ -1514,10 +1560,22 @@ export default function QuestionUploader({ uploadedBy }) {
             >
               <option value="">— Choose subject —</option>
               {SUBJECTS.map(s => (
-                <option key={s} value={s} disabled={s !== 'Chemistry'}>
-                  {s}{s !== 'Chemistry' ? ' (coming soon)' : ''}
+                <option key={s} value={s} disabled={!READY_SUBJECTS.has(s)}>
+                  {s}{!READY_SUBJECTS.has(s) ? ' (coming soon)' : ''}
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label style={{ fontWeight: 600 }}>Medium</label>
+            <select
+              className="form-control"
+              style={{ maxWidth: '280px' }}
+              value={uploadMedium}
+              onChange={e => setUploadMedium(e.target.value)}
+            >
+              {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
           </div>
 
@@ -1532,8 +1590,8 @@ export default function QuestionUploader({ uploadedBy }) {
                 onChange={e => setUploadUnitId(e.target.value)}
               >
                 <option value="">— Choose unit —</option>
-                {CHEMISTRY_UNITS.map(u => (
-                  <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
+                {unitsOf(uploadSubject).map(u => (
+                  <option key={u.id} value={u.id}>Unit {unitNo(u.id)} - {u.name}</option>
                 ))}
               </select>
             </div>
@@ -1542,7 +1600,10 @@ export default function QuestionUploader({ uploadedBy }) {
           {/* Preview — every row's destination, before anything is written. */}
           {pendingUpload && (() => {
             const byUnit = {}
-            for (const r of pendingUpload.records) byUnit[r.unit] = (byUnit[r.unit] || 0) + 1
+            for (const r of pendingUpload.records) {
+              const key = `${shownUnit(r.unit)} · ${mediumLabel(r.medium)}`
+              byUnit[key] = (byUnit[key] || 0) + 1
+            }
             const rows = Object.entries(byUnit).sort((a, b) =>
               (Number(a[0].match(/^Unit\s+(\d+)/)?.[1]) || 0) - (Number(b[0].match(/^Unit\s+(\d+)/)?.[1]) || 0))
             const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length
@@ -1627,9 +1688,9 @@ export default function QuestionUploader({ uploadedBy }) {
             {uploadSubject ? (
               <>
                 <div style={{ marginBottom: '0.75rem', padding: '0.6rem 0.875rem', background: 'var(--primary-light)', border: '1px solid var(--primary)', borderRadius: 'var(--radius)', fontSize: '0.8125rem', color: 'var(--primary-dark)' }}>
-                  Uploading as <strong>{uploadSubject}</strong>.{' '}
+                  Uploading as <strong>{uploadSubject}</strong>, <strong>{mediumLabel(uploadMedium)}</strong> medium (a <code>Medium</code> column overrides this per row).{' '}
                   {uploadUnitId ? (
-                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
+                    <>Rows without a <code>Unit</code> column go to <strong>Unit {unitNo(uploadUnitId)} - {unitById(uploadUnitId)?.name}</strong>.</>
                   ) : (
                     <>No unit selected — every row must carry its own <code>Unit</code> value.</>
                   )}
@@ -1795,7 +1856,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                 ) : (
                                   <>
                                     <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', fontSize: '0.75rem', color: 'var(--gray-500)', marginBottom: '0.6rem' }}>
-                                      <span title={full.unit}>{full.unit}</span>
+                                      <span title={shownUnit(full.unit)}>{shownUnit(full.unit)}</span>
                                       <span className={`badge badge-${(full.difficulty_level || '').toLowerCase()}`}>{full.difficulty_level}</span>
                                       {full.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{full.question_tag}</span>}
                                     </div>

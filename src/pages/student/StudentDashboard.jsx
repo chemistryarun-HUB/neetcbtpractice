@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge, isChapterTestLevel } from '../../lib/constants'
+import { NEET_SUBJECTS, UNIT_LEVELS, isChapterTestLevel } from '../../lib/constants'
+import { neetT, sectionName, unitName, unitTitle, levelName as levelNameT, levelBadgeT } from '../../lib/neetI18n'
 import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -11,8 +12,22 @@ import LevelRulesTour, { hasTourBeenSeen } from '../../components/student/LevelR
 import { groupVideosByUnitLevel } from '../../lib/youtube'
 
 export default function StudentDashboard() {
-  const { user, logout } = useAuth()
+  const { user, logout, updateStudentUser } = useAuth()
   const navigate = useNavigate()
+  // The medium the student studies in decides which question bank they see
+  // and the language of these screens. Read fresh on every load (below): a
+  // session saved before the admin changed it still carries the old one.
+  const [medium, setMedium] = useState(user.medium || 'en')
+  const t = neetT(medium)
+  // Which subject's syllabus is showing; kept for the tab so coming back
+  // from a test lands on the same subject.
+  const [subject, setSubject] = useState(() => {
+    try { return sessionStorage.getItem('neet_subject') || null } catch { return null }
+  })
+  function pickSubject(id) {
+    setSubject(id)
+    try { sessionStorage.setItem('neet_subject', id) } catch { /* private mode */ }
+  }
 
   const [progress, setProgress] = useState(null)
   const [attempts, setAttempts] = useState([])
@@ -36,12 +51,16 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     async function load() {
-      // 1. Student progress + attempts + lecture videos
-      const [{ data: p }, { data: a }, { data: vids }] = await Promise.all([
+      // 1. Student progress + attempts + lecture videos (+ current medium)
+      const [{ data: p }, { data: a }, { data: vids }, { data: me }] = await Promise.all([
         supabase.from('student_progress').select('*').eq('student_id', user.id).single(),
         supabase.from('test_attempts').select('*').eq('student_id', user.id).eq('submitted', true),
         supabase.from('level_videos').select('*').eq('is_active', true).order('sort_order'),
+        supabase.from('students').select('medium').eq('id', user.id).maybeSingle(),
       ])
+      const med = me?.medium || 'en'
+      setMedium(med)
+      if (med !== (user.medium || 'en')) updateStudentUser({ medium: med })
       setVideosByUnit(groupVideosByUnitLevel(vids))
       if (!p) {
         await supabase.from('student_progress').insert({ student_id: user.id })
@@ -63,6 +82,7 @@ export default function StudentDashboard() {
         const { data: page, error } = await supabase
           .from('questions')
           .select('unit, level, topic')
+          .eq('medium', med)
           .eq('is_active', true)
           .eq('is_published', true)
           .range(from, from + 999)
@@ -126,7 +146,7 @@ export default function StudentDashboard() {
     const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
     const unlockedLevels = progress?.unlocked_levels_by_unit?.[unitId] || [1]
     if (!alwaysUnlocked && !unlockedLevels.includes(levelId)) {
-      toast.error('Complete previous levels to unlock this one')
+      toast.error(t.lockedToast)
       return
     }
     navigate(`/student/test/${unitId}/${levelId}`)
@@ -159,7 +179,7 @@ export default function StudentDashboard() {
       .reduce((s, l) => s + l.count, 0)
 
     return (
-      <div className="dashboard">
+      <div className="dashboard" lang={medium}>
         <header className="topbar">
           <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => setSelectedUnit(null)}>NEETCBT</div>
           <div className="topbar-nav" style={{ alignItems: 'center', gap: '1rem' }}>
@@ -167,32 +187,33 @@ export default function StudentDashboard() {
               {user.name} ({user.roll_number})
             </span>
             <button onClick={handleLogout} title="Logout" style={{ color: 'rgba(255,255,255,0.85)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem' }}>
-              <LogOut size={16} /> Logout
+              <LogOut size={16} /> {t.logout}
             </button>
           </div>
         </header>
         <div className="page-content">
           <button className="back-btn" onClick={() => setSelectedUnit(null)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
-            <ArrowLeft size={15} /> Back to Syllabus
+            <ArrowLeft size={15} /> {t.backToSyllabus}
           </button>
           <h3 style={{ fontWeight: 700, marginBottom: '0.25rem', color: 'var(--gray-700)' }}>
-            Unit {selectedUnit.id}: {selectedUnit.name}
+            {unitTitle(selectedUnit, medium)}
           </h3>
           <p style={{ color: 'var(--gray-400)', fontSize: '0.875rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
             {/* With one level there is nothing to unlock in sequence, and the
                 multi-level wording renders as "Level 1 and Level 1". */}
             <span>
               {levelDefs.length === 1
-                ? '1 level · always unlocked'
-                : `${levelDefs.length} levels · Level 1 and ${levelBadge(selectedUnit.id, lastLevelId)} always unlocked`}
+                ? t.oneLevel
+                : t.levelsSummary(levelDefs.length, levelBadgeT(selectedUnit.id, lastLevelId, medium))}
             </span>
             <button onClick={() => setTourOpen(true)}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600, fontSize: '0.8125rem', padding: 0 }}>
-              <HelpCircle size={14} /> How levels work
+              <HelpCircle size={14} /> {t.howLevelsWork}
             </button>
           </p>
           <div className="levels-grid">
-            {levelDefs.map(({ id: levelId, name: levelName, topic: levelTopic }) => {
+            {levelDefs.map(({ id: levelId, topic: levelTopic }) => {
+              const levelName = levelNameT(selectedUnit.id, levelId, medium)
               // Level 1 and last level are always unlocked
               const alwaysUnlocked = levelId === 1 || levelId === lastLevelId
               const isUnlocked = alwaysUnlocked || unlockedLevels.includes(levelId)
@@ -207,16 +228,16 @@ export default function StudentDashboard() {
                   onClick={() => isUnlocked && startTest(selectedUnit.id, levelId)}
                 >
                   <div className="level-num">
-                    {levelBadge(selectedUnit.id, levelId)}
+                    {levelBadgeT(selectedUnit.id, levelId, medium)}
                     <InfoTooltip text={levelTopic || levelName} />
                   </div>
                   <h4>{levelName}</h4>
                   <div className="level-stats">
-                    <div>Total questions: {qCount > 0 ? qCount : '—'}</div>
+                    <div>{t.totalQuestions}: {qCount > 0 ? qCount : '—'}</div>
                     {lvlAttempts.length > 0 && (
                       <>
-                        <div style={{ marginTop: '0.25rem' }}>Attempts: <strong>{lvlAttempts.length}</strong></div>
-                        <div>Questions done: <strong>{totalQAttempted}</strong></div>
+                        <div style={{ marginTop: '0.25rem' }}>{t.attempts}: <strong>{lvlAttempts.length}</strong></div>
+                        <div>{t.questionsDone}: <strong>{totalQAttempted}</strong></div>
                       </>
                     )}
                   </div>
@@ -235,13 +256,13 @@ export default function StudentDashboard() {
                           }}
                         >
                           <PlayCircle size={13} />
-                          {levelVideos.length} Lecture{levelVideos.length !== 1 ? 's' : ''}
+                          {t.lectures(levelVideos.length)}
                         </button>
                       )}
                       {isUnlocked && (
                         lvlAttempts.length === 0
-                          ? <span className="badge badge-green">Start</span>
-                          : <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>Continue</span>
+                          ? <span className="badge badge-green">{t.start}</span>
+                          : <span className="badge" style={{ background: '#dbeafe', color: '#1d4ed8' }}>{t.continue}</span>
                       )}
                     </div>
                   )}
@@ -270,8 +291,13 @@ export default function StudentDashboard() {
   }
 
   // ── Syllabus view ──
+  // Only subjects with at least one open unit in this medium get a tab: an
+  // English student sees Chemistry as before until Physics questions go live.
+  const openSubjects = NEET_SUBJECTS.filter(sub => sub.syllabus.some(sec => sec.units.some(u => activeUnitIds.has(u.id))))
+  const shown = openSubjects.find(sub => sub.id === subject) || openSubjects[0] || NEET_SUBJECTS[0]
+  const shownActive = shown.syllabus.reduce((n, sec) => n + sec.units.filter(u => activeUnitIds.has(u.id)).length, 0)
   return (
-    <div className="dashboard">
+    <div className="dashboard" lang={medium}>
       <header className="topbar">
         <div className="topbar-brand">NEETCBT</div>
         <div className="topbar-nav" style={{ alignItems: 'center', gap: '1rem' }}>
@@ -279,37 +305,48 @@ export default function StudentDashboard() {
             {user.name} ({user.roll_number})
           </span>
           <button onClick={handleLogout} title="Logout" style={{ color: 'rgba(255,255,255,0.85)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem' }}>
-            <LogOut size={16} /> Logout
+            <LogOut size={16} /> {t.logout}
           </button>
         </div>
       </header>
 
       <div className="page-content">
         <div className="page-header">
-          <h2>Chemistry Syllabus</h2>
+          <h2>{t.syllabus(t.subject[shown.id] || shown.id)}</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div className="text-muted">
-              {activeUnitIds.size} unit{activeUnitIds.size !== 1 ? 's' : ''} active
+              {t.unitsActive(shownActive)}
             </div>
             <Link to="/student/performance" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-              <BarChart3 size={15} /> My Performance
+              <BarChart3 size={15} /> {t.myPerformance}
             </Link>
             <Link to="/student/practice-papers" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-              <FileText size={15} /> Practice Papers
+              <FileText size={15} /> {t.practicePapers}
             </Link>
             <Link to="/student/gseb" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-              <FileText size={15} /> GSEB Board Papers
+              <FileText size={15} /> {t.gsebPapers}
             </Link>
             <button className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
               onClick={() => setTourOpen(true)}>
-              <HelpCircle size={15} /> How levels work
+              <HelpCircle size={15} /> {t.howLevelsWork}
             </button>
           </div>
         </div>
 
-        {NEET_CHEMISTRY_SYLLABUS.map(section => (
+        {openSubjects.length > 1 && (
+          <div className="subject-tabs" role="group">
+            {openSubjects.map(sub => (
+              <button key={sub.id} className="subject-tab" aria-pressed={sub.id === shown.id} onClick={() => pickSubject(sub.id)}>
+                {t.subject[sub.id] || sub.id}
+              </button>
+            ))}
+          </div>
+        )}
+        {openSubjects.length === 0 && <p className="text-muted" style={{ marginBottom: '1rem' }}>{t.noUnits}</p>}
+
+        {shown.syllabus.map(section => (
           <div className="syllabus-section" key={section.section}>
-            <h3>{section.section}</h3>
+            <h3>{sectionName(section.section, medium)}</h3>
             <div className="unit-grid">
               {section.units.map(unit => {
                 const isActive = activeUnitIds.has(unit.id)
@@ -319,8 +356,8 @@ export default function StudentDashboard() {
                     className={`unit-card ${isActive ? 'active' : 'locked'}`}
                     onClick={() => isActive && setSelectedUnit(unit)}
                   >
-                    <div className="unit-num">{unit.id}</div>
-                    <span>{unit.name}</span>
+                    <div className="unit-num">{unit.no ?? unit.id}</div>
+                    <span>{unitName(unit, medium)}</span>
                     {isActive && <ChevronRight size={16} style={{ marginLeft: 'auto', color: 'var(--primary)' }} />}
                     {!isActive && <Lock size={14} style={{ marginLeft: 'auto', color: 'var(--gray-300)' }} />}
                   </div>

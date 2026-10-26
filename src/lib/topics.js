@@ -2,13 +2,23 @@
 // Topic is derived from (unit, level) via UNIT_LEVELS — the DB `topic` column is
 // kept in sync with this on every save, so level is always the single source of
 // truth for topic.
-import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from './constants'
+import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, NEET_SUBJECTS, unitNo } from './constants'
 
 // Unit names must match the `unit` column stored in the DB (partial ilike match
 // is used for filtering). Derived from NEET_CHEMISTRY_SYLLABUS (the single
 // source of truth for section/unit names) rather than hand-copied — the copy
 // this replaced drifted out of sync whenever a unit was added elsewhere.
 export const CHEMISTRY_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+
+// The units of one subject ('Chemistry', 'Physics'); every unit for none.
+export function unitsOf(subject) {
+  return NEET_SUBJECTS.filter(s => !subject || s.id === subject).flatMap(s => s.syllabus.flatMap(sec => sec.units))
+}
+
+// "Unit 111 - Electrostatics" (how a Physics unit is stored) reads "Unit 11 - Electrostatics".
+export function unitLabel(unitString) {
+  return String(unitString || '').replace(/^Unit\s+(\d+)/i, (_, n) => `Unit ${unitNo(n)}`)
+}
 
 // Leading unit number from the free-text `unit` column ("Unit 11 - ...").
 export function unitIdOf(unitString) {

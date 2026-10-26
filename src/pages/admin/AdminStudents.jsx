@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { MARKS_CORRECT, UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
+import { MARKS_CORRECT, UNIT_LEVELS, ALL_NEET_UNITS, levelBadge, unitNo } from '../../lib/constants'
+import { MEDIUMS, mediumLabel, normMedium } from '../../lib/neetI18n'
 import { computeStreak, aggregateAccuracy, buildActivityMessage, attemptsInOrder } from '../../lib/performanceMetrics'
 
-const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+const ALL_UNITS = ALL_NEET_UNITS
 function unitName(unitId) {
   return ALL_UNITS.find(u => u.id === unitId)?.name || `Unit ${unitId}`
 }
@@ -44,11 +45,12 @@ function buildPrefix(cls, neetYear, ddmm) {
 
 function downloadSampleExcel() {
   const rows = [
-    { 'Student Name': 'Rahul Sharma',  'Phone No. (Student)': '9876543210', 'Phone No. (Mother)': '9876543210', 'Phone No. (Father)': '9123456789' },
-    { 'Student Name': 'Priya Singh',   'Phone No. (Student)': '9812345670', 'Phone No. (Mother)': '9812345671', 'Phone No. (Father)': '' },
-    { 'Student Name': 'Amit Verma',    'Phone No. (Student)': '9001234567', 'Phone No. (Mother)': '',           'Phone No. (Father)': '9001234568' },
+    { 'Student Name': 'Rahul Sharma',  'Phone No. (Student)': '9876543210', 'Phone No. (Mother)': '9876543210', 'Phone No. (Father)': '9123456789', 'Medium': 'English' },
+    { 'Student Name': 'Priya Singh',   'Phone No. (Student)': '9812345670', 'Phone No. (Mother)': '9812345671', 'Phone No. (Father)': '',           'Medium': 'Gujarati' },
+    { 'Student Name': 'Amit Verma',    'Phone No. (Student)': '9001234567', 'Phone No. (Mother)': '',           'Phone No. (Father)': '9001234568', 'Medium': '' },
   ]
-  const ws = XLSX.utils.json_to_sheet(rows, { header: ['Student Name', 'Phone No. (Student)', 'Phone No. (Mother)', 'Phone No. (Father)'] })
+  // Medium is optional: blank means English.
+  const ws = XLSX.utils.json_to_sheet(rows, { header: ['Student Name', 'Phone No. (Student)', 'Phone No. (Mother)', 'Phone No. (Father)', 'Medium'] })
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, ws, 'Students')
   XLSX.writeFile(wb, 'student_upload_sample.xlsx')
@@ -255,7 +257,7 @@ function StudentProgress({ student, onBack }) {
                   return (
                     <>
                       <tr key={key} style={{ background: cleared ? '#f0fdf4' : undefined }}>
-                        <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>Unit {unitId}: {unitName(unitId)}</td>
+                        <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>Unit {unitNo(unitId)}: {unitName(unitId)}</td>
                         <td style={{ fontWeight: 700, color: 'var(--gray-700)' }}>
                           {levelBadge(unitId, level)}
                           <div style={{ fontSize: '0.7rem', fontWeight: 400, color: 'var(--gray-400)' }}>{levelName(unitId, level)}</div>
@@ -290,7 +292,7 @@ function StudentProgress({ student, onBack }) {
                           <td colSpan={8} style={{ padding: 0, borderTop: 'none' }}>
                             <div style={{ background: '#f8faff', borderTop: '2px solid #bfdbfe', borderBottom: '1px solid var(--gray-200)', padding: '0.75rem 1rem' }}>
                               <div style={{ fontWeight: 600, fontSize: '0.75rem', color: '#1d4ed8', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Unit {unitId} · {levelBadge(unitId, level)} — All Attempts
+                                Unit {unitNo(unitId)} · {levelBadge(unitId, level)} — All Attempts
                               </div>
                               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                                 <thead>
@@ -419,7 +421,7 @@ export default function AdminStudents() {
         if (phone.length !== 10) { toast.error(`Invalid student phone for "${name}": must be 10 digits`); continue }
         if (phoneMother && phoneMother.length !== 10) { toast.error(`Invalid mother phone for "${name}": must be 10 digits`); continue }
         if (phoneFather && phoneFather.length !== 10) { toast.error(`Invalid father phone for "${name}": must be 10 digits`); continue }
-        validRows.push({ name, phone, phone_mother: phoneMother || null, phone_father: phoneFather || null })
+        validRows.push({ name, phone, phone_mother: phoneMother || null, phone_father: phoneFather || null, medium: normMedium(r['Medium']) })
       }
 
       if (validRows.length === 0) {
@@ -459,6 +461,7 @@ export default function AdminStudents() {
         phone_student: r.phone,
         phone_mother:  r.phone_mother || null,
         phone_father:  r.phone_father || null,
+        medium:        r.medium || 'en',
         roll_number:   r.roll_number,
         password_hash: r.password,
         username:      r.roll_number,
@@ -502,6 +505,15 @@ export default function AdminStudents() {
     const { error } = await supabase.from('students').update({ is_active: !current }).eq('id', id)
     if (error) { toast.error(error.message); return }
     setStudents(ss => ss.map(s => s.id === id ? { ...s, is_active: !current } : s))
+  }
+
+  // Which question bank and screen language the student gets (English or
+  // Gujarati medium). Takes effect the next time they open the dashboard.
+  async function setMedium(id, medium) {
+    const { error } = await supabase.from('students').update({ medium }).eq('id', id)
+    if (error) { toast.error(error.message); return }
+    setStudents(ss => ss.map(s => s.id === id ? { ...s, medium } : s))
+    toast.success(`Medium set to ${mediumLabel(medium)}`)
   }
 
   function openEdit(s) {
@@ -1010,6 +1022,7 @@ export default function AdminStudents() {
                           <th>Class</th>
                           <th>NEET Year</th>
                           <th>Phone</th>
+                          <th style={{ width: '110px' }}>Medium</th>
                           <th style={{ width: '90px', textAlign: 'center' }}>Status</th>
                           <th style={{ width: '130px' }}></th>
                         </tr>
@@ -1035,6 +1048,13 @@ export default function AdminStudents() {
                                 <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.class || '—'}</td>
                                 <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.neet_year || '—'}</td>
                                 <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.phone_student || '—'}</td>
+                                <td>
+                                  <select className="form-control" aria-label={`Medium for ${s.name}`}
+                                    style={{ fontSize: '0.78rem', padding: '0.15rem 0.35rem', width: 'auto' }}
+                                    value={s.medium || 'en'} onChange={e => setMedium(s.id, e.target.value)}>
+                                    {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                                  </select>
+                                </td>
                                 <td style={{ textAlign: 'center' }}>
                                   {isInactive ? (
                                     <button
@@ -1074,7 +1094,7 @@ export default function AdminStudents() {
 
                               {isEditing && (
                                 <tr key={`${s.id}-edit`}>
-                                  <td colSpan={7} style={{ padding: 0, borderTop: 'none' }}>
+                                  <td colSpan={8} style={{ padding: 0, borderTop: 'none' }}>
                                     <div style={{ padding: '0.875rem 1.25rem', background: '#fffbeb', borderTop: '2px solid #d97706', borderBottom: '1px solid #fde68a' }}>
                                       <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#92400e', marginBottom: '0.75rem' }}>
                                         Editing: <code>{s.roll_number}</code>

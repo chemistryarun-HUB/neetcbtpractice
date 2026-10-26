@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { ImagePlus, Lock, LockOpen, Shuffle } from 'lucide-react'
-import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
-import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { UNIT_LEVELS, levelIdsFor, subjectOfUnit, unitNo } from '../../lib/constants'
+import { unitsOf, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -476,7 +476,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           <select className="form-control" style={{ fontSize: '0.8125rem' }}
             value={editUnitId || ''}
             onChange={e => {
-              const unit = CHEMISTRY_UNITS.find(u => u.id === Number(e.target.value))
+              const unit = unitsOf(subjectOfUnit(editUnitId)).find(u => u.id === Number(e.target.value))
               // Moving to a different unit means the old level number almost
               // certainly doesn't map to the same topic there — reset to Level 1
               // so it doesn't silently point at the wrong syllabus. That reset is
@@ -484,7 +484,8 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               // carrying the OLD unit's level must not drag it back.
               setLockable('unit', unit ? `Unit ${unit.id} - ${unit.name}` : '', { level: 1, level_locked: true })
             }}>
-            {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+            {/* Units of the question's own subject: a Physics question moves between Physics units. */}
+            {unitsOf(subjectOfUnit(editUnitId)).map(u => <option key={u.id} value={u.id}>Unit {unitNo(u.id)} — {u.name}</option>)}
           </select>
         </div>
         <div className="form-group" style={{ margin: 0, flex: '1.2 1 200px' }}>

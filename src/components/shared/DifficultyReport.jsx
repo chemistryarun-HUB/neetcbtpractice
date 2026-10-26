@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronRight, Layers } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { NEET_SUBJECTS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
 
 const DIFFS = ['Easy', 'Medium', 'Hard']
 // Same palette as the .badge-easy/medium/hard classes elsewhere in the app —
@@ -105,9 +105,9 @@ export default function DifficultyReport() {
   }, [byUnit])
 
   const q = search.trim().toLowerCase()
-  const sections = NEET_CHEMISTRY_SYLLABUS.map(sec => ({
+  const sections = NEET_SUBJECTS.flatMap(sub => sub.syllabus).map(sec => ({
     ...sec,
-    units: sec.units.filter(u => !q || u.name.toLowerCase().includes(q) || `unit ${u.id}` === q || String(u.id) === q),
+    units: sec.units.filter(u => !q || u.name.toLowerCase().includes(q) || `unit ${u.no ?? u.id}` === q || String(u.no ?? u.id) === q),
   })).filter(sec => sec.units.length > 0)
 
   function toggle(uid) {
@@ -205,7 +205,7 @@ export default function DifficultyReport() {
                         }}
                       >
                         {isOpen ? <ChevronDown size={14} style={{ flexShrink: 0, color: 'var(--gray-400)' }} /> : <ChevronRight size={14} style={{ flexShrink: 0, color: 'var(--gray-400)' }} />}
-                        <span style={{ flexShrink: 0, minWidth: 44, fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)' }}>U{u.id}</span>
+                        <span style={{ flexShrink: 0, minWidth: 44, fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)' }}>U{u.no ?? u.id}</span>
                         <span style={{ flex: '1 1 200px', minWidth: 0, fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {u.name}
                         </span>

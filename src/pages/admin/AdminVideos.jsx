@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { Plus, Trash2, ArrowUp, ArrowDown, Pencil, Check, X, ExternalLink } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import InfoTooltip from '../../components/shared/InfoTooltip'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { ALL_NEET_UNITS, UNIT_LEVELS, levelBadge, subjectOfUnit, unitNo } from '../../lib/constants'
 import { parseYouTubeId, youtubeThumbUrl, youtubeWatchUrl } from '../../lib/youtube'
 
 const NAV = [
@@ -19,7 +19,7 @@ const NAV = [
   { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
-const CHEMISTRY_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+const NEET_UNITS = ALL_NEET_UNITS
 
 /**
  * Best-effort lecture title lookup. YouTube's oEmbed endpoint is CORS-open but
@@ -183,8 +183,8 @@ export default function AdminVideos() {
               onChange={e => setUnitId(e.target.value)}
             >
               <option value="">— Choose a unit —</option>
-              {CHEMISTRY_UNITS.map(u => (
-                <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
+              {NEET_UNITS.map(u => (
+                <option key={u.id} value={u.id}>{subjectOfUnit(u.id)} · Unit {unitNo(u.id)} - {u.name}</option>
               ))}
             </select>
           </div>

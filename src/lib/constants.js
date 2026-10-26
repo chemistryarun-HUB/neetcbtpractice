@@ -80,6 +80,100 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   },
 ]
 
+// NEET Physics (NMC 2024 syllabus). Physics units carry ids 101-120 so they can
+// never collide with a Chemistry unit of the same number: every table that
+// keys on a unit id (student_progress unlocks, used_questions, test_attempts,
+// lecture videos) and the "Unit N - Name" text of a question stay unambiguous
+// without a subject column next to each. `no` is the number students see
+// ("Unit 11"); the stored unit text is "Unit 111 - Electrostatics".
+export const PHYSICS_UNIT_OFFSET = 100
+export const NEET_PHYSICS_SYLLABUS = [
+  {
+    section: 'Class 11 Physics',
+    units: [
+      'Units and Measurements', 'Kinematics', 'Laws of Motion', 'Work, Energy and Power',
+      'Rotational Motion', 'Gravitation', 'Properties of Solids and Liquids', 'Thermodynamics',
+      'Kinetic Theory of Gases', 'Oscillations and Waves',
+    ].map((name, i) => ({ id: PHYSICS_UNIT_OFFSET + i + 1, no: i + 1, name })),
+  },
+  {
+    section: 'Class 12 Physics',
+    units: [
+      'Electrostatics', 'Current Electricity', 'Magnetic Effects of Current and Magnetism',
+      'Electromagnetic Induction and Alternating Currents', 'Electromagnetic Waves', 'Optics',
+      'Dual Nature of Matter and Radiation', 'Atoms and Nuclei', 'Electronic Devices', 'Experimental Skills',
+    ].map((name, i) => ({ id: PHYSICS_UNIT_OFFSET + i + 11, no: i + 11, name })),
+  },
+]
+
+// The subjects of the level-wise course, each with its own syllabus.
+export const NEET_SUBJECTS = [
+  { id: 'Chemistry', syllabus: NEET_CHEMISTRY_SYLLABUS },
+  { id: 'Physics',   syllabus: NEET_PHYSICS_SYLLABUS },
+]
+export const ALL_NEET_UNITS = NEET_SUBJECTS.flatMap(s => s.syllabus.flatMap(sec => sec.units))
+export const subjectOfUnit = unitId => Number(unitId) > PHYSICS_UNIT_OFFSET ? 'Physics' : 'Chemistry'
+// The unit number a student or teacher reads: 111 -> 11.
+export const unitNo = unitId => Number(unitId) > PHYSICS_UNIT_OFFSET ? Number(unitId) - PHYSICS_UNIT_OFFSET : Number(unitId)
+
+// Physics levels, lecture-wise inside each unit, then Multilevel and the
+// Complete Chapter Test like every Chemistry unit. Topic doubles as the
+// level's description in the "i" tooltip.
+const physicsLevels = names => [
+  ...names.map(([name, topic], i) => ({ id: i + 1, name, topic })),
+  { id: names.length + 1, name: 'Multilevel Questions', topic: 'Miscellaneous' },
+  { id: names.length + 2, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+]
+const PHYSICS_LEVELS = {
+  111: physicsLevels([
+    ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
+    ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
+    ["Electric Flux & Gauss's Law", "Electric flux, Gauss's law and its applications: infinite wire, infinite plane sheet, thin spherical shell"],
+    ['Electric Potential & Potential Energy', 'Electric potential, potential difference, potential due to a point charge and a dipole, equipotential surfaces, potential energy'],
+    ['Conductors, Capacitors & Dielectrics', 'Conductors and insulators, dielectrics and polarisation, capacitors and capacitance, combinations, parallel plate capacitor, energy stored'],
+  ]),
+  112: physicsLevels([
+    ["Current, Drift Velocity & Ohm's Law", "Electric current, drift velocity, mobility, current density, Ohm's law"],
+    ['Resistance, Resistivity & Combinations', 'Resistance and resistivity, temperature dependence, series and parallel combinations'],
+    ['Cells, EMF & Internal Resistance', 'EMF, internal resistance, potential difference, cells in series and parallel'],
+    ["Kirchhoff's Laws & Wheatstone Bridge", "Kirchhoff's junction and loop rules, Wheatstone bridge"],
+    ['Potentiometer & Meter Bridge', 'Metre bridge, potentiometer and their uses'],
+    ['Electric Power & Heating', 'Electrical energy and power, heating effect of current'],
+  ]),
+  113: physicsLevels([
+    ["Biot-Savart & Ampere's Law", "Biot-Savart law, field of a circular loop, Ampere's circuital law, straight wire, solenoid"],
+    ['Force on Moving Charges & Conductors', 'Lorentz force, motion in a magnetic field, velocity selector, force between parallel currents'],
+    ['Torque on Loop & Galvanometer', 'Torque on a current loop, moving coil galvanometer, conversion to ammeter and voltmeter'],
+    ["Magnetic Dipole & Earth's Magnetism", "Current loop as a magnetic dipole, bar magnet, magnetic field lines, Gauss's law for magnetism"],
+    ['Magnetic Materials', 'Para-, dia- and ferromagnetic substances, magnetisation, susceptibility, permeability'],
+  ]),
+  114: physicsLevels([
+    ["Faraday's & Lenz's Laws", "Electromagnetic induction, magnetic flux, Faraday's law, Lenz's law"],
+    ['Motional EMF & Eddy Currents', 'Motional EMF, eddy currents, back EMF'],
+    ['Self & Mutual Inductance', 'Self inductance, mutual inductance, energy stored in an inductor'],
+    ['AC Circuits & Resonance', 'Alternating current and voltage, peak and rms values, reactance and impedance, LCR series circuit, resonance'],
+    ['Power in AC & Transformer', 'Power in AC circuits, power factor, wattless current, AC generator and transformer'],
+  ]),
+  115: physicsLevels([
+    ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
+    ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
+  ]),
+  116: physicsLevels([
+    ['Reflection & Spherical Mirrors', 'Reflection of light, spherical mirrors, mirror formula'],
+    ['Refraction, TIR & Prism', 'Refraction, total internal reflection and its applications, prism'],
+    ["Lenses & Lens Maker's Formula", "Refraction at spherical surfaces, lenses, thin lens formula, lens maker's formula, power, combination of lenses"],
+    ['Optical Instruments', 'Microscope and astronomical telescope'],
+    ['Interference (Huygens & YDSE)', "Wavefront and Huygens' principle, interference, Young's double slit experiment, coherent sources"],
+    ['Diffraction & Polarisation', 'Diffraction due to a single slit, polarisation, plane polarised light'],
+  ]),
+  118: physicsLevels([
+    ['Rutherford & Bohr Model', "Alpha-particle scattering, Rutherford's model, Bohr model, energy levels"],
+    ['Hydrogen Spectrum', 'Hydrogen spectrum and spectral series'],
+    ['Nucleus, Mass Defect & Binding Energy', 'Composition and size of the nucleus, isotopes, isobars, isotones, mass-energy relation, mass defect, binding energy'],
+    ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
+  ]),
+}
+
 // ── Per-unit level definitions ────────────────────────────────────────────────
 // Each entry: { id: levelNumber, name: displayName, topic: exactTopicInExcel }
 // Level 1 and the last level are always unlocked for students automatically.
@@ -283,6 +377,8 @@ export const UNIT_LEVELS = {
               topic: 'Miscellaneous Reactions — named reactions and conversions that do not belong to a single mechanism module, plus mixed questions that cut across several of them.' },
   ],
 }
+
+Object.assign(UNIT_LEVELS, PHYSICS_LEVELS)
 
 // Kept for backward-compat with any existing imports
 export const UNIT_11_LEVELS = UNIT_LEVELS[11]

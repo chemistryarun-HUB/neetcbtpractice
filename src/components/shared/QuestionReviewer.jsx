@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
 import { deriveFullTopic, unitIdOf } from '../../lib/topics'
-import { levelBadge } from '../../lib/constants'
+import { levelBadge, unitNo } from '../../lib/constants'
 import { hasAnyFieldLock, lockSummary } from '../../lib/fieldLocks'
 import QuestionView from './QuestionView'
 import QuestionEditPanel from './QuestionEditPanel'
@@ -161,7 +161,7 @@ export default function QuestionReviewer({
             level here. */}
         {renderMeta ? renderMeta(q) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flexShrink: 0 }}>
-          <span>Unit {unitIdOf(q.unit)}</span>
+          <span>Unit {unitNo(unitIdOf(q.unit))}</span>
           <span style={{ opacity: 0.5 }}>·</span>
           <span>{levelBadge(unitIdOf(q.unit), q.level)}</span>
           <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level) || q.topic}`} />
