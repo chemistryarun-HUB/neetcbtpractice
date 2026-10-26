@@ -59,3 +59,15 @@ export const unitLabelOf = (subject, unitId) => {
   const unit = unitsFor(subject).find(x => x.id === Number(unitId))
   return unit ? `Unit ${unit.id} - ${unit.name}` : ''
 }
+
+// Class 11 / Class 12 grouping for the student syllabus view (Chemistry has
+// its own Physical / Inorganic / Organic sections in NEET_CHEMISTRY_SYLLABUS).
+const byClass = (units, last11) => [
+  { section: 'Class 11', units: units.filter(x => x.id <= last11) },
+  { section: 'Class 12', units: units.filter(x => x.id > last11) },
+]
+export const SYLLABUS_SECTIONS = {
+  Chemistry: NEET_CHEMISTRY_SYLLABUS,
+  Physics: byClass(PHYSICS_UNITS, 14),
+  Biology: byClass(BIOLOGY_UNITS, 19),
+}

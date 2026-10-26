@@ -3,6 +3,13 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge, isChapterTestLevel } from '../../lib/constants'
+import { ACTIVE_SUBJECTS, SYLLABUS_SECTIONS } from '../../lib/subjects'
+
+// The subject tab a student last looked at (a per-device convenience).
+const SUBJECT_KEY = 'neetcbt_dashboard_subject'
+function storedSubject() {
+  try { const v = localStorage.getItem(SUBJECT_KEY); return ACTIVE_SUBJECTS.includes(v) ? v : 'Chemistry' } catch { return 'Chemistry' }
+}
 import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -11,6 +18,11 @@ import LevelRulesTour, { hasTourBeenSeen } from '../../components/student/LevelR
 import { groupVideosByUnitLevel } from '../../lib/youtube'
 
 export default function StudentDashboard() {
+  const [subject, setSubjectState] = useState(storedSubject)
+  function setSubject(v) {
+    setSubjectState(v)
+    try { localStorage.setItem(SUBJECT_KEY, v) } catch { /* private mode */ }
+  }
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -287,10 +299,12 @@ export default function StudentDashboard() {
 
       <div className="page-content">
         <div className="page-header">
-          <h2>Chemistry Syllabus</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <h2>{subject} Syllabus</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <div className="text-muted">
-              {activeUnitIds.size} unit{activeUnitIds.size !== 1 ? 's' : ''} active
+              {subject === 'Chemistry'
+                ? `${activeUnitIds.size} unit${activeUnitIds.size !== 1 ? 's' : ''} active`
+                : 'Coming soon'}
             </div>
             <Link to="/student/performance" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <BarChart3 size={15} /> My Performance
@@ -308,12 +322,32 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {NEET_CHEMISTRY_SYLLABUS.map(section => (
+        {/* Subject switch. Physics and Biology list their units (NCERT chapters)
+            but have no questions or levels yet, so every card is locked. */}
+        <div className="subject-tabs" role="tablist" style={{ display: 'flex', gap: '0.4rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {ACTIVE_SUBJECTS.map(sub => (
+            <button key={sub} role="tab" aria-selected={subject === sub}
+              className={`btn btn-sm ${subject === sub ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => setSubject(sub)}>
+              {sub}
+            </button>
+          ))}
+        </div>
+
+        {subject !== 'Chemistry' && (
+          <div className="card card-body" style={{ marginBottom: '1.25rem', background: '#eff6ff', border: '1px solid #bfdbfe', fontSize: '0.9rem' }}>
+            {subject} practice is coming soon. Units will open as questions are added.
+          </div>
+        )}
+
+        {SYLLABUS_SECTIONS[subject].map(section => (
           <div className="syllabus-section" key={section.section}>
             <h3>{section.section}</h3>
             <div className="unit-grid">
               {section.units.map(unit => {
-                const isActive = activeUnitIds.has(unit.id)
+                // activeUnitIds holds Chemistry units only (unit numbers restart
+                // per subject), so nothing in Physics/Biology opens yet.
+                const isActive = subject === 'Chemistry' && activeUnitIds.has(unit.id)
                 return (
                   <div
                     key={unit.id}
