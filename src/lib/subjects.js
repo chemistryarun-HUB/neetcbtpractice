@@ -6,7 +6,8 @@
 // constants.js; Physics and Biology have units only for now — their levels are
 // added to PHYSICS_UNIT_LEVELS / BIOLOGY_UNIT_LEVELS in constants.js as they
 // are authored (same shape as UNIT_LEVELS).
-import { NEET_CHEMISTRY_SYLLABUS, levelDefsFor } from './constants'
+import { NEET_CHEMISTRY_SYLLABUS, levelDefsFor, fromCourseUnitId } from './constants'
+export { COURSE_OFFSET, courseUnitId, fromCourseUnitId } from './constants'
 
 const u = names => names.map((name, i) => ({ id: i + 1, name }))
 
@@ -55,6 +56,17 @@ export const UNITS_BY_SUBJECT = { Chemistry: CHEMISTRY_UNITS, Physics: PHYSICS_U
 
 export const unitsFor = subject => UNITS_BY_SUBJECT[subject || 'Chemistry'] || []
 export const levelsFor = levelDefsFor
+
+// Name of a practice unit id (see courseUnitId): 115 -> "Electric Charges and Fields".
+export function practiceUnitName(id) {
+  const { subject, unit } = fromCourseUnitId(id)
+  return unitsFor(subject).find(x => x.id === unit)?.name || `Unit ${unit}`
+}
+// "Unit 15" for Chemistry, "Physics · Unit 15" otherwise.
+export function practiceUnitNo(id) {
+  const { subject, unit } = fromCourseUnitId(id)
+  return subject === 'Chemistry' ? `Unit ${unit}` : `${subject} · Unit ${unit}`
+}
 export const unitLabelOf = (subject, unitId) => {
   const unit = unitsFor(subject).find(x => x.id === Number(unitId))
   return unit ? `Unit ${unit.id} - ${unit.name}` : ''

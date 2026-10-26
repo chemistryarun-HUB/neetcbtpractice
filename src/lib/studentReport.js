@@ -9,6 +9,7 @@ import {
   aggregateAccuracy, mostRecent, daysSince, unitName, scorePct,
 } from './performanceMetrics'
 import { UNIT_LEVELS, levelBadge, thresholdPctFor, MARKS_CORRECT, MARKS_WRONG, QUESTIONS_PER_ATTEMPT } from './constants'
+import { practiceUnitNo } from './subjects'
 
 /**
  * @param activeIdsByLevel { [level]: Set<questionId> } of questions still live
@@ -109,7 +110,7 @@ export function buildUnitReport({
     unit: {
       id: unitId,
       name: unitName(unitId),
-      label: `Unit ${unitId} — ${unitName(unitId)}`,
+      label: `${practiceUnitNo(unitId)} — ${unitName(unitId)}`,
       levelCount: ladderDefs.length,
     },
     status,
