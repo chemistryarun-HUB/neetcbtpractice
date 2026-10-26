@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
+import { thresholdPctFor, nextLevelIdFor, isChapterTestLevel } from '../../lib/constants'
+import { neetT, levelName, levelBadgeT } from '../../lib/neetI18n'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import AttemptReviewer from '../../components/performance/AttemptReviewer'
 
@@ -10,6 +11,8 @@ export default function ResultPage() {
   const { attemptId } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const medium = user.medium || 'en'
+  const t = neetT(medium)
 
   const [attempt, setAttempt] = useState(null)
   const [questions, setQuestions] = useState([])
@@ -69,7 +72,7 @@ export default function ResultPage() {
   const maxScore = totalQ * 4
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0
 
-  const levelInfo = (UNIT_LEVELS[unitId] || []).find(l => l.id === level)
+  const badge = id => levelBadgeT(unitId, id, medium)
 
   const requiredPct = thresholdPctFor(attemptsForLevel)
   const passed = requiredPct != null && pct >= requiredPct
@@ -78,29 +81,29 @@ export default function ResultPage() {
   const secs = (attempt.time_taken || 0) % 60
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" lang={medium}>
       <header className="topbar">
-        <Link to="/student/dashboard" className="topbar-brand" style={{ color: '#fff', textDecoration: 'none' }}>NEETCBT — Result</Link>
+        <Link to="/student/dashboard" className="topbar-brand" style={{ color: '#fff', textDecoration: 'none' }}>NEETCBT — {t.result}</Link>
         <Link to="/student/dashboard" className="btn btn-outline btn-sm" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>
-          Back to Syllabus
+          {t.backToSyllabus}
         </Link>
       </header>
 
       <div className="page-content" style={{ maxWidth: '720px' }}>
         <div className="rp-hero">
           <div className="rp-hero-label">
-            {isChapterTestLevel(unitId, level) ? 'CCT' : `${levelBadge(unitId, level)}: ${levelInfo?.name}`} · Attempt #{attemptsForLevel}
+            {isChapterTestLevel(unitId, level) ? 'CCT' : `${badge(level)}: ${levelName(unitId, level, medium)}`} · {t.attemptNo(attemptsForLevel)}
           </div>
           <div className="rp-ring" style={{ '--p': Math.max(0, Math.min(100, pct)), '--c': score >= 0 ? (pct >= 60 ? '#16a34a' : '#d97706') : '#dc2626' }}>
             <div className="rp-ring-inner">
               <div className="rp-score">{score}</div>
-              <div className="rp-outof">out of {maxScore}</div>
+              <div className="rp-outof">{t.outOf(maxScore)}</div>
             </div>
           </div>
           <div className="rp-meta">
-            <span><strong>{pct}%</strong> score</span>
-            <span><strong>{totalQ ? Math.round((correct / totalQ) * 100) : 0}%</strong> correct</span>
-            <span><strong>{mins}m {secs}s</strong> time</span>
+            <span><strong>{pct}%</strong> {t.score}</span>
+            <span><strong>{totalQ ? Math.round((correct / totalQ) * 100) : 0}%</strong> {t.correctPct}</span>
+            <span><strong>{mins}m {secs}s</strong> {t.time}</span>
           </div>
           <div className="rp-bar" aria-hidden="true">
             <span style={{ width: `${totalQ ? (correct / totalQ) * 100 : 0}%`, background: '#16a34a' }} />
@@ -114,18 +117,18 @@ export default function ResultPage() {
           <div style={{ background: '#dcfce7', border: '1.5px solid #16a34a', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
             <div style={{ fontWeight: 700, color: '#15803d', fontSize: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
               🎉 {isChapterTestLevel(unitId, nextLevelId) ? (
-                <>CCT Unlocked!<InfoTooltip text="Complete Chapter Test" /></>
+                <>{t.unlocked('CCT')}<InfoTooltip text="Complete Chapter Test" /></>
               ) : (
-                `${levelBadge(unitId, nextLevelId)} Unlocked!`
+                t.unlocked(badge(nextLevelId))
               )}
             </div>
-            <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>Score ≥ {requiredPct}% — great work!</div>
+            <div style={{ color: '#166534', fontSize: '0.875rem', marginTop: '0.25rem' }}>{t.greatWork(requiredPct)}</div>
           </div>
         ) : requiredPct != null && !passed ? (
           <div style={{ background: '#fef9c3', border: '1.5px solid #d97706', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, color: '#92400e' }}>Score more to unlock next level</div>
+            <div style={{ fontWeight: 700, color: '#92400e' }}>{t.scoreMore}</div>
             <div style={{ color: '#b45309', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-              Need {requiredPct}% score on attempt #{attemptsForLevel}. You got {pct}%.
+              {t.needScore(requiredPct, attemptsForLevel, pct)}
             </div>
           </div>
         ) : null}
@@ -133,34 +136,34 @@ export default function ResultPage() {
         <div className="result-tiles" style={{ marginBottom: '0.75rem' }}>
           <div className="result-tile correct" onClick={() => setReview('correct')}>
             <div className="tile-num">{correct}</div>
-            <div className="tile-label">Correct</div>
+            <div className="tile-label">{t.correct}</div>
           </div>
           <div className="result-tile wrong" onClick={() => setReview('wrong')}>
             <div className="tile-num">{wrong}</div>
-            <div className="tile-label">Wrong</div>
+            <div className="tile-label">{t.wrong}</div>
           </div>
           <div className="result-tile skipped" onClick={() => setReview('skipped')}>
             <div className="tile-num">{skipped}</div>
-            <div className="tile-label">Skipped</div>
+            <div className="tile-label">{t.skipped}</div>
           </div>
         </div>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <button className="btn btn-primary" onClick={() => setReview('all')}>
-            Review all {totalQ} questions →
+            {t.reviewAll(totalQ)}
           </button>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-outline" onClick={() => navigate(`/student/test/${unitId}/${level}`)}>
-            Practice More
+            {t.practiceMore}
           </button>
           {nextUnlocked && nextLevelId != null && (
             <button className="btn btn-primary" onClick={() => navigate(`/student/test/${unitId}/${nextLevelId}`)}>
-              Start {isChapterTestLevel(unitId, nextLevelId) ? 'CCT' : levelBadge(unitId, nextLevelId)} →
+              {t.startNext(badge(nextLevelId))}
             </button>
           )}
           <Link to="/student/dashboard" className="btn btn-ghost">
-            Back to Syllabus
+            {t.backToSyllabus}
           </Link>
         </div>
       </div>

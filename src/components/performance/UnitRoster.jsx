@@ -6,7 +6,7 @@ import {
   attemptsInOrder, attemptClearedOwnBar, waLink, buildActivityMessage,
   computeStreak, aggregateAccuracy, mostRecent,
 } from '../../lib/performanceMetrics'
-import { UNIT_LEVELS } from '../../lib/constants'
+import { UNIT_LEVELS, fromCourseUnitId } from '../../lib/constants'
 import { LANGS } from '../../lib/reportI18n'
 import { useContactsHidden } from './contactsContext'
 // Statically imported: storage.js is already in the main bundle via the question
@@ -188,7 +188,7 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
       const qRows = []
       for (let from = 0; ; from += 1000) {
         const { data, error } = await supabase.from('questions')
-          .select('id, level').ilike('unit', `Unit ${unitId} -%`).eq('subject', 'Chemistry').eq('is_active', true)
+          .select('id, level').ilike('unit', `Unit ${fromCourseUnitId(unitId).unit} -%`).eq('subject', fromCourseUnitId(unitId).subject).eq('is_active', true)
           .range(from, from + 999)
         if (error) break
         qRows.push(...(data || []))

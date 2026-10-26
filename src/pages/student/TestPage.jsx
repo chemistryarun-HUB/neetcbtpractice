@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, isChapterTestLevel, fromCourseUnitId } from '../../lib/constants'
+import { neetT, levelName, levelBadgeT } from '../../lib/neetI18n'
 import { correctOptionKey } from '../../lib/questionOptions'
 import { orderOptionsForAttempt } from '../../lib/optionShuffle'
 import InfoTooltip from '../../components/shared/InfoTooltip'
@@ -27,6 +28,11 @@ export default function TestPage() {
   const levelNum = Number(level)
   const { user } = useAuth()
   const navigate = useNavigate()
+  // Which bank this test draws from; confirmed against the students row in
+  // loadQuestions, since a test link can be opened without the dashboard
+  // having refreshed the stored session first.
+  const [medium, setMedium] = useState(user.medium || 'en')
+  const t = neetT(medium)
 
   const [questions, setQuestions] = useState([])  // shuffled question objects with shuffled options
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -46,6 +52,10 @@ export default function TestPage() {
 
   async function loadQuestions() {
     try {
+      const { data: me } = await supabase.from('students').select('medium').eq('id', user.id).maybeSingle()
+      const medium = me?.medium || user.medium || 'en'
+      setMedium(medium)
+
       // Get already-used question IDs for this student at this level (within this unit)
       const { data: used } = await supabase
         .from('used_questions')
@@ -72,8 +82,11 @@ export default function TestPage() {
       const lastLevelId = unitLevelDefs.length > 1 ? unitLevelDefs[unitLevelDefs.length - 1].id : null
       const isChapterTest = levelNum === lastLevelId
 
-      // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry"
-      const unitPrefix = `Unit ${unitNum} -`
+      // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry".
+      // The route carries the practice unit id (Physics chapter 15 = 115), and
+      // unit numbers restart per subject, so subject is filtered as well.
+      const { subject, unit: subjectUnit } = fromCourseUnitId(unitNum)
+      const unitPrefix = `Unit ${subjectUnit} -`
 
       // Get fresh (unused) questions — always filtered to this unit.
       // is_published gates questions the admin has uploaded but not reviewed
@@ -81,9 +94,10 @@ export default function TestPage() {
       // both have to be repeated on the fallback fetch below.
       let allQQuery = supabase.from('questions').select('*')
         .ilike('unit', `${unitPrefix}%`)
-        // The NEET practice levels are Chemistry's; Physics/Biology unit numbers
-        // restart at 1 and must never leak into these tests.
-        .eq('subject', 'Chemistry')
+        // Unit numbers restart per subject; medium keeps English and
+        // Gujarati banks apart.
+        .eq('subject', subject)
+        .eq('medium', medium)
         .eq('is_active', true)
         .eq('is_published', true)
       if (!isChapterTest) allQQuery = allQQuery.eq('level', levelNum)
@@ -97,9 +111,10 @@ export default function TestPage() {
         let fbQuery = supabase.from('questions').select('*')
           .in('id', ids)
           .ilike('unit', `${unitPrefix}%`)
-        // The NEET practice levels are Chemistry's; Physics/Biology unit numbers
-        // restart at 1 and must never leak into these tests.
-        .eq('subject', 'Chemistry')
+        // Unit numbers restart per subject; medium keeps English and
+        // Gujarati banks apart.
+        .eq('subject', subject)
+        .eq('medium', medium)
           .eq('is_active', true)
           .eq('is_published', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)
@@ -117,7 +132,7 @@ export default function TestPage() {
       pool = pool.filter(q => (q.unit || '').startsWith(unitPrefix))
 
       if (pool.length === 0) {
-        toast.error('No questions available for this level yet.')
+        toast.error(neetT(medium).noQuestions)
         navigate('/student/dashboard')
         return
       }
@@ -328,7 +343,7 @@ export default function TestPage() {
   const unanswered = questions.length - answeredCount
 
   function confirmSubmit() {
-    if (unanswered > 0 && !window.confirm(`${unanswered} question${unanswered === 1 ? ' is' : 's are'} still unanswered (they score 0). Submit anyway?`)) return
+    if (unanswered > 0 && !window.confirm(t.confirmSubmit(unanswered))) return
     handleSubmit()
   }
 
@@ -336,14 +351,14 @@ export default function TestPage() {
   // one question card, palette + prev/next footer. Keeps the test and its
   // review looking like one product.
   return (
-    <div className="attempt-reviewer test-run" role="main">
+    <div className="attempt-reviewer test-run" role="main" lang={medium}>
       <div className="ar-header">
         <div className="ar-title">
-          <span>{isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadge(unitNum, levelNum)}: ${levelInfo?.name}`}</span>
+          <span>{isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadgeT(unitNum, levelNum, medium)}: ${levelName(unitNum, levelNum, medium)}`}</span>
           <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
         </div>
         <div className="ar-stats tp-progress">
-          <span><small>Answered</small> {answeredCount}<em>/{questions.length}</em></span>
+          <span><small>{t.answered}</small> {answeredCount}<em>/{questions.length}</em></span>
         </div>
         <div className="stopwatch tp-timer">⏱ {mins}:{secs}</div>
       </div>
@@ -353,13 +368,13 @@ export default function TestPage() {
           <div className="ar-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
               <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{currentIdx + 1}</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>of {questions.length}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>{t.of(questions.length)}</span>
               <span className="badge" style={{
                 marginLeft: 'auto', fontSize: '0.8rem', padding: '0.25rem 0.75rem',
                 background: answers[current.id] ? 'var(--primary-light)' : 'var(--gray-100)',
                 color: answers[current.id] ? 'var(--primary-dark)' : 'var(--gray-500)',
               }}>
-                {answers[current.id] ? '✓ Answered' : 'Not answered'}
+                {answers[current.id] ? t.isAnswered : t.notAnswered}
               </span>
             </div>
 
@@ -373,7 +388,7 @@ export default function TestPage() {
             />
           </div>
           <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--gray-400)', textAlign: 'center' }}>
-            +4 for correct · −1 for wrong · 0 for skipped
+            {t.marking}
           </div>
         </div>
       </div>
@@ -381,7 +396,7 @@ export default function TestPage() {
       <div className="ar-footer">
         <button className="btn btn-ghost btn-sm" onClick={goPrev} disabled={currentIdx === 0}
           style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Previous question">
-          <ChevronLeft size={16} /> <span className="ar-nav-label">Previous</span>
+          <ChevronLeft size={16} /> <span className="ar-nav-label">{t.previous}</span>
         </button>
 
         <div ref={paletteRef} className="ar-palette">
@@ -390,7 +405,7 @@ export default function TestPage() {
             const done = !!answers[qq.id]
             return (
               <button key={qq.id} data-current={isCur} onClick={() => setCurrentIdx(i)}
-                title={`Q${i + 1} · ${done ? 'answered' : 'not answered'}`}
+                title={`Q${i + 1} · ${done ? t.isAnswered : t.notAnswered}`}
                 className="ar-chip"
                 style={{
                   background: isCur ? 'var(--primary)' : done ? 'var(--primary-light)' : '#fff',
@@ -410,27 +425,27 @@ export default function TestPage() {
             delete a[current.id]
             setAnswers(a)
           }}>
-            Clear
+            {t.clear}
           </button>
         )}
-        <div className="ar-count">{currentIdx + 1} of {questions.length}</div>
+        <div className="ar-count">{currentIdx + 1} {t.of(questions.length)}</div>
 
         {!isLastQ ? (
           <button className="btn btn-primary btn-sm" onClick={goNext}
             style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Next question">
-            <span className="ar-nav-label">Next</span> <ChevronRight size={16} />
+            <span className="ar-nav-label">{t.next}</span> <ChevronRight size={16} />
           </button>
         ) : (
           <button className="btn btn-success btn-sm" onClick={confirmSubmit} disabled={submitting} style={{ flexShrink: 0 }}>
-            {submitting ? 'Submitting...' : '✓ Submit'}
+            {submitting ? t.submitting : t.submit}
           </button>
         )}
       </div>
 
       <div className="ar-hints">
-        <span><kbd>←</kbd> <kbd>→</kbd> prev / next</span>
-        <span><kbd>1</kbd>–<kbd>4</kbd> choose option</span>
-        <span><kbd>Backspace</kbd> clear</span>
+        <span><kbd>←</kbd> <kbd>→</kbd> {t.hintNav}</span>
+        <span><kbd>1</kbd>–<kbd>4</kbd> {t.hintChoose}</span>
+        <span><kbd>Backspace</kbd> {t.hintClear}</span>
       </div>
     </div>
   )

@@ -1,9 +1,8 @@
-import { MARKS_CORRECT, NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, thresholdPctFor } from './constants'
-
-const ALL_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+import { MARKS_CORRECT, UNIT_LEVELS, thresholdPctFor } from './constants'
+import { practiceUnitName } from './subjects'
 
 export function unitName(unitId) {
-  return ALL_UNITS.find(u => u.id === unitId)?.name || `Unit ${unitId}`
+  return practiceUnitName(unitId)
 }
 
 export function levelDef(unitId, level) {
