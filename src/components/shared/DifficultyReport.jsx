@@ -66,6 +66,7 @@ export default function DifficultyReport() {
       for (let from = 0; ; from += 1000) {
         const { data, error } = await supabase.from('questions')
           .select('unit, level, difficulty_level')
+          .eq('subject', 'Chemistry')   // this report covers the Chemistry syllabus
           .eq('is_active', true)
           .range(from, from + 999)
         if (error) break

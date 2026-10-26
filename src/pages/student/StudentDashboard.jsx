@@ -63,6 +63,7 @@ export default function StudentDashboard() {
         const { data: page, error } = await supabase
           .from('questions')
           .select('unit, level, topic')
+          .eq('subject', 'Chemistry')   // unit numbers restart per subject
           .eq('is_active', true)
           .eq('is_published', true)
           .range(from, from + 999)

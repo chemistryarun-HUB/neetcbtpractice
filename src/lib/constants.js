@@ -287,6 +287,15 @@ export const UNIT_LEVELS = {
 // Kept for backward-compat with any existing imports
 export const UNIT_11_LEVELS = UNIT_LEVELS[11]
 
+// Levels of the other subjects, same shape as UNIT_LEVELS (unit numbers
+// restart at 1 per subject — see lib/subjects.js). Filled in as authored.
+export const PHYSICS_UNIT_LEVELS = {}
+export const BIOLOGY_UNIT_LEVELS = {}
+const LEVELS = { Chemistry: UNIT_LEVELS, Physics: PHYSICS_UNIT_LEVELS, Biology: BIOLOGY_UNIT_LEVELS }
+export function levelDefsFor(subject, unitId) {
+  return (LEVELS[subject || 'Chemistry'] || {})[Number(unitId)] || []
+}
+
 /**
  * Level ids defined for a unit. Falls back to a generic 1-9 range only for units
  * whose levels haven't been authored into UNIT_LEVELS yet, so an admin can still
@@ -314,15 +323,15 @@ export function levelIdsFor(unitId) {
 // without the length > 1 guard that one level counts as "last", and every badge
 // in the app — syllabus card, test header, result screen, attempt review, the
 // performance table and the parent PDF — would label it CCT instead of Level 1.
-export function isChapterTestLevel(unitId, levelId) {
-  const defs = UNIT_LEVELS[Number(unitId)] || []
+export function isChapterTestLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
   return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
 // Short display label for a level — "CCT" for the Complete Chapter Test,
 // else "Level N" (optionally zero-padded to match a table's other numbers).
-export function levelBadge(unitId, levelId, { pad = false } = {}) {
-  if (isChapterTestLevel(unitId, levelId)) return 'CCT'
+export function levelBadge(unitId, levelId, { pad = false, subject = 'Chemistry' } = {}) {
+  if (isChapterTestLevel(unitId, levelId, subject)) return 'CCT'
   if (levelId == null) return 'Level —'
   return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
 }

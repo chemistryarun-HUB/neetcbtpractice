@@ -188,7 +188,7 @@ export default function UnitRoster({ students, attemptsByStudent, unitId, showCl
       const qRows = []
       for (let from = 0; ; from += 1000) {
         const { data, error } = await supabase.from('questions')
-          .select('id, level').ilike('unit', `Unit ${unitId} -%`).eq('is_active', true)
+          .select('id, level').ilike('unit', `Unit ${unitId} -%`).eq('subject', 'Chemistry').eq('is_active', true)
           .range(from, from + 999)
         if (error) break
         qRows.push(...(data || []))

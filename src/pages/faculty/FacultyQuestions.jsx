@@ -8,13 +8,20 @@ import { MathPreview } from '../../components/shared/MathText'
 import { supabase } from '../../lib/supabase'
 import { uploadQuestionImage } from '../../lib/storage'
 import { useAuth } from '../../hooks/useAuth'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS } from '../../lib/constants'
+import { ACTIVE_SUBJECTS, unitsFor, levelsFor } from '../../lib/subjects'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
 import {
   FACULTY_NAV, SUGGESTION_KINDS, facultyAddQuestion, facultyUpdateQuestion, facultySuggest, facultyMySuggestions,
 } from '../../lib/faculty'
 
-const UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
+// A faculty member's subjects → the question-bank subject they write for.
+const BANK_SUBJECT = { Chemistry: 'Chemistry', Physics: 'Physics', Botany: 'Biology', Zoology: 'Biology', Biology: 'Biology' }
+const bankSubjectsOf = user => [...new Set((user?.subjects || []).map(s => BANK_SUBJECT[s]).filter(Boolean))]
+// Units with no authored levels yet still need somewhere to file a draft.
+const levelChoices = (subject, unit) => {
+  const defs = levelsFor(subject, unitIdOf(unit))
+  return defs.length ? defs.slice(0, defs.length > 1 ? -1 : undefined) : [1, 2, 3, 4, 5, 6, 7, 8, 9].map(id => ({ id, name: `Level ${id}` }))
+}
 const unitLabel = u => `Unit ${u.id} - ${u.name}`
 const unitIdOf = label => Number((label || '').match(/^Unit (\d+)/)?.[1])
 
@@ -35,7 +42,7 @@ const STATUS = {
 const Badge = ({ s }) => <span className="badge" style={{ background: STATUS[s]?.bg, color: STATUS[s]?.fg }}>{STATUS[s]?.label || s}</span>
 
 const EMPTY_Q = {
-  unit: '', level: '', question: '', question_image: null,
+  subject: 'Chemistry', unit: '', level: '', question: '', question_image: null,
   option1: '', option2: '', option3: '', option4: '',
   option1_image: null, option2_image: null, option3_image: null, option4_image: null,
   correct: 'option1', difficulty_level: 'Medium', question_tag: '', source: '',
@@ -48,7 +55,7 @@ function DraftForm({ initial, onDone, onCancel }) {
   const [busy, setBusy] = useState(new Set())
   const [saving, setSaving] = useState(false)
   const set = (k, v) => setF(p => ({ ...p, [k]: v }))
-  const levels = UNIT_LEVELS[unitIdOf(f.unit)] || []
+  const levels = f.unit ? levelChoices(f.subject, f.unit) : []
 
   async function upload(key, file) {
     setBusy(b => new Set(b).add(key))
@@ -60,7 +67,7 @@ function DraftForm({ initial, onDone, onCancel }) {
     e.preventDefault()
     const texts = [f.option1, f.option2, f.option3, f.option4]
     const payload = {
-      unit: f.unit, level: f.level, question: f.question, question_image: f.question_image,
+      subject: f.subject, unit: f.unit, level: f.level, question: f.question, question_image: f.question_image,
       option1: f.option1, option2: f.option2, option3: f.option3, option4: f.option4,
       option1_image: f.option1_image, option2_image: f.option2_image, option3_image: f.option3_image, option4_image: f.option4_image,
       correct_option: resolveCorrectOptionValue(f.correct, texts),
@@ -98,7 +105,7 @@ function DraftForm({ initial, onDone, onCancel }) {
           <label>Unit *</label>
           <select className="form-control" value={f.unit} onChange={e => setF(p => ({ ...p, unit: e.target.value, level: '' }))} required>
             <option value="">Choose unit…</option>
-            {UNITS.map(u => <option key={u.id} value={unitLabel(u)}>{unitLabel(u)}</option>)}
+            {unitsFor(f.subject).map(u => <option key={u.id} value={unitLabel(u)}>{unitLabel(u)}</option>)}
           </select>
         </div>
         <div className="form-group">
@@ -109,6 +116,7 @@ function DraftForm({ initial, onDone, onCancel }) {
           </select>
         </div>
       </div>
+      <div className="text-muted" style={{ fontSize: '0.8rem', marginTop: '-0.4rem', marginBottom: '0.6rem' }}>Subject: <strong>{f.subject}</strong></div>
       <div className="form-group">
         <label>Question *</label>
         <textarea className="form-control" rows={3} value={f.question} onChange={e => set('question', e.target.value)} placeholder="Type the question. Use $…$ for equations, e.g. $\ce{H2SO4}$" />
@@ -218,6 +226,8 @@ function SuggestModal({ q, onClose }) {
 export default function FacultyQuestions() {
   const { user, facultyToken } = useAuth()
   const [tab, setTab] = useState('bank')
+  const mySubjects = bankSubjectsOf(user)
+  const [subject, setSubject] = useState(mySubjects[0] || 'Chemistry')
   const [unit, setUnit] = useState('')
   const [level, setLevel] = useState('')
   const [search, setSearch] = useState('')
@@ -228,7 +238,8 @@ export default function FacultyQuestions() {
   const [editing, setEditing] = useState(null)   // null | EMPTY_Q-shaped draft
   const [suggestFor, setSuggestFor] = useState(null)
 
-  const teachesChemistry = (user?.subjects || []).includes('Chemistry')
+  // Drafts only in the subjects this faculty member teaches.
+  const canAdd = mySubjects.includes(subject)
 
   async function loadDrafts() {
     const { data } = await supabase.from('questions').select('*').eq('uploaded_by', user.id).order('created_at', { ascending: false })
@@ -242,10 +253,10 @@ export default function FacultyQuestions() {
   useEffect(() => {
     if (!unit) { setBank([]); return }
     setBankLoading(true)
-    let q = supabase.from('questions').select('*').eq('unit', unit).eq('is_active', true).eq('is_published', true)
+    let q = supabase.from('questions').select('*').eq('subject', subject).eq('unit', unit).eq('is_active', true).eq('is_published', true)
     if (level) q = q.eq('level', Number(level))
     q.order('level').order('qid').then(({ data }) => { setBank(data || []); setBankLoading(false) })
-  }, [unit, level])
+  }, [subject, unit, level])
 
   const shownBank = useMemo(() => {
     const s = search.trim().toLowerCase()
@@ -270,16 +281,16 @@ export default function FacultyQuestions() {
       <div className="page-content">
         <div className="page-header" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
           <h2 style={{ marginBottom: 0 }}>Questions</h2>
-          {teachesChemistry && (
-            <button className="btn btn-primary btn-sm" onClick={() => { setEditing({ ...EMPTY_Q, unit }); setTab('drafts') }} style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
+          {canAdd && (
+            <button className="btn btn-primary btn-sm" onClick={() => { setEditing({ ...EMPTY_Q, subject, unit }); setTab('drafts') }} style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
               <Plus size={15} /> Add Question
             </button>
           )}
         </div>
 
-        {!teachesChemistry && (
+        {mySubjects.length === 0 && (
           <div className="card card-body" style={{ marginBottom: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe' }}>
-            The question bank currently covers <strong>Chemistry</strong>. A bank for {(user?.subjects || []).join(', ') || 'your subject'} isn’t set up yet — you can still browse and flag Chemistry questions.
+            The question bank covers Chemistry, Physics and Biology. A bank for {(user?.subjects || []).join(', ') || 'your subject'} isn’t set up yet — you can still browse and flag questions.
           </div>
         )}
 
@@ -296,13 +307,16 @@ export default function FacultyQuestions() {
         {tab === 'bank' && (
           <>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+              <select className="form-control" style={{ width: 'auto' }} value={subject} onChange={e => { setSubject(e.target.value); setUnit(''); setLevel('') }}>
+                {ACTIVE_SUBJECTS.map(x => <option key={x} value={x}>{x}</option>)}
+              </select>
               <select className="form-control" style={{ maxWidth: 380 }} value={unit} onChange={e => { setUnit(e.target.value); setLevel('') }}>
                 <option value="">Choose a unit to browse…</option>
-                {UNITS.map(u => <option key={u.id} value={unitLabel(u)}>{unitLabel(u)}</option>)}
+                {unitsFor(subject).map(u => <option key={u.id} value={unitLabel(u)}>{unitLabel(u)}</option>)}
               </select>
               <select className="form-control" style={{ maxWidth: 260 }} value={level} onChange={e => setLevel(e.target.value)} disabled={!unit}>
                 <option value="">All levels</option>
-                {(UNIT_LEVELS[unitIdOf(unit)] || []).map(l => <option key={l.id} value={l.id}>L{l.id} · {l.name}</option>)}
+                {levelsFor(subject, unitIdOf(unit)).map(l => <option key={l.id} value={l.id}>L{l.id} · {l.name}</option>)}
               </select>
               <div style={{ position: 'relative' }}>
                 <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
@@ -339,7 +353,7 @@ export default function FacultyQuestions() {
             {editing && <DraftForm key={editing.id || 'new'} initial={editing} onCancel={() => setEditing(null)} onDone={() => { setEditing(null); loadDrafts() }} />}
             {drafts.length === 0 && !editing ? (
               <div className="empty-state">
-                No drafts yet.{teachesChemistry && <> <button className="btn btn-primary btn-sm" style={{ marginLeft: 8 }} onClick={() => setEditing({ ...EMPTY_Q })}><Plus size={14} /> Add a question</button></>}
+                No drafts yet.{mySubjects.length > 0 && <> <button className="btn btn-primary btn-sm" style={{ marginLeft: 8 }} onClick={() => setEditing({ ...EMPTY_Q, subject: canAdd ? subject : mySubjects[0] })}><Plus size={14} /> Add a question</button></>}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

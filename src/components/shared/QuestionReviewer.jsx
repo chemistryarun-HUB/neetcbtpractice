@@ -161,10 +161,11 @@ export default function QuestionReviewer({
             level here. */}
         {renderMeta ? renderMeta(q) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', opacity: 0.9, minWidth: 0, flexShrink: 0 }}>
+          {q.subject && q.subject !== 'Chemistry' && <><span>{q.subject}</span><span style={{ opacity: 0.5 }}>·</span></>}
           <span>Unit {unitIdOf(q.unit)}</span>
           <span style={{ opacity: 0.5 }}>·</span>
-          <span>{levelBadge(unitIdOf(q.unit), q.level)}</span>
-          <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level) || q.topic}`} />
+          <span>{levelBadge(unitIdOf(q.unit), q.level, { subject: q.subject })}</span>
+          <InfoTooltip text={`${q.unit} · ${deriveFullTopic(q.unit, q.level, q.subject) || q.topic}`} />
         </div>
         )}
 

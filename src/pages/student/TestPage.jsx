@@ -81,6 +81,9 @@ export default function TestPage() {
       // both have to be repeated on the fallback fetch below.
       let allQQuery = supabase.from('questions').select('*')
         .ilike('unit', `${unitPrefix}%`)
+        // The NEET practice levels are Chemistry's; Physics/Biology unit numbers
+        // restart at 1 and must never leak into these tests.
+        .eq('subject', 'Chemistry')
         .eq('is_active', true)
         .eq('is_published', true)
       if (!isChapterTest) allQQuery = allQQuery.eq('level', levelNum)
@@ -94,6 +97,9 @@ export default function TestPage() {
         let fbQuery = supabase.from('questions').select('*')
           .in('id', ids)
           .ilike('unit', `${unitPrefix}%`)
+        // The NEET practice levels are Chemistry's; Physics/Biology unit numbers
+        // restart at 1 and must never leak into these tests.
+        .eq('subject', 'Chemistry')
           .eq('is_active', true)
           .eq('is_published', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)

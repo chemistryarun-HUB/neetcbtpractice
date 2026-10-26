@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useMemo, Fragment } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, ImagePlus, Lock, Maximize2 } from 'lucide-react'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { ALL_SUBJECTS, isActiveSubject, unitsFor, levelsFor } from '../../lib/subjects'
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
 import { resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -94,14 +95,14 @@ function ImageField({ label, file, onChange }) {
 // have silently rejected every row. Returns null when it matches nothing,
 // which the caller reports rather than guessing: a mistyped unit landing 40
 // questions in the wrong module is far worse than being told to fix the cell.
-function resolveUnitId(raw) {
+function resolveUnitId(raw, units = CHEMISTRY_UNITS) {
   const s = String(raw || '').trim()
   if (!s) return null
 
   const num = s.match(/^(?:unit[\s_.:-]*)?(\d{1,2})\b/i)
   if (num) {
     const id = Number(num[1])
-    if (CHEMISTRY_UNITS.some(u => u.id === id)) return id
+    if (units.some(u => u.id === id)) return id
   }
 
   // Name match — ignore a leading "Unit N -", punctuation and spacing, so
@@ -110,7 +111,7 @@ function resolveUnitId(raw) {
     .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim()
   const target = norm(s)
   if (!target) return null
-  const exact = CHEMISTRY_UNITS.find(u => norm(u.name) === target)
+  const exact = units.find(u => norm(u.name) === target)
   return exact ? exact.id : null
 }
 
@@ -136,9 +137,9 @@ function normaliseDifficulty(raw) {
   return null // caller falls back to 'Medium' and reports it
 }
 
-function topicToLevel(unitId, topic) {
-  const levels = UNIT_LEVELS[unitId]
-  if (!levels) return 1
+function topicToLevel(unitId, topic, subject = 'Chemistry') {
+  const levels = levelsFor(subject, unitId)
+  if (!levels.length) return 1
   const t = (topic || '').trim().toLowerCase()
   const match = levels.find(l => l.topic.trim().toLowerCase() === t)
   return match ? match.id : 1
@@ -167,7 +168,7 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
 
 const PAGE_SIZE = 50
 
-const SUBJECTS = ['Chemistry', 'Physics', 'Biology', 'Mathematics']
+const SUBJECTS = ALL_SUBJECTS
 
 export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
@@ -204,10 +205,11 @@ export default function QuestionUploader({ uploadedBy }) {
   const [manualUnitId, setManualUnitId] = useState('')
   const [manualLevel, setManualLevel] = useState('')
 
-  const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
+  const availableLevels = unitFilter ? levelsFor(subjectFilter, unitFilter) : []
 
   function buildQuestionsQuery() {
     let q = supabase.from('questions').select('*')
+    if (subjectFilter) q = q.eq('subject', subjectFilter)
     // Filter by unit — Unit 11 keeps a loose match as a leftover safety net from
     // when its rows carried "d and f" / "d- and f-" spellings. Audited 2026-08-24:
     // all 636 of them now read "Unit 11 - d & f Block Elements" and nothing else,
@@ -215,11 +217,13 @@ export default function QuestionUploader({ uploadedBy }) {
     // Kept because it costs nothing and matches whatever spelling turns up.
     if (unitFilter) {
       const uid = Number(unitFilter)
-      if (uid === 11) {
+      if (uid === 11 && subjectFilter === 'Chemistry') {
         q = q.ilike('unit', '%f Block Elements%')
       } else {
-        const unit = CHEMISTRY_UNITS.find(u => u.id === uid)
-        if (unit) q = q.ilike('unit', `%${unit.name}%`)
+        const unit = unitsFor(subjectFilter).find(u => u.id === uid)
+        // Chemistry rows are matched by name as they always were; the new
+        // subjects by the "Unit N - " prefix (their names were never edited).
+        if (unit) q = subjectFilter === 'Chemistry' ? q.ilike('unit', `%${unit.name}%`) : q.ilike('unit', `Unit ${unit.id} - %`)
       }
     }
     if (levelFilter) q = q.eq('level', Number(levelFilter))
@@ -242,7 +246,11 @@ export default function QuestionUploader({ uploadedBy }) {
     return Number((q.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || 999
   }
 
+  // Changing subject then unit fires two loads; the first (a whole subject)
+  // is slower and must not land on top of the second.
+  const loadSeq = useRef(0)
   async function loadQuestions() {
+    const seq = ++loadSeq.current
     setLoading(true)
     // Paginated — a single Supabase request caps at 1000 rows, which the bank
     // has grown past, so an unfiltered/large result silently got truncated.
@@ -255,7 +263,9 @@ export default function QuestionUploader({ uploadedBy }) {
     // Numeric unit order, then level, then qid — lets the admin scan the whole
     // bank (or an unfiltered "all inactive" view) unit-by-unit and level-by-level
     // at a glance, not just within one pre-selected unit.
-    all.sort((a, b) => unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true }))
+    const subjOrder = q => Math.max(0, ALL_SUBJECTS.indexOf(q.subject || 'Chemistry'))
+    if (seq !== loadSeq.current) return
+    all.sort((a, b) => subjOrder(a) - subjOrder(b) || unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true }))
     setQuestions(all)
     setLoading(false)
   }
@@ -263,7 +273,7 @@ export default function QuestionUploader({ uploadedBy }) {
   // Reset downstream filters and reload when parent filter changes
   useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
-  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
+  useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter])
 
   // Every single-question mutation (activate/deactivate, edit save) patches the
   // already-loaded rows in place instead of refetching. A refetch flips `loading`
@@ -469,9 +479,9 @@ export default function QuestionUploader({ uploadedBy }) {
 
     setSubmitting(true)
     try {
-      const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(manualUnitId))
+      const selectedUnit = unitsFor(manualSubject).find(u => u.id === Number(manualUnitId))
       const unitLabel = `Unit ${selectedUnit.id} - ${selectedUnit.name}`
-      const unitLevelDefs = UNIT_LEVELS[Number(manualUnitId)] || []
+      const unitLevelDefs = levelsFor(manualSubject, manualUnitId)
       const topic = unitLevelDefs.find(l => l.id === Number(manualLevel))?.name || ''
 
       // Upload question / assertion image first
@@ -576,7 +586,8 @@ export default function QuestionUploader({ uploadedBy }) {
       return
     }
 
-    const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))
+    const subjectUnits = unitsFor(uploadSubject)
+    const selectedUnit = subjectUnits.find(u => u.id === Number(uploadUnitId))
 
     // Returns '' for missing/blank cells instead of the literal string "undefined"
     // (String(undefined) === "undefined", which is truthy and used to slip past validation)
@@ -630,7 +641,7 @@ export default function QuestionUploader({ uploadedBy }) {
           const unitCell = cell(r, 'Unit') || cell(r, 'Unit ID')
           let unitIdNum
           if (unitCell) {
-            const resolved = resolveUnitId(unitCell)
+            const resolved = resolveUnitId(unitCell, subjectUnits)
             if (!resolved) { badUnits.push({ qid, value: unitCell }); continue }
             unitIdNum = resolved
           } else if (selectedUnit) {
@@ -641,7 +652,7 @@ export default function QuestionUploader({ uploadedBy }) {
 
           // Always rebuilt from CHEMISTRY_UNITS, never from the sheet's text —
           // this is what keeps exactly one unit string per unit in the bank.
-          const rowUnit = CHEMISTRY_UNITS.find(u => u.id === unitIdNum)
+          const rowUnit = subjectUnits.find(u => u.id === unitIdNum)
           const unitLabel = `Unit ${rowUnit.id} - ${rowUnit.name}`
 
           const option1  = cell(r, 'Option 1')
@@ -665,7 +676,7 @@ export default function QuestionUploader({ uploadedBy }) {
           // level the unit doesn't define is caught by the guard below.
           const rawLevel = cell(r, 'Level')
           const parsedLevel = parseLevel(rawLevel)
-          let level = parsedLevel ?? topicToLevel(unitIdNum, topic)
+          let level = parsedLevel ?? topicToLevel(unitIdNum, topic, uploadSubject)
 
           // A level the unit doesn't define is a silent black hole: the student
           // dashboard renders levels from UNIT_LEVELS, so a question parked at
@@ -673,7 +684,7 @@ export default function QuestionUploader({ uploadedBy }) {
           // nobody. Pull it back to the unit's first level and say so, rather
           // than accepting a number that can never be reached. Only applies to
           // units that actually declare their levels.
-          const known = UNIT_LEVELS[unitIdNum]
+          const known = levelsFor(uploadSubject, unitIdNum)
           if (known?.length && !known.some(l => l.id === level)) {
             levelFixed.push({ qid, from: level, to: known[0].id, unit: rowUnit.name })
             level = known[0].id
@@ -965,7 +976,7 @@ export default function QuestionUploader({ uploadedBy }) {
               >
                 <option value="">All Subjects</option>
                 {SUBJECTS.map(s => (
-                  <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (coming soon)' : ''}</option>
+                  <option key={s} value={s} disabled={!isActiveSubject(s)}>{s}{!isActiveSubject(s) ? ' (coming soon)' : ''}</option>
                 ))}
               </select>
 
@@ -978,7 +989,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   onChange={e => setUnitFilter(e.target.value)}
                 >
                   <option value="">All Units</option>
-                  {CHEMISTRY_UNITS.map(u => (
+                  {unitsFor(subjectFilter).map(u => (
                     <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
                   ))}
                 </select>
@@ -1056,19 +1067,20 @@ export default function QuestionUploader({ uploadedBy }) {
                     // so e.g. every inactive question across the whole bank can be
                     // scanned unit-by-unit and level-by-level in one view instead of
                     // having to pick one unit at a time.
-                    const showUnitHeader = !unitFilter && q.unit !== lastUnit
-                    if (showUnitHeader) { lastUnit = q.unit; lastLevel = null }
+                    const unitKey = `${q.subject}|${q.unit}`
+                    const showUnitHeader = !unitFilter && unitKey !== lastUnit
+                    if (showUnitHeader) { lastUnit = unitKey; lastLevel = null }
                     const showLevelHeader = !levelFilter && (showUnitHeader || q.level !== lastLevel)
                     if (showLevelHeader) lastLevel = q.level
-                    const unitCount = showUnitHeader ? filtered.filter(x => x.unit === q.unit).length : 0
-                    const levelCount = showLevelHeader ? filtered.filter(x => x.unit === q.unit && x.level === q.level).length : 0
+                    const unitCount = showUnitHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit).length : 0
+                    const levelCount = showLevelHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit && x.level === q.level).length : 0
                     return (
                       <Fragment key={q.id}>
                         {showUnitHeader && (
                           <tr>
                             <td colSpan={9} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
-                                {q.unit}
+                                {q.subject && q.subject !== 'Chemistry' ? `${q.subject} · ` : ''}{q.unit}
                                 <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}>· {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
                               </div>
                             </td>
@@ -1078,7 +1090,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <tr>
                             <td colSpan={9} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
-                                {levelBadge(unitIdOf(q.unit), q.level)}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
+                                {levelBadge(unitIdOf(q.unit), q.level, { subject: q.subject })}: {deriveTopic(q.unit, q.level, q.subject) || q.topic || '—'}
                                 <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
                                 <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>· {levelCount} question{levelCount !== 1 ? 's' : ''}</span>
                                 <button className="btn btn-ghost btn-sm"
@@ -1224,7 +1236,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualSubject}
                   onChange={e => { setManualSubject(e.target.value); setManualUnitId(''); setManualLevel('') }} required>
                   <option value="">— choose —</option>
-                  {SUBJECTS.map(s => <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (soon)' : ''}</option>)}
+                  {SUBJECTS.map(s => <option key={s} value={s} disabled={!isActiveSubject(s)}>{s}{!isActiveSubject(s) ? ' (soon)' : ''}</option>)}
                 </select>
               </div>
               {manualSubject && (
@@ -1233,7 +1245,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualUnitId}
                     onChange={e => { setManualUnitId(e.target.value); setManualLevel('') }} required>
                     <option value="">— choose —</option>
-                    {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+                    {unitsFor(manualSubject).map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
                   </select>
                 </div>
               )}
@@ -1245,10 +1257,10 @@ export default function QuestionUploader({ uploadedBy }) {
                       1-9 number box). The unit's last level is always the Complete
                       Chapter Test, which draws from the other levels rather than
                       owning questions, so it's never an authoring target. */}
-                  {(UNIT_LEVELS[Number(manualUnitId)] || []).length > 0 ? (
+                  {levelsFor(manualSubject, manualUnitId).length > 0 ? (
                     <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualLevel} onChange={e => setManualLevel(e.target.value)} required>
                       <option value="">— choose —</option>
-                      {UNIT_LEVELS[Number(manualUnitId)].slice(0, -1).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
+                      {levelsFor(manualSubject, manualUnitId).slice(0, -1).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
                     </select>
                   ) : (
                     <input type="number" className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} min={1} max={9} placeholder="1 – 9"
@@ -1514,8 +1526,8 @@ export default function QuestionUploader({ uploadedBy }) {
             >
               <option value="">— Choose subject —</option>
               {SUBJECTS.map(s => (
-                <option key={s} value={s} disabled={s !== 'Chemistry'}>
-                  {s}{s !== 'Chemistry' ? ' (coming soon)' : ''}
+                <option key={s} value={s} disabled={!isActiveSubject(s)}>
+                  {s}{!isActiveSubject(s) ? ' (coming soon)' : ''}
                 </option>
               ))}
             </select>
@@ -1532,7 +1544,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 onChange={e => setUploadUnitId(e.target.value)}
               >
                 <option value="">— Choose unit —</option>
-                {CHEMISTRY_UNITS.map(u => (
+                {unitsFor(uploadSubject).map(u => (
                   <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
                 ))}
               </select>
@@ -1629,7 +1641,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 <div style={{ marginBottom: '0.75rem', padding: '0.6rem 0.875rem', background: 'var(--primary-light)', border: '1px solid var(--primary)', borderRadius: 'var(--radius)', fontSize: '0.8125rem', color: 'var(--primary-dark)' }}>
                   Uploading as <strong>{uploadSubject}</strong>.{' '}
                   {uploadUnitId ? (
-                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
+                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {unitsFor(uploadSubject).find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
                   ) : (
                     <>No unit selected — every row must carry its own <code>Unit</code> value.</>
                   )}

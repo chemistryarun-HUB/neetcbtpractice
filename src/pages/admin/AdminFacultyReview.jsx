@@ -154,7 +154,7 @@ export default function AdminFacultyReview() {
                       <div key={q.id} className="card card-body">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
                           <code style={{ fontWeight: 700, color: 'var(--primary)' }}>{q.qid}</code>
-                          <span className="text-muted" style={{ fontSize: '0.8rem' }}>{q.unit} · L{q.level} · by {by(q.uploaded_by)}</span>
+                          <span className="text-muted" style={{ fontSize: '0.8rem' }}>{q.subject && q.subject !== 'Chemistry' ? `${q.subject} · ` : ''}{q.unit} · L{q.level} · by {by(q.uploaded_by)}</span>
                           {draftFilter === 'pending' && (
                             <span style={{ marginLeft: 'auto', display: 'flex', gap: '0.4rem' }}>
                               <button className="btn btn-outline btn-sm" onClick={() => setEditingId(q.id)}><Pencil size={13} /> Edit</button>
