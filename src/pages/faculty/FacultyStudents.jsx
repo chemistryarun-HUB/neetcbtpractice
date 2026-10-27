@@ -4,6 +4,7 @@ import { Search, BarChart3 } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { FACULTY_NAV } from '../../lib/faculty'
+import { examTarget } from '../../lib/students'
 
 // Every student, read-only. Faculty never see phone numbers or passwords, and
 // students are added only by the admin — so only safe columns are fetched.
@@ -16,7 +17,7 @@ export default function FacultyStudents() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from('students').select('id, name, roll_number, class, neet_year, created_at').order('name')
+      const { data } = await supabase.from('students').select('id, name, roll_number, class, exam, neet_year, created_at').order('name')
       setStudents(data || [])
       const last = {}
       for (let from = 0; ; from += 1000) {
@@ -68,14 +69,14 @@ export default function FacultyStudents() {
           <div className="table-wrap">
             {loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading…</div> : (
               <table>
-                <thead><tr><th>Roll No.</th><th>Name</th><th>Class</th><th>NEET Year</th><th>Last practice</th><th></th></tr></thead>
+                <thead><tr><th>Roll No.</th><th>Name</th><th>Class</th><th>Exam / Year</th><th>Last practice</th><th></th></tr></thead>
                 <tbody>
                   {shown.map(s => (
                     <tr key={s.id}>
                       <td><code>{s.roll_number}</code></td>
                       <td><strong>{s.name}</strong></td>
                       <td>{s.class || '—'}</td>
-                      <td>{s.neet_year || '—'}</td>
+                      <td>{examTarget(s)}</td>
                       <td style={{ color: lastActive[s.id] ? 'var(--gray-700)' : 'var(--gray-400)' }}>{ago(lastActive[s.id])}</td>
                       <td>
                         <Link to={`/faculty/performance?student=${s.id}`} className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>

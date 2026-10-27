@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import { MARKS_CORRECT, UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { practiceUnitName, practiceUnitNo } from '../../lib/subjects'
 import { MEDIUMS, mediumLabel, normMedium } from '../../lib/neetI18n'
+import { CLASSES, EXAMS, targetYears, yearOptions, examOf, examTarget } from '../../lib/students'
 import { computeStreak, aggregateAccuracy, buildActivityMessage, attemptsInOrder } from '../../lib/performanceMetrics'
 
 function unitName(unitId) {
@@ -28,7 +29,6 @@ const NAV = [
   { to: '/admin/gseb', label: 'GSEB Papers' },
 ]
 
-const NEET_YEARS = ['2026', '2027', '2028', '2029']
 const LOGIN_URL = 'https://chemistryarun-hub.github.io/neetcbtpractice/'
 
 function getTodayDDMM() {
@@ -166,7 +166,7 @@ function StudentProgress({ student, onBack }) {
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
               <code style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{student.roll_number}</code>
               {student.class && <span>{student.class}</span>}
-              {student.neet_year && <span>NEET {student.neet_year}</span>}
+              <span>{examTarget(student)}</span>
             </div>
           </div>
 
@@ -341,7 +341,7 @@ function StudentProgress({ student, onBack }) {
   )
 }
 
-const SINGLE_BLANK = { name: '', phone: '', phone_mother: '', phone_father: '', cls: '', neetYear: '' }
+const SINGLE_BLANK = { name: '', phone: '', phone_mother: '', phone_father: '', cls: '', exam: 'NEET', neetYear: '', medium: 'en' }
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function AdminStudents() {
@@ -356,6 +356,8 @@ export default function AdminStudents() {
   // ── Upload tab state ──
   const [uploadClass, setUploadClass] = useState('')
   const [uploadYear, setUploadYear] = useState('')
+  const [uploadExam, setUploadExam] = useState('NEET')
+  const [uploadMedium, setUploadMedium] = useState('en')
   const ddmm = getTodayDDMM()
   const [preview, setPreview] = useState(null)
   const [saving, setSaving] = useState(false)
@@ -367,6 +369,8 @@ export default function AdminStudents() {
   const [search, setSearch] = useState('')
   const [classFilter, setClassFilter] = useState('')
   const [yearFilter, setYearFilter] = useState('')
+  const [examFilter, setExamFilter] = useState('')
+  const [mediumFilter, setMediumFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [editId, setEditId] = useState(null)
   const [editForm, setEditForm] = useState({})
@@ -421,7 +425,7 @@ export default function AdminStudents() {
         if (phone.length !== 10) { toast.error(`Invalid student phone for "${name}": must be 10 digits`); continue }
         if (phoneMother && phoneMother.length !== 10) { toast.error(`Invalid mother phone for "${name}": must be 10 digits`); continue }
         if (phoneFather && phoneFather.length !== 10) { toast.error(`Invalid father phone for "${name}": must be 10 digits`); continue }
-        validRows.push({ name, phone, phone_mother: phoneMother || null, phone_father: phoneFather || null, medium: normMedium(r['Medium']) })
+        validRows.push({ name, phone, phone_mother: phoneMother || null, phone_father: phoneFather || null, medium: r['Medium'] ? normMedium(r['Medium']) : null })
       }
 
       if (validRows.length === 0) {
@@ -461,7 +465,8 @@ export default function AdminStudents() {
         phone_student: r.phone,
         phone_mother:  r.phone_mother || null,
         phone_father:  r.phone_father || null,
-        medium:        r.medium || 'en',
+        medium:        r.medium || uploadMedium,
+        exam:          uploadExam,
         roll_number:   r.roll_number,
         password_hash: r.password,
         username:      r.roll_number,
@@ -517,7 +522,7 @@ export default function AdminStudents() {
   }
 
   function openEdit(s) {
-    setEditForm({ name: s.name, phone: s.phone_student || '', phone_mother: s.phone_mother || '', phone_father: s.phone_father || '', cls: s.class || '', neetYear: s.neet_year || '' })
+    setEditForm({ name: s.name, phone: s.phone_student || '', phone_mother: s.phone_mother || '', phone_father: s.phone_father || '', cls: s.class || '', exam: examOf(s), neetYear: s.neet_year || '', medium: s.medium || 'en' })
     setEditId(s.id)
   }
 
@@ -528,7 +533,7 @@ export default function AdminStudents() {
     if (pm && pm.length !== 10) { toast.error('Mother phone must be 10 digits'); return }
     if (pf && pf.length !== 10) { toast.error('Father phone must be 10 digits'); return }
     if (!editForm.cls) { toast.error('Select a class'); return }
-    if (!editForm.neetYear) { toast.error('Select a NEET year'); return }
+    if (!editForm.neetYear) { toast.error('Select a target year'); return }
     setEditSaving(true)
     try {
       // Note: roll_number is left untouched on purpose — it's already the student's
@@ -541,7 +546,9 @@ export default function AdminStudents() {
         phone_mother:  pm || null,
         phone_father:  pf || null,
         class:         editForm.cls,
+        exam:          editForm.exam,
         neet_year:     editForm.neetYear,
+        medium:        editForm.medium,
       }).eq('id', s.id)
       if (error) throw error
       toast.success('Student updated!')
@@ -557,6 +564,8 @@ export default function AdminStudents() {
   const filtered = students.filter(s => {
     if (classFilter && s.class !== classFilter) return false
     if (yearFilter && s.neet_year !== yearFilter) return false
+    if (examFilter && examOf(s) !== examFilter) return false
+    if (mediumFilter && (s.medium || 'en') !== mediumFilter) return false
     if (statusFilter === 'active' && s.is_active === false) return false
     if (statusFilter === 'inactive' && s.is_active !== false) return false
     const q = search.toLowerCase()
@@ -609,23 +618,33 @@ export default function AdminStudents() {
                 {/* Step 1: Config */}
                 <div className="card card-body">
                   <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--gray-700)' }}>
-                    Step 1 — Select Class & Year
+                    Step 1 — Select Class, Exam, Year & Medium
                   </div>
                   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                     <div className="form-group" style={{ margin: 0, minWidth: '180px' }}>
                       <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-500)' }}>CLASS</label>
                       <select className="form-control" value={uploadClass} onChange={e => { setUploadClass(e.target.value); setPreview(null); setSaved(null) }}>
                         <option value="">— Select —</option>
-                        <option>Class 11</option>
-                        <option>Class 12</option>
-                        <option>Class 13 (Repeater)</option>
+                        {CLASSES.map(c => <option key={c}>{c}</option>)}
                       </select>
                     </div>
-                    <div className="form-group" style={{ margin: 0, minWidth: '160px' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-500)' }}>NEET TARGET YEAR</label>
+                    <div className="form-group" style={{ margin: 0, minWidth: '120px' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-500)' }}>EXAM</label>
+                      <select className="form-control" value={uploadExam} onChange={e => { setUploadExam(e.target.value); setPreview(null); setSaved(null) }}>
+                        {EXAMS.map(x => <option key={x}>{x}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ margin: 0, minWidth: '150px' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-500)' }}>TARGET YEAR</label>
                       <select className="form-control" value={uploadYear} onChange={e => { setUploadYear(e.target.value); setPreview(null); setSaved(null) }}>
                         <option value="">— Select —</option>
-                        {NEET_YEARS.map(y => <option key={y}>{y}</option>)}
+                        {targetYears().map(y => <option key={y}>{y}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ margin: 0, minWidth: '150px' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-500)' }}>MEDIUM</label>
+                      <select className="form-control" value={uploadMedium} onChange={e => { setUploadMedium(e.target.value); setPreview(null); setSaved(null) }}>
+                        {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
                       </select>
                     </div>
                     <div className="form-group" style={{ margin: 0, minWidth: '130px' }}>
@@ -651,7 +670,7 @@ export default function AdminStudents() {
                     </div>
                     <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '0.875rem', lineHeight: 1.8 }}>
                       Required columns: <code>Student Name</code>, <code>Phone No. (Student)</code> (10 digits)<br />
-                      Optional columns: <code>Phone No. (Mother)</code>, <code>Phone No. (Father)</code><br />
+                      Optional columns: <code>Phone No. (Mother)</code>, <code>Phone No. (Father)</code>, <code>Medium</code> (English / Gujarati; blank uses the medium chosen above)<br />
                       Roll numbers and passwords are auto-generated — do not include them.
                     </div>
                     <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -787,7 +806,7 @@ export default function AdminStudents() {
                 if (pm && pm.length !== 10) { toast.error('Mother phone must be 10 digits'); return }
                 if (pf && pf.length !== 10) { toast.error('Father phone must be 10 digits'); return }
                 if (!singleForm.cls) { toast.error('Please select a class'); return }
-                if (!singleForm.neetYear) { toast.error('Please select NEET year'); return }
+                if (!singleForm.neetYear) { toast.error('Please select target year'); return }
 
                 setSingleSaving(true)
                 try {
@@ -814,14 +833,16 @@ export default function AdminStudents() {
                     password_hash:  password,
                     username:       roll_number,
                     class:          singleForm.cls,
+                    exam:           singleForm.exam,
                     neet_year:      singleForm.neetYear,
+                    medium:         singleForm.medium,
                     is_active:      true,
                     is_first_login: true,
                     added_by:       null,
                   }])
                   if (error) throw error
 
-                  setSingleResult({ name, phone, phone_mother: pm, phone_father: pf, roll_number, password })
+                  setSingleResult({ name, phone, phone_mother: pm, phone_father: pf, roll_number, password, cls: singleForm.cls, exam: singleForm.exam, neetYear: singleForm.neetYear, medium: singleForm.medium })
                   loadStudents()
                 } catch (err) {
                   toast.error(err.message)
@@ -852,6 +873,10 @@ export default function AdminStudents() {
                         <div>
                           <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase' }}>Password</div>
                           <code style={{ fontWeight: 700 }}>{singleResult.password}</code>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase' }}>Batch</div>
+                          <div style={{ fontWeight: 600 }}>{singleResult.cls} · {singleResult.exam} {singleResult.neetYear} · {mediumLabel(singleResult.medium)}</div>
                         </div>
                       </div>
                     </div>
@@ -917,23 +942,44 @@ export default function AdminStudents() {
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                    <div className="form-group" style={{ margin: 0, flex: '1 1 180px' }}>
+                    <div className="form-group" style={{ margin: 0, flex: '1 1 150px' }}>
                       <label style={{ fontWeight: 600 }}>Class <span style={{ color: '#b91c1c' }}>*</span></label>
                       <select className="form-control" value={singleForm.cls}
                         onChange={e => setSingleForm(f => ({ ...f, cls: e.target.value }))}>
                         <option value="">— Select —</option>
-                        <option>Class 11</option>
-                        <option>Class 12</option>
-                        <option>Class 13 (Repeater)</option>
+                        {CLASSES.map(c => <option key={c}>{c}</option>)}
                       </select>
                     </div>
-                    <div className="form-group" style={{ margin: 0, flex: '1 1 180px' }}>
-                      <label style={{ fontWeight: 600 }}>NEET Target Year <span style={{ color: '#b91c1c' }}>*</span></label>
+                    <div className="form-group" style={{ margin: 0, flex: '1 1 150px' }}>
+                      <label style={{ fontWeight: 600 }}>Exam <span style={{ color: '#b91c1c' }}>*</span></label>
+                      <div className="seg" role="radiogroup" aria-label="Exam">
+                        {EXAMS.map(x => (
+                          <button key={x} type="button" role="radio" aria-checked={singleForm.exam === x}
+                            className={singleForm.exam === x ? 'on' : ''}
+                            onClick={() => setSingleForm(f => ({ ...f, exam: x }))}>{x}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="form-group" style={{ margin: 0, flex: '1 1 150px' }}>
+                      <label style={{ fontWeight: 600 }}>{singleForm.exam} Target Year <span style={{ color: '#b91c1c' }}>*</span></label>
                       <select className="form-control" value={singleForm.neetYear}
                         onChange={e => setSingleForm(f => ({ ...f, neetYear: e.target.value }))}>
                         <option value="">— Select —</option>
-                        {NEET_YEARS.map(y => <option key={y}>{y}</option>)}
+                        {targetYears().map(y => <option key={y}>{y}</option>)}
                       </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div className="form-group" style={{ margin: 0, flex: '1 1 220px' }}>
+                      <label style={{ fontWeight: 600 }}>Medium <span style={{ color: '#b91c1c' }}>*</span></label>
+                      <div className="seg" role="radiogroup" aria-label="Medium">
+                        {MEDIUMS.map(m => (
+                          <button key={m.id} type="button" role="radio" aria-checked={singleForm.medium === m.id}
+                            className={singleForm.medium === m.id ? 'on' : ''}
+                            onClick={() => setSingleForm(f => ({ ...f, medium: m.id }))}>{m.label}</button>
+                        ))}
+                      </div>
                     </div>
                     <div className="form-group" style={{ margin: 0, flex: '0 0 120px' }}>
                       <label style={{ fontWeight: 600 }}>Date (DDMM)</label>
@@ -986,14 +1032,22 @@ export default function AdminStudents() {
                     <select className="form-control" style={{ width: 'auto', minWidth: '150px', fontSize: '0.8125rem' }}
                       value={classFilter} onChange={e => setClassFilter(e.target.value)}>
                       <option value="">All Classes</option>
-                      <option>Class 11</option>
-                      <option>Class 12</option>
-                      <option>Class 13 (Repeater)</option>
+                      {CLASSES.map(c => <option key={c}>{c}</option>)}
                     </select>
                     <select className="form-control" style={{ width: 'auto', minWidth: '140px', fontSize: '0.8125rem' }}
                       value={yearFilter} onChange={e => setYearFilter(e.target.value)}>
-                      <option value="">All NEET Years</option>
-                      {NEET_YEARS.map(y => <option key={y}>{y}</option>)}
+                      <option value="">All Target Years</option>
+                      {[...new Set([...students.map(x => x.neet_year).filter(Boolean), ...targetYears()])].sort().map(y => <option key={y}>{y}</option>)}
+                    </select>
+                    <select className="form-control" style={{ width: 'auto', minWidth: '120px', fontSize: '0.8125rem' }}
+                      value={examFilter} onChange={e => setExamFilter(e.target.value)} aria-label="Exam filter">
+                      <option value="">All Exams</option>
+                      {EXAMS.map(x => <option key={x}>{x}</option>)}
+                    </select>
+                    <select className="form-control" style={{ width: 'auto', minWidth: '130px', fontSize: '0.8125rem' }}
+                      value={mediumFilter} onChange={e => setMediumFilter(e.target.value)} aria-label="Medium filter">
+                      <option value="">All Mediums</option>
+                      {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
                     </select>
                     <select className="form-control" style={{ width: 'auto', minWidth: '130px', fontSize: '0.8125rem' }}
                       value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
@@ -1001,9 +1055,9 @@ export default function AdminStudents() {
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
                     </select>
-                    {(classFilter || yearFilter || statusFilter || search) && (
+                    {(classFilter || yearFilter || examFilter || mediumFilter || statusFilter || search) && (
                       <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }}
-                        onClick={() => { setClassFilter(''); setYearFilter(''); setStatusFilter(''); setSearch('') }}>
+                        onClick={() => { setClassFilter(''); setYearFilter(''); setExamFilter(''); setMediumFilter(''); setStatusFilter(''); setSearch('') }}>
                         ✕ Reset
                       </button>
                     )}
@@ -1020,7 +1074,7 @@ export default function AdminStudents() {
                           <th>Name</th>
                           <th>Roll Number</th>
                           <th>Class</th>
-                          <th>NEET Year</th>
+                          <th>Exam / Year</th>
                           <th>Phone</th>
                           <th style={{ width: '110px' }}>Medium</th>
                           <th style={{ width: '90px', textAlign: 'center' }}>Status</th>
@@ -1046,7 +1100,7 @@ export default function AdminStudents() {
                                 </td>
                                 <td><code style={{ fontSize: '0.8rem' }}>{s.roll_number}</code></td>
                                 <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.class || '—'}</td>
-                                <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.neet_year || '—'}</td>
+                                <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{examTarget(s)}</td>
                                 <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{s.phone_student || '—'}</td>
                                 <td>
                                   <select className="form-control" aria-label={`Medium for ${s.name}`}
@@ -1099,7 +1153,7 @@ export default function AdminStudents() {
                                       <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#92400e', marginBottom: '0.75rem' }}>
                                         Editing: <code>{s.roll_number}</code>
                                         <span style={{ fontWeight: 400, marginLeft: '0.5rem', color: '#b45309' }}>
-                                          · Class: {s.class || '—'} · NEET {s.neet_year || '—'}
+                                          · Class: {s.class || '—'} · {examTarget(s)}
                                         </span>
                                       </div>
                                       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
@@ -1128,22 +1182,34 @@ export default function AdminStudents() {
                                           <select className="form-control" value={editForm.cls}
                                             onChange={e => setEditForm(f => ({ ...f, cls: e.target.value }))}>
                                             <option value="">— Select —</option>
-                                            <option>Class 11</option>
-                                            <option>Class 12</option>
-                                            <option>Class 13 (Repeater)</option>
+                                            {CLASSES.map(c => <option key={c}>{c}</option>)}
+                                          </select>
+                                        </div>
+                                        <div className="form-group" style={{ margin: 0, minWidth: '110px' }}>
+                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Exam *</label>
+                                          <select className="form-control" value={editForm.exam}
+                                            onChange={e => setEditForm(f => ({ ...f, exam: e.target.value }))}>
+                                            {EXAMS.map(x => <option key={x}>{x}</option>)}
                                           </select>
                                         </div>
                                         <div className="form-group" style={{ margin: 0, minWidth: '140px' }}>
-                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>NEET Year *</label>
+                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Target Year *</label>
                                           <select className="form-control" value={editForm.neetYear}
                                             onChange={e => setEditForm(f => ({ ...f, neetYear: e.target.value }))}>
                                             <option value="">— Select —</option>
-                                            {NEET_YEARS.map(y => <option key={y}>{y}</option>)}
+                                            {yearOptions(editForm.neetYear).map(y => <option key={y}>{y}</option>)}
+                                          </select>
+                                        </div>
+                                        <div className="form-group" style={{ margin: 0, minWidth: '140px' }}>
+                                          <label style={{ fontSize: '0.75rem', fontWeight: 600 }}>Medium *</label>
+                                          <select className="form-control" value={editForm.medium}
+                                            onChange={e => setEditForm(f => ({ ...f, medium: e.target.value }))}>
+                                            {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
                                           </select>
                                         </div>
                                       </div>
                                       <div style={{ fontSize: '0.7rem', color: '#b45309', marginBottom: '0.5rem' }}>
-                                        Note: the roll number stays the same even if you change class/year — it's already the student's login, so it won't be regenerated.
+                                        Note: the roll number stays the same even if you change class, exam or year — it's already the student's login, so it won't be regenerated.
                                       </div>
                                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                                         <button className="btn btn-primary btn-sm" disabled={editSaving} onClick={() => handleEditSave(s)}>

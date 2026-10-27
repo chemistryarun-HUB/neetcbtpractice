@@ -7,6 +7,7 @@ import {
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
 import { NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
+import { examTarget } from '../../lib/students'
 
 // Was hardcoded to 20 — went stale the moment a 4th syllabus section was added.
 const TOTAL_UNIT_COUNT = NEET_CHEMISTRY_SYLLABUS.reduce((sum, s) => sum + s.units.length, 0)
@@ -121,7 +122,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             <h1 style={{ fontSize: '1.25rem', margin: '0 0 0.25rem', color: 'var(--gray-800)' }}>{student.name}</h1>
             <div className="meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.875rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
               <code>{student.roll_number}</code>
-              <span>Class {student.class} · NEET {student.neet_year}</span>
+              <span>Class {student.class} · {examTarget(student)}</span>
               <span>{unlockedUnitsCount} / {TOTAL_UNIT_COUNT} units unlocked</span>
             </div>
           </div>
