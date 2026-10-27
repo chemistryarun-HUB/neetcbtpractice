@@ -1,0 +1,20 @@
+name: Export Unit 33 images (one-off)
+
+# Prints four question images into the job log for the Gujarati sample.
+# Only on this working branch; never on main. Reads only.
+on:
+  push:
+    branches: [claude/project-thread-umv1js]
+    paths: ['scripts/export-sample/**', '.github/workflows/export-sample.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh scripts/export-sample/images.sh
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
