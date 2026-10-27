@@ -7,6 +7,7 @@
 // gives gradients, rounded cards and soft shadows that would be painful to
 // draw primitive by primitive.
 import { t } from './reportI18n'
+import { examTarget } from './students'
 
 const A4_W = 794   // A4 width at 96dpi, the canvas this is photographed at
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
@@ -59,7 +60,7 @@ export function buildReportHtml(model, lang = 'en', { langHint = null } = {}) {
 
   const howItems = L.how(model.scheme, model.unit.levelCount).map(txt => `<li>${esc(txt)}</li>`).join('')
 
-  const meta = [model.student.class, model.student.neet_year ? `NEET ${model.student.neet_year}` : null]
+  const meta = [model.student.class, model.student.neet_year ? examTarget(model.student) : null]
     .filter(Boolean).join(' · ')
 
   return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><style>
