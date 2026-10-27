@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Flag, Plus, Pencil, X, Search, Send } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
@@ -250,18 +250,30 @@ export default function FacultyQuestions() {
   }
   useEffect(() => { if (user?.id) { loadDrafts(); loadSuggestions() } }, [user?.id])
 
+  // Typing in Search looks through the WHOLE subject, not just the chosen
+  // unit — a Q ID's digits don't say which unit it is in (NCU02159 lives in
+  // Unit 12), so searching only the open unit found nothing.
+  const term = search.trim().replace(/[,()*%\\]/g, '')
+  const searching = term.length >= 3
   useEffect(() => {
-    if (!unit) { setBank([]); return }
+    if (!searching && !unit) { setBank([]); return }
+    let cancelled = false
     setBankLoading(true)
-    let q = supabase.from('questions').select('*').eq('subject', subject).eq('unit', unit).eq('is_active', true).eq('is_published', true)
-    if (level) q = q.eq('level', Number(level))
-    q.order('level').order('qid').then(({ data }) => { setBank(data || []); setBankLoading(false) })
-  }, [subject, unit, level])
+    const timer = setTimeout(() => {
+      let q = supabase.from('questions').select('*').eq('subject', subject).eq('is_active', true).eq('is_published', true)
+      if (searching) {
+        q = q.or(`qid.ilike.%${term}%,question.ilike.%${term}%,source.ilike.%${term}%`).order('qid').limit(60)
+      } else {
+        q = q.eq('unit', unit)
+        if (level) q = q.eq('level', Number(level))
+        q = q.order('level').order('qid')
+      }
+      q.then(({ data }) => { if (!cancelled) { setBank(data || []); setBankLoading(false) } })
+    }, searching ? 350 : 0)
+    return () => { cancelled = true; clearTimeout(timer) }
+  }, [subject, unit, level, term, searching])
 
-  const shownBank = useMemo(() => {
-    const s = search.trim().toLowerCase()
-    return s ? bank.filter(q => (q.qid || '').toLowerCase().includes(s) || (q.question || '').toLowerCase().includes(s)) : bank
-  }, [bank, search])
+  const shownBank = bank
 
   function startEdit(q) {
     setEditing({
@@ -323,17 +335,17 @@ export default function FacultyQuestions() {
                 <input className="form-control" style={{ paddingLeft: 32, width: 220 }} placeholder="Search Q ID or text" value={search} onChange={e => setSearch(e.target.value)} />
               </div>
             </div>
-            {!unit ? <div className="empty-state">Choose a unit to see its questions (with answers).</div>
+            {!unit && !searching ? <div className="empty-state">Choose a unit, or search by Q ID / text, to see questions (with answers).</div>
               : bankLoading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading…</div>
-              : shownBank.length === 0 ? <div className="empty-state">No live questions here.</div>
+              : shownBank.length === 0 ? <div className="empty-state">{searching ? `No live ${subject} question matches “${term}”.` : 'No live questions here.'}</div>
               : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <div className="text-muted" style={{ fontSize: '0.8rem' }}>{shownBank.length} live questions</div>
+                  <div className="text-muted" style={{ fontSize: '0.8rem' }}>{searching ? `${shownBank.length}${shownBank.length === 60 ? '+' : ''} matches in all ${subject} units` : `${shownBank.length} live questions`}</div>
                   {shownBank.map(q => (
                     <div key={q.id} className="card card-body">
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
                         <code style={{ fontWeight: 700, color: 'var(--primary)' }}>{q.qid}</code>
-                        <span className="badge">L{q.level}</span>
+                        <span className="badge">{searching ? `${q.unit} · ` : ''}L{q.level}</span>
                         {q.difficulty_level && <span className={`badge badge-${q.difficulty_level.toLowerCase()}`}>{q.difficulty_level}</span>}
                         {q.question_tag && <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{q.question_tag}</span>}
                         <button className="btn btn-outline btn-sm" style={{ marginLeft: 'auto', display: 'inline-flex', gap: '0.3rem', alignItems: 'center' }} onClick={() => setSuggestFor(q)}>
