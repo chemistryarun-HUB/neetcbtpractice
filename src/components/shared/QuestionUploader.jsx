@@ -497,6 +497,10 @@ export default function QuestionUploader({ uploadedBy }) {
     if (!manualSubject) { toast.error('Select a Subject'); return }
     if (!manualUnitId)  { toast.error('Select a Unit'); return }
     if (!manualLevel)   { toast.error('Select a Level'); return }
+    if (form.qid && (manualMedium === 'gu') !== /G$/i.test(form.qid.trim())) {
+      toast.error(manualMedium === 'gu' ? 'Gujarati Q IDs must end in G (e.g. NCU02518G)' : 'English Q IDs must not end in G')
+      return
+    }
 
     setSubmitting(true)
     try {
@@ -649,6 +653,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const skipped = []
         const badUnits = []      // rows whose Unit cell matched no unit
         const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
+        const badQid = []        // Q ID suffix doesn't match the row's medium
         const levelFixed = []    // rows whose Level doesn't exist in their unit
         const difficultyFixed = [] // rows whose Difficulty Level the DB would reject
 
@@ -657,6 +662,13 @@ export default function QuestionUploader({ uploadedBy }) {
           const question = cell(r, 'Question')
 
           if (!qid || !question) { skipped.push(qid || '(no Q ID)'); continue }
+
+          // A "Medium" column (English / Gujarati) wins over the dropdown.
+          const medium = cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium
+          // Gujarati Q IDs end in G (NCU02518G), English ones never do. The
+          // upload upserts on Q ID, so a Gujarati row carrying an English ID
+          // would overwrite the English question — refuse it instead.
+          if ((medium === 'gu') !== /G$/i.test(qid)) { badQid.push({ qid, medium }); continue }
 
           // Per-row unit, falling back to the dropdown. Accepts a "Unit" or
           // "Unit ID" header.
@@ -735,8 +747,7 @@ export default function QuestionUploader({ uploadedBy }) {
             // isn't a real category — see QuestionEditPanel.jsx).
             question_type:    cell(r, 'Question Type') || 'Single Choice MCQ',
             subject:          uploadSubject,
-            // A "Medium" column (English / Gujarati) wins over the dropdown.
-            medium:           cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium,
+            medium,
             unit:             unitLabel,
             chapter_name:     cell(r, 'Chapter Name'),
             topic,
@@ -766,7 +777,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const dedupedRecords = Array.from(byQid.values())
         const duplicateCount = records.length - dedupedRecords.length
 
-        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length) {
+        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length && !badQid.length) {
           const sampleHeaders = rows[0] ? Object.keys(rows[0]).join(', ') : '(sheet appears empty)'
           toast.error(
             `No valid rows found in sheet "${usedSheetName}". Expected columns "Q ID" and "Question" ` +
@@ -788,6 +799,7 @@ export default function QuestionUploader({ uploadedBy }) {
           skipped,
           badUnits,
           noUnit,
+          badQid,
           levelFixed,
           difficultyFixed,
         })
@@ -1193,7 +1205,7 @@ export default function QuestionUploader({ uploadedBy }) {
                               <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title={lockSummary(q)} />
                             )}
                           </td>
-                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.medium === 'gu' && <span className="badge" style={{ marginRight: 4, background: '#fef3c7', color: '#92400e' }}>GU</span>}{q.unit}</td>
+                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>
                           <td style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                             {q.level}
@@ -1624,7 +1636,7 @@ export default function QuestionUploader({ uploadedBy }) {
             }
             const rows = Object.entries(byUnit).sort((a, b) =>
               (Number(a[0].match(/^Unit\s+(\d+)/)?.[1]) || 0) - (Number(b[0].match(/^Unit\s+(\d+)/)?.[1]) || 0))
-            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length
+            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length + pendingUpload.badQid.length
             return (
               <div style={{ border: '1.5px solid var(--primary)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1.25rem', background: 'var(--gray-50)' }}>
                 <div style={{ fontWeight: 700, marginBottom: '0.15rem' }}>
@@ -1658,6 +1670,13 @@ export default function QuestionUploader({ uploadedBy }) {
                       <div style={{ marginTop: '0.35rem' }}>
                         No Unit given and no unit selected above: {pendingUpload.noUnit.slice(0, 6).join(', ')}
                         {pendingUpload.noUnit.length > 6 ? ` and ${pendingUpload.noUnit.length - 6} more` : ''}
+                      </div>
+                    )}
+                    {pendingUpload.badQid.length > 0 && (
+                      <div style={{ marginTop: '0.35rem' }}>
+                        Q ID doesn’t match the medium (Gujarati IDs must end in G, English IDs must not):{' '}
+                        {pendingUpload.badQid.slice(0, 6).map(b => `${b.qid} (${b.medium === 'gu' ? 'Gujarati' : 'English'})`).join(', ')}
+                        {pendingUpload.badQid.length > 6 ? ` and ${pendingUpload.badQid.length - 6} more` : ''}
                       </div>
                     )}
                   </div>
