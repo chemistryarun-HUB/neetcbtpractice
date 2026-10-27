@@ -16,6 +16,9 @@ import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
 import DifficultyReport from './DifficultyReport'
 
+// Admin screens are in English, so the Gujarati bank is called "Gujarati" here.
+const mediumLabelEn = id => (id === 'gu' ? 'Gujarati' : 'English')
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
   return val && UUID_RE.test(val) ? val : null
@@ -181,7 +184,9 @@ export default function QuestionUploader({ uploadedBy }) {
   const [subjectFilter, setSubjectFilter] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
-  const [mediumFilter, setMediumFilter] = useState('')   // '' | 'en' | 'gu'
+  // English and Gujarati are separate banks, so the list always shows one of
+  // them (English by default) and never mixes the two.
+  const [mediumFilter, setMediumFilter] = useState('en')   // 'en' | 'gu'
   // Reviewing happens in a full-screen overlay (QuestionReviewer) rather than an
   // inline row panel — the row panel only ever got the bottom half of a window
   // whose top half was chrome, which is the wrong shape for judging a question
@@ -216,7 +221,7 @@ export default function QuestionUploader({ uploadedBy }) {
     let q = supabase.from('questions').select('*')
     if (subjectFilter) q = q.eq('subject', subjectFilter)
     // English and Gujarati medium are separate banks.
-    if (mediumFilter) q = q.eq('medium', mediumFilter)
+    q = q.eq('medium', mediumFilter)
     // Filter by unit — Unit 11 keeps a loose match as a leftover safety net from
     // when its rows carried "d and f" / "d- and f-" spellings. Audited 2026-08-24:
     // all 636 of them now read "Unit 11 - d & f Block Elements" and nothing else,
@@ -326,31 +331,33 @@ export default function QuestionUploader({ uploadedBy }) {
 
   // Releases a whole level at once — the unit the admin actually works in, and
   // what they asked for. Scoped by the exact `unit` string rather than a unit id
-  // because that column is free text and is what the rows themselves carry.
+  // because that column is free text and is what the rows themselves carry,
+  // and by the medium on screen: the English and Gujarati banks share unit
+  // strings but are released separately.
   async function publishLevel(unit, level) {
     const { data, error } = await supabase.from('questions')
       .update({ is_published: true })
-      .eq('unit', unit).eq('level', level).eq('is_published', false).eq('is_active', true)
+      .eq('unit', unit).eq('level', level).eq('medium', mediumFilter).eq('is_published', false).eq('is_active', true)
       .select('id')
     if (error) { toast.error(error.message); return }
     const n = (data || []).length
     if (!n) { toast('Nothing pending in this level.'); return }
     toast.success(`${n} question${n !== 1 ? 's' : ''} published — ${levelBadge(unitIdOf(unit), level)} is live for students`)
     setQuestions(prev => prev.map(q =>
-      q.unit === unit && q.level === level ? { ...q, is_published: true } : q))
+      q.unit === unit && q.level === level && (q.medium || 'en') === mediumFilter ? { ...q, is_published: true } : q))
     refreshPendingCounts()
   }
 
   async function unpublishLevel(unit, level) {
     const { data, error } = await supabase.from('questions')
       .update({ is_published: false })
-      .eq('unit', unit).eq('level', level).eq('is_published', true)
+      .eq('unit', unit).eq('level', level).eq('medium', mediumFilter).eq('is_published', true)
       .select('id')
     if (error) { toast.error(error.message); return }
     const n = (data || []).length
     toast.success(`${n} question${n !== 1 ? 's' : ''} hidden from students`)
     setQuestions(prev => prev.map(q =>
-      q.unit === unit && q.level === level ? { ...q, is_published: false } : q))
+      q.unit === unit && q.level === level && (q.medium || 'en') === mediumFilter ? { ...q, is_published: false } : q))
     refreshPendingCounts()
   }
 
@@ -369,7 +376,7 @@ export default function QuestionUploader({ uploadedBy }) {
     const all = []
     for (let from = 0; ; from += 1000) {
       const { data: page, error } = await supabase.from('questions')
-        .select('unit, level').eq('is_published', false).eq('is_active', true)
+        .select('unit, level, medium').eq('is_published', false).eq('is_active', true)
         .range(from, from + 999)
       if (error) return
       all.push(...(page || []))
@@ -379,14 +386,21 @@ export default function QuestionUploader({ uploadedBy }) {
   }, [])
   useEffect(() => { refreshPendingCounts() }, [refreshPendingCounts])
 
-  // unit+level → pending count, for the badges on the level headers.
+  // unit+level → pending count in the medium on screen, for the badges on the
+  // level headers and the banner. The other medium's queue is only counted,
+  // so the banner can say it is there.
   const pendingByLevel = useMemo(() => {
     const m = {}
-    for (const r of pendingRows) m[`${r.unit}||${r.level}`] = (m[`${r.unit}||${r.level}`] || 0) + 1
+    for (const r of pendingRows) {
+      if ((r.medium || 'en') !== mediumFilter) continue
+      m[`${r.unit}||${r.level}`] = (m[`${r.unit}||${r.level}`] || 0) + 1
+    }
     return m
-  }, [pendingRows])
-  const pendingTotal = pendingRows.length
+  }, [pendingRows, mediumFilter])
+  const pendingTotal = Object.values(pendingByLevel).reduce((a, b) => a + b, 0)
   const pendingLevelCount = Object.keys(pendingByLevel).length
+  const otherMedium = MEDIUMS.find(m => m.id !== mediumFilter)
+  const pendingOther = pendingRows.length - pendingTotal
 
   async function loadDuplicates() {
     setDupeLoading(true)
@@ -483,6 +497,10 @@ export default function QuestionUploader({ uploadedBy }) {
     if (!manualSubject) { toast.error('Select a Subject'); return }
     if (!manualUnitId)  { toast.error('Select a Unit'); return }
     if (!manualLevel)   { toast.error('Select a Level'); return }
+    if (form.qid && (manualMedium === 'gu') !== /G$/i.test(form.qid.trim())) {
+      toast.error(manualMedium === 'gu' ? 'Gujarati Q IDs must end in G (e.g. NCU02518G)' : 'English Q IDs must not end in G')
+      return
+    }
 
     setSubmitting(true)
     try {
@@ -635,6 +653,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const skipped = []
         const badUnits = []      // rows whose Unit cell matched no unit
         const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
+        const badQid = []        // Q ID suffix doesn't match the row's medium
         const levelFixed = []    // rows whose Level doesn't exist in their unit
         const difficultyFixed = [] // rows whose Difficulty Level the DB would reject
 
@@ -643,6 +662,13 @@ export default function QuestionUploader({ uploadedBy }) {
           const question = cell(r, 'Question')
 
           if (!qid || !question) { skipped.push(qid || '(no Q ID)'); continue }
+
+          // A "Medium" column (English / Gujarati) wins over the dropdown.
+          const medium = cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium
+          // Gujarati Q IDs end in G (NCU02518G), English ones never do. The
+          // upload upserts on Q ID, so a Gujarati row carrying an English ID
+          // would overwrite the English question — refuse it instead.
+          if ((medium === 'gu') !== /G$/i.test(qid)) { badQid.push({ qid, medium }); continue }
 
           // Per-row unit, falling back to the dropdown. Accepts a "Unit" or
           // "Unit ID" header.
@@ -721,8 +747,7 @@ export default function QuestionUploader({ uploadedBy }) {
             // isn't a real category — see QuestionEditPanel.jsx).
             question_type:    cell(r, 'Question Type') || 'Single Choice MCQ',
             subject:          uploadSubject,
-            // A "Medium" column (English / Gujarati) wins over the dropdown.
-            medium:           cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium,
+            medium,
             unit:             unitLabel,
             chapter_name:     cell(r, 'Chapter Name'),
             topic,
@@ -752,7 +777,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const dedupedRecords = Array.from(byQid.values())
         const duplicateCount = records.length - dedupedRecords.length
 
-        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length) {
+        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length && !badQid.length) {
           const sampleHeaders = rows[0] ? Object.keys(rows[0]).join(', ') : '(sheet appears empty)'
           toast.error(
             `No valid rows found in sheet "${usedSheetName}". Expected columns "Q ID" and "Question" ` +
@@ -774,6 +799,7 @@ export default function QuestionUploader({ uploadedBy }) {
           skipped,
           badUnits,
           noUnit,
+          badQid,
           levelFixed,
           difficultyFixed,
         })
@@ -873,7 +899,7 @@ export default function QuestionUploader({ uploadedBy }) {
   // When a filter is active, show all results so nothing is hidden behind pages —
   // includes a non-default status filter, since browsing "Inactive" is meant to
   // show every inactive question across the bank at a glance, not 50 at a time.
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || mediumFilter !== '' || statusFilter !== 'active'
+  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
 
@@ -932,17 +958,27 @@ export default function QuestionUploader({ uploadedBy }) {
           upload that is never published is invisible to students AND easy for
           the admin to forget, so the tally is shown on every tab of this page,
           not tucked inside the list, and it links straight to the queue. */}
-      {pendingTotal > 0 && (
+      {(pendingTotal > 0 || pendingOther > 0) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 'var(--radius)', padding: '0.6rem 0.875rem', marginBottom: '0.75rem' }}>
           <span style={{ fontSize: '0.875rem', color: '#92400e' }}>
-            <strong>{pendingTotal} question{pendingTotal !== 1 ? 's' : ''}</strong> across{' '}
-            <strong>{pendingLevelCount} level{pendingLevelCount !== 1 ? 's' : ''}</strong> {pendingTotal !== 1 ? 'are' : 'is'} waiting to be reviewed. Students cannot see {pendingTotal !== 1 ? 'them' : 'it'} yet.
+            {pendingTotal > 0 ? (<>
+              <strong>{mediumLabelEn(mediumFilter)}: {pendingTotal} question{pendingTotal !== 1 ? 's' : ''}</strong> across{' '}
+              <strong>{pendingLevelCount} level{pendingLevelCount !== 1 ? 's' : ''}</strong> {pendingTotal !== 1 ? 'are' : 'is'} waiting to be reviewed. Students cannot see {pendingTotal !== 1 ? 'them' : 'it'} yet.
+            </>) : <>Nothing waiting in {mediumLabelEn(mediumFilter)}.</>}
+            {pendingOther > 0 && (
+              <> {' '}
+                <button type="button" onClick={() => setMediumFilter(otherMedium.id)}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#92400e', textDecoration: 'underline', cursor: 'pointer', font: 'inherit', fontWeight: 600 }}>
+                  {pendingOther} more in {mediumLabelEn(otherMedium.id)}
+                </button>
+              </>
+            )}
           </span>
-          <button className="btn btn-sm"
+          {pendingTotal > 0 && <button className="btn btn-sm"
             style={{ marginLeft: 'auto', background: '#92400e', color: '#fff', fontWeight: 700, fontSize: '0.75rem' }}
             onClick={() => { setTab('list'); setStatusFilter('pending'); setUnitFilter(''); setLevelFilter(''); setSearch('') }}>
             Show them
-          </button>
+          </button>}
         </div>
       )}
 
@@ -998,8 +1034,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 onChange={e => setMediumFilter(e.target.value)}
                 aria-label="Medium"
               >
-                <option value="">All Mediums</option>
-                {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                {MEDIUMS.map(m => <option key={m.id} value={m.id}>{mediumLabelEn(m.id)}</option>)}
               </select>
 
               {/* Unit — visible once a subject is chosen */}
@@ -1036,9 +1071,9 @@ export default function QuestionUploader({ uploadedBy }) {
               )}
 
               {/* Reset filters link */}
-              {(subjectFilter || unitFilter || levelFilter || mediumFilter) && (
+              {(subjectFilter || unitFilter || levelFilter) && (
                 <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }}
-                  onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter(''); setMediumFilter('') }}>
+                  onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter('') }}>
                   ✕ Reset filters
                 </button>
               )}
@@ -1170,7 +1205,7 @@ export default function QuestionUploader({ uploadedBy }) {
                               <Lock size={11} style={{ marginLeft: '0.35rem', verticalAlign: 'middle', color: '#0284c7' }} title={lockSummary(q)} />
                             )}
                           </td>
-                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.medium === 'gu' && <span className="badge" style={{ marginRight: 4, background: '#fef3c7', color: '#92400e' }}>GU</span>}{q.unit}</td>
+                          <td style={{ fontSize: '0.78rem', color: 'var(--gray-500)', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.unit}>{q.unit}</td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deriveTopic(q.unit, q.level) || q.topic}</td>
                           <td style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                             {q.level}
@@ -1601,7 +1636,7 @@ export default function QuestionUploader({ uploadedBy }) {
             }
             const rows = Object.entries(byUnit).sort((a, b) =>
               (Number(a[0].match(/^Unit\s+(\d+)/)?.[1]) || 0) - (Number(b[0].match(/^Unit\s+(\d+)/)?.[1]) || 0))
-            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length
+            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length + pendingUpload.badQid.length
             return (
               <div style={{ border: '1.5px solid var(--primary)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1.25rem', background: 'var(--gray-50)' }}>
                 <div style={{ fontWeight: 700, marginBottom: '0.15rem' }}>
@@ -1635,6 +1670,13 @@ export default function QuestionUploader({ uploadedBy }) {
                       <div style={{ marginTop: '0.35rem' }}>
                         No Unit given and no unit selected above: {pendingUpload.noUnit.slice(0, 6).join(', ')}
                         {pendingUpload.noUnit.length > 6 ? ` and ${pendingUpload.noUnit.length - 6} more` : ''}
+                      </div>
+                    )}
+                    {pendingUpload.badQid.length > 0 && (
+                      <div style={{ marginTop: '0.35rem' }}>
+                        Q ID doesn’t match the medium (Gujarati IDs must end in G, English IDs must not):{' '}
+                        {pendingUpload.badQid.slice(0, 6).map(b => `${b.qid} (${b.medium === 'gu' ? 'Gujarati' : 'English'})`).join(', ')}
+                        {pendingUpload.badQid.length > 6 ? ` and ${pendingUpload.badQid.length - 6} more` : ''}
                       </div>
                     )}
                   </div>
