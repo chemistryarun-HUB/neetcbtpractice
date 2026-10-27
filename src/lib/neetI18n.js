@@ -138,9 +138,10 @@ const GU_SECTIONS = {
   'Class 12': 'ધોરણ 12',
 }
 
-// Keyed by practice unit id (courseUnitId: Physics chapter n is 100 + n).
+// Keyed by practice unit id (courseUnitId: Physics chapter n is 100 + n,
+// Biology chapter n is 200 + n).
 // Names follow the GSEB Gujarati medium editions of the NCERT books.
-const GU_UNITS = Object.fromEntries([
+const GU_PHYSICS_UNITS = [
   'એકમો અને માપન', 'સુરેખ પથ પર ગતિ', 'સમતલમાં ગતિ', 'ગતિના નિયમો',
   'કાર્ય, ઊર્જા અને પાવર', 'કણોનાં તંત્રો અને ચાકગતિ', 'ગુરુત્વાકર્ષણ',
   'ઘન પદાર્થોના યાંત્રિક ગુણધર્મો', 'તરલના યાંત્રિક ગુણધર્મો', 'દ્રવ્યના ઉષ્મીય ગુણધર્મો',
@@ -150,7 +151,25 @@ const GU_UNITS = Object.fromEntries([
   'વિદ્યુતચુંબકીય તરંગો', 'કિરણ પ્રકાશશાસ્ત્ર અને પ્રકાશીય ઉપકરણો', 'તરંગ પ્રકાશશાસ્ત્ર',
   'વિકિરણ અને દ્રવ્યની દ્વૈત પ્રકૃતિ', 'પરમાણુઓ', 'ન્યુક્લિયસ',
   'સેમિકન્ડક્ટર ઇલેક્ટ્રૉનિક્સ: દ્રવ્યો, રચનાઓ અને સાદા પરિપથો',
-].map((name, i) => [courseUnitId('Physics', i + 1), name]))
+]
+// Biology chapter names as Arun supplied them (GSEB Gujarati medium books).
+const GU_BIOLOGY_UNITS = [
+  'સજીવ વિશ્વ', 'જૈવિક વર્ગીકરણ', 'વનસ્પતિ સૃષ્ટિ', 'પ્રાણીસૃષ્ટિ',
+  'સપુષ્પી વનસ્પતિઓની બાહ્યાકારવિદ્યા', 'સપુષ્પી વનસ્પતિઓની અંતઃસ્થ રચના', 'પ્રાણીઓમાં રચનાકીય આયોજન',
+  'કોષ : જીવનનો એકમ', 'જૈવઅણુઓ', 'કોષચક્ર અને કોષવિભાજન',
+  'ઉચ્ચકક્ષાની વનસ્પતિઓમાં પ્રકાશસંશ્લેષણ', 'વનસ્પતિઓમાં શ્વસન', 'વનસ્પતિ વૃદ્ધિ અને વિકાસ',
+  'શ્વાસોચ્છ્વાસ અને વાયુઓનું વિનિમય', 'દેહજળ અને પરિવહન', 'ઉત્સર્ગ પેદાશો અને તેનો નિકાલ',
+  'પ્રચલન અને હલનચલન', 'ચેતાકીય નિયંત્રણ અને સહનિયમન', 'રાસાયણિક સહનિયમન અને સંકલન',
+  'સપુષ્પી વનસ્પતિઓમાં લિંગીપ્રજનન', 'માનવ પ્રજનન', 'પ્રજનનિક સ્વાસ્થ્ય',
+  'આનુવંશિકતા અને ભિન્નતાના સિદ્ધાંતો', 'આનુવંશિકતાનો આણ્વિય આધાર', 'ઉદ્‌વિકાસ',
+  'માનવ-સ્વાસ્થ્ય અને રોગો', 'માનવ-કલ્યાણમાં સૂક્ષ્મજીવો',
+  'બાયોટેક્નોલોજી : સિદ્ધાંતો અને પ્રક્રિયાઓ', 'બાયોટેક્નોલોજી અને તેના પ્રયોજનો',
+  'સજીવો અને વસ્તી', 'નિવસંત્ર', 'જૈવ-વિવિધતા અને સંરક્ષણ',
+]
+const GU_UNITS = Object.fromEntries([
+  ...GU_PHYSICS_UNITS.map((name, i) => [courseUnitId('Physics', i + 1), name]),
+  ...GU_BIOLOGY_UNITS.map((name, i) => [courseUnitId('Biology', i + 1), name]),
+])
 
 // Level names per practice unit id, in the same order as its levels.
 // Multilevel and the CCT are added for every unit below rather than repeated.
