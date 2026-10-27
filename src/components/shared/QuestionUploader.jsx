@@ -16,6 +16,15 @@ import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
 import DifficultyReport from './DifficultyReport'
 
+// Optional Excel columns carrying an image's web address, and the field each fills.
+const IMAGE_COLUMNS = [
+  ['Question Image', 'question_image'],
+  ['Option 1 Image', 'option1_image'],
+  ['Option 2 Image', 'option2_image'],
+  ['Option 3 Image', 'option3_image'],
+  ['Option 4 Image', 'option4_image'],
+]
+
 // Admin screens are in English, so the Gujarati bank is called "Gujarati" here.
 const mediumLabelEn = id => (id === 'gu' ? 'Gujarati' : 'English')
 
@@ -654,6 +663,8 @@ export default function QuestionUploader({ uploadedBy }) {
         const badUnits = []      // rows whose Unit cell matched no unit
         const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
         const badQid = []        // Q ID suffix doesn't match the row's medium
+        const images = {}        // qid → image fields given as URLs in the sheet
+        const badImage = []      // image cells that aren't a web address
         const levelFixed = []    // rows whose Level doesn't exist in their unit
         const difficultyFixed = [] // rows whose Difficulty Level the DB would reject
 
@@ -669,6 +680,16 @@ export default function QuestionUploader({ uploadedBy }) {
           // upload upserts on Q ID, so a Gujarati row carrying an English ID
           // would overwrite the English question — refuse it instead.
           if ((medium === 'gu') !== /G$/i.test(qid)) { badQid.push({ qid, medium }); continue }
+
+          // Optional image columns hold the image's web address (for example
+          // the English question's image, reused by its Gujarati twin). A
+          // blank cell leaves the question's current image alone.
+          for (const [col, field] of IMAGE_COLUMNS) {
+            const url = cell(r, col)
+            if (!url) continue
+            if (!/^https?:\/\/\S+$/i.test(url)) { badImage.push(`${qid} (${col})`); continue }
+            ;(images[qid] ||= {})[field] = url
+          }
 
           // Per-row unit, falling back to the dropdown. Accepts a "Unit" or
           // "Unit ID" header.
@@ -800,6 +821,8 @@ export default function QuestionUploader({ uploadedBy }) {
           badUnits,
           noUnit,
           badQid,
+          images,
+          badImage,
           levelFixed,
           difficultyFixed,
         })
@@ -860,8 +883,19 @@ export default function QuestionUploader({ uploadedBy }) {
           const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
           if (error) throw error
         }
+        // Images go in their own update, row by row, so that a sheet without
+        // image columns (or with a blank cell) never clears an image a
+        // question already has. Content-locked rows keep theirs.
+        let imageCount = 0
+        for (const [qid, fields] of Object.entries(p.images || {})) {
+          if (lockByQid.get(qid)?.content_locked) continue
+          const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
+          if (error) throw error
+          imageCount++
+        }
 
         const parts = [`${dedupedRecords.length} questions uploaded successfully!`]
+        if (imageCount) parts.push(`${imageCount} got their image${imageCount !== 1 ? 's' : ''} from the sheet.`)
         if (contentLockedCount) parts.push(`${contentLockedCount} were 🔒 content-locked — question/options/answer preserved.`)
         const pinned = Object.entries(fieldLockCounts).filter(([, n]) => n > 0)
         if (pinned.length) parts.push(`🔒 Kept manual values for ${pinned.map(([label, n]) => `${label} (${n})`).join(', ')}.`)
@@ -1682,6 +1716,18 @@ export default function QuestionUploader({ uploadedBy }) {
                   </div>
                 )}
 
+                {Object.keys(pendingUpload.images || {}).length > 0 && (
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#1e40af', marginBottom: '0.75rem' }}>
+                    <strong>{Object.keys(pendingUpload.images).length} question{Object.keys(pendingUpload.images).length !== 1 ? 's' : ''}</strong> will get images from the sheet’s image columns.
+                  </div>
+                )}
+                {pendingUpload.badImage?.length > 0 && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '0.75rem' }}>
+                    <strong>{pendingUpload.badImage.length} image cell{pendingUpload.badImage.length !== 1 ? 's are' : ' is'} not a web address</strong> and will be ignored (the question still uploads): {pendingUpload.badImage.slice(0, 5).join(', ')}
+                    {pendingUpload.badImage.length > 5 ? ` and ${pendingUpload.badImage.length - 5} more` : ''}
+                  </div>
+                )}
+
                 {pendingUpload.levelFixed.length > 0 && (
                   <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '0.75rem' }}>
                     <strong>{pendingUpload.levelFixed.length} row{pendingUpload.levelFixed.length !== 1 ? 's' : ''} had a level that unit doesn’t have</strong> — moved to its first level, otherwise no student could ever see them.
@@ -1752,6 +1798,7 @@ export default function QuestionUploader({ uploadedBy }) {
           <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: '#166534', lineHeight: 1.8 }}>
             <strong>"Correct Option" values:</strong> must be exactly <code>Option 1</code>, <code>Option 2</code>, <code>Option 3</code>, or <code>Option 4</code><br />
             <strong>Sheet name:</strong> reads the first sheet automatically (any name is fine)<br />
+            <strong>Images (optional):</strong> columns <code>Question Image</code>, <code>Option 1 Image</code> … <code>Option 4 Image</code> take the image’s web address; a blank cell keeps the current image<br />
             <strong>Level assignment (Unit 11 only):</strong> "General Introduction" → 1 · "General Trends" → 2 · "Oxides" → 3 · "KMnO4" → 4 · "K2Cr2O7" → 5 · "Lanthanoid" → 6 · "Actinoid" → 7 · "Miscellaneous" → 8
           </div>
 
