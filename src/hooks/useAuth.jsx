@@ -47,18 +47,26 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // Never leave the whole app on a spinner: if Supabase is slow to answer,
+    // show the page after a few seconds and let the admin check finish behind it.
+    const giveUp = setTimeout(() => setLoading(false), 4000)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
         const admin = await resolveAdmin(session.user)
         if (admin) { setRole('admin'); setUser(admin) }
       }
-      setLoading(false)
-    })
+    }).finally(() => { clearTimeout(giveUp); setLoading(false) })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // No await inside this callback: supabase-js holds its auth lock while it
+    // runs, so a query awaited here (the admins lookup) blocks getSession()
+    // above until the lock times out — that was the long blank spinner when
+    // opening the admin panel. Deferring with setTimeout releases the lock first.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        const admin = await resolveAdmin(session.user)
-        if (admin) { setRole('admin'); setUser(admin) }
+        setTimeout(async () => {
+          const admin = await resolveAdmin(session.user)
+          if (admin) { setRole('admin'); setUser(admin) }
+        }, 0)
       } else if (!loadSession()) {
         // A Supabase sign-out must not knock out a student or faculty
         // session, which don't use Supabase auth at all.
