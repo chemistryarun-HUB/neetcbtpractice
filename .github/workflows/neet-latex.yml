@@ -1,7 +1,7 @@
 name: NEET LaTeX pass (one-off)
 
-# Reads Chemistry Unit 7 questions (read only), encrypts them and pushes the
-# file to the claude/neet-latex-data branch. Only on this working branch.
+# Saves the Unit 7 LaTeX text (after an encrypted backup of the rows, pushed
+# to the claude/neet-latex-data branch). Only on this working branch.
 on:
   push:
     branches: [claude/project-thread-ewo95d]
@@ -19,13 +19,13 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: node scripts/neet-latex/export.mjs
+      - run: node scripts/neet-latex/update.mjs
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - run: |
           cd out
           git init -q -b claude/neet-latex-data
-          git add u7.enc u7.key
-          git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "encrypted export"
+          git add backup.enc backup.key result.txt
+          git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -qm "backup + result"
           git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" claude/neet-latex-data
