@@ -240,7 +240,7 @@ export default function QuestionReviewer({
 
       {/* ── The question itself: everything above and below this is ~110px, so
              the question owns the rest of the screen ── */}
-      <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem 2rem' }}>
+      <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '1rem 1rem 2rem' }}>
         <div style={{ maxWidth: editing ? 1100 : 860, margin: '0 auto' }}>
           {editing ? (
             // Keyed by question so the form resets when ← / → moves on.
@@ -254,12 +254,11 @@ export default function QuestionReviewer({
           ) : renderBody ? renderBody(q, mode, index) : (
             <div style={{
               background: '#fff', borderRadius: 14, border: '1px solid var(--gray-200)',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '2rem 2.25rem',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '1.5rem 2.25rem 2rem',
               opacity: isInactive ? 0.7 : 1,
             }}>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', fontWeight: 600, marginBottom: '0.75rem' }}>
-                Q{index + 1}.
-              </div>
+              {/* No "Q1." label here: the number is already in the palette and
+                  the top bar, and the question should start at the top. */}
               <QuestionView q={q} mode={mode} size="full" />
               {mode === 'student' && (
                 <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
