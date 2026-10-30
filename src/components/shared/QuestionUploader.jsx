@@ -1035,7 +1035,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {/* Subject */}
               <select
                 className="form-control"
-                style={{ width: '150px', flex: '0 0 150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                style={{ width: '140px', flex: '0 0 140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                 value={subjectFilter}
                 onChange={e => setSubjectFilter(e.target.value)}
               >
@@ -1048,7 +1048,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {/* Medium — English and Gujarati are separate banks */}
               <select
                 className="form-control"
-                style={{ width: '140px', flex: '0 0 140px' }}
+                style={{ width: '120px', flex: '0 0 120px' }}
                 value={mediumFilter}
                 onChange={e => setMediumFilter(e.target.value)}
                 aria-label="Medium"
@@ -1060,7 +1060,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {subjectFilter && (
                 <select
                   className="form-control"
-                  style={{ width: '240px', flex: '1 1 240px', maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  style={{ width: 0, flex: '2 1 200px', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={unitFilter}
                   onChange={e => setUnitFilter(e.target.value)}
                 >
@@ -1075,7 +1075,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {unitFilter && (
                 <select
                   className="form-control"
-                  style={{ width: '220px', flex: '1 1 220px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  style={{ width: 0, flex: '1.4 1 150px', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={levelFilter}
                   onChange={e => setLevelFilter(e.target.value)}
                 >
@@ -1091,9 +1091,9 @@ export default function QuestionUploader({ uploadedBy }) {
 
               {/* Reset filters link */}
               {(subjectFilter || unitFilter || levelFilter) && (
-                <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }}
+                <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem', flexShrink: 0, whiteSpace: 'nowrap' }} title="Reset filters"
                   onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter('') }}>
-                  ✕ Reset filters
+                  ✕ Reset
                 </button>
               )}
 
@@ -1103,14 +1103,14 @@ export default function QuestionUploader({ uploadedBy }) {
                   can be scanned at a glance instead of hunting unit by unit. */}
               <select
                 className="form-control"
-                style={{ width: '230px', flex: '0 0 230px', marginLeft: 'auto', fontWeight: statusFilter !== 'all' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'live' ? '#15803d' : undefined }}
+                style={{ width: '190px', flex: '0 0 190px', marginLeft: 'auto', fontWeight: statusFilter !== 'all' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'live' ? '#15803d' : undefined }}
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
                 <option value="all">All Questions{fmtCount(statusCounts.all)}</option>
-                <option value="live">● Live — students see{fmtCount(statusCounts.live)}</option>
+                <option value="live">● Live{fmtCount(statusCounts.live)}</option>
                 <option value="pending">● Awaiting review{fmtCount(statusCounts.pending)}</option>
-                <option value="inactive">● Inactive — discarded{fmtCount(statusCounts.inactive)}</option>
+                <option value="inactive">● Inactive{fmtCount(statusCounts.inactive)}</option>
               </select>
             </div>
           </div>
