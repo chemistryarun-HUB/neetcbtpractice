@@ -356,14 +356,12 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
   ]),
 }
-// Biology levels, topic-wise inside each NCERT chapter, then Multilevel and
-// the Complete Chapter Test (same shape as Physics).
+// Biology levels. Like the mechanism modules, a chapter can be one practice
+// pool: a single level, always unlocked, no chapter test.
 export const BIOLOGY_UNIT_LEVELS = {
-  1: physicsLevels([
-    ['What is Living?', 'Defining characters of living organisms: growth, reproduction, metabolism, cellular organisation, consciousness (response to stimuli)'],
-    ['Biodiversity & Nomenclature', 'Diversity in the living world, need for classification, taxonomy and systematics, binomial nomenclature and its rules'],
-    ['Taxonomic Categories & Hierarchy', 'Taxonomic hierarchy, concept of species, genus, family, order, class, phylum/division and kingdom, with examples (man, housefly, mango, wheat)'],
-  ]),
+  1: [
+    { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
+  ],
 }
 
 // Student practice keys a unit by one number across subjects: Chemistry n,
