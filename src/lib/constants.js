@@ -356,7 +356,13 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
   ]),
 }
-export const BIOLOGY_UNIT_LEVELS = {}
+// Biology levels. Like the mechanism modules, a chapter can be one practice
+// pool: a single level, always unlocked, no chapter test.
+export const BIOLOGY_UNIT_LEVELS = {
+  1: [
+    { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
+  ],
+}
 
 // Student practice keys a unit by one number across subjects: Chemistry n,
 // Physics 100 + n, Biology 200 + n. That number is what the test route,
