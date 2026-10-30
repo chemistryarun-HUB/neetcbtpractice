@@ -193,7 +193,10 @@ export default function QuestionUploader({ uploadedBy }) {
   // the way a student will see it. `reviewIndex` indexes into visibleQuestions.
   const [reviewIndex, setReviewIndex] = useState(null)
   const [reviewStartInEdit, setReviewStartInEdit] = useState(false)
-  const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
+  // What students can see is the question that matters, so the states are
+  // named for that: live (active + published), awaiting review (active, not
+  // yet published), inactive (discarded) — and All.
+  const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'live' | 'pending' | 'inactive'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
   const [dupeGroups, setDupeGroups] = useState(null) // null = not yet loaded; else [{ key, items }]
@@ -244,12 +247,12 @@ export default function QuestionUploader({ uploadedBy }) {
     // at once — the `unit` column is free text ("Unit 11 - ..."), which sorts
     // wrong alphabetically ("Unit 10" before "Unit 2").
     q = q.order('qid', { ascending: true })
-    if (statusFilter === 'active') q = q.eq('is_active', true)
+    if (statusFilter === 'live') q = q.eq('is_active', true).eq('is_published', true)
     else if (statusFilter === 'inactive') q = q.eq('is_active', false)
     // Uploaded but not released. Scoped to is_active for the same reason the
     // banner tally is — a retired question is not waiting on anybody.
     else if (statusFilter === 'pending') q = q.eq('is_published', false).eq('is_active', true)
-    // 'both' — no is_active filter
+    // 'all' — no status filter
     return q
   }
 
@@ -899,7 +902,7 @@ export default function QuestionUploader({ uploadedBy }) {
   // When a filter is active, show all results so nothing is hidden behind pages —
   // includes a non-default status filter, since browsing "Inactive" is meant to
   // show every inactive question across the bank at a glance, not 50 at a time.
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
+  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter === 'pending' || statusFilter === 'inactive'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
 
@@ -1084,14 +1087,14 @@ export default function QuestionUploader({ uploadedBy }) {
                   can be scanned at a glance instead of hunting unit by unit. */}
               <select
                 className="form-control"
-                style={{ width: '170px', flex: '0 0 170px', marginLeft: 'auto', fontWeight: statusFilter !== 'active' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'both' ? 'var(--primary)' : undefined }}
+                style={{ width: '230px', flex: '0 0 230px', marginLeft: 'auto', fontWeight: statusFilter !== 'all' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'live' ? '#15803d' : undefined }}
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
-                <option value="active">Active Qs</option>
-                <option value="pending">Awaiting review{pendingTotal ? ` (${pendingTotal})` : ''}</option>
-                <option value="inactive">Inactive Qs</option>
-                <option value="both">Both</option>
+                <option value="all">All questions</option>
+                <option value="live">● Live — students see</option>
+                <option value="pending">● Awaiting review{pendingTotal ? ` (${pendingTotal})` : ''}</option>
+                <option value="inactive">● Inactive — discarded</option>
               </select>
             </div>
           </div>
@@ -1198,7 +1201,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                 onClick={e => { e.stopPropagation(); setPublished(q.id, true) }}
                                 title="Not yet released — students cannot see this question. Click to publish just this one."
                                 style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d', borderRadius: '3px', padding: '0 4px', cursor: 'pointer' }}>
-                                unpublished
+                                awaiting review
                               </span>
                             )}
                             {(q.content_locked || hasAnyFieldLock(q)) && (
