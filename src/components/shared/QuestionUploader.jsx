@@ -17,6 +17,7 @@ import QuestionReviewer from './QuestionReviewer'
 import DifficultyReport from './DifficultyReport'
 
 // Admin screens are in English, so the Gujarati bank is called "Gujarati" here.
+const fmtCount = n => (n == null ? '' : ` (${n.toLocaleString('en-IN')})`)
 const mediumLabelEn = id => (id === 'gu' ? 'Gujarati' : 'English')
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -220,8 +221,12 @@ export default function QuestionUploader({ uploadedBy }) {
 
   const availableLevels = unitFilter ? levelsFor(subjectFilter, unitFilter) : []
 
-  function buildQuestionsQuery() {
-    let q = supabase.from('questions').select('*')
+  // `status` and `countOnly` let the status dropdown count each state with
+  // exactly the same subject / medium / unit / level filters as the list.
+  function buildQuestionsQuery({ status = statusFilter, countOnly = false } = {}) {
+    let q = countOnly
+      ? supabase.from('questions').select('id', { count: 'exact', head: true })
+      : supabase.from('questions').select('*')
     if (subjectFilter) q = q.eq('subject', subjectFilter)
     // English and Gujarati medium are separate banks.
     q = q.eq('medium', mediumFilter)
@@ -246,12 +251,12 @@ export default function QuestionUploader({ uploadedBy }) {
     // grouping works correctly by numeric unit order even when browsing all units
     // at once — the `unit` column is free text ("Unit 11 - ..."), which sorts
     // wrong alphabetically ("Unit 10" before "Unit 2").
-    q = q.order('qid', { ascending: true })
-    if (statusFilter === 'live') q = q.eq('is_active', true).eq('is_published', true)
-    else if (statusFilter === 'inactive') q = q.eq('is_active', false)
+    if (!countOnly) q = q.order('qid', { ascending: true })
+    if (status === 'live') q = q.eq('is_active', true).eq('is_published', true)
+    else if (status === 'inactive') q = q.eq('is_active', false)
     // Uploaded but not released. Scoped to is_active for the same reason the
     // banner tally is — a retired question is not waiting on anybody.
-    else if (statusFilter === 'pending') q = q.eq('is_published', false).eq('is_active', true)
+    else if (status === 'pending') q = q.eq('is_published', false).eq('is_active', true)
     // 'all' — no status filter
     return q
   }
@@ -289,6 +294,17 @@ export default function QuestionUploader({ uploadedBy }) {
   useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
   useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter, mediumFilter])
+
+  // How many questions are in each state, for the status dropdown.
+  const [statusCounts, setStatusCounts] = useState({})
+  async function loadStatusCounts() {
+    const states = ['all', 'live', 'pending', 'inactive']
+    const res = await Promise.all(states.map(st => buildQuestionsQuery({ status: st, countOnly: true })))
+    setStatusCounts(Object.fromEntries(states.map((st, i) => [st, res[i].count ?? null])))
+  }
+  // `questions` changes whenever one is published, activated or uploaded, so
+  // the counts follow every status change on this page.
+  useEffect(() => { loadStatusCounts() }, [subjectFilter, unitFilter, levelFilter, mediumFilter, questions])
 
   // Every single-question mutation (activate/deactivate, edit save) patches the
   // already-loaded rows in place instead of refetching. A refetch flips `loading`
@@ -1091,10 +1107,10 @@ export default function QuestionUploader({ uploadedBy }) {
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
-                <option value="all">All questions</option>
-                <option value="live">● Live — students see</option>
-                <option value="pending">● Awaiting review{pendingTotal ? ` (${pendingTotal})` : ''}</option>
-                <option value="inactive">● Inactive — discarded</option>
+                <option value="all">All Questions{fmtCount(statusCounts.all)}</option>
+                <option value="live">● Live — students see{fmtCount(statusCounts.live)}</option>
+                <option value="pending">● Awaiting review{fmtCount(statusCounts.pending)}</option>
+                <option value="inactive">● Inactive — discarded{fmtCount(statusCounts.inactive)}</option>
               </select>
             </div>
           </div>
