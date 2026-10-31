@@ -116,11 +116,12 @@ export default function AdminActivity() {
       const paperName = Object.fromEntries(paperNames.map(p => [p.id, p.name]))
       const ev = [
         ...practice.map(a => {
-          const { subject: sub } = fromCourseUnitId(a.unit_id)
+          const { subject: sub, unit } = fromCourseUnitId(a.unit_id)
           const total = (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0)
           return {
             id: a.id, kind: 'practice', student_id: a.student_id, at: a.submitted_at, subject: sub,
             what: `${practiceUnitName(a.unit_id)} · Level ${a.level}`,
+            short: `Unit ${unit} · L${a.level}`,
             scorePct: pct(a.score, total * 4), correct: a.correct_count || 0, wrong: a.wrong_count || 0,
             answered: (a.correct_count || 0) + (a.wrong_count || 0), total, time: a.time_taken,
           }
@@ -166,7 +167,7 @@ export default function AdminActivity() {
   const byStudent = useMemo(() => {
     const m = new Map()
     for (const e of shown) {
-      if (!m.has(e.student_id)) m.set(e.student_id, { id: e.student_id, last: e.at, tests: 0, answered: 0, correct: 0, wrong: 0, subjects: new Set(), lastWhat: e.what })
+      if (!m.has(e.student_id)) m.set(e.student_id, { id: e.student_id, last: e.at, tests: 0, answered: 0, correct: 0, wrong: 0, subjects: new Set(), lastWhat: e.short || e.what })
       const r = m.get(e.student_id)
       r.tests++; r.answered += e.answered; r.correct += e.correct; r.wrong += e.wrong; r.subjects.add(e.subject)
     }
@@ -184,6 +185,7 @@ export default function AdminActivity() {
   const name = id => studentsById[id]?.name || 'Unknown student'
   const roll = id => studentsById[id]?.roll_number || ''
   const med = id => MEDIUM_NAME[studentsById[id]?.medium || 'en']
+  const shownLast = id => shown.find(e => e.student_id === id)?.what || ''
   const cls = id => [studentsById[id]?.class, studentsById[id]?.exam].filter(Boolean).join(' · ') || '—'
 
   return (
@@ -249,7 +251,7 @@ export default function AdminActivity() {
                       return (
                         <Fragment key={r.id}>
                           <tr onClick={() => setOpenStudent(isOpen ? null : r.id)} style={{ cursor: 'pointer', background: isOpen ? '#eff6ff' : undefined }} title="Show this student's tests">
-                            <td><strong>{name(r.id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }} title={roll(r.id)}>{cls(r.id)} · {r.lastWhat}</div></td>
+                            <td><strong>{name(r.id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }} title={roll(r.id)}>{cls(r.id)} · <span title={shownLast(r.id)}>{r.lastWhat}</span></div></td>
                             <td>{med(r.id)}</td>
                             <td>{[...r.subjects].map(s => <Chip key={s} label={s} />)}</td>
                             <td style={{ textAlign: 'center', fontWeight: 700 }}>{r.tests}</td>
