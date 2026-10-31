@@ -58,7 +58,7 @@ export const ALL_SUBJECTS = ['Chemistry', 'Physics', 'Biology', 'Mathematics']
 export const isActiveSubject = s => ACTIVE_SUBJECTS.includes(s)
 
 // Question-ID prefix per subject (Chemistry's NCU… is historical).
-export const QID_PREFIX = { Chemistry: 'NCU', Physics: 'NPH', Biology: 'NBU' }
+export const QID_PREFIX = { Chemistry: 'NCU', Physics: 'NPU', Biology: 'NBU' }
 
 export const UNITS_BY_SUBJECT = { Chemistry: CHEMISTRY_UNITS, Physics: PHYSICS_UNITS, Biology: BIOLOGY_UNITS }
 
