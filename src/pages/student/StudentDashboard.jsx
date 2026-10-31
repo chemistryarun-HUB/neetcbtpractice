@@ -339,7 +339,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Subject switch. A unit (NCERT chapter for Physics and Biology) opens
+        {/* Subject switch. A unit (NCERT chapter for Biology, Arun's unit list for Physics) opens
             once it has live questions in the student's medium. */}
         <div className="subject-tabs" role="tablist" style={{ display: 'flex', gap: '0.4rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
           {ACTIVE_SUBJECTS.map(sub => (

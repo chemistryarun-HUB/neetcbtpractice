@@ -297,17 +297,19 @@ const physicsLevels = names => [
   { id: names.length + 1, name: 'Multilevel Questions', topic: 'Miscellaneous' },
   { id: names.length + 2, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
 ]
+// Keyed by Arun's 32-unit Physics list (lib/subjects.js). Electrostatics (17)
+// holds what NCERT splits across charges/fields and potential.
 export const PHYSICS_UNIT_LEVELS = {
-  15: physicsLevels([
+  17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
     ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
     ["Electric Flux & Gauss's Law", "Electric flux, Gauss's law and its applications: infinite wire, infinite plane sheet, thin spherical shell"],
-  ]),
-  16: physicsLevels([
     ['Electric Potential & Potential Energy', 'Electric potential, potential difference, potential due to a point charge and a dipole, equipotential surfaces, potential energy'],
+  ]),
+  18: physicsLevels([
     ['Conductors, Capacitors & Dielectrics', 'Conductors and insulators, dielectrics and polarisation, capacitors and capacitance, combinations, parallel plate capacitor, energy stored'],
   ]),
-  17: physicsLevels([
+  19: physicsLevels([
     ["Current, Drift Velocity & Ohm's Law", "Electric current, drift velocity, mobility, current density, Ohm's law"],
     ['Resistance, Resistivity & Combinations', 'Resistance and resistivity, temperature dependence, series and parallel combinations'],
     ['Cells, EMF & Internal Resistance', 'EMF, internal resistance, potential difference, cells in series and parallel'],
@@ -315,45 +317,45 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Potentiometer & Meter Bridge', 'Metre bridge, potentiometer and their uses'],
     ['Electric Power & Heating', 'Electrical energy and power, heating effect of current'],
   ]),
-  18: physicsLevels([
+  20: physicsLevels([
+    ["Magnetic Dipole & Earth's Magnetism", "Current loop as a magnetic dipole, bar magnet, magnetic field lines, Gauss's law for magnetism"],
+    ['Magnetic Materials', 'Para-, dia- and ferromagnetic substances, magnetisation, susceptibility, permeability'],
+  ]),
+  21: physicsLevels([
     ["Biot-Savart & Ampere's Law", "Biot-Savart law, field of a circular loop, Ampere's circuital law, straight wire, solenoid"],
     ['Force on Moving Charges & Conductors', 'Lorentz force, motion in a magnetic field, velocity selector, force between parallel currents'],
     ['Torque on Loop & Galvanometer', 'Torque on a current loop, moving coil galvanometer, conversion to ammeter and voltmeter'],
   ]),
-  19: physicsLevels([
-    ["Magnetic Dipole & Earth's Magnetism", "Current loop as a magnetic dipole, bar magnet, magnetic field lines, Gauss's law for magnetism"],
-    ['Magnetic Materials', 'Para-, dia- and ferromagnetic substances, magnetisation, susceptibility, permeability'],
-  ]),
-  20: physicsLevels([
+  22: physicsLevels([
     ["Faraday's & Lenz's Laws", "Electromagnetic induction, magnetic flux, Faraday's law, Lenz's law"],
     ['Motional EMF & Eddy Currents', 'Motional EMF, eddy currents, back EMF'],
     ['Self & Mutual Inductance', 'Self inductance, mutual inductance, energy stored in an inductor'],
   ]),
-  21: physicsLevels([
+  23: physicsLevels([
     ['AC Circuits & Resonance', 'Alternating current and voltage, peak and rms values, reactance and impedance, LCR series circuit, resonance'],
     ['Power in AC & Transformer', 'Power in AC circuits, power factor, wattless current, AC generator and transformer'],
   ]),
-  22: physicsLevels([
-    ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
-    ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
-  ]),
-  23: physicsLevels([
+  24: physicsLevels([
     ['Reflection & Spherical Mirrors', 'Reflection of light, spherical mirrors, mirror formula'],
     ['Refraction, TIR & Prism', 'Refraction, total internal reflection and its applications, prism'],
     ["Lenses & Lens Maker's Formula", "Refraction at spherical surfaces, lenses, thin lens formula, lens maker's formula, power, combination of lenses"],
     ['Optical Instruments', 'Microscope and astronomical telescope'],
   ]),
-  24: physicsLevels([
+  25: physicsLevels([
     ['Interference (Huygens & YDSE)', "Wavefront and Huygens' principle, interference, Young's double slit experiment, coherent sources"],
     ['Diffraction & Polarisation', 'Diffraction due to a single slit, polarisation, plane polarised light'],
   ]),
-  26: physicsLevels([
+  27: physicsLevels([
     ['Rutherford & Bohr Model', "Alpha-particle scattering, Rutherford's model, Bohr model, energy levels"],
     ['Hydrogen Spectrum', 'Hydrogen spectrum and spectral series'],
   ]),
-  27: physicsLevels([
+  28: physicsLevels([
     ['Nucleus, Mass Defect & Binding Energy', 'Composition and size of the nucleus, isotopes, isobars, isotones, mass-energy relation, mass defect, binding energy'],
     ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
+  ]),
+  29: physicsLevels([
+    ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
+    ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
   ]),
 }
 // Biology levels. Like the mechanism modules, a chapter can be one practice
@@ -367,7 +369,7 @@ export const BIOLOGY_UNIT_LEVELS = {
 // Student practice keys a unit by one number across subjects: Chemistry n,
 // Physics 100 + n, Biology 200 + n. That number is what the test route,
 // student_progress.unlocked_levels_by_unit, used_questions.unit_id and
-// test_attempts.unit_id hold, so Physics chapter 15 and Chemistry unit 15
+// test_attempts.unit_id hold, so Physics unit 15 and Chemistry unit 15
 // never share progress. Questions themselves keep subject + "Unit 15 - ...".
 export const COURSE_OFFSET = { Chemistry: 0, Physics: 100, Biology: 200 }
 export const courseUnitId = (subject, unit) => (COURSE_OFFSET[subject || 'Chemistry'] ?? 0) + Number(unit)

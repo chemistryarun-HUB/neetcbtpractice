@@ -1,5 +1,5 @@
-// Subjects and their units. A unit IS an NCERT chapter (Class 11 first, then
-// Class 12 continuing the numbering), per the rationalised 2023 books.
+// Subjects and their units. A Biology unit IS an NCERT chapter (Class 11 first,
+// then Class 12 continuing the numbering); Physics uses Arun's 32-unit list.
 //
 // Unit numbers restart at 1 in every subject, so a unit is only meaningful
 // together with its subject. Chemistry keeps its own syllabus + levels in
@@ -11,18 +11,26 @@ export { COURSE_OFFSET, courseUnitId, fromCourseUnitId } from './constants'
 
 const u = names => names.map((name, i) => ({ id: i + 1, name }))
 
+// Physics follows Arun's 32-unit list (2026-10-31), grouped Mechanics 1 ...
+// Miscellaneous rather than NCERT chapter order. See PHYSICS_SECTIONS below.
 export const PHYSICS_UNITS = u([
-  // Class 11
-  'Units and Measurements', 'Motion in a Straight Line', 'Motion in a Plane', 'Laws of Motion',
-  'Work, Energy and Power', 'System of Particles and Rotational Motion', 'Gravitation',
-  'Mechanical Properties of Solids', 'Mechanical Properties of Fluids', 'Thermal Properties of Matter',
-  'Thermodynamics', 'Kinetic Theory', 'Oscillations', 'Waves',
-  // Class 12
-  'Electric Charges and Fields', 'Electrostatic Potential and Capacitance', 'Current Electricity',
-  'Moving Charges and Magnetism', 'Magnetism and Matter', 'Electromagnetic Induction', 'Alternating Current',
-  'Electromagnetic Waves', 'Ray Optics and Optical Instruments', 'Wave Optics',
-  'Dual Nature of Radiation and Matter', 'Atoms', 'Nuclei',
-  'Semiconductor Electronics: Materials, Devices and Simple Circuits',
+  // Mechanics 1
+  'Mathematics in Physics', 'Units and Dimensions', 'Motion In One Dimension', 'Motion In Two Dimensions',
+  'Laws of Motion', 'Work Power Energy', 'Center of Mass Momentum and Collision', 'Rotational Motion',
+  'Gravitation',
+  // Mechanics 2
+  'Mechanical Properties of Solids', 'Mechanical Properties of Fluids', 'Oscillations', 'Waves and Sound',
+  // Thermodynamics
+  'Thermal Properties of Matter', 'Thermodynamics', 'Kinetic Theory of Gases',
+  // Electromagnetism
+  'Electrostatics', 'Capacitance', 'Current Electricity', 'Magnetic Properties of Matter',
+  'Magnetic Effects of Current', 'Electromagnetic Induction', 'Alternating Current',
+  // Optics
+  'Ray Optics', 'Wave Optics',
+  // Modern Physics
+  'Dual Nature of Matter', 'Atomic Physics', 'Nuclear Physics',
+  // Miscellaneous Physics
+  'Electromagnetic Waves', 'Semiconductors', 'Communication System', 'Experimental Physics',
 ])
 
 export const BIOLOGY_UNITS = u([
@@ -57,7 +65,7 @@ export const UNITS_BY_SUBJECT = { Chemistry: CHEMISTRY_UNITS, Physics: PHYSICS_U
 export const unitsFor = subject => UNITS_BY_SUBJECT[subject || 'Chemistry'] || []
 export const levelsFor = levelDefsFor
 
-// Name of a practice unit id (see courseUnitId): 115 -> "Electric Charges and Fields".
+// Name of a practice unit id (see courseUnitId): 117 -> "Electrostatics".
 export function practiceUnitName(id) {
   const { subject, unit } = fromCourseUnitId(id)
   return unitsFor(subject).find(x => x.id === unit)?.name || `Unit ${unit}`
@@ -72,14 +80,23 @@ export const unitLabelOf = (subject, unitId) => {
   return unit ? `Unit ${unit.id} - ${unit.name}` : ''
 }
 
-// Class 11 / Class 12 grouping for the student syllabus view (Chemistry has
-// its own Physical / Inorganic / Organic sections in NEET_CHEMISTRY_SYLLABUS).
+// Section grouping for the student syllabus view: Chemistry has its own
+// Physical / Inorganic / Organic sections in NEET_CHEMISTRY_SYLLABUS, Physics
+// Arun's Mechanics 1 ... Miscellaneous groups, Biology Class 11 / Class 12.
+const byRange = (units, groups) => groups.map(([section, from, to]) => (
+  { section, units: units.filter(x => x.id >= from && x.id <= to) }
+))
+const PHYSICS_SECTIONS = byRange(PHYSICS_UNITS, [
+  ['Mechanics 1', 1, 9], ['Mechanics 2', 10, 13], ['Thermodynamics', 14, 16],
+  ['Electromagnetism', 17, 23], ['Optics', 24, 25], ['Modern Physics', 26, 28],
+  ['Miscellaneous Physics', 29, 32],
+])
 const byClass = (units, last11) => [
   { section: 'Class 11', units: units.filter(x => x.id <= last11) },
   { section: 'Class 12', units: units.filter(x => x.id > last11) },
 ]
 export const SYLLABUS_SECTIONS = {
   Chemistry: NEET_CHEMISTRY_SYLLABUS,
-  Physics: byClass(PHYSICS_UNITS, 14),
+  Physics: PHYSICS_SECTIONS,
   Biology: byClass(BIOLOGY_UNITS, 19),
 }
