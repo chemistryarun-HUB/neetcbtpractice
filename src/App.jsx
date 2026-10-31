@@ -27,6 +27,7 @@ import FacultyPerformance from './pages/faculty/FacultyPerformance'
 import FacultyPracticePapers from './pages/faculty/FacultyPracticePapers'
 import FacultyGsebPapers from './pages/faculty/FacultyGsebPapers'
 import AdminFacultyReview from './pages/admin/AdminFacultyReview'
+import AdminActivity from './pages/admin/AdminActivity'
 import FacultyProfile from './pages/faculty/FacultyProfile'
 
 import StudentDashboard from './pages/student/StudentDashboard'
@@ -77,6 +78,7 @@ function AppRoutes() {
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />
       <Route path="/admin/faculty" element={<ProtectedRoute allowedRoles={['admin']}><AdminFaculty /></ProtectedRoute>} />
+      <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={['admin']}><AdminActivity /></ProtectedRoute>} />
       <Route path="/admin/faculty-review" element={<ProtectedRoute allowedRoles={['admin']}><AdminFacultyReview /></ProtectedRoute>} />
       <Route path="/admin/questions" element={<ProtectedRoute allowedRoles={['admin']}><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/performance" element={<ProtectedRoute allowedRoles={['admin']}><AdminPerformance /></ProtectedRoute>} />

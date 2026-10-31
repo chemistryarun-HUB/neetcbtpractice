@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { Users, BookOpen, FileQuestion, BarChart3, Inbox } from 'lucide-react'
+import { Users, BookOpen, FileQuestion, BarChart3, Inbox, Activity } from 'lucide-react'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -19,6 +19,7 @@ const NAV = [
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ students: 0, faculty: 0, questions: 0, pending: 0 })
   const [facultyReview, setFacultyReview] = useState(0)
+  const [activeToday, setActiveToday] = useState(null)
 
   useEffect(() => {
     async function load() {
@@ -40,14 +41,30 @@ export default function AdminDashboard() {
       supabase.from('questions').select('id', { count: 'exact', head: true }).eq('review_status', 'pending'),
       supabase.from('question_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'open'),
     ]).then(([a, b]) => setFacultyReview((a.count || 0) + (b.count || 0)))
+    // Students who submitted any test today (level practice, practice paper, GSEB).
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const since = today.toISOString()
+    Promise.all([
+      supabase.from('test_attempts').select('student_id').eq('submitted', true).gte('submitted_at', since).limit(5000),
+      supabase.from('practice_paper_attempts').select('student_id').gte('submitted_at', since).limit(5000),
+      supabase.from('gseb_attempts').select('student_id').eq('submitted', true).gte('submitted_at', since).limit(5000),
+    ]).then(rs => setActiveToday(new Set(rs.flatMap(r => (r.data || []).map(x => x.student_id))).size))
   }, [])
 
   return (
     <div className="dashboard">
       <Topbar links={NAV} />
       <div className="page-content">
-        <div className="page-header">
+        <div className="page-header" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
           <h2>Admin Dashboard</h2>
+          <Link to="/admin/activity" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+            <Activity size={17} /> Recent Activity
+            {activeToday != null && (
+              <span className="badge" style={{ background: '#fff', color: 'var(--primary)', fontWeight: 700 }}>
+                {activeToday} active today
+              </span>
+            )}
+          </Link>
         </div>
 
         <div className="stats-grid">
