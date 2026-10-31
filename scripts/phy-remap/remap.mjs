@@ -22,6 +22,7 @@ async function all(table, cols, filt) {
 // 1) questions
 const qs = await all('questions', 'id, qid, unit, level, medium, is_published', q => q.eq('subject', 'Physics'))
 console.log('Physics questions:', qs.length)
+{ const b = await all('questions', 'id, is_published, medium', q => q.eq('subject', 'Biology')); console.log('Biology visible:', b.length, 'unpublished:', b.filter(x => !x.is_published).length) }
 const plan = []
 const re = /^NPH(\d{2})(\d{3})(.*)$/
 const maxOld15 = {}
