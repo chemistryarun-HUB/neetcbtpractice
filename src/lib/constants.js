@@ -305,6 +305,14 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Error Analysis', 'Significant figures, Rounding off, Accuracy, Precision, Errors'],
     ['Measuring Instruments', 'Metre scale, Vernier callipers, Screw gauge, Spherometer'],
   ]),
+  3: physicsLevels([
+    ['Rest and Motion', 'Frame of reference, position, path length, distance and displacement'],
+    ['Uniform Motion', 'Uniform motion in a straight line, speed and velocity, average speed and average velocity'],
+    ['Graphs of Motion in One Dimension', 'Position-time, velocity-time and acceleration-time graphs, slope and area under graphs'],
+    ['Non-uniform Motion', 'Instantaneous velocity, acceleration, equations of uniformly accelerated motion, motion with variable acceleration (calculus)'],
+    ['Relative Motion', 'Relative velocity in one dimension'],
+    ['Motion Under Gravity', 'Free fall, vertical projection, motion under gravity'],
+  ]),
   17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
     ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
