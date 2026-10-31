@@ -300,6 +300,11 @@ const physicsLevels = names => [
 // Keyed by Arun's 32-unit Physics list (lib/subjects.js). Electrostatics (17)
 // holds what NCERT splits across charges/fields and potential.
 export const PHYSICS_UNIT_LEVELS = {
+  2: physicsLevels([
+    ['Units & Dimensional Analysis', 'System of units and measurements, Dimensional formula, Principle of homogeneity, Application of dimensional analysis'],
+    ['Error Analysis', 'Significant figures, Rounding off, Accuracy, Precision, Errors'],
+    ['Measuring Instruments', 'Metre scale, Vernier callipers, Screw gauge, Spherometer'],
+  ]),
   17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
     ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
