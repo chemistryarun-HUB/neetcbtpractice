@@ -55,16 +55,8 @@ export default function AdminDashboard() {
     <div className="dashboard">
       <Topbar links={NAV} />
       <div className="page-content">
-        <div className="page-header" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div className="page-header">
           <h2>Admin Dashboard</h2>
-          <Link to="/admin/activity" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-            <Activity size={17} /> Recent Activity
-            {activeToday != null && (
-              <span className="badge" style={{ background: '#fff', color: 'var(--primary)', fontWeight: 700 }}>
-                {activeToday} active today
-              </span>
-            )}
-          </Link>
         </div>
 
         <div className="stats-grid">
@@ -137,6 +129,18 @@ export default function AdminDashboard() {
               <div>
                 <div style={{ fontWeight: 700 }}>Student Performance</div>
                 <div className="text-muted">Browse & review attempts</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/activity" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
+              <Activity size={32} color="var(--primary)" />
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  Recent Activity
+                  {activeToday > 0 && <span className="badge" style={{ background: '#dcfce7', color: '#15803d', marginLeft: 6 }}>{activeToday} today</span>}
+                </div>
+                <div className="text-muted">Who practised, when, what — newest first</div>
               </div>
             </div>
           </Link>

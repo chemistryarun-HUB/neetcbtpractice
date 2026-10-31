@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Activity, Search, Users, ClipboardList, CheckCircle2, Clock, ChevronRight, ArrowLeft } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { Activity, Search, Users, ClipboardList, CheckCircle2, Clock, ChevronRight, ChevronDown, ArrowLeft, Eye, BarChart3 } from 'lucide-react'
+import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { fromCourseUnitId } from '../../lib/constants'
@@ -45,6 +47,9 @@ function ago(iso) {
   return d === 1 ? 'yesterday' : `${d} days ago`
 }
 
+const fmtTime = sec => (sec ? `${Math.floor(sec / 60)}m ${sec % 60}s` : '—')
+const fullDate = iso => new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
+const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'
 const pct = (num, den) => (den > 0 ? Math.round((num / den) * 100) : null)
 
 // Every submitted page, a page at a time (Supabase returns at most 1000 rows).
@@ -77,6 +82,17 @@ export default function AdminActivity() {
   const [events, setEvents] = useState([])
   const [studentsById, setStudentsById] = useState({})
   const [loading, setLoading] = useState(true)
+  const [openStudent, setOpenStudent] = useState(null)   // expanded row in "By student"
+  const [review, setReview] = useState(null)             // practice attempt under review
+
+  // A level-practice test opens the same answer-by-answer review as
+  // Performance; papers and GSEB tests go to the student's Performance page.
+  async function openReview(e) {
+    if (e.kind !== 'practice') { navigate(`/admin/performance?student=${e.student_id}`); return }
+    const { data, error } = await supabase.from('test_attempts').select(ATTEMPT_COLUMNS).eq('id', e.id).single()
+    if (error) { toast.error(error.message); return }
+    setReview(data)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -84,7 +100,7 @@ export default function AdminActivity() {
       setLoading(true)
       const since = sinceIso(period)
       const [students, practice, papers, paperNames, gseb] = await Promise.all([
-        allSince(() => supabase.from('students').select('id, name, roll_number, class, medium')),
+        allSince(() => supabase.from('students').select('id, name, roll_number, class, medium, exam')),
         allSince(() => supabase.from('test_attempts')
           .select('id, student_id, unit_id, level, score, correct_count, wrong_count, skipped_count, time_taken, submitted_at')
           .eq('submitted', true).gte('submitted_at', since).order('submitted_at', { ascending: false })),
@@ -106,7 +122,7 @@ export default function AdminActivity() {
             id: a.id, kind: 'practice', student_id: a.student_id, at: a.submitted_at, subject: sub,
             what: `${practiceUnitName(a.unit_id)} · Level ${a.level}`,
             scorePct: pct(a.score, total * 4), correct: a.correct_count || 0, wrong: a.wrong_count || 0,
-            answered: (a.correct_count || 0) + (a.wrong_count || 0), total,
+            answered: (a.correct_count || 0) + (a.wrong_count || 0), total, time: a.time_taken,
           }
         }),
         ...papers.map(a => {
@@ -168,6 +184,7 @@ export default function AdminActivity() {
   const name = id => studentsById[id]?.name || 'Unknown student'
   const roll = id => studentsById[id]?.roll_number || ''
   const med = id => MEDIUM_NAME[studentsById[id]?.medium || 'en']
+  const cls = id => [studentsById[id]?.class, studentsById[id]?.exam].filter(Boolean).join(' · ') || '—'
 
   return (
     <div className="dashboard">
@@ -224,20 +241,55 @@ export default function AdminActivity() {
               : shown.length === 0 ? <div className="empty-state" style={{ padding: '2.5rem 1rem' }}>No activity in this period{subject || medium || query ? ' for these filters' : ''}.</div>
               : view === 'students' ? (
                 <table>
-                  <thead><tr><th>Student</th><th>Medium</th><th>Subjects</th><th style={{ textAlign: 'center' }}>Tests</th><th style={{ textAlign: 'center' }}>Answered</th><th style={{ textAlign: 'center' }}>Accuracy</th><th>Last active</th><th></th></tr></thead>
+                  <thead><tr><th>Student</th><th>Medium</th><th>Subjects</th><th style={{ textAlign: 'center' }} title="Tests submitted in this period (one level test = 25 questions)">Tests taken</th><th style={{ textAlign: 'center' }}>Answered</th><th style={{ textAlign: 'center' }}>Accuracy</th><th>Last active</th><th></th></tr></thead>
                   <tbody>
-                    {byStudent.map(r => (
-                      <tr key={r.id} onClick={() => open(r.id)} style={{ cursor: 'pointer' }} title="Open in Performance">
-                        <td><strong>{name(r.id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }}><code>{roll(r.id)}</code> · {r.lastWhat}</div></td>
-                        <td>{med(r.id)}</td>
-                        <td>{[...r.subjects].map(s => <Chip key={s} label={s} />)}</td>
-                        <td style={{ textAlign: 'center', fontWeight: 700 }}>{r.tests}</td>
-                        <td style={{ textAlign: 'center' }}>{r.answered}</td>
-                        <td style={{ textAlign: 'center' }}>{pct(r.correct, r.correct + r.wrong) ?? '—'}{pct(r.correct, r.correct + r.wrong) != null && '%'}</td>
-                        <td style={{ whiteSpace: 'nowrap' }}><Clock size={13} style={{ verticalAlign: '-2px', color: 'var(--gray-400)' }} /> {ago(r.last)}</td>
-                        <td><ChevronRight size={16} color="var(--primary)" /></td>
-                      </tr>
-                    ))}
+                    {byStudent.map(r => {
+                      const isOpen = openStudent === r.id
+                      const tests = isOpen ? shown.filter(e => e.student_id === r.id) : []
+                      return (
+                        <Fragment key={r.id}>
+                          <tr onClick={() => setOpenStudent(isOpen ? null : r.id)} style={{ cursor: 'pointer', background: isOpen ? '#eff6ff' : undefined }} title="Show this student's tests">
+                            <td><strong>{name(r.id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }} title={roll(r.id)}>{cls(r.id)} · {r.lastWhat}</div></td>
+                            <td>{med(r.id)}</td>
+                            <td>{[...r.subjects].map(s => <Chip key={s} label={s} />)}</td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{r.tests}</td>
+                            <td style={{ textAlign: 'center' }}>{r.answered}</td>
+                            <td style={{ textAlign: 'center' }}>{pct(r.correct, r.correct + r.wrong) ?? '—'}{pct(r.correct, r.correct + r.wrong) != null && '%'}</td>
+                            <td style={{ whiteSpace: 'nowrap' }}><Clock size={13} style={{ verticalAlign: '-2px', color: 'var(--gray-400)' }} /> {ago(r.last)}</td>
+                            <td>{isOpen ? <ChevronDown size={16} color="var(--primary)" /> : <ChevronRight size={16} color="var(--primary)" />}</td>
+                          </tr>
+                          {/* This student's tests in the period, newest first, each
+                              one-click to its answer-by-answer review. */}
+                          {isOpen && (
+                            <tr>
+                              <td colSpan={8} style={{ background: '#f8fafc', padding: '0.75rem 1rem 1rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                  <strong style={{ fontSize: '0.85rem' }}>{tests.length} test{tests.length !== 1 ? 's' : ''} · newest first</strong>
+                                  <button className="btn btn-outline btn-sm" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }} onClick={() => open(r.id)}>
+                                    <BarChart3 size={14} /> Full Performance
+                                  </button>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                  {tests.map(e => (
+                                    <div key={`${e.kind}-${e.id}`} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.4rem 0.9rem', background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 10, padding: '0.5rem 0.75rem', fontSize: '0.85rem' }}>
+                                      <span style={{ width: 120, color: 'var(--gray-600)' }} title={ago(e.at)}>{fullDate(e.at)}</span>
+                                      <Chip label={e.subject} />
+                                      <span style={{ flex: '1 1 220px', minWidth: 0 }}>{e.what}<span className="text-muted" style={{ fontSize: '0.72rem' }}> · {KIND_LABEL[e.kind]}</span></span>
+                                      <strong style={{ width: 48, textAlign: 'center', color: e.scorePct == null ? undefined : e.scorePct >= 60 ? '#15803d' : e.scorePct >= 35 ? '#b45309' : '#b91c1c' }}>{e.scorePct ?? '—'}{e.scorePct != null && '%'}</strong>
+                                      <span style={{ width: 110, textAlign: 'center' }} title="correct · wrong · total">✓{e.correct} · ✗{e.wrong} · {e.total}</span>
+                                      <span className="text-muted" style={{ width: 70, textAlign: 'center' }} title="Time taken">{fmtTime(e.time)}</span>
+                                      {e.kind === 'practice'
+                                        ? <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }} onClick={() => openReview(e)}><Eye size={13} /> Review</button>
+                                        : <span style={{ width: 78 }} />}
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
+                      )
+                    })}
                   </tbody>
                 </table>
               ) : (
@@ -245,9 +297,9 @@ export default function AdminActivity() {
                   <thead><tr><th>When</th><th>Student</th><th>Medium</th><th>Subject</th><th>What</th><th style={{ textAlign: 'center' }}>Score</th><th style={{ textAlign: 'center' }}>✓ / ✗ / total</th><th></th></tr></thead>
                   <tbody>
                     {shown.map(e => (
-                      <tr key={`${e.kind}-${e.id}`} onClick={() => open(e.student_id)} style={{ cursor: 'pointer' }} title="Open in Performance">
-                        <td style={{ whiteSpace: 'nowrap' }} title={new Date(e.at).toLocaleString()}>{ago(e.at)}</td>
-                        <td><strong>{name(e.student_id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }}><code>{roll(e.student_id)}</code></div></td>
+                      <tr key={`${e.kind}-${e.id}`} onClick={() => openReview(e)} style={{ cursor: 'pointer' }} title={e.kind === 'practice' ? 'Review this test' : 'Open in Performance'}>
+                        <td style={{ whiteSpace: 'nowrap' }} title={ago(e.at)}>{fullDate(e.at)}</td>
+                        <td><strong>{name(e.student_id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }} title={roll(e.student_id)}>{cls(e.student_id)}</div></td>
                         <td>{med(e.student_id)}</td>
                         <td><Chip label={e.subject} /></td>
                         <td style={{ maxWidth: 320 }}>{e.what}<div className="text-muted" style={{ fontSize: '0.72rem' }}>{KIND_LABEL[e.kind]}</div></td>
@@ -262,6 +314,7 @@ export default function AdminActivity() {
           </div>
         </div>
       </div>
+      {review && <AttemptReviewModal attempt={review} studentName={name(review.student_id)} onClose={() => setReview(null)} />}
     </div>
   )
 }
