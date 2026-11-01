@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { Menu } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Menu, NotebookPen } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import StudentSidebar from '../../components/performance/StudentSidebar'
@@ -26,7 +26,7 @@ const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, 
 
 // Also the faculty Performance page: `nav`/`crumb` swap the chrome, and
 // `hideContacts` strips every phone number before it reaches the components.
-export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideContacts = false }) {
+export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideContacts = false, mistakesPath = '/admin/mistakes' }) {
   const [students, setStudents] = useState([])
   const [attempts, setAttempts] = useState([])
   const [progressByStudent, setProgressByStudent] = useState({})
@@ -138,6 +138,12 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
                 {view === 'leaderboard' && <> / <strong style={{ color: 'var(--gray-600)' }}>Leaderboard</strong></>}
                 {view === 'classReport' && <> / <strong style={{ color: 'var(--gray-600)' }}>Class Report</strong></>}
               </p>
+              {view === 'profile' && selectedStudent && (
+                <Link to={`${mistakesPath}?student=${selectedStudent.id}`} className="btn btn-outline btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
+                  <NotebookPen size={15} /> Mistake Copy
+                </Link>
+              )}
             </div>
 
             {students.length === 0 ? (

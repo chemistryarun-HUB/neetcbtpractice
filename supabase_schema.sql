@@ -303,8 +303,48 @@ create policy "Dupe dismissals accessible by all" on dupe_dismissals
   for all using (true);
 
 -- ============================================================
+-- MISTAKE COPY (migration_mistake_copy.sql)
+-- ============================================================
+create table if not exists mistake_entries (
+  id uuid primary key default uuid_generate_v4(),
+  student_id uuid not null references students(id) on delete cascade,
+  question_id uuid not null references questions(id) on delete cascade,
+  error_type text check (error_type is null or error_type in ('conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other')),
+  error_other text,
+  reason text,
+  solution text,
+  learning text,
+  prevention text,
+  needs_teacher boolean not null default false,
+  checked_at timestamptz,
+  checked_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (student_id, question_id)
+);
+
+create table if not exists mistake_retries (
+  id uuid primary key default uuid_generate_v4(),
+  student_id uuid not null references students(id) on delete cascade,
+  question_id uuid not null references questions(id) on delete cascade,
+  selected text not null,
+  option_order text[],
+  created_at timestamptz not null default now()
+);
+
+alter table mistake_entries enable row level security;
+alter table mistake_retries enable row level security;
+
+create policy "Mistake entries accessible by all" on mistake_entries
+  for all using (true) with check (true);
+
+create policy "Mistake retries accessible by all" on mistake_retries
+  for all using (true) with check (true);
+
+-- ============================================================
 -- INDEXES
 -- ============================================================
+create index if not exists idx_mistake_retries_student on mistake_retries(student_id);
 create index if not exists idx_level_videos_unit_level on level_videos(unit_id, level, sort_order);
 create index if not exists idx_questions_level on questions(level);
 create index if not exists idx_questions_subject on questions(subject);

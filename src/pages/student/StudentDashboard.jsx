@@ -11,7 +11,7 @@ const SUBJECT_KEY = 'neetcbt_dashboard_subject'
 function storedSubject() {
   try { const v = localStorage.getItem(SUBJECT_KEY); return ACTIVE_SUBJECTS.includes(v) ? v : 'Chemistry' } catch { return 'Chemistry' }
 }
-import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle } from 'lucide-react'
+import { Lock, ChevronRight, LogOut, ArrowLeft, BarChart3, FileText, PlayCircle, HelpCircle, NotebookPen } from 'lucide-react'
 import toast from 'react-hot-toast'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import LevelVideosModal from '../../components/shared/LevelVideosModal'
@@ -325,6 +325,9 @@ export default function StudentDashboard() {
             </div>
             <Link to="/student/performance" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <BarChart3 size={15} /> {t.myPerformance}
+            </Link>
+            <Link to="/student/mistakes" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+              <NotebookPen size={15} /> {t.mistakeCopy}
             </Link>
             <Link to="/student/practice-papers" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <FileText size={15} /> {t.practicePapers}
