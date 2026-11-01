@@ -80,7 +80,6 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
   }
   const statusOptions = [['both', t.mcBoth], ['wrong', t.mcFilterWrong], ['skipped', t.mcFilterSkipped]]
   const typeOptions = [...ERROR_TYPES.map(type => [type, t.mcErrorTypes[type]]), [NOT_MARKED, t.mcNotMarked]]
-    .filter(([type]) => typeCounts[type] || type === errorType)
 
   let lastSubject = null
   return (
@@ -108,7 +107,7 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
             <select className="form-control mcp-select" aria-label={t.mcErrorType} value={errorType} onChange={e => setErrorType(e.target.value)}>
               <option value="all">{t.mcAllTypes} ({forType.length})</option>
               {typeOptions.map(([type, label]) => (
-                <option key={type} value={type}>{label} ({typeCounts[type] || 0})</option>
+                <option key={type} value={type} disabled={!typeCounts[type] && type !== errorType}>{label} ({typeCounts[type] || 0})</option>
               ))}
             </select>
           </section>
