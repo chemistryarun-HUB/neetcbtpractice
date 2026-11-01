@@ -1,4 +1,4 @@
-// The Mistake Copy: a student's Error Analysis Register.
+// The Mistake Copy: every question a student got wrong or skipped.
 //
 // Which questions are in it, and whether each is Pending or Cleared, is worked
 // out afresh from every level test and re-attempt, graded against the CURRENT
