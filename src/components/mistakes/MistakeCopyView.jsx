@@ -102,7 +102,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     setPdfProgress([0, 0])
     try {
       const { saveMistakeRegisterPdf } = await import('../../lib/mistakeRegisterPdf')
-      await saveMistakeRegisterPdf({ student, items: list, medium, onProgress: (done, total) => setPdfProgress([done, total]) })
+      await saveMistakeRegisterPdf({ student, items: list, medium, reveal: !!teacher, onProgress: (done, total) => setPdfProgress([done, total]) })
     } catch (err) {
       toast.error(err.message)
     } finally {

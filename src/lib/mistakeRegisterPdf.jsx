@@ -60,17 +60,17 @@ function TestHeader({ student, group, medium, t }) {
   )
 }
 
-function QuestionBlock({ item, number, t }) {
+function QuestionBlock({ item, number, t, reveal }) {
   const options = orderOptionsForReview(item.q, item.lastMistake.optionOrder)
   const chosen = isChosenBy(item.lastMistake.selected)
   const correctKey = correctOptionKey(item.q)
   return (
     <div className="mr-question">
       <div className="mr-label">{t.mrQuestion} {number} <code>{item.q.qid}</code></div>
-      <QuestionView q={item.q} mode="review" size="compact" options={options} isChosen={chosen} />
+      <QuestionView q={item.q} mode={reveal ? 'review' : 'student'} size="compact" options={options} isChosen={chosen} />
       <div className="mr-answers">
-        <div><span>{t.mrMyAnswer}:</span> {answerLabel(options, chosen, t)}</div>
-        <div><span>{t.mrCorrectAnswer}:</span> {answerLabel(options, o => o.key === correctKey, t)}</div>
+        <div><span>{t.mrMyAnswer}:</span> {reveal ? answerLabel(options, chosen, t) : <i className="mr-blank" />}</div>
+        <div><span>{t.mrCorrectAnswer}:</span> {reveal ? answerLabel(options, o => o.key === correctKey, t) : <i className="mr-blank" />}</div>
       </div>
     </div>
   )
@@ -106,7 +106,9 @@ async function settle(el) {
   await new Promise(r => setTimeout(r, 30))
 }
 
-export async function saveMistakeRegisterPdf({ student, items, medium, onProgress }) {
+// `reveal` is the teacher's copy. A student's sheet leaves both answers out, same
+// as the question card on screen: the format's two fields stay, blank to fill in.
+export async function saveMistakeRegisterPdf({ student, items, medium, reveal = false, onProgress }) {
   const t = neetT(medium)
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas'), ensureKatex()])
 
@@ -119,7 +121,7 @@ export async function saveMistakeRegisterPdf({ student, items, medium, onProgres
       blocks.push(
         <div key={`${group.key}-${item.q.id}`}>
           {i === 0 && <TestHeader student={student} group={group} medium={medium} t={t} />}
-          <QuestionBlock item={item} number={i + 1} t={t} />
+          <QuestionBlock item={item} number={i + 1} t={t} reveal={reveal} />
         </div>,
         <AnalysisBlock key={`${group.key}-${item.q.id}-a`} item={item} t={t} />,
       )

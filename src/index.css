@@ -824,6 +824,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mr-label { font-weight: 700; margin-bottom: 4px; }
 .mr-label code { font-weight: 400; font-size: 11px; color: #555; margin-left: 6px; }
 .mr-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; padding: 5px 8px; border: 1px solid #999; }
+.mr-blank { display: inline-block; width: 150px; border-bottom: 1px solid #000; }
 .mr-analysis { border: 1px solid #999; padding: 8px 10px; }
 .mr-types { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-bottom: 8px; }
 .mr-type { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
