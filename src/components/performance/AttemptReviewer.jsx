@@ -222,6 +222,16 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 {cur.q.question_tag && (
                   <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{cur.q.question_tag}</span>
                 )}
+                {/* Wrong under the current key, the same test the Mistake Copy uses. */}
+                {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt ? (
+                  <select className="ar-error-select" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
+                    onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
+                    <option value="" disabled>{t.mcSelectType}</option>
+                    {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                  </select>
+                ) : errorTypes[cur.q.id] && (
+                  <span className="badge" style={{ background: 'var(--gray-100)', color: 'var(--gray-700)' }}>{t.mcErrorTypes[errorTypes[cur.q.id]]}</span>
+                ))}
                 <span className="badge" style={{
                   marginLeft: 'auto', background: STATUS[cur.status].bg, color: STATUS[cur.status].fg,
                   border: `1px solid ${STATUS[cur.status].border}`, fontSize: '0.8rem', padding: '0.25rem 0.75rem',
@@ -229,24 +239,6 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                   {cur.status === 'correct' ? '✓ ' : cur.status === 'wrong' ? '✗ ' : '– '}{STATUS[cur.status].label}
                 </span>
               </div>
-
-              {/* Above the question, not under it: on a laptop a long card pushes
-                  anything below the options off screen, and it was missed there.
-                  Wrong under the current key, the same test the Mistake Copy uses. */}
-              {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt || errorTypes[cur.q.id]) && (
-                <div className="ar-error-type">
-                  <span>{t.mcErrorType}</span>
-                  {ownAttempt ? (
-                    <select className="form-control" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
-                      onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
-                      <option value="" disabled>{t.mcSelectType}</option>
-                      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
-                    </select>
-                  ) : (
-                    <strong>{t.mcErrorTypes[errorTypes[cur.q.id]]}</strong>
-                  )}
-                </div>
-              )}
 
               {cur.keyChanged && (
                 <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '0.6rem 0.8rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '1rem', lineHeight: 1.5 }}>

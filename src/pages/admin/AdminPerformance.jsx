@@ -175,7 +175,6 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
                 attempts={attemptsByStudent[selectedStudent.id] || []}
                 onOpenReview={setReviewAttempt}
                 showContactActions={!hideContacts}
-                reviewOpen={!!reviewAttempt}
               />
             ) : (
               <div className="empty-state">Select a student from the sidebar</div>

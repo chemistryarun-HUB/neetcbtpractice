@@ -35,7 +35,6 @@ export default function AttemptReviewModal({ attempt, studentName, onClose }) {
       // computed for its table; attempt_number is the stored value, kept only
       // as a fallback for callers without the level's other attempts to hand.
       attemptNo={attempt.attempt_position ?? attempt.attempt_number}
-      initialFilter={attempt.initial_filter ?? null}
       onClose={onClose}
     />
   )

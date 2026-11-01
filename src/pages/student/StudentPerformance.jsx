@@ -75,7 +75,6 @@ export default function StudentPerformance() {
             attempts={attempts}
             onOpenReview={setReviewAttempt}
             showContactActions={false}
-            reviewOpen={!!reviewAttempt}
           />
         )}
       </div>

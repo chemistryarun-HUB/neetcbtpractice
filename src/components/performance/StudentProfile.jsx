@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
 import InfoTooltip from '../shared/InfoTooltip'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../hooks/useAuth'
 import {
   unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
   computeStreak, clearedInfo, attemptClearedOwnBar, attemptsInOrder, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
@@ -25,20 +23,8 @@ function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
 }
 
-export default function StudentProfile({ student, progress, attempts, onOpenReview, showContactActions = true, reviewOpen = false }) {
+export default function StudentProfile({ student, progress, attempts, onOpenReview, showContactActions = true }) {
   const [unitFilter, setUnitFilter] = useState('all')
-  const { role } = useAuth()
-  const [reasonMarked, setReasonMarked] = useState(() => new Set())
-
-  // Which questions already have a reason. Fetched again when a review closes,
-  // since that is where they get marked.
-  useEffect(() => {
-    if (reviewOpen) return undefined
-    let cancelled = false
-    supabase.from('mistake_entries').select('question_id').eq('student_id', student.id).not('error_type', 'is', null)
-      .then(({ data }) => { if (!cancelled) setReasonMarked(new Set((data || []).map(e => e.question_id))) })
-    return () => { cancelled = true }
-  }, [student.id, reviewOpen])
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
   // The whole table reads bottom-up as a progression: within a unit, Level 1
@@ -239,7 +225,6 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               <th style={{ textAlign: 'right' }}>Correct</th>
               <th style={{ textAlign: 'right' }}>Wrong</th>
               <th style={{ textAlign: 'right' }}>Skipped</th>
-              <th>Why wrong?</th>
               <th>Status</th>
               <th>Submitted</th>
             </tr>
@@ -250,8 +235,6 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               return g.attemptsInfo.map((info, i) => {
                 const a = info.attempt
                 const when = fmtWhen(a.submitted_at)
-                const wrongTotal = a.wrong_count ?? 0
-                const marked = (a.answers?.wrong_ids || []).filter(id => reasonMarked.has(id)).length
                 return (
                   <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview({ ...a, attempt_position: info.position })}>
                     {i === 0 && (
@@ -269,16 +252,6 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                     <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
                     <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
                     <td style={{ textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>{a.skipped_count ?? 0}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>
-                      {wrongTotal === 0 ? (
-                        <span style={{ color: 'var(--gray-300)' }}>—</span>
-                      ) : (
-                        <button className={`why-wrong-btn${marked >= wrongTotal ? ' done' : ''}`}
-                          onClick={e => { e.stopPropagation(); onOpenReview({ ...a, attempt_position: info.position, initial_filter: 'wrong' }) }}>
-                          {marked >= wrongTotal ? '✓ ' : role === 'student' ? 'Mark reason ' : ''}{marked}/{wrongTotal}
-                        </button>
-                      )}
-                    </td>
                     <td>
                       {info.cleared ? (
                         <span className="badge badge-easy">Level cleared</span>
@@ -294,7 +267,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               })
             })}
             {visibleGroups.length === 0 && (
-              <tr><td colSpan={9} className="empty-state">No attempts for this filter</td></tr>
+              <tr><td colSpan={8} className="empty-state">No attempts for this filter</td></tr>
             )}
           </tbody>
         </table>
