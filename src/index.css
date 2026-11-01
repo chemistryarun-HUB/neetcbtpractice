@@ -750,7 +750,6 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-cta-btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; border-radius: 9px; background: #fff; color: var(--primary-dark); padding: 0.7rem 1.4rem; font-size: 1rem; font-weight: 800; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s; }
 .mc-cta-btn:hover:not(:disabled) { transform: translateY(-1px); }
 .mc-cta-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.mc-retest-note { font-size: 0.8125rem; font-weight: 600; color: #92400e; }
 .mc-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
 .mc-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .mc-pill { border: 1.5px solid var(--gray-200); background: #fff; border-radius: 9999px; padding: 0.25rem 0.7rem; font-size: 0.78rem; font-weight: 600; color: var(--gray-600); cursor: pointer; }
@@ -795,7 +794,6 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-register > .btn { align-self: flex-start; }
 .mc-field-label { font-size: 0.78rem; font-weight: 700; color: var(--gray-700); }
 .mc-type-select { max-width: 320px; }
-.mc-card-retry { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
 .mc-result-type { flex-shrink: 0; width: 170px; padding: 0.2rem 0.4rem; font-size: 0.78rem; }
 
 /* Question picker for a re-attempt: centred on a laptop, full screen on a phone. */
@@ -812,11 +810,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mcp-seg button strong { font-size: 0.75rem; font-weight: 700; color: var(--gray-500); }
 .mcp-seg button.active { background: #fff; color: var(--primary-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 .mcp-seg button.active strong { color: var(--primary); }
-.mcp-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.mcp-chip { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 36px; border: 1.5px solid var(--gray-200); border-radius: 9999px; background: #fff; padding: 0.25rem 0.8rem; font-size: 0.8125rem; font-weight: 600; color: var(--gray-700); cursor: pointer; }
-.mcp-chip strong { font-size: 0.72rem; color: var(--gray-400); }
-.mcp-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-.mcp-chip.active strong { color: rgba(255,255,255,0.85); }
+.mcp-select { width: 100%; min-height: 44px; font-size: 0.9rem; }
 .mcp-tree { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
 .mcp-row { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.25rem 0.75rem; border-top: 1px solid var(--gray-100); cursor: pointer; }
 .mcp-tree > :first-child { border-top: none; }

@@ -24,7 +24,7 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
   useBodyScrollLock()
   const t = neetT(medium)
   const [status, setStatus] = useState('both')
-  const [types, setTypes] = useState(() => new Set())
+  const [errorType, setErrorType] = useState('all')
   const [excluded, setExcluded] = useState(() => new Set(
     presetUnit == null ? [] : items.filter(it => it.unitId !== presetUnit).map(itemLevelKey)
   ))
@@ -37,7 +37,7 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
   }, [onClose])
 
   const passStatus = it => status === 'both' || statusOf(it) === status
-  const passType = it => types.size === 0 || types.has(typeOf(it))
+  const passType = it => errorType === 'all' || typeOf(it) === errorType
   const passLevel = it => !excluded.has(itemLevelKey(it))
 
   const selected = items.filter(it => passStatus(it) && passType(it) && passLevel(it))
@@ -78,17 +78,9 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
       return next
     })
   }
-  function toggleType(type) {
-    setTypes(prev => {
-      const next = new Set(prev)
-      if (next.has(type)) next.delete(type); else next.add(type)
-      return next
-    })
-  }
-
   const statusOptions = [['both', t.mcBoth], ['wrong', t.mcFilterWrong], ['skipped', t.mcFilterSkipped]]
   const typeOptions = [...ERROR_TYPES.map(type => [type, t.mcErrorTypes[type]]), [NOT_MARKED, t.mcNotMarked]]
-    .filter(([type]) => typeCounts[type] || types.has(type))
+    .filter(([type]) => typeCounts[type] || type === errorType)
 
   let lastSubject = null
   return (
@@ -113,16 +105,12 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
 
           <section>
             <h4>{t.mcErrorType}</h4>
-            <div className="mcp-chips">
-              <button className={`mcp-chip${types.size === 0 ? ' active' : ''}`} aria-pressed={types.size === 0} onClick={() => setTypes(new Set())}>
-                {t.mcFilterAll}<strong>{forType.length}</strong>
-              </button>
+            <select className="form-control mcp-select" aria-label={t.mcErrorType} value={errorType} onChange={e => setErrorType(e.target.value)}>
+              <option value="all">{t.mcAllTypes} ({forType.length})</option>
               {typeOptions.map(([type, label]) => (
-                <button key={type} className={`mcp-chip${types.has(type) ? ' active' : ''}`} aria-pressed={types.has(type)} onClick={() => toggleType(type)}>
-                  {label}<strong>{typeCounts[type] || 0}</strong>
-                </button>
+                <option key={type} value={type}>{label} ({typeCounts[type] || 0})</option>
               ))}
-            </div>
+            </select>
           </section>
 
           <section>

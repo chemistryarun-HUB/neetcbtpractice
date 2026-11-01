@@ -137,8 +137,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
         open={openItem === it.q.id}
         onToggle={() => setOpenItem(cur => (cur === it.q.id ? null : it.q.id))}
         onSave={patch => saveEntry(it.q.id, patch)}
-        onCheck={on => check([it.q.id], on)}
-        onRetry={() => startRetest([it])} />
+        onCheck={on => check([it.q.id], on)} />
     ))
   }
 

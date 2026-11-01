@@ -1,4 +1,4 @@
-import { ChevronRight, RotateCcw } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
 import MathText from '../shared/MathText'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
@@ -13,7 +13,7 @@ function chosenTest(selected) {
 // One question of the copy: a single row (a long stem runs off the end of it),
 // opening to the full question and its Error Type. `editable` is the student's
 // own copy, `teacher` the admin or faculty view, which reads it and marks it checked.
-export default function MistakeItem({ item, medium, open, onToggle, editable, teacher, onSave, onCheck, onRetry }) {
+export default function MistakeItem({ item, medium, open, onToggle, editable, teacher, onSave, onCheck }) {
   const t = neetT(medium)
   const { q, entry } = item
   const stem = String(q.question || '').replace(/\s+/g, ' ').trim()
@@ -61,16 +61,6 @@ export default function MistakeItem({ item, medium, open, onToggle, editable, te
               </select>
             ) : (
               <div className="mc-note-text">{errorType ? t.mcErrorTypes[errorType] : '—'}</div>
-            )}
-
-            {editable && item.status === 'pending' && (
-              <div className="mc-card-retry">
-                <button className="btn btn-primary btn-sm" disabled={!item.canRetry} onClick={onRetry}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <RotateCcw size={13} /> {t.mcReattemptOne}
-                </button>
-                {item.doneToday && <span className="mc-retest-note">{t.mcTryAnotherDay}</span>}
-              </div>
             )}
 
             {entry?.checked_at && <div className="mc-checked-line">{t.mcCheckedBy(entry.checked_by || '—', fmtDay(entry.checked_at))}</div>}
