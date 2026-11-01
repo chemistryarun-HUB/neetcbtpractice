@@ -18,7 +18,6 @@ const FILTERS = [
   ['wrong', 'mcFilterWrong', it => it.wrongCount > 0],
   ['skipped', 'mcFilterSkipped', it => it.wrongCount === 0],
   ['repeat', 'mcFilterRepeat', it => it.repeat],
-  ['notype', 'mcFilterNoType', it => !it.entry?.error_type],
 ]
 
 // Every page is an image: a whole heavy copy would hang a phone, so past this
