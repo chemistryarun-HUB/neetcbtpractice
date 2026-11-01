@@ -6,6 +6,11 @@ import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { attemptGrading } from '../../lib/attemptGrading'
 import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
 import { levelBadge, MARKS_CORRECT } from '../../lib/constants'
+import { supabase } from '../../lib/supabase'
+import { ERROR_TYPES, saveMistakeEntry } from '../../lib/mistakeCopy'
+import { neetT } from '../../lib/neetI18n'
+import { useAuth } from '../../hooks/useAuth'
+import toast from 'react-hot-toast'
 
 // Same three colours as the Correct/Wrong/Skipped result tiles, so the palette
 // at the bottom reads as those tiles broken out question by question.
@@ -42,6 +47,33 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   const [pos, setPos] = useState(0)
   const paletteRef = useRef(null)
   const contentRef = useRef(null)
+  const { role, user } = useAuth()
+  // Only the student whose attempt this is marks it; admin and faculty just read.
+  const ownAttempt = role === 'student' && user?.id === attempt.student_id
+  const t = neetT(ownAttempt ? user.medium : 'en')
+  const [errorTypes, setErrorTypes] = useState({})
+
+  // Same entry the Mistake Copy reads, so marking it in either place shows in both.
+  useEffect(() => {
+    let cancelled = false
+    const ids = attempt.question_ids || []
+    if (ids.length === 0) return undefined
+    supabase.from('mistake_entries').select('question_id, error_type')
+      .eq('student_id', attempt.student_id).in('question_id', ids)
+      .then(({ data }) => {
+        if (!cancelled) setErrorTypes(Object.fromEntries((data || []).map(e => [e.question_id, e.error_type])))
+      })
+    return () => { cancelled = true }
+  }, [attempt.id])
+
+  async function chooseErrorType(questionId, type) {
+    setErrorTypes(prev => ({ ...prev, [questionId]: type }))
+    try {
+      await saveMistakeEntry(attempt.student_id, questionId, { error_type: type })
+    } catch {
+      toast.error(t.mcSaveFailed)
+    }
+  }
 
   const items = useMemo(() => (questions || []).map((q, i) => ({
     q, num: i + 1, status: grading.statusOf(q), keyChanged: grading.keyChangedOf(q),
@@ -79,7 +111,8 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape') { e.preventDefault(); onClose(); return }
-      if (e.ctrlKey || e.metaKey || e.altKey) return
+      // Arrows and letters belong to the Error Type dropdown while it has focus.
+      if (e.target?.tagName === 'SELECT' || e.ctrlKey || e.metaKey || e.altKey) return
       switch (e.key) {
         case 'ArrowRight': e.preventDefault(); go(1); break
         case 'ArrowLeft':  e.preventDefault(); go(-1); break
@@ -214,6 +247,22 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
               {cur.status === 'skipped' && (
                 <div style={{ marginTop: '1rem', fontSize: '0.8125rem', color: '#b45309', background: '#fffbeb', border: '1px dashed #fcd34d', borderRadius: 8, padding: '0.5rem 0.75rem' }}>
                   Not answered — the correct answer is highlighted in green.
+                </div>
+              )}
+
+              {/* Wrong under the current key, the same test the Mistake Copy uses. */}
+              {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt || errorTypes[cur.q.id]) && (
+                <div className="ar-error-type">
+                  <span>{t.mcErrorType}</span>
+                  {ownAttempt ? (
+                    <select className="form-control" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
+                      onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
+                      <option value="" disabled>{t.mcSelectType}</option>
+                      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                    </select>
+                  ) : (
+                    <strong>{t.mcErrorTypes[errorTypes[cur.q.id]]}</strong>
+                  )}
                 </div>
               )}
             </div>

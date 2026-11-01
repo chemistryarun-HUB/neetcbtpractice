@@ -811,6 +811,9 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .ms-type-value { font-size: 0.875rem; font-weight: 600; color: var(--gray-800); }
 .ms-checked { font-size: 0.78rem; font-weight: 700; color: #15803d; }
 .ms-check-btn { flex-shrink: 0; }
+.ar-error-type { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); font-size: 0.875rem; color: var(--gray-700); }
+.ar-error-type > span { font-weight: 700; }
+.ar-error-type select { flex: 0 1 280px; min-height: 40px; }
 
 .mc-result-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
 .mc-result-tile { background: #fff; border-radius: var(--radius); border: 2px solid var(--gray-200); padding: 0.75rem; text-align: center; font-size: 0.8125rem; font-weight: 600; color: var(--gray-600); }
