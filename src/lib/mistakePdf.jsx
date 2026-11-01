@@ -1,17 +1,15 @@
-// The Mistake Copy as a printable Error Analysis Register, in the institute's
-// format: one header per test, then each question's statement, answers, error
-// type and notes. Whatever the student hasn't typed comes out as ruled blank
-// lines, so the sheet can be finished by hand and signed by the teacher.
+// The Mistake Copy as a PDF: one header per test, then each question with its
+// options and Error Type.
 //
 // Captured with html2canvas like the GSEB paper PDF, for the same reason: the
 // browser shapes Gujarati and KaTeX correctly, jsPDF on its own can't.
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
-import MathText, { ensureKatex } from '../components/shared/MathText'
+import { ensureKatex } from '../components/shared/MathText'
 import QuestionView from '../components/shared/QuestionView'
 import { correctOptionKey } from './questionOptions'
 import { orderOptionsForReview } from './optionShuffle'
-import { ERROR_TYPES, groupByTest, testDate, testMarks } from './mistakeCopy'
+import { groupByTest, testDate, testMarks } from './mistakeCopy'
 import { levelBadgeT, neetT, unitName } from './neetI18n'
 import { fromCourseUnitId, practiceUnitName } from './subjects'
 
@@ -29,17 +27,6 @@ function answerLabel(options, isChosen, t) {
   return i < 0 ? t.mrNotAttempted : t.mrOption(i + 1)
 }
 
-function NoteBlock({ label, value, lines = 2 }) {
-  return (
-    <div className="mr-note">
-      <div className="mr-label">{label}</div>
-      {value
-        ? <div className="mr-written"><MathText text={value} /></div>
-        : Array.from({ length: lines }, (_, i) => <div key={i} className="mr-line" />)}
-    </div>
-  )
-}
-
 function TestHeader({ student, group, medium, t }) {
   const { attempt } = group.test
   const { unit } = fromCourseUnitId(group.unitId)
@@ -47,8 +34,7 @@ function TestHeader({ student, group, medium, t }) {
   const marks = testMarks(attempt)
   return (
     <div className="mr-head">
-      <div className="mr-title">{t.mrTitle}</div>
-      <div className="mr-tagline">{t.mrTagline}</div>
+      <div className="mr-title">{t.mistakeCopy}</div>
       <div className="mr-info">
         <div><span>{t.mrStudent}:</span> {student.name}</div>
         <div><span>{t.mrDate}:</span> {testDate(attempt)}</div>
@@ -64,34 +50,18 @@ function QuestionBlock({ item, number, t, reveal }) {
   const options = orderOptionsForReview(item.q, item.lastMistake.optionOrder)
   const chosen = isChosenBy(item.lastMistake.selected)
   const correctKey = correctOptionKey(item.q)
+  const errorType = item.entry?.error_type
   return (
     <div className="mr-question">
       <div className="mr-label">{t.mrQuestion} {number} <code>{item.q.qid}</code></div>
       <QuestionView q={item.q} mode={reveal ? 'review' : 'student'} size="compact" options={options} isChosen={chosen} />
-      <div className="mr-answers">
-        <div><span>{t.mrMyAnswer}:</span> {reveal ? answerLabel(options, chosen, t) : <i className="mr-blank" />}</div>
-        <div><span>{t.mrCorrectAnswer}:</span> {reveal ? answerLabel(options, o => o.key === correctKey, t) : <i className="mr-blank" />}</div>
-      </div>
-    </div>
-  )
-}
-
-function AnalysisBlock({ item, t }) {
-  const { entry } = item
-  return (
-    <div className="mr-analysis">
-      <div className="mr-label">{t.mcErrorType}</div>
-      <div className="mr-types">
-        {ERROR_TYPES.map(type => (
-          <span key={type} className={`mr-type${entry?.error_type === type ? ' on' : ''}`}>
-            <i />{t.mcErrorTypes[type]}{type === 'other' && entry?.error_other ? `: ${entry.error_other}` : ''}
-          </span>
-        ))}
-      </div>
-      <NoteBlock label={t.mcReason} value={entry?.reason} />
-      <NoteBlock label={t.mcSolution} value={entry?.solution} lines={3} />
-      <NoteBlock label={t.mcLearning} value={entry?.learning} />
-      <NoteBlock label={t.mcPrevention} value={entry?.prevention} />
+      {reveal && (
+        <div className="mr-answers">
+          <div><span>{t.mrMyAnswer}:</span> {answerLabel(options, chosen, t)}</div>
+          <div><span>{t.mrCorrectAnswer}:</span> {answerLabel(options, o => o.key === correctKey, t)}</div>
+        </div>
+      )}
+      <div className="mr-error"><span>{t.mcErrorType}:</span> {errorType ? t.mcErrorTypes[errorType] : '—'}</div>
     </div>
   )
 }
@@ -107,26 +77,23 @@ async function settle(el) {
 }
 
 // `reveal` is the teacher's copy. A student's sheet leaves both answers out, same
-// as the question card on screen: the format's two fields stay, blank to fill in.
-export async function saveMistakeRegisterPdf({ student, items, medium, reveal = false, onProgress }) {
+// as the question card on screen.
+export async function saveMistakePdf({ student, items, medium, reveal = false, onProgress }) {
   const t = neetT(medium)
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas'), ensureKatex()])
 
-  // A register reads oldest test first. The header stays glued to its first
-  // question, so a page never ends on a header alone.
+  // Oldest test first. The header stays glued to its first question, so a page
+  // never ends on a header alone.
   const blocks = []
-  const groups = groupByTest(items).reverse()
-  for (const group of groups) {
+  for (const group of groupByTest(items).reverse()) {
     group.items.forEach((item, i) => {
       blocks.push(
         <div key={`${group.key}-${item.q.id}`}>
           {i === 0 && <TestHeader student={student} group={group} medium={medium} t={t} />}
           <QuestionBlock item={item} number={i + 1} t={t} reveal={reveal} />
         </div>,
-        <AnalysisBlock key={`${group.key}-${item.q.id}-a`} item={item} t={t} />,
       )
     })
-    blocks.push(<div key={`${group.key}-sign`} className="mr-sign"><span>{t.mrSignature}:</span><i /></div>)
   }
 
   const host = document.createElement('div')
@@ -185,7 +152,7 @@ export async function saveMistakeRegisterPdf({ student, items, medium, reveal = 
       onProgress?.(p + 1, pageEls.length)
     }
     const clean = String(student.name || 'student').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '')
-    doc.save(`Error-Analysis-Register-${clean || 'student'}.pdf`)
+    doc.save(`Mistake-Copy-${clean || 'student'}.pdf`)
   } finally {
     root.unmount() // a second unmount is a no-op
     host.remove()

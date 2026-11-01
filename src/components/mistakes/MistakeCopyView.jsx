@@ -19,8 +19,8 @@ const FILTERS = [
   ['notype', 'mcFilterNoType', it => !it.entry?.error_type],
 ]
 
-// About two pages a question, and every page is an image: a whole heavy copy
-// would hang a phone, so past this the PDF is made one chapter or test at a time.
+// Every page is an image: a whole heavy copy would hang a phone, so past this
+// the PDF is made one chapter or test at a time.
 const MAX_PDF_QUESTIONS = 60
 
 function unitLabel(unitId, medium, t) {
@@ -101,8 +101,8 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     if (list.length > MAX_PDF_QUESTIONS) { toast.error(t.mcPdfTooMany(MAX_PDF_QUESTIONS)); return }
     setPdfProgress([0, 0])
     try {
-      const { saveMistakeRegisterPdf } = await import('../../lib/mistakeRegisterPdf')
-      await saveMistakeRegisterPdf({ student, items: list, medium, reveal: !!teacher, onProgress: (done, total) => setPdfProgress([done, total]) })
+      const { saveMistakePdf } = await import('../../lib/mistakePdf')
+      await saveMistakePdf({ student, items: list, medium, reveal: !!teacher, onProgress: (done, total) => setPdfProgress([done, total]) })
     } catch (err) {
       toast.error(err.message)
     } finally {

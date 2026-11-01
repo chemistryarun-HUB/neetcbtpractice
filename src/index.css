@@ -808,29 +808,17 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .mc-result-note { margin-left: 1.05rem; }
 }
 
-/* Error Analysis Register PDF (lib/mistakeRegisterPdf.jsx): laid out off screen at
-   A4 size (794 x 1123 px) and captured page by page. */
+/* Mistake Copy PDF (lib/mistakePdf.jsx): laid out off screen at A4 size
+   (794 x 1123 px) and captured page by page. */
 .mr { font-family: Arial, "Noto Sans Gujarati", sans-serif; font-size: 13px; line-height: 1.4; color: #000; background: #fff; }
 .mr-head { border: 1.5px solid #000; padding: 8px 12px; margin-bottom: 10px; }
-.mr-title { text-align: center; font-size: 18px; font-weight: 800; letter-spacing: 0.04em; }
-.mr-tagline { text-align: center; font-size: 11px; font-style: italic; margin-bottom: 8px; }
+.mr-title { text-align: center; font-size: 18px; font-weight: 800; margin-bottom: 8px; }
 .mr-info { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
 .mr-info .mr-wide { grid-column: 1 / -1; }
-.mr-info span, .mr-answers span, .mr-sign span { font-weight: 700; }
+.mr-info span, .mr-answers span, .mr-error span { font-weight: 700; }
 .mr-block { padding-bottom: 10px; }
 .mr-label { font-weight: 700; margin-bottom: 4px; }
 .mr-label code { font-weight: 400; font-size: 11px; color: #555; margin-left: 6px; }
 .mr-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; padding: 5px 8px; border: 1px solid #999; }
-.mr-blank { display: inline-block; width: 150px; border-bottom: 1px solid #000; }
-.mr-analysis { border: 1px solid #999; padding: 8px 10px; }
-.mr-types { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-bottom: 8px; }
-.mr-type { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
-.mr-type i { width: 11px; height: 11px; border: 1.3px solid #000; display: inline-block; flex-shrink: 0; }
-.mr-type.on { font-weight: 700; }
-.mr-type.on i { background: #000; }
-.mr-note { margin-top: 6px; }
-.mr-written { white-space: pre-wrap; font-size: 12.5px; }
-.mr-line { height: 20px; border-bottom: 1px solid #999; }
-.mr-sign { display: flex; align-items: flex-end; justify-content: flex-end; gap: 8px; margin: 8px 0 14px; }
-.mr-sign i { display: inline-block; width: 210px; border-bottom: 1px solid #000; }
+.mr-error { margin-top: 8px; padding: 5px 8px; border: 1px solid #999; }
 .mr-foot { position: absolute; left: 38px; right: 38px; bottom: 16px; text-align: right; font-size: 10.5px; color: #555; }
