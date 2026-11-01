@@ -180,9 +180,8 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
       correctDays: correctDays.size,
       clearedOn,
       doneToday: correctDays.has(today),
-      // Error Type comes first: re-attempting without asking why you went wrong
-      // just rehearses the answer.
-      canRetry: pending && !!entry?.error_type && !correctDays.has(today),
+      // Right today already counts for today, so another go today can't help.
+      canRetry: pending && !correctDays.has(today),
     })
   }
   return items.sort((a, b) => new Date(b.lastMistake.at) - new Date(a.lastMistake.at))

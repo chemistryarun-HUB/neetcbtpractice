@@ -52,10 +52,7 @@ export default function MistakeItem({ item, medium, open, onToggle, editable, te
           <QuestionView q={q} mode={editable ? 'student' : 'review'} size="compact" options={options} isChosen={chosenTest(item.lastMistake.selected)} />
 
           <div className="mc-register">
-            <div className="mc-field-label">
-              {t.mcErrorType}
-              {editable && !errorType && <small className="mc-required"> ({t.mcRequired})</small>}
-            </div>
+            <div className="mc-field-label">{t.mcErrorType}</div>
             {editable ? (
               <select className="form-control mc-type-select" aria-label={t.mcErrorType} value={errorType || ''}
                 onChange={e => onSave({ error_type: e.target.value })}>
@@ -72,8 +69,7 @@ export default function MistakeItem({ item, medium, open, onToggle, editable, te
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                   <RotateCcw size={13} /> {t.mcReattemptOne}
                 </button>
-                {!errorType && <span className="mc-retest-note">{t.mcPickTypeFirst}</span>}
-                {errorType && item.doneToday && <span className="mc-retest-note">{t.mcTryAnotherDay}</span>}
+                {item.doneToday && <span className="mc-retest-note">{t.mcTryAnotherDay}</span>}
               </div>
             )}
 

@@ -1,28 +1,32 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import QuestionView from '../shared/QuestionView'
 import MathText from '../shared/MathText'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { orderOptionsForAttempt, shuffleArray } from '../../lib/optionShuffle'
 import { liveStatusOf } from '../../lib/regrade'
-import { CLEAR_AFTER_DAYS, saveRetries } from '../../lib/mistakeCopy'
+import { CLEAR_AFTER_DAYS, ERROR_TYPES, saveMistakeEntry, saveRetries } from '../../lib/mistakeCopy'
 import { neetT } from '../../lib/neetI18n'
-import { QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
 
-// A re-attempt of the Mistake Copy, in the same shell as a level test. Its answers
-// go to mistake_retries and nowhere else, so score, unlocks and Performance never
-// see it. Options are reshuffled so it can't be sat from "the answer was C".
+const OUTCOME_ORDER = { wrong: 0, skipped: 1, correct: 2 }
+
+// A re-attempt of the Mistake Copy, on the same screen as a level test, however
+// many questions were picked. Its answers go to mistake_retries and nowhere else,
+// so score, unlocks and Performance never see it. Options are reshuffled so it
+// can't be sat from "the answer was C".
 export default function MistakeRetest({ studentId, items, medium, onClose }) {
   useBodyScrollLock()
   const t = neetT(medium)
-  const questions = useMemo(() => shuffleArray(items).slice(0, QUESTIONS_PER_ATTEMPT).map(item => ({
+  const questions = useMemo(() => shuffleArray(items).map(item => ({
     item, q: item.q, options: orderOptionsForAttempt(item.q),
   })), [items])
   const [idx, setIdx] = useState(0)
   const [answers, setAnswers] = useState({})
+  const [elapsed, setElapsed] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [results, setResults] = useState(null)
+  const [types, setTypes] = useState({})
   const contentRef = useRef(null)
   const paletteRef = useRef(null)
 
@@ -31,9 +35,42 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
   const isLast = idx === questions.length - 1
 
   useEffect(() => {
+    if (results) return undefined
+    const timer = setInterval(() => setElapsed(s => s + 1), 1000)
+    return () => clearInterval(timer)
+  }, [results])
+
+  useEffect(() => {
     if (contentRef.current) contentRef.current.scrollTop = 0
     paletteRef.current?.querySelector('[data-current="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })
   }, [idx, results])
+
+  function clearCurrent() {
+    setAnswers(a => {
+      const next = { ...a }
+      delete next[current.q.id]
+      return next
+    })
+  }
+
+  useEffect(() => {
+    function onKey(e) {
+      if (results || submitting || e.ctrlKey || e.metaKey || e.altKey) return
+      if (e.key === 'ArrowRight') { e.preventDefault(); setIdx(i => Math.min(i + 1, questions.length - 1)) }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setIdx(i => Math.max(i - 1, 0)) }
+      else if (e.key === 'Backspace') clearCurrent()
+      else if (/^[1-4]$/.test(e.key)) {
+        const opt = current.options[Number(e.key) - 1]
+        if (opt) setAnswers(a => ({ ...a, [current.q.id]: opt.key }))
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  function leave() {
+    if (answered === 0 || window.confirm(t.mcLeaveConfirm)) onClose()
+  }
 
   async function submit() {
     const unanswered = questions.length - answered
@@ -43,11 +80,22 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
       await saveRetries(studentId, questions.filter(x => answers[x.q.id]).map(x => ({
         questionId: x.q.id, selected: answers[x.q.id], optionOrder: x.options.map(o => o.key),
       })))
-      setResults(questions.map(x => ({ ...x, outcome: liveStatusOf(x.q, answers[x.q.id]) })))
+      setResults(questions
+        .map(x => ({ ...x, outcome: liveStatusOf(x.q, answers[x.q.id]) }))
+        .sort((a, b) => OUTCOME_ORDER[a.outcome] - OUTCOME_ORDER[b.outcome]))
     } catch {
       toast.error(t.mcSaveFailed)
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  async function chooseType(questionId, type) {
+    setTypes(prev => ({ ...prev, [questionId]: type }))
+    try {
+      await saveMistakeEntry(studentId, questionId, { error_type: type })
+    } catch {
+      toast.error(t.mcSaveFailed)
     }
   }
 
@@ -69,12 +117,21 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
               <div className="mc-result-tile skipped"><strong>{count('skipped')}</strong>{t.mcResultSkipped}</div>
             </div>
             <div className="card">
-              {results.map(r => (
+              {/* Only what was answered: handing in 3 of 600 shouldn't list 597 blanks. */}
+              {results.filter(r => r.outcome !== 'skipped').map(r => (
                 <div key={r.q.id} className="mc-result-row">
                   <span className={`mc-dot ${r.outcome}`} />
                   <code className="mc-qid">{r.q.qid}</code>
                   <span className="mc-stem">{r.q.question ? <MathText text={String(r.q.question).replace(/\s+/g, ' ')} style={{ whiteSpace: 'nowrap' }} /> : <em>{t.mcImageQuestion}</em>}</span>
-                  <span className="mc-result-note">{note(r)}</span>
+                  {r.outcome === 'wrong' && !r.item.entry?.error_type ? (
+                    <select className="form-control mc-result-type" aria-label={t.mcErrorType} value={types[r.q.id] || ''}
+                      onChange={e => chooseType(r.q.id, e.target.value)}>
+                      <option value="" disabled>{t.mcErrorType}</option>
+                      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                    </select>
+                  ) : (
+                    <span className="mc-result-note">{note(r)}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -87,14 +144,18 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
     )
   }
 
+  const mins = Math.floor(elapsed / 60).toString().padStart(2, '0')
+  const secs = (elapsed % 60).toString().padStart(2, '0')
+
   return (
     <div className="attempt-reviewer test-run" role="main" lang={medium}>
       <div className="ar-header">
+        <button onClick={leave} title={t.mcClose} className="ar-close" aria-label={t.mcClose}><X size={18} /></button>
         <div className="ar-title"><span>{t.mcRetestTitle}</span></div>
         <div className="ar-stats tp-progress">
           <span><small>{t.answered}</small> {answered}<em>/{questions.length}</em></span>
         </div>
-        <button className="btn btn-ghost btn-sm mc-retest-close" onClick={onClose}>✕</button>
+        <div className="stopwatch tp-timer">⏱ {mins}:{secs}</div>
       </div>
 
       <div ref={contentRef} className="ar-content">
@@ -103,6 +164,13 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
               <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{idx + 1}</span>
               <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>{t.of(questions.length)}</span>
+              <span className="badge" style={{
+                marginLeft: 'auto', fontSize: '0.8rem', padding: '0.25rem 0.75rem',
+                background: answers[current.q.id] ? 'var(--primary-light)' : 'var(--gray-100)',
+                color: answers[current.q.id] ? 'var(--primary-dark)' : 'var(--gray-500)',
+              }}>
+                {answers[current.q.id] ? t.isAnswered : t.notAnswered}
+              </span>
             </div>
             <QuestionView q={current.q} mode="attempt" size="full" options={current.options}
               selectedKey={answers[current.q.id]}
@@ -122,7 +190,9 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
             const isCur = i === idx
             const done = !!answers[x.q.id]
             return (
-              <button key={x.q.id} data-current={isCur} onClick={() => setIdx(i)} className="ar-chip"
+              <button key={x.q.id} data-current={isCur} onClick={() => setIdx(i)}
+                title={`Q${i + 1} · ${done ? t.isAnswered : t.notAnswered}`}
+                className="ar-chip"
                 style={{
                   background: isCur ? 'var(--primary)' : done ? 'var(--primary-light)' : '#fff',
                   color: isCur ? '#fff' : done ? 'var(--primary-dark)' : 'var(--gray-600)',
@@ -134,7 +204,16 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
             )
           })}
         </div>
+        {answers[current.q.id] && (
+          <button className="btn btn-ghost btn-sm" style={{ flexShrink: 0 }} onClick={clearCurrent}>{t.clear}</button>
+        )}
         <div className="ar-count">{idx + 1} {t.of(questions.length)}</div>
+        {/* A long re-attempt can be handed in at any point, not only from the last question. */}
+        {!isLast && answered > 0 && (
+          <button className="btn btn-success btn-sm" onClick={submit} disabled={submitting} style={{ flexShrink: 0 }}>
+            {submitting ? t.submitting : t.submit}
+          </button>
+        )}
         {!isLast ? (
           <button className="btn btn-primary btn-sm" onClick={() => setIdx(i => i + 1)}
             style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Next question">
@@ -145,6 +224,12 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
             {submitting ? t.submitting : t.submit}
           </button>
         )}
+      </div>
+
+      <div className="ar-hints">
+        <span><kbd>←</kbd> <kbd>→</kbd> {t.hintNav}</span>
+        <span><kbd>1</kbd>–<kbd>4</kbd> {t.hintChoose}</span>
+        <span><kbd>Backspace</kbd> {t.hintClear}</span>
       </div>
     </div>
   )

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronRight, FileDown, RotateCcw } from 'lucide-react'
 import toast from 'react-hot-toast'
+import InfoTooltip from '../shared/InfoTooltip'
 import MistakeItem from './MistakeItem'
+import MistakePicker from './MistakePicker'
 import MistakeRetest from './MistakeRetest'
 import {
   buildMistakeCopy, errorSummary, groupByChapter, groupByTest, loadMistakeData,
@@ -9,7 +11,6 @@ import {
 } from '../../lib/mistakeCopy'
 import { levelBadgeT, levelName, neetT, unitName } from '../../lib/neetI18n'
 import { practiceUnitName, fromCourseUnitId } from '../../lib/subjects'
-import { QUESTIONS_PER_ATTEMPT } from '../../lib/constants'
 
 const FILTERS = [
   ['all', 'mcFilterAll', () => true],
@@ -28,9 +29,9 @@ function unitLabel(unitId, medium, t) {
   return `${t.unit(unit)}: ${unitName({ name: practiceUnitName(unitId) }, unitId, medium)}`
 }
 
-// The whole Mistake Copy for one student. The student gets it to fill in and
-// re-attempt; with `teacher` (the name to record) admin and faculty read it and
-// mark entries checked instead.
+// The whole Mistake Copy for one student. The student gets it to re-attempt from;
+// with `teacher` (the name to record) admin and faculty read it and mark entries
+// checked instead.
 export default function MistakeCopyView({ student, medium = 'en', teacher = null }) {
   const t = neetT(medium)
   const editable = !teacher
@@ -41,6 +42,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
   const [subject, setSubject] = useState('all')
   const [openItem, setOpenItem] = useState(null)
   const [openGroups, setOpenGroups] = useState({})
+  const [picker, setPicker] = useState(null)
   const [retest, setRetest] = useState(null)
   const [pdfProgress, setPdfProgress] = useState(null)
 
@@ -110,8 +112,14 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     }
   }
 
+  function startRetest(list) {
+    setPicker(null)
+    setRetest(list)
+  }
+
   function closeRetest() {
     setRetest(null)
+    setOpenItem(null)
     load()
   }
 
@@ -119,10 +127,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   if (retest) return <MistakeRetest studentId={student.id} items={retest} medium={medium} onClose={closeRetest} />
 
-  const pendingShown = inSubject.filter(it => it.status === 'pending')
-  const ready = pendingShown.filter(it => it.canRetry)
-  const needType = pendingShown.filter(it => !it.entry?.error_type).length
-  const doneToday = pendingShown.filter(it => it.doneToday && it.entry?.error_type).length
+  const pending = inSubject.filter(it => it.status === 'pending')
+  const ready = pending.filter(it => it.canRetry)
+  const rightToday = pending.length - ready.length
 
   function renderItems(list) {
     return list.map(it => (
@@ -131,20 +138,19 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
         onToggle={() => setOpenItem(cur => (cur === it.q.id ? null : it.q.id))}
         onSave={patch => saveEntry(it.q.id, patch)}
         onCheck={on => check([it.q.id], on)}
-        onRetry={() => setRetest([it])} />
+        onRetry={() => startRetest([it])} />
     ))
   }
 
   return (
     <div className="mistake-copy" lang={medium}>
-      <div className="page-header" style={{ alignItems: 'flex-start' }}>
+      <div className="mc-title">
         <div>
           <h2>📕 {t.mistakeCopy}{teacher ? ` · ${student.name}` : ''}</h2>
-          <div className="text-muted">{teacher ? 'Wrong and skipped questions from level tests, with the Error Type the student chose.' : t.mistakeIntro}</div>
+          <div className="text-muted">{teacher ? 'Wrong and skipped questions from level tests, with the Error Type the student chose. Students re-attempt from their own login.' : t.mistakeIntro}</div>
         </div>
         {items.length > 0 && (
-          <button className="btn btn-outline btn-sm" onClick={() => downloadPdf(visible)} disabled={!!pdfProgress}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+          <button className="btn btn-outline btn-sm mc-pdf-btn" onClick={() => downloadPdf(visible)} disabled={!!pdfProgress}>
             <FileDown size={15} /> {pdfProgress ? t.mcPdfBusy(pdfProgress[0], pdfProgress[1]) : t.mcPdf}
           </button>
         )}
@@ -176,21 +182,24 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             </button>
           </div>
 
-          {summary.length > 0 && (
-            <div className="mc-summary">
-              <strong>{teacher ? 'Error types' : t.mcSummary}:</strong> {summary.map(s => `${t.mcErrorTypes[s.type]} ${s.pct}%`).join(' · ')}
+          {editable && pending.length > 0 && (
+            <div className="mc-cta">
+              <div className="mc-cta-text">
+                <strong>{ready.length ? t.mcReady(ready.length) : t.mcNoneReady}</strong>
+                <span>
+                  {t.mcCtaHint}
+                  <InfoTooltip text={t.mcRule} align="left" />
+                </span>
+              </div>
+              <button className="mc-cta-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetUnit: null })}>
+                <RotateCcw size={18} /> {t.mcReattemptBtn}
+              </button>
             </div>
           )}
 
-          {editable && tab === 'pending' && (
-            <div className="mc-retest-bar">
-              <button className="btn btn-primary btn-sm" disabled={ready.length === 0} onClick={() => setRetest(ready)}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <RotateCcw size={14} /> {t.mcReattempt(Math.min(ready.length, QUESTIONS_PER_ATTEMPT))}
-              </button>
-              {needType > 0 && <span className="mc-retest-note">{t.mcNeedType(needType)}</span>}
-              {doneToday > 0 && <span className="mc-retest-note">{t.mcDoneToday(doneToday)}</span>}
-              <div className="mc-rule">{t.mcRule}</div>
+          {summary.length > 0 && (
+            <div className="mc-summary">
+              <strong>{teacher ? 'Error types' : t.mcSummary}:</strong> {summary.map(s => `${t.mcErrorTypes[s.type]} ${s.pct}%`).join(' · ')}
             </div>
           )}
 
@@ -210,20 +219,24 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             <div className="empty-state">
               {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : t.mcEmptyCleared}
             </div>
-          ) : groups.map((group, i) => {
-            const isOpen = openGroups[group.key] ?? i === 0
+          ) : groups.map(group => {
+            const isOpen = !!openGroups[group.key]
             const unchecked = group.items.filter(it => !it.entry?.checked_at).map(it => it.q.id)
             const unitAll = items.filter(it => it.unitId === group.unitId)
+            const unitCleared = unitAll.filter(it => it.status === 'cleared').length
             const retryable = group.items.filter(it => it.canRetry)
             return (
               <div key={group.key} className="mc-group card">
                 <div className="mc-group-head">
                   <button className="mc-group-toggle" aria-expanded={isOpen} onClick={() => setOpenGroups(g => ({ ...g, [group.key]: !isOpen }))}>
-                    <ChevronRight size={16} style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease', flexShrink: 0 }} />
+                    <ChevronRight size={18} className={`mc-group-chev${isOpen ? ' open' : ''}`} />
                     <span className="mc-group-title">
                       <strong>{unitLabel(group.unitId, medium, t)}</strong>
                       {view === 'chapter' ? (
-                        <small>{t.subject[group.subject] || group.subject} · {t.mcChapterDone(unitAll.filter(it => it.status === 'cleared').length, unitAll.length)}</small>
+                        <small>
+                          {t.subject[group.subject] || group.subject} · {t.mcChapterDone(unitCleared, unitAll.length)}
+                          <i className="mc-progress"><b style={{ width: `${unitAll.length ? (unitCleared / unitAll.length) * 100 : 0}%` }} /></i>
+                        </small>
                       ) : (
                         <small>
                           {levelBadgeT(group.unitId, group.test.attempt.level, medium)} · {t.mcAttempt(group.test.position)} · {testDate(group.test.attempt)} · {t.mcMarks(testMarks(group.test.attempt).score, testMarks(group.test.attempt).max)}
@@ -232,8 +245,14 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                     </span>
                     <span className="mc-group-count">{group.items.length}</span>
                   </button>
+                  {editable && tab === 'pending' && retryable.length > 0 && (
+                    <button className="btn btn-outline btn-sm mc-group-action" aria-label={t.mcReattemptBtn} title={t.mcReattemptBtn}
+                      onClick={() => (view === 'chapter' ? setPicker({ presetUnit: group.unitId }) : startRetest(retryable))}>
+                      <RotateCcw size={14} /> <span className="mc-wide-only">{t.mcReattemptBtn}</span>
+                    </button>
+                  )}
                   <button className="btn btn-ghost btn-sm mc-group-action" title={t.mcPdf} aria-label={t.mcPdf} disabled={!!pdfProgress} onClick={() => downloadPdf(group.items)}>
-                    <FileDown size={14} />
+                    <FileDown size={15} />
                   </button>
                   {teacher && unchecked.length > 0 && (
                     <button className="btn btn-ghost btn-sm mc-group-action" onClick={() => {
@@ -241,17 +260,6 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                     }}>✔ All ({unchecked.length})</button>
                   )}
                 </div>
-                {isOpen && editable && tab === 'pending' && (
-                  <div className="mc-group-retry">
-                    <button className="btn btn-primary btn-sm" disabled={retryable.length === 0} onClick={() => setRetest(retryable)}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <RotateCcw size={13} /> {(view === 'chapter' ? t.mcReattemptChapter : t.mcReattemptTest)(Math.min(retryable.length, QUESTIONS_PER_ATTEMPT))}
-                    </button>
-                    {retryable.length === 0 && (
-                      <span className="mc-retest-note">{group.items.some(it => !it.entry?.error_type) ? t.mcPickTypeFirst : t.mcTryAnotherDay}</span>
-                    )}
-                  </div>
-                )}
                 {isOpen && (view === 'chapter' ? group.levels.map(level => (
                   <div key={level.level}>
                     <div className="mc-level-head">{levelBadgeT(group.unitId, level.level, medium)}{levelName(group.unitId, level.level, medium) ? ` · ${levelName(group.unitId, level.level, medium)}` : ''}</div>
@@ -262,6 +270,11 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             )
           })}
         </>
+      )}
+
+      {picker && (
+        <MistakePicker items={ready} medium={medium} presetUnit={picker.presetUnit} rightToday={rightToday}
+          onStart={startRetest} onClose={() => setPicker(null)} />
       )}
     </div>
   )
