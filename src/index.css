@@ -811,7 +811,11 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .ms-type-value { font-size: 0.875rem; font-weight: 600; color: var(--gray-800); }
 .ms-checked { font-size: 0.78rem; font-weight: 700; color: #15803d; }
 .ms-check-btn { flex-shrink: 0; }
-.ar-error-type { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); font-size: 0.875rem; color: var(--gray-700); }
+.ar-error-type { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin-bottom: 1rem; padding: 0.55rem 0.75rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; font-size: 0.875rem; color: #991b1b; }
+.why-wrong-btn { border: 1.5px solid #fca5a5; border-radius: 9999px; background: #fff; padding: 0.15rem 0.65rem; font-size: 0.78rem; font-weight: 700; color: #b91c1c; cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.why-wrong-btn:hover { background: #fef2f2; }
+.why-wrong-btn.done { border-color: #86efac; color: #15803d; }
+.why-wrong-btn.done:hover { background: #f0fdf4; }
 .ar-error-type > span { font-weight: 700; }
 .ar-error-type select { flex: 0 1 280px; min-height: 40px; }
 

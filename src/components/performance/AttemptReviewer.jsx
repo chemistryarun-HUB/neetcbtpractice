@@ -230,6 +230,24 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 </span>
               </div>
 
+              {/* Above the question, not under it: on a laptop a long card pushes
+                  anything below the options off screen, and it was missed there.
+                  Wrong under the current key, the same test the Mistake Copy uses. */}
+              {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt || errorTypes[cur.q.id]) && (
+                <div className="ar-error-type">
+                  <span>{t.mcErrorType}</span>
+                  {ownAttempt ? (
+                    <select className="form-control" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
+                      onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
+                      <option value="" disabled>{t.mcSelectType}</option>
+                      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                    </select>
+                  ) : (
+                    <strong>{t.mcErrorTypes[errorTypes[cur.q.id]]}</strong>
+                  )}
+                </div>
+              )}
+
               {cur.keyChanged && (
                 <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '0.6rem 0.8rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '1rem', lineHeight: 1.5 }}>
                   <strong>Answer key updated.</strong> This question’s key was corrected after the attempt — it was graded <strong>{cur.keyChanged.graded}</strong> at the time, and the right answer is now shown below. The score above is unchanged.
@@ -250,21 +268,6 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 </div>
               )}
 
-              {/* Wrong under the current key, the same test the Mistake Copy uses. */}
-              {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt || errorTypes[cur.q.id]) && (
-                <div className="ar-error-type">
-                  <span>{t.mcErrorType}</span>
-                  {ownAttempt ? (
-                    <select className="form-control" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
-                      onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
-                      <option value="" disabled>{t.mcSelectType}</option>
-                      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
-                    </select>
-                  ) : (
-                    <strong>{t.mcErrorTypes[errorTypes[cur.q.id]]}</strong>
-                  )}
-                </div>
-              )}
             </div>
           )}
         </div>
