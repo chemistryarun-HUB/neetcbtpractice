@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, RotateCcw } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
 import MathText from '../shared/MathText'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
@@ -37,7 +37,7 @@ function NoteField({ label, optional, value, editable, onSave }) {
 // opening to the full question and its register entry. `editable` is the
 // student's own copy, `teacher` the admin or faculty view, which reads the entry
 // and marks it checked.
-export default function MistakeItem({ item, medium, open, onToggle, editable, teacher, onSave, onCheck }) {
+export default function MistakeItem({ item, medium, open, onToggle, editable, teacher, onSave, onCheck, onRetry }) {
   const t = neetT(medium)
   const { q, entry } = item
   const stem = String(q.question || '').replace(/\s+/g, ' ').trim()
@@ -72,23 +72,24 @@ export default function MistakeItem({ item, medium, open, onToggle, editable, te
           </div>
           {item.keyChanged && <div className="mc-key-note">{t.mcKeyUpdated}</div>}
 
-          <QuestionView q={q} mode="review" size="compact" options={options} isChosen={chosenTest(item.lastMistake.selected)} />
+          {/* The student gets the question alone, so a re-attempt isn't answered
+              from memory of the green option. The teacher still sees both answers. */}
+          <QuestionView q={q} mode={editable ? 'student' : 'review'} size="compact" options={options} isChosen={chosenTest(item.lastMistake.selected)} />
 
           <div className="mc-register">
             <div className="mc-field-label">
               {t.mcErrorType}
               {editable && !errorType && <small className="mc-required"> ({t.mcRequired})</small>}
             </div>
-            <div className="mc-types">
-              {(editable ? ERROR_TYPES : ERROR_TYPES.filter(type => type === errorType)).map(type => (
-                <button key={type} type="button" disabled={!editable}
-                  className={`mc-type${errorType === type ? ' active' : ''}`}
-                  onClick={() => onSave({ error_type: type })}>
-                  {t.mcErrorTypes[type]}
-                </button>
-              ))}
-              {!editable && !errorType && <span className="text-muted">—</span>}
-            </div>
+            {editable ? (
+              <select className="form-control mc-type-select" aria-label={t.mcErrorType} value={errorType || ''}
+                onChange={e => onSave({ error_type: e.target.value })}>
+                <option value="" disabled>{t.mcSelectType}</option>
+                {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+              </select>
+            ) : (
+              <div className="mc-note-text">{errorType ? t.mcErrorTypes[errorType] : '—'}</div>
+            )}
 
             {errorType === 'other' && (
               <NoteField key={`${q.id}-other`} label={t.mcOtherMention} optional={t.mcOptional} value={entry?.error_other} editable={editable}
@@ -106,6 +107,17 @@ export default function MistakeItem({ item, medium, open, onToggle, editable, te
               </label>
             )}
             {!editable && entry?.needs_teacher && <div className="mc-chip mc-chip-ask" style={{ display: 'inline-flex' }}>{t.mcAskTeacher}</div>}
+
+            {editable && item.status === 'pending' && (
+              <div className="mc-card-retry">
+                <button className="btn btn-primary btn-sm" disabled={!item.canRetry} onClick={onRetry}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <RotateCcw size={13} /> {t.mcReattemptOne}
+                </button>
+                {!errorType && <span className="mc-retest-note">{t.mcPickTypeFirst}</span>}
+                {errorType && item.doneToday && <span className="mc-retest-note">{t.mcTryAnotherDay}</span>}
+              </div>
+            )}
 
             {entry?.checked_at && <div className="mc-checked-line">{t.mcCheckedBy(entry.checked_by || '—', fmtDay(entry.checked_at))}</div>}
             {teacher && (

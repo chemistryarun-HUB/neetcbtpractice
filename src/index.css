@@ -783,10 +783,9 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-field-label { font-size: 0.78rem; font-weight: 700; color: var(--gray-700); }
 .mc-field-label small { font-weight: 500; color: var(--gray-400); }
 .mc-field-label .mc-required { color: #b91c1c; font-weight: 700; }
-.mc-types { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.mc-type { border: 1.5px solid var(--gray-300); background: #fff; border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.78rem; font-weight: 600; color: var(--gray-700); cursor: pointer; }
-.mc-type:disabled { cursor: default; }
-.mc-type.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.mc-type-select { max-width: 320px; }
+.mc-group-retry, .mc-card-retry { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
+.mc-group-retry { padding: 0.55rem 0.875rem; border-top: 1px solid var(--gray-100); }
 .mc-note-text { font-size: 0.8375rem; color: var(--gray-800); white-space: pre-wrap; }
 .mc-ask { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8125rem; font-weight: 600; color: #7e22ce; cursor: pointer; }
 .mc-checked-line { font-size: 0.78rem; font-weight: 700; color: #15803d; }

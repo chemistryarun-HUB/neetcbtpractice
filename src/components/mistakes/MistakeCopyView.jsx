@@ -17,7 +17,6 @@ const FILTERS = [
   ['skipped', 'mcFilterSkipped', it => it.wrongCount === 0],
   ['repeat', 'mcFilterRepeat', it => it.repeat],
   ['notype', 'mcFilterNoType', it => !it.entry?.error_type],
-  ['ask', 'mcFilterAsk', it => it.entry?.needs_teacher && !it.entry?.checked_at],
 ]
 
 // About two pages a question, and every page is an image: a whole heavy copy
@@ -131,7 +130,8 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
         open={openItem === it.q.id}
         onToggle={() => setOpenItem(cur => (cur === it.q.id ? null : it.q.id))}
         onSave={patch => saveEntry(it.q.id, patch)}
-        onCheck={on => check([it.q.id], on)} />
+        onCheck={on => check([it.q.id], on)}
+        onRetry={() => setRetest([it])} />
     ))
   }
 
@@ -214,6 +214,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             const isOpen = openGroups[group.key] ?? i === 0
             const unchecked = group.items.filter(it => !it.entry?.checked_at).map(it => it.q.id)
             const unitAll = items.filter(it => it.unitId === group.unitId)
+            const retryable = group.items.filter(it => it.canRetry)
             return (
               <div key={group.key} className="mc-group card">
                 <div className="mc-group-head">
@@ -231,11 +232,6 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                     </span>
                     <span className="mc-group-count">{group.items.length}</span>
                   </button>
-                  {editable && tab === 'pending' && group.items.some(it => it.canRetry) && (
-                    <button className="btn btn-ghost btn-sm mc-group-action" title={t.mcRetestTitle} onClick={() => setRetest(group.items.filter(it => it.canRetry))}>
-                      <RotateCcw size={13} /> {Math.min(group.items.filter(it => it.canRetry).length, QUESTIONS_PER_ATTEMPT)}
-                    </button>
-                  )}
                   <button className="btn btn-ghost btn-sm mc-group-action" title={t.mcPdf} aria-label={t.mcPdf} disabled={!!pdfProgress} onClick={() => downloadPdf(group.items)}>
                     <FileDown size={14} />
                   </button>
@@ -245,6 +241,17 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                     }}>✔ All ({unchecked.length})</button>
                   )}
                 </div>
+                {isOpen && editable && tab === 'pending' && (
+                  <div className="mc-group-retry">
+                    <button className="btn btn-primary btn-sm" disabled={retryable.length === 0} onClick={() => setRetest(retryable)}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <RotateCcw size={13} /> {(view === 'chapter' ? t.mcReattemptChapter : t.mcReattemptTest)(Math.min(retryable.length, QUESTIONS_PER_ATTEMPT))}
+                    </button>
+                    {retryable.length === 0 && (
+                      <span className="mc-retest-note">{group.items.some(it => !it.entry?.error_type) ? t.mcPickTypeFirst : t.mcTryAnotherDay}</span>
+                    )}
+                  </div>
+                )}
                 {isOpen && (view === 'chapter' ? group.levels.map(level => (
                   <div key={level.level}>
                     <div className="mc-level-head">{levelBadgeT(group.unitId, level.level, medium)}{levelName(group.unitId, level.level, medium) ? ` · ${levelName(group.unitId, level.level, medium)}` : ''}</div>
