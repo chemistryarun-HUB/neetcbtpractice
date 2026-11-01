@@ -36,9 +36,11 @@ export default function StudentMistakes() {
         </div>
       </header>
       <div className="page-content">
-        <Link to="/student/dashboard" className="back-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
-          <ArrowLeft size={15} /> {t.backToSyllabus}
-        </Link>
+        <div style={{ maxWidth: 860, margin: '0 auto 1rem' }}>
+          <Link to="/student/dashboard" className="back-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <ArrowLeft size={15} /> {t.backToSyllabus}
+          </Link>
+        </div>
         <MistakeCopyView student={user} medium={medium} />
       </div>
     </div>
