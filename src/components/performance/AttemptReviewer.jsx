@@ -224,7 +224,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 )}
                 {/* Wrong under the current key, the same test the Mistake Copy uses. */}
                 {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt ? (
-                  <select className="ar-error-select" aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
+                  <select className={`ar-error-select et-select et-${errorTypes[cur.q.id] || 'none'}`} aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
                     onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
                     <option value="" disabled>{t.mcSelectType}</option>
                     {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}

@@ -811,8 +811,19 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .ms-type-value { font-size: 0.875rem; font-weight: 600; color: var(--gray-800); }
 .ms-checked { font-size: 0.78rem; font-weight: 700; color: #15803d; }
 .ms-check-btn { flex-shrink: 0; }
-.ar-error-select { max-width: 100%; height: 30px; border: 1.5px solid var(--gray-300); border-radius: 9999px; background-color: #fff; padding: 0 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--gray-700); cursor: pointer; }
-.ar-error-select:focus { outline: none; border-color: var(--primary); }
+.ar-error-select { max-width: 100%; height: 30px; border-radius: 9999px; padding: 0 0.6rem; font-size: 0.78rem; cursor: pointer; }
+.ar-error-select:focus { outline: none; box-shadow: 0 0 0 2px var(--primary-light); }
+/* Error Type dropdowns: violet asks for a pick, then the pick wears its own colour. */
+.et-select { border: 1.5px solid; font-weight: 700; cursor: pointer; }
+.et-select option { background: #fff; color: var(--gray-800); font-weight: 500; }
+.et-select.et-none { background-color: #f5f3ff; border-color: #a78bfa; color: #6d28d9; }
+.et-select.et-conceptual { background-color: #eff6ff; border-color: #60a5fa; color: #1d4ed8; }
+.et-select.et-calculation { background-color: #ecfeff; border-color: #22d3ee; color: #0e7490; }
+.et-select.et-reading { background-color: #f0fdf4; border-color: #4ade80; color: #15803d; }
+.et-select.et-time { background-color: #fffbeb; border-color: #fbbf24; color: #b45309; }
+.et-select.et-guesswork { background-color: #fdf2f8; border-color: #f472b6; color: #be185d; }
+.et-select.et-silly { background-color: #fff7ed; border-color: #fb923c; color: #c2410c; }
+.et-select.et-other { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; }
 
 .mc-result-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
 .mc-result-tile { background: #fff; border-radius: var(--radius); border: 2px solid var(--gray-200); padding: 0.75rem; text-align: center; font-size: 0.8125rem; font-weight: 600; color: var(--gray-600); }

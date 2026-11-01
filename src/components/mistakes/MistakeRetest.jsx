@@ -124,9 +124,9 @@ export default function MistakeRetest({ studentId, items, medium, onClose }) {
                   <code className="mc-qid">{r.q.qid}</code>
                   <span className="mc-stem">{r.q.question ? <MathText text={String(r.q.question).replace(/\s+/g, ' ')} style={{ whiteSpace: 'nowrap' }} /> : <em>{t.mcImageQuestion}</em>}</span>
                   {r.outcome === 'wrong' && !r.item.entry?.error_type ? (
-                    <select className="form-control mc-result-type" aria-label={t.mcErrorType} value={types[r.q.id] || ''}
+                    <select className={`form-control mc-result-type et-select et-${types[r.q.id] || 'none'}`} aria-label={t.mcErrorType} value={types[r.q.id] || ''}
                       onChange={e => chooseType(r.q.id, e.target.value)}>
-                      <option value="" disabled>{t.mcErrorType}</option>
+                      <option value="" disabled>{t.mcSelectType}</option>
                       {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
                     </select>
                   ) : (

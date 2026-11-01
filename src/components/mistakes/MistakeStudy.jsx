@@ -87,7 +87,7 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
       <div className="ms-typebar">
         <span className="ms-type-label">{t.mcErrorType}</span>
         {editable ? (
-          <select className="form-control ms-type-select" aria-label={t.mcErrorType} value={errorType || ''}
+          <select className={`form-control ms-type-select et-select et-${errorType || 'none'}`} aria-label={t.mcErrorType} value={errorType || ''}
             onChange={e => { onSave(q.id, { error_type: e.target.value }); e.target.blur() }}>
             <option value="" disabled>{t.mcSelectType}</option>
             {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
