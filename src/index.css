@@ -746,7 +746,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-cta-text { min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
 .mc-cta-text strong { font-size: 1.05rem; }
 .mc-cta-text span { font-size: 0.8125rem; color: rgba(255,255,255,0.85); line-height: 1.4; }
-.mc-cta-text .info-tooltip-panel { color: var(--gray-800); }
+.mc-cta-text .info-tooltip-panel { color: #fff; font-weight: 400; }
 .mc-cta-btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; border-radius: 9px; background: #fff; color: var(--primary-dark); padding: 0.7rem 1.4rem; font-size: 1rem; font-weight: 800; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s; }
 .mc-cta-btn:hover:not(:disabled) { transform: translateY(-1px); }
 .mc-cta-btn:disabled { opacity: 0.55; cursor: not-allowed; }
