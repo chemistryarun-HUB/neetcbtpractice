@@ -4,7 +4,8 @@
 // out afresh from every level test and re-attempt, graded against the CURRENT
 // answer key. Nothing about that is stored, so correcting a key moves a question
 // out of (or into) the copy on its own, with no re-grade needed first. Only what
-// the student writes and the teacher's check are saved (migration_mistake_copy.sql).
+// the student picks as Error Type and the teacher's check are saved
+// (migration_mistake_copy.sql).
 import { supabase } from './supabase'
 import { attemptGrading } from './attemptGrading'
 import { liveStatusOf } from './regrade'

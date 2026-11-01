@@ -140,7 +140,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
       <div className="page-header" style={{ alignItems: 'flex-start' }}>
         <div>
           <h2>📕 {t.mistakeCopy}{teacher ? ` · ${student.name}` : ''}</h2>
-          <div className="text-muted">{teacher ? 'Wrong and skipped questions from level tests, with what the student wrote.' : t.mistakeIntro}</div>
+          <div className="text-muted">{teacher ? 'Wrong and skipped questions from level tests, with the Error Type the student chose.' : t.mistakeIntro}</div>
         </div>
         {items.length > 0 && (
           <button className="btn btn-outline btn-sm" onClick={() => downloadPdf(visible)} disabled={!!pdfProgress}

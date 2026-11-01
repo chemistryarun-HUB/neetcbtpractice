@@ -772,14 +772,12 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-chip-repeat { background: #ffedd5; color: #c2410c; }
 .mc-chip-progress { background: #dbeafe; color: #1d4ed8; }
 .mc-chip-type { background: var(--gray-100); color: var(--gray-600); }
-.mc-chip-ask { background: #f3e8ff; color: #7e22ce; }
 .mc-chip-checked { background: #dcfce7; color: #15803d; }
 .mc-detail { padding: 0.75rem 0.875rem 1rem; background: #fcfcfd; border-top: 1px dashed var(--gray-200); }
 .mc-detail-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--gray-500); margin-bottom: 0.6rem; }
 .mc-key-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; color: #92400e; margin-bottom: 0.75rem; }
 .mc-register { display: flex; flex-direction: column; gap: 0.6rem; align-items: stretch; margin-top: 1rem; padding-top: 0.875rem; border-top: 1px solid var(--gray-200); }
 .mc-register > .btn { align-self: flex-start; }
-.mc-field { display: flex; flex-direction: column; gap: 0.25rem; }
 .mc-field-label { font-size: 0.78rem; font-weight: 700; color: var(--gray-700); }
 .mc-field-label small { font-weight: 500; color: var(--gray-400); }
 .mc-field-label .mc-required { color: #b91c1c; font-weight: 700; }
@@ -787,7 +785,6 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-group-retry, .mc-card-retry { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
 .mc-group-retry { padding: 0.55rem 0.875rem; border-top: 1px solid var(--gray-100); }
 .mc-note-text { font-size: 0.8375rem; color: var(--gray-800); white-space: pre-wrap; }
-.mc-ask { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8125rem; font-weight: 600; color: #7e22ce; cursor: pointer; }
 .mc-checked-line { font-size: 0.78rem; font-weight: 700; color: #15803d; }
 .mc-retest-close { color: #fff; flex-shrink: 0; }
 .mc-result-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
