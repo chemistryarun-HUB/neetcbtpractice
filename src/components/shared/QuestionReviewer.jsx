@@ -52,7 +52,7 @@ export default function QuestionReviewer({
   const [mode, setMode] = useState('student')   // 'student' | 'admin'
   const [editing, setEditing] = useState(startInEdit)
   // Gujarati questions: show the English original they were translated from.
-  // Stays on while ← / → walk the list, so faculty can check one after another.
+  // Moving to another question goes back to Gujarati.
   const [showEnglish, setShowEnglish] = useState(false)
   const [englishByQid, setEnglishByQid] = useState({})   // qid → row | null (not found)
   const paletteRef = useRef(null)
@@ -76,6 +76,7 @@ export default function QuestionReviewer({
   const mounted = useRef(false)
   useEffect(() => {
     if (mounted.current) setEditing(false)
+    setShowEnglish(false)
     mounted.current = true
     if (contentRef.current) contentRef.current.scrollTop = 0
   }, [q?.id])
@@ -272,11 +273,6 @@ export default function QuestionReviewer({
             }}>
               {englishQid && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.5rem', margin: '-0.75rem -1.25rem 0.5rem 0' }}>
-                  {showEnglish && (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                      English original · <code>{englishQid}</code>
-                    </span>
-                  )}
                   <button type="button" onClick={() => setShowEnglish(v => !v)}
                     title={showEnglish ? 'Back to the Gujarati question' : 'See the English original of this question'}
                     style={{
