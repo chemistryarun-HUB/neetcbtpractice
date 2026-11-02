@@ -372,9 +372,6 @@ export const BIOLOGY_UNIT_LEVELS = {
   1: [
     { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
   ],
-  9: [
-    { id: 1, name: 'Biomolecules', topic: 'Biomolecules — chemical composition of living tissues, primary and secondary metabolites, proteins, polysaccharides, nucleic acids and enzymes.' },
-  ],
 }
 
 // Student practice keys a unit by one number across subjects: Chemistry n,

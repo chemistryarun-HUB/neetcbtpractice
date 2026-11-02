@@ -361,7 +361,6 @@ const GU_LEVELS = {
   129: ['વિદ્યુતચુંબકીય તરંગો અને ગુણધર્મો', 'વિદ્યુતચુંબકીય વર્ણપટ'],
   // Biology (practice unit 200 + n)
   201: ['સજીવ વિશ્વ'],
-  209: ['જૈવઅણુઓ'],
   // Chemistry (practice unit = chapter number)
   19: ['જૈવઅણુઓ'],
 }
