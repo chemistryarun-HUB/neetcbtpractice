@@ -180,6 +180,9 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
   ],
+  19: [
+    { id: 1, name: 'Biomolecules', topic: 'Biomolecules — carbohydrates, proteins, vitamins, nucleic acids and hormones.' },
+  ],
   21: [
     { id: 1, name: 'Basics of Organic Chemistry',                        topic: 'Basics of Organic Chemistry' },
     { id: 2, name: 'Nomenclature of Alkanes, Alkenes and Alkynes',  topic: 'Nomenclature of Alkanes, Alkenes and Alkynes' },
@@ -368,6 +371,9 @@ export const PHYSICS_UNIT_LEVELS = {
 export const BIOLOGY_UNIT_LEVELS = {
   1: [
     { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
+  ],
+  9: [
+    { id: 1, name: 'Biomolecules', topic: 'Biomolecules — chemical composition of living tissues, primary and secondary metabolites, proteins, polysaccharides, nucleic acids and enzymes.' },
   ],
 }
 
