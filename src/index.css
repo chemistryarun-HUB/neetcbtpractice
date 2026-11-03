@@ -463,6 +463,14 @@ kbd {
 /* Live test screen (TestPage) reuses the reviewer shell above */
 .test-run .ar-title > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .test-run .tp-progress { flex: 0 0 auto; }
+.tp-legend { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.2rem 1rem; background: var(--gray-100); border-top: 1px solid var(--gray-200); padding: 0.3rem 0.75rem; font-size: 0.72rem; color: var(--gray-600); }
+.tp-legend > span { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
+.tp-swatch { display: inline-block; width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid var(--gray-300); background: #fff; }
+.tp-swatch.done { border-color: var(--primary); background: var(--primary-light); }
+.tp-swatch.current { border-color: var(--primary); background: var(--primary); }
+.tp-legend-note { font-weight: 700; color: var(--gray-700); }
+.tp-legend-keys { color: var(--gray-500); }
+@media (max-width: 640px) { .tp-legend-keys { display: none !important; } .tp-legend > span { white-space: normal; } }
 .test-run .tp-timer { flex: 0 0 auto; font-size: 1.05rem; background: rgba(255,255,255,0.14); border-radius: 999px; padding: 0.2rem 0.8rem; }
 @media (max-width: 640px) { .test-run .tp-timer { font-size: 0.9rem; padding: 0.15rem 0.55rem; } }
 
