@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-const DRY = false
+const DRY = true
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
 const all = []
 for (let from = 0; ; from += 1000) {
