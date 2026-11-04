@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-const DRY = true
+const DRY = false
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
 const all = []
 for (let from = 0; ; from += 1000) {
@@ -9,7 +9,11 @@ for (let from = 0; ; from += 1000) {
 }
 const kinds = {}; for (const r of all) { const k = (r.question_tag || '(empty)').replace(/\d/g, '#'); kinds[k] = (kinds[k] || 0) + 1 }
 console.log('rows', all.length, 'ALL TAG KINDS', JSON.stringify(kinds))
-const yr = (t) => { let m = t.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{2})\b/); if (m) return '20' + m[3]; m = t.match(/(20\d{2}|19\d{2})/); return m ? m[1] : null }
+const yr = (t) => {
+  let m = t.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{2})\b/); if (m) return '20' + m[3]
+  m = t.match(/\b\d{1,2}\/(\d{2})\b/); if (m) return '20' + m[1]
+  const all = t.match(/(?:20|19)\d{2}/g); return all ? String(Math.max(...all.map(Number))) : null
+}
 const fams = (t) => {
   const f = []
   if (/AIIMS/i.test(t)) f.push('AIIMS')
@@ -25,7 +29,9 @@ const fams = (t) => {
 const fmt = { AIIMS: (y) => `AIIMS ${y}`, AIPMT: (y) => `AIPMT ${y}`, NEET: (y) => `NEET ${y}`, AIEEE: (y) => `AIEEE ${y}`, IIT: (y) => `IIT-${y}`, JEEM: (y) => `JEE(Main) ${y}` }
 const norm = (t) => {
   const f = fams(t)
-  if (f.length !== 1) return { amb: f.length > 1 }
+  if (f.length === 2 && f.includes('NEET') && f.includes('AIPMT')) f.splice(f.indexOf('AIPMT'), 1)
+  if (!f.length && /^\s*MAIN\b/i.test(t)) f.push('JEEM')
+  if (f.length !== 1) return { amb: true }
   if (f[0] === 'EXEMPLAR') return { to: 'NCERT Exemplar' }
   if (f[0] === 'NCERT') return /EXERCISE/i.test(t) ? { to: 'NCERT Exercise' } : { amb: true }
   const y = yr(t); return y ? { to: fmt[f[0]](y) } : { amb: true }
@@ -45,5 +51,6 @@ const map = {}; for (const [, f, t] of changed) { const k = f.replace(/\d/g, '#'
 console.log(DRY ? 'DRY would change' : 'changed', changed.length, JSON.stringify(map))
 console.log('ALREADY OK', JSON.stringify(same))
 console.log('LOCKED', locked.length, JSON.stringify(locked))
-console.log('AMBIGUOUS/NO-YEAR', amb.length, JSON.stringify(amb.slice(0, 120)))
+const ak = {}; for (const a of amb) { const [q, ...r] = a.split(':'); const k = r.join(':').replace(/\d/g, '#'); (ak[k] = ak[k] || []).push(q) }
+console.log('LEFT UNCHANGED (no year / not in list)', amb.length, JSON.stringify(Object.fromEntries(Object.entries(ak).map(([k, v]) => [k, v.length + ' e.g. ' + v.slice(0, 3).join(',')]))))
 if (!DRY) console.log('OLD', JSON.stringify(changed.map(([q, f]) => [q, f])))
