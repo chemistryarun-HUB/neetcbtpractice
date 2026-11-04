@@ -181,6 +181,8 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
 }
 
 const PAGE_SIZE = 50
+// Far quicker than localeCompare with options, which matters across the whole bank.
+const QID_ORDER = new Intl.Collator(undefined, { numeric: true })
 
 const SUBJECTS = ALL_SUBJECTS
 
@@ -188,6 +190,7 @@ export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [form, setForm] = useState(BLANK)
   const [submitting, setSubmitting] = useState(false)
   const [search, setSearch] = useState('')
@@ -281,22 +284,29 @@ export default function QuestionUploader({ uploadedBy }) {
   async function loadQuestions() {
     const seq = ++loadSeq.current
     setLoading(true)
-    // Paginated — a single Supabase request caps at 1000 rows, which the bank
-    // has grown past, so an unfiltered/large result silently got truncated.
-    const all = []
-    for (let from = 0; ; from += 1000) {
-      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
-      all.push(...(page || []))
-      if (!page || page.length < 1000) break
-    }
+    setLoadingMore(false)
     // Numeric unit order, then level, then qid — lets the admin scan the whole
     // bank (or an unfiltered "all inactive" view) unit-by-unit and level-by-level
     // at a glance, not just within one pre-selected unit.
     const subjOrder = q => Math.max(0, ALL_SUBJECTS.indexOf(q.subject || 'Chemistry'))
-    if (seq !== loadSeq.current) return
-    all.sort((a, b) => subjOrder(a) - subjOrder(b) || unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true }))
-    setQuestions(all)
-    setLoading(false)
+    const sorted = rows => rows.sort((a, b) => subjOrder(a) - subjOrder(b) || unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || QID_ORDER.compare(a.qid || '', b.qid || ''))
+    // Paginated — a single Supabase request caps at 1000 rows, which the bank
+    // has grown past, so an unfiltered/large result silently got truncated.
+    // The whole bank is about 14 MB: each page shows as it lands, so a tablet on
+    // ordinary Wi-Fi isn't left on "Loading..." for the lot.
+    for (let from = 0; ; from += 1000) {
+      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
+      // A newer filter took over: stop here rather than fetch the rest for nothing.
+      if (seq !== loadSeq.current) return
+      const rows = page || []
+      // Added to `prev`, not rebuilt from a local list: the table is usable while
+      // this runs, so a row edited meanwhile must keep its edit.
+      setQuestions(prev => sorted(from === 0 ? [...rows] : [...prev, ...rows]))
+      setLoading(false)
+      if (rows.length < 1000) break
+      setLoadingMore(true)
+    }
+    setLoadingMore(false)
   }
 
   // Reset downstream filters and reload when parent filter changes
@@ -1053,7 +1063,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   onChange={e => setSearch(e.target.value)}
                 />
               </div>
-              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions</span>
+              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions{loadingMore ? ', loading more…' : ''}</span>
               {visibleQuestions.length > 0 && (
                 <button className="btn btn-primary btn-sm"
                   style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
@@ -1292,7 +1302,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 </tbody>
               </table>
             )}
-            {!loading && filtered.length === 0 && <div className="empty-state">No questions found</div>}
+            {!loading && !loadingMore && filtered.length === 0 && <div className="empty-state">No questions found</div>}
             {!isFiltering && totalPages > 1 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderTop: '1px solid var(--gray-100)', fontSize: '0.875rem' }}>
                 <button className="btn btn-outline btn-sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>← Prev</button>
