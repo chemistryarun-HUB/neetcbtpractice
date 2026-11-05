@@ -309,12 +309,17 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Measuring Instruments', 'Metre scale, Vernier callipers, Screw gauge, Spherometer'],
   ]),
   3: physicsLevels([
-    ['Rest and Motion', 'Frame of reference, position, path length, distance and displacement'],
-    ['Uniform Motion', 'Uniform motion in a straight line, speed and velocity, average speed and average velocity'],
-    ['Graphs of Motion in One Dimension', 'Position-time, velocity-time and acceleration-time graphs, slope and area under graphs'],
-    ['Non-uniform Motion', 'Instantaneous velocity, acceleration, equations of uniformly accelerated motion, motion with variable acceleration (calculus)'],
-    ['Relative Motion', 'Relative velocity in one dimension'],
-    ['Motion Under Gravity', 'Free fall, vertical projection, motion under gravity'],
+    ['Uniform Motion (a = 0)', 'Distance, Displacement, Speed, Velocity'],
+    ['Uniformly Accelerated Motion (a = constant)', 'Equation of motion, Free fall'],
+    ['Non-uniformly Accelerated Motion (a = variable)', 'Calculus method'],
+    ['Relative Motion', 'Relative motion in 1 D'],
+    ['Graph', 'Graphs of motion in one dimension'],
+  ]),
+  4: physicsLevels([
+    ['Scalar and Vector', 'Addition, subtraction, dot & cross product, rotation of vector'],
+    ['Projectile Motion', 'Horizontal & angular projectile motion'],
+    ['Motion in Plane & Circular Motion', 'Shortest path, condition for collision, centripetal & tangential acceleration'],
+    ['Relative Motion in 2D', 'River & man, rain & man/umbrella'],
   ]),
   17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
