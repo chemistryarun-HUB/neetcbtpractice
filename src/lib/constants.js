@@ -308,6 +308,25 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Error Analysis', 'Significant figures, Rounding off, Accuracy, Precision, Errors'],
     ['Measuring Instruments', 'Metre scale, Vernier callipers, Screw gauge, Spherometer'],
   ]),
+  3: physicsLevels([
+    ['Uniform Motion (a = 0)', 'Distance, Displacement, Speed, Velocity'],
+    ['Uniformly Accelerated Motion (a = constant)', 'Equation of motion, Free fall'],
+    ['Non-uniformly Accelerated Motion (a = variable)', 'Calculus method'],
+    ['Relative Motion', 'Relative motion in 1 D'],
+    ['Graph', 'Graphs of motion in one dimension'],
+  ]),
+  4: physicsLevels([
+    ['Scalar and Vector', 'Addition, subtraction, dot & cross product, rotation of vector'],
+    ['Projectile Motion', 'Horizontal & angular projectile motion'],
+    ['Motion in Plane & Circular Motion', 'Shortest path, condition for collision, centripetal & tangential acceleration'],
+    ['Relative Motion in 2D', 'River & man, rain & man/umbrella'],
+  ]),
+  5: physicsLevels([
+    ['Inertia & Momentum', 'Types of inertia, linear momentum, change in linear momentum, impulse'],
+    ['Normal & Tension', '2nd law, normal force, tension, pulley system, equilibrium of concurrent forces'],
+    ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
+    ['Friction', 'Contact force, banking of road, angle of friction & repose'],
+  ]),
   17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
     ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
