@@ -1,11 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
+import MathText from '../shared/MathText'
 import InfoTooltip from '../shared/InfoTooltip'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { attemptGrading } from '../../lib/attemptGrading'
-import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
-import { levelBadge, MARKS_CORRECT } from '../../lib/constants'
+import { accuracyOf, totalQuestions, fmtDuration, unitName, unitNumberLabel, levelDef } from '../../lib/performanceMetrics'
+import { fromCourseUnitId, levelBadge, MARKS_CORRECT } from '../../lib/constants'
+import { supabase } from '../../lib/supabase'
+import { ERROR_TYPES, saveMistakeEntry } from '../../lib/mistakeCopy'
+import { neetT } from '../../lib/neetI18n'
+import { useAuth } from '../../hooks/useAuth'
+import toast from 'react-hot-toast'
 
 // Same three colours as the Correct/Wrong/Skipped result tiles, so the palette
 // at the bottom reads as those tiles broken out question by question.
@@ -42,6 +48,33 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   const [pos, setPos] = useState(0)
   const paletteRef = useRef(null)
   const contentRef = useRef(null)
+  const { role, user } = useAuth()
+  // Only the student whose attempt this is marks it; admin and faculty just read.
+  const ownAttempt = role === 'student' && user?.id === attempt.student_id
+  const t = neetT(ownAttempt ? user.medium : 'en')
+  const [errorTypes, setErrorTypes] = useState({})
+
+  // Same entry the Mistake Copy reads, so marking it in either place shows in both.
+  useEffect(() => {
+    let cancelled = false
+    const ids = attempt.question_ids || []
+    if (ids.length === 0) return undefined
+    supabase.from('mistake_entries').select('question_id, error_type')
+      .eq('student_id', attempt.student_id).in('question_id', ids)
+      .then(({ data }) => {
+        if (!cancelled) setErrorTypes(Object.fromEntries((data || []).map(e => [e.question_id, e.error_type])))
+      })
+    return () => { cancelled = true }
+  }, [attempt.id])
+
+  async function chooseErrorType(questionId, type) {
+    setErrorTypes(prev => ({ ...prev, [questionId]: type }))
+    try {
+      await saveMistakeEntry(attempt.student_id, questionId, { error_type: type })
+    } catch {
+      toast.error(t.mcSaveFailed)
+    }
+  }
 
   const items = useMemo(() => (questions || []).map((q, i) => ({
     q, num: i + 1, status: grading.statusOf(q), keyChanged: grading.keyChangedOf(q),
@@ -79,7 +112,8 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape') { e.preventDefault(); onClose(); return }
-      if (e.ctrlKey || e.metaKey || e.altKey) return
+      // Arrows and letters belong to the Error Type dropdown while it has focus.
+      if (e.target?.tagName === 'SELECT' || e.ctrlKey || e.metaKey || e.altKey) return
       switch (e.key) {
         case 'ArrowRight': e.preventDefault(); go(1); break
         case 'ArrowLeft':  e.preventDefault(); go(-1); break
@@ -96,10 +130,12 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
     return () => window.removeEventListener('keydown', onKey)
   })   // no dep array: the handler closes over index/visible, which change every render
 
+  // A GSEB attempt has no unit or level, and is 1 mark a question.
+  const gseb = attempt.kind === 'gseb'
   const total = totalQuestions(attempt)
-  const maxScore = total * MARKS_CORRECT
-  const lDef = levelDef(attempt.unit_id, attempt.level)
-  const syllabus = [unitName(attempt.unit_id), lDef && `${lDef.name}${lDef.topic && lDef.topic !== lDef.name ? ` — ${lDef.topic}` : ''}`]
+  const maxScore = gseb ? total : total * MARKS_CORRECT
+  const lDef = gseb ? null : levelDef(attempt.unit_id, attempt.level)
+  const syllabus = gseb ? '' : [unitName(attempt.unit_id), lDef && `${lDef.name}${lDef.topic && lDef.topic !== lDef.name ? ` — ${lDef.topic}` : ''}`]
     .filter(Boolean).join(' · ')
 
   return (
@@ -115,10 +151,16 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         {/* "·" between every pair: "Unit 01 Level 03" butts two numbers
             together — the "Level 3 2 times" misread this app has hit before. */}
         <div className="ar-title">
-          <span>Unit {String(attempt.unit_id).padStart(2, '0')}</span>
-          <span className="ar-sep">·</span>
-          <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
-          <InfoTooltip text={syllabus} align="left" />
+          {gseb ? (
+            <span className="ar-gseb-title" title={attempt.review_title}>{attempt.review_title}</span>
+          ) : (
+            <>
+              <span>{fromCourseUnitId(attempt.unit_id).subject !== 'Chemistry' && `${fromCourseUnitId(attempt.unit_id).subject} · `}{unitNumberLabel(attempt.unit_id, { pad: true })}</span>
+              <span className="ar-sep">·</span>
+              <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
+              <InfoTooltip text={syllabus} align="left" />
+            </>
+          )}
           {attemptNo != null && (
             <span className="ar-attempt"><span className="ar-sep">·</span><span className="ar-wide-only">Attempt </span>#{attemptNo}</span>
           )}
@@ -189,6 +231,16 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 {cur.q.question_tag && (
                   <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{cur.q.question_tag}</span>
                 )}
+                {/* Wrong under the current key, the same test the Mistake Copy uses. */}
+                {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt ? (
+                  <select className={`ar-error-select et-select et-${errorTypes[cur.q.id] || 'none'}`} aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
+                    onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
+                    <option value="" disabled>{t.mcSelectType}</option>
+                    {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                  </select>
+                ) : errorTypes[cur.q.id] && (
+                  <span className="badge" style={{ background: 'var(--gray-100)', color: 'var(--gray-700)' }}>{t.mcErrorTypes[errorTypes[cur.q.id]]}</span>
+                ))}
                 <span className="badge" style={{
                   marginLeft: 'auto', background: STATUS[cur.status].bg, color: STATUS[cur.status].fg,
                   border: `1px solid ${STATUS[cur.status].border}`, fontSize: '0.8rem', padding: '0.25rem 0.75rem',
@@ -214,6 +266,13 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
               {cur.status === 'skipped' && (
                 <div style={{ marginTop: '1rem', fontSize: '0.8125rem', color: '#b45309', background: '#fffbeb', border: '1px dashed #fcd34d', borderRadius: 8, padding: '0.5rem 0.75rem' }}>
                   Not answered — the correct answer is highlighted in green.
+                </div>
+              )}
+
+              {(cur.q.explanation || cur.q.explanation_image) && (
+                <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--gray-50)', borderRadius: 8, fontSize: '0.9375rem', whiteSpace: 'pre-wrap' }}>
+                  <strong>Explanation:</strong> <MathText text={cur.q.explanation} />
+                  {cur.q.explanation_image && <img src={cur.q.explanation_image} alt="Explanation" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
                 </div>
               )}
             </div>

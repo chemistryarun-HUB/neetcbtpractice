@@ -7,6 +7,7 @@ import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { fromCourseUnitId } from '../../lib/constants'
 import { practiceUnitName } from '../../lib/subjects'
+import { GSEB_SUBJECT_LABELS, paperTitle } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -85,9 +86,15 @@ export default function AdminActivity() {
   const [openStudent, setOpenStudent] = useState(null)   // expanded row in "By student"
   const [review, setReview] = useState(null)             // practice attempt under review
 
-  // A level-practice test opens the same answer-by-answer review as
-  // Performance; papers and GSEB tests go to the student's Performance page.
+  // Level practice and GSEB tests open the same answer-by-answer review as
+  // Performance; practice papers go to the student's Performance page.
   async function openReview(e) {
+    if (e.kind === 'gseb') {
+      const { data, error } = await supabase.from('gseb_attempts').select('*, paper:gseb_papers(subject, year, session, set_no, medium)').eq('id', e.id).single()
+      if (error) { toast.error(error.message); return }
+      setReview({ ...data, kind: 'gseb', review_title: data.paper ? paperTitle(data.paper) : data.title || 'GSEB test' })
+      return
+    }
     if (e.kind !== 'practice') { navigate(`/admin/performance?student=${e.student_id}`); return }
     const { data, error } = await supabase.from('test_attempts').select(ATTEMPT_COLUMNS).eq('id', e.id).single()
     if (error) { toast.error(error.message); return }
@@ -140,7 +147,8 @@ export default function AdminActivity() {
           const total = answered + (a.skipped_count || 0)
           return {
             id: a.id, kind: 'gseb', student_id: a.student_id, at: a.submitted_at, subject: 'GSEB',
-            what: `${a.title || (a.mode === 'chapter' ? 'Chapter practice' : 'Board paper')}${a.subject ? ` · ${a.subject}` : ''}`,
+            // A title already names the subject ("Biology · Ch 5 ..."); saying it again read as a typo.
+            what: a.title || `${a.mode === 'chapter' ? 'Chapter practice' : 'Board paper'}${a.subject ? ` · ${GSEB_SUBJECT_LABELS[a.subject] || a.subject}` : ''}`,
             scorePct: pct(a.correct_count || 0, total), correct: a.correct_count || 0, wrong: a.wrong_count || 0, answered, total,
           }
         }),
@@ -280,7 +288,7 @@ export default function AdminActivity() {
                                       <strong style={{ width: 48, textAlign: 'center', color: e.scorePct == null ? undefined : e.scorePct >= 60 ? '#15803d' : e.scorePct >= 35 ? '#b45309' : '#b91c1c' }}>{e.scorePct ?? '—'}{e.scorePct != null && '%'}</strong>
                                       <span style={{ width: 110, textAlign: 'center' }} title="correct · wrong · total">✓{e.correct} · ✗{e.wrong} · {e.total}</span>
                                       <span className="text-muted" style={{ width: 70, textAlign: 'center' }} title="Time taken">{fmtTime(e.time)}</span>
-                                      {e.kind === 'practice'
+                                      {e.kind !== 'paper'
                                         ? <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }} onClick={() => openReview(e)}><Eye size={13} /> Review</button>
                                         : <span style={{ width: 78 }} />}
                                     </div>
@@ -299,7 +307,7 @@ export default function AdminActivity() {
                   <thead><tr><th>When</th><th>Student</th><th>Medium</th><th>Subject</th><th>What</th><th style={{ textAlign: 'center' }}>Score</th><th style={{ textAlign: 'center' }}>✓ / ✗ / total</th><th></th></tr></thead>
                   <tbody>
                     {shown.map(e => (
-                      <tr key={`${e.kind}-${e.id}`} onClick={() => openReview(e)} style={{ cursor: 'pointer' }} title={e.kind === 'practice' ? 'Review this test' : 'Open in Performance'}>
+                      <tr key={`${e.kind}-${e.id}`} onClick={() => openReview(e)} style={{ cursor: 'pointer' }} title={e.kind !== 'paper' ? 'Review this test' : 'Open in Performance'}>
                         <td style={{ whiteSpace: 'nowrap' }} title={ago(e.at)}>{fullDate(e.at)}</td>
                         <td><strong>{name(e.student_id)}</strong><div className="text-muted" style={{ fontSize: '0.75rem' }} title={roll(e.student_id)}>{cls(e.student_id)}</div></td>
                         <td>{med(e.student_id)}</td>

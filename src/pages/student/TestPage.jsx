@@ -8,6 +8,7 @@ import { correctOptionKey } from '../../lib/questionOptions'
 import { orderOptionsForAttempt } from '../../lib/optionShuffle'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import QuestionView from '../../components/shared/QuestionView'
+import TestLegend from '../../components/shared/TestLegend'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -366,18 +367,6 @@ export default function TestPage() {
       <div ref={contentRef} className="ar-content">
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <div className="ar-card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{currentIdx + 1}</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>{t.of(questions.length)}</span>
-              <span className="badge" style={{
-                marginLeft: 'auto', fontSize: '0.8rem', padding: '0.25rem 0.75rem',
-                background: answers[current.id] ? 'var(--primary-light)' : 'var(--gray-100)',
-                color: answers[current.id] ? 'var(--primary-dark)' : 'var(--gray-500)',
-              }}>
-                {answers[current.id] ? t.isAnswered : t.notAnswered}
-              </span>
-            </div>
-
             <QuestionView
               q={current}
               mode="attempt"
@@ -442,11 +431,7 @@ export default function TestPage() {
         )}
       </div>
 
-      <div className="ar-hints">
-        <span><kbd>←</kbd> <kbd>→</kbd> {t.hintNav}</span>
-        <span><kbd>1</kbd>–<kbd>4</kbd> {t.hintChoose}</span>
-        <span><kbd>Backspace</kbd> {t.hintClear}</span>
-      </div>
+      <TestLegend t={t} submitOnLast />
     </div>
   )
 }

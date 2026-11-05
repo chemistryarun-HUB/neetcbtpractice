@@ -288,6 +288,13 @@ export function chapterBreakdown(subject, questions, statusOf) {
 // + part + 2-digit Q no. Chemistry March 2024 Part A Q7 → "GC24MA07". A
 // Gujarati paper or a numbered set gets a suffix ("-GU", "-SET2") so two papers
 // of the same exam never share an ID.
+// What the shared review and Mistake Copy screens read off a question: its ID and
+// tag. `q.paper` is the row's joined gseb_papers.
+export const GSEB_QUESTION_SELECT = '*, paper:gseb_papers(year, session, subject, medium, set_no)'
+export function gsebReviewQuestion(q) {
+  return { ...q, qid: gsebQid(q.paper, 'A', q.q_no), question_tag: paperTag(q.paper) }
+}
+
 export function gsebQid(paper, part, qNo) {
   if (!paper?.subject || !paper.year) return `${part}${String(qNo).padStart(2, '0')}`
   const subj = { physics: 'P', chemistry: 'C', biology: 'B', maths: 'M' }[paper.subject] || '?'

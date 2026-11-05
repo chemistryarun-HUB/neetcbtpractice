@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, BarChart3, FileQuestion, ClipboardList, User, FileDown } from 'lucide-react'
+import { Users, BarChart3, FileQuestion, ClipboardList, User, FileDown, NotebookPen } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
@@ -34,6 +34,7 @@ export default function FacultyDashboard() {
 
   const cards = [
     { to: '/faculty/performance', icon: BarChart3, title: 'Student Performance', sub: 'Scores, weak units, leaderboard' },
+    { to: '/faculty/mistakes', icon: NotebookPen, title: 'Mistake Copy', sub: "Each student's error register, mark checked" },
     { to: '/faculty/students', icon: Users, title: 'Students', sub: 'All students and their last practice' },
     { to: '/faculty/questions', icon: FileQuestion, title: 'Questions', sub: 'Browse, suggest corrections, add drafts' },
     { to: '/faculty/practice-papers', icon: ClipboardList, title: 'Practice Papers', sub: 'Make papers and see submissions' },

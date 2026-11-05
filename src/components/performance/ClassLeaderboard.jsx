@@ -19,7 +19,7 @@ function classSortKey(cls) {
 
 export default function ClassLeaderboard({
   students, attemptsByStudent, selectedClass, onSelectClass,
-  selectedStudentId, onSelectStudent, onBack, onShowReport,
+  selectedStudentId, onSelectStudent, onBack, onShowReport, onlyWithAttempts = false,
 }) {
   const [sortMetric, setSortMetric] = useState('attempts')
 
@@ -30,7 +30,7 @@ export default function ClassLeaderboard({
 
   const rows = useMemo(() => {
     const filtered = selectedClass && selectedClass !== 'all' ? students.filter(s => s.class === selectedClass) : students
-    return filtered.map(s => {
+    const all = filtered.map(s => {
       const attempts = attemptsByStudent[s.id] || []
       const maxScore = attempts.length ? Math.max(...attempts.map(a => a.score ?? 0)) : 0
       return {
@@ -41,7 +41,9 @@ export default function ClassLeaderboard({
         accuracy: aggregateAccuracy(attempts),
       }
     })
-  }, [students, attemptsByStudent, selectedClass])
+    // On a subject tab, "rank 1" with nothing attempted in that subject means nothing.
+    return onlyWithAttempts ? all.filter(r => r.attempts > 0) : all
+  }, [students, attemptsByStudent, selectedClass, onlyWithAttempts])
 
   const sorted = useMemo(() => {
     const key = sortMetric === 'attempts' ? 'attempts' : sortMetric === 'max' ? 'maxScore' : sortMetric === 'streak' ? 'streak' : 'accuracy'
@@ -126,7 +128,7 @@ export default function ClassLeaderboard({
               )
             })}
             {sorted.length === 0 && (
-              <tr><td colSpan={7} className="empty-state">No students in this class</td></tr>
+              <tr><td colSpan={7} className="empty-state">{onlyWithAttempts ? 'No level tests in this subject yet' : 'No students in this class'}</td></tr>
             )}
           </tbody>
         </table>

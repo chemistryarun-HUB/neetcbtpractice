@@ -1,16 +1,35 @@
-import { useMemo, useState } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Eye, MessageCircle } from 'lucide-react'
 import InfoTooltip from '../shared/InfoTooltip'
+import SubjectTabs, { TAB_SUBJECTS } from '../shared/SubjectTabs'
 import {
-  unitName, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
+  unitName, unitNumberLabel, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
   computeStreak, clearedInfo, attemptClearedOwnBar, attemptsInOrder, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
   buildActivityMessage,
 } from '../../lib/performanceMetrics'
-import { NEET_CHEMISTRY_SYLLABUS, levelBadge } from '../../lib/constants'
+import { fromCourseUnitId, levelBadge } from '../../lib/constants'
+import { unitsFor } from '../../lib/subjects'
+import { GSEB_SUBJECT_LABELS, paperTitle } from '../../lib/gseb'
+import { supabase } from '../../lib/supabase'
 import { examTarget } from '../../lib/students'
 
-// Was hardcoded to 20 — went stale the moment a 4th syllabus section was added.
-const TOTAL_UNIT_COUNT = NEET_CHEMISTRY_SYLLABUS.reduce((sum, s) => sum + s.units.length, 0)
+const SUBJECT_SHORT = { Chemistry: 'Chem', Physics: 'Phy', Biology: 'Bio' }
+const subjectOfAttempt = a => fromCourseUnitId(a.unit_id).subject
+const gsebSubject = a => GSEB_SUBJECT_LABELS[a.paper?.subject || a.subject] || null
+
+function accuracyByUnit(list) {
+  const byUnit = {}
+  for (const a of list) {
+    if (a.unit_id == null) continue
+    if (!byUnit[a.unit_id]) byUnit[a.unit_id] = []
+    byUnit[a.unit_id].push(a)
+  }
+  return Object.entries(byUnit).map(([unitId, rows]) => ({
+    unitId: Number(unitId),
+    accuracy: aggregateAccuracy(rows),
+    attempts: rows.length,
+  })).sort((a, b) => b.accuracy - a.accuracy)
+}
 
 function waLink(phone, message) {
   if (!phone) return null
@@ -23,8 +42,37 @@ function initials(name) {
   return (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('')
 }
 
-export default function StudentProfile({ student, progress, attempts, onOpenReview, showContactActions = true }) {
+export default function StudentProfile({ student, progress, attempts: allAttempts, onOpenReview, showContactActions = true }) {
   const [unitFilter, setUnitFilter] = useState('all')
+  const [subject, setSubject] = useState('all')
+  const [gsebAttempts, setGsebAttempts] = useState([])
+
+  useEffect(() => {
+    let cancelled = false
+    setGsebAttempts([])
+    setSubject('all')
+    setUnitFilter('all')
+    supabase.from('gseb_attempts')
+      .select('id, student_id, paper_id, mode, subject, title, score, correct_count, wrong_count, skipped_count, time_taken, submitted_at, question_ids, answers, paper:gseb_papers(subject, year, session, set_no, medium)')
+      .eq('student_id', student.id).eq('submitted', true).order('submitted_at', { ascending: false })
+      .then(({ data }) => { if (!cancelled) setGsebAttempts(data || []) })
+    return () => { cancelled = true }
+  }, [student.id])
+
+  // Everything on the page below the tabs follows the chosen subject.
+  const attempts = useMemo(
+    () => (subject === 'all' ? allAttempts : allAttempts.filter(a => subjectOfAttempt(a) === subject)),
+    [allAttempts, subject],
+  )
+  const shownGseb = subject === 'all' ? gsebAttempts : gsebAttempts.filter(a => gsebSubject(a) === subject)
+  const countFor = s => allAttempts.filter(a => subjectOfAttempt(a) === s).length + gsebAttempts.filter(a => gsebSubject(a) === s).length
+  // Chip and bar labels only need the subject when more than one is on screen.
+  const mixedSubjects = new Set(attempts.map(subjectOfAttempt)).size > 1
+
+  function pickSubject(s) {
+    setSubject(s)
+    setUnitFilter('all')
+  }
 
   const groups = useMemo(() => groupByUnitLevel(attempts), [attempts])
   // The whole table reads bottom-up as a progression: within a unit, Level 1
@@ -80,31 +128,22 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
   const totalMinutes = Math.round(attempts.reduce((s, a) => s + (a.time_taken || 0), 0) / 60)
   const lastActive = fmtWhen(mostRecentAny?.submitted_at)
 
-  const unitAccuracyRows = useMemo(() => {
-    const byUnit = {}
-    for (const a of attempts) {
-      if (a.unit_id == null) continue
-      if (!byUnit[a.unit_id]) byUnit[a.unit_id] = []
-      byUnit[a.unit_id].push(a)
-    }
-    return Object.entries(byUnit).map(([unitId, rows]) => ({
-      unitId: Number(unitId),
-      accuracy: aggregateAccuracy(rows),
-      attempts: rows.length,
-    })).sort((a, b) => b.accuracy - a.accuracy)
-  }, [attempts])
+  const unitAccuracyRows = useMemo(() => accuracyByUnit(attempts), [attempts])
 
-  const unlockedUnitsCount = Object.keys(progress?.unlocked_levels_by_unit || {}).length
+  const unlockedUnits = Object.keys(progress?.unlocked_levels_by_unit || {})
+  const unlockedUnitsCount = subject === 'all' ? unlockedUnits.length : unlockedUnits.filter(id => fromCourseUnitId(id).subject === subject).length
+  const totalUnitCount = (subject === 'all' ? TAB_SUBJECTS : [subject]).reduce((sum, s) => sum + unitsFor(s).length, 0)
 
+  // The WhatsApp message is about the student overall, whichever tab is open.
   // Only worth naming a weak unit once there's enough attempts there to mean
   // something — one unlucky attempt at a brand-new unit isn't "weak", it's noise.
-  const weakestUnit = unitAccuracyRows.length > 0 ? [...unitAccuracyRows].reverse().find(u => u.attempts >= 3) : null
+  const weakestUnit = [...accuracyByUnit(allAttempts)].reverse().find(u => u.attempts >= 3)
   const nudgeMessage = buildActivityMessage({
     name: student.name,
-    totalAttempts: attempts.length,
-    streak,
-    lastActiveIso: mostRecentAny?.submitted_at,
-    overallAccuracy,
+    totalAttempts: allAttempts.length,
+    streak: computeStreak(allAttempts),
+    lastActiveIso: mostRecent(allAttempts)?.submitted_at,
+    overallAccuracy: aggregateAccuracy(allAttempts),
     weakestUnitName: weakestUnit ? unitName(weakestUnit.unitId) : undefined,
   })
 
@@ -123,7 +162,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
             <div className="meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.875rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
               <code>{student.roll_number}</code>
               <span>Class {student.class} · {examTarget(student)}</span>
-              <span>{unlockedUnitsCount} / {TOTAL_UNIT_COUNT} units unlocked</span>
+              <span>{unlockedUnitsCount} / {totalUnitCount} {subject === 'all' ? '' : `${subject} `}units unlocked</span>
             </div>
           </div>
         </div>
@@ -147,10 +186,13 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
         )}
       </div>
 
+      <SubjectTabs value={subject} onChange={pickSubject}
+        counts={{ all: allAttempts.length + gsebAttempts.length, ...Object.fromEntries(TAB_SUBJECTS.map(s => [s, countFor(s)])) }} />
+
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-value">{attempts.length}</div>
-          <div className="stat-label">Total Attempts</div>
+          <div className="stat-label">Level Test Attempts</div>
           <div className="text-muted" style={{ marginTop: '0.35rem' }}>{groupEntries.length} topics · {distinctUnits.length} units</div>
         </div>
         <div className="stat-card">
@@ -192,7 +234,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               <div className="empty-state">No data yet</div>
             ) : unitAccuracyRows.map(row => (
               <div key={row.unitId} className="perf-bar-row" title={`${row.attempts} attempt${row.attempts !== 1 ? 's' : ''}`}>
-                <span className="perf-bar-label">{unitName(row.unitId)}</span>
+                <span className="perf-bar-label" title={unitName(row.unitId)}>{mixedSubjects ? `${SUBJECT_SHORT[fromCourseUnitId(row.unitId).subject]} · ` : ''}{unitName(row.unitId)}</span>
                 <span className="perf-bar-track">
                   <span className="perf-bar-fill" style={{ width: `${Math.max(row.accuracy, 3)}%` }} />
                 </span>
@@ -209,7 +251,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
           <button className={`chip ${unitFilter === 'all' ? 'active' : ''}`} onClick={() => setUnitFilter('all')}>All units</button>
           {distinctUnits.map(uid => (
             <button key={uid} className={`chip ${unitFilter === String(uid) ? 'active' : ''}`} onClick={() => setUnitFilter(String(uid))}>
-              Unit {uid}
+              {mixedSubjects ? `${SUBJECT_SHORT[fromCourseUnitId(uid).subject]} ` : ''}{unitNumberLabel(uid)}
             </button>
           ))}
         </div>
@@ -239,7 +281,7 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
                   <tr key={`${g.key}-${a.id}`} style={{ cursor: 'pointer' }} onClick={() => onOpenReview({ ...a, attempt_position: info.position })}>
                     {i === 0 && (
                       <td rowSpan={g.attemptsInfo.length} style={{ verticalAlign: 'top', borderRight: '1px solid var(--gray-100)', width: '200px', maxWidth: '200px' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>Unit {String(g.unitId).padStart(2, '0')}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase' }}>{fromCourseUnitId(g.unitId).subject} · {unitNumberLabel(g.unitId, { pad: true })}</div>
                         <div style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', fontWeight: 600, marginBottom: '0.35rem' }}>{unitName(g.unitId)}</div>
                         <div onClick={e => e.stopPropagation()} style={{ fontWeight: 700 }}>
                           {levelBadge(g.unitId, g.level, { pad: true })}
@@ -267,11 +309,60 @@ export default function StudentProfile({ student, progress, attempts, onOpenRevi
               })
             })}
             {visibleGroups.length === 0 && (
-              <tr><td colSpan={8} className="empty-state">No attempts for this filter</td></tr>
+              <tr><td colSpan={8} className="empty-state">{subject === 'all' ? 'No attempts for this filter' : `No ${subject} level tests yet`}</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {shownGseb.length > 0 && (
+        <>
+          <div className="section-head">
+            <h2 style={{ fontSize: '1.125rem', margin: 0 }}>GSEB Board Papers</h2>
+          </div>
+          <div className="table-wrap card" style={{ marginBottom: '1.5rem' }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Subject</th>
+                  <th style={{ textAlign: 'right' }}>Score</th>
+                  <th style={{ textAlign: 'right' }}>Correct</th>
+                  <th style={{ textAlign: 'right' }}>Wrong</th>
+                  <th style={{ textAlign: 'right' }}>Skipped</th>
+                  <th>Submitted</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {shownGseb.map(a => {
+                  const total = totalQuestions(a)
+                  const when = fmtWhen(a.submitted_at)
+                  const title = a.paper ? paperTitle(a.paper) : a.title || 'GSEB test'
+                  const open = () => onOpenReview({ ...a, kind: 'gseb', review_title: title })
+                  return (
+                    <tr key={a.id} style={{ cursor: 'pointer' }} onClick={open}>
+                      <td style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{title}</td>
+                      <td>{gsebSubject(a) || '—'}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 700, whiteSpace: 'nowrap' }}>{a.correct_count ?? 0}/{total}</td>
+                      <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>
+                      <td style={{ textAlign: 'right', color: 'var(--red)', fontWeight: 600 }}>{a.wrong_count ?? 0}</td>
+                      <td style={{ textAlign: 'right', color: 'var(--gray-400)', fontWeight: 600 }}>{a.skipped_count ?? 0}</td>
+                      <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>{when.day}, {when.time}</td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                          onClick={e => { e.stopPropagation(); open() }}>
+                          <Eye size={13} /> Review
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -296,7 +387,7 @@ function LastAttemptCard({ attempt, position, onOpen }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-              Unit {String(attempt.unit_id).padStart(2, '0')} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{position ?? attempt.attempt_number}
+              {subjectOfAttempt(attempt)} · {unitNumberLabel(attempt.unit_id, { pad: true })} · {levelBadge(attempt.unit_id, attempt.level, { pad: true })} · Attempt #{position ?? attempt.attempt_number}
             </div>
             <div style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--gray-800)', marginTop: '0.15rem' }} onClick={e => e.stopPropagation()}>
               {levelBadge(attempt.unit_id, attempt.level)}

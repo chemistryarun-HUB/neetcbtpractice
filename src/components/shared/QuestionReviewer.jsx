@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Pencil, Lock } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Pencil, Lock, Languages } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 import { deriveFullTopic, unitIdOf } from '../../lib/topics'
 import { levelBadge } from '../../lib/constants'
 import { hasAnyFieldLock, lockSummary } from '../../lib/fieldLocks'
@@ -50,6 +51,10 @@ export default function QuestionReviewer({
 }) {
   const [mode, setMode] = useState('student')   // 'student' | 'admin'
   const [editing, setEditing] = useState(startInEdit)
+  // Gujarati questions: show the English original they were translated from.
+  // Moving to another question goes back to Gujarati.
+  const [showEnglish, setShowEnglish] = useState(false)
+  const [englishByQid, setEnglishByQid] = useState({})   // qid → row | null (not found)
   const paletteRef = useRef(null)
   const contentRef = useRef(null)
 
@@ -71,6 +76,7 @@ export default function QuestionReviewer({
   const mounted = useRef(false)
   useEffect(() => {
     if (mounted.current) setEditing(false)
+    setShowEnglish(false)
     mounted.current = true
     if (contentRef.current) contentRef.current.scrollTop = 0
   }, [q?.id])
@@ -113,6 +119,14 @@ export default function QuestionReviewer({
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   })   // no dep array: handlers close over index/editing/q, which change every render
+
+  // A Gujarati question's English twin has the same Q ID without the G.
+  const englishQid = q && (q.medium === 'gu' || /G$/.test(q.qid || '')) ? (q.qid || '').replace(/G$/, '') : null
+  useEffect(() => {
+    if (!showEnglish || !englishQid || englishQid in englishByQid) return
+    supabase.from('questions').select('*').eq('qid', englishQid).maybeSingle()
+      .then(({ data }) => setEnglishByQid(m => ({ ...m, [englishQid]: data || null })))
+  }, [showEnglish, englishQid])
 
   if (!q) return null
 
@@ -257,9 +271,34 @@ export default function QuestionReviewer({
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '1.5rem 2.25rem 2rem',
               opacity: isInactive ? 0.7 : 1,
             }}>
+              {englishQid && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.5rem', margin: '-0.75rem -1.25rem 0.5rem 0' }}>
+                  <button type="button" onClick={() => setShowEnglish(v => !v)}
+                    title={showEnglish ? 'Back to the Gujarati question' : 'See the English original of this question'}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', fontWeight: 700,
+                      padding: '0.2rem 0.55rem', borderRadius: 999, cursor: 'pointer',
+                      border: '1.5px solid var(--primary)',
+                      background: showEnglish ? 'var(--primary)' : '#fff',
+                      color: showEnglish ? '#fff' : 'var(--primary)',
+                    }}>
+                    <Languages size={13} /> {showEnglish ? 'ગુજરાતી' : 'English'}
+                  </button>
+                </div>
+              )}
               {/* No "Q1." label here: the number is already in the palette and
                   the top bar, and the question should start at the top. */}
-              <QuestionView q={q} mode={mode} size="full" />
+              {showEnglish && englishQid ? (
+                !(englishQid in englishByQid) ? (
+                  <div style={{ color: 'var(--gray-500)', fontSize: '0.875rem' }}>Loading the English question…</div>
+                ) : englishByQid[englishQid] ? (
+                  <QuestionView q={englishByQid[englishQid]} mode={mode} size="full" />
+                ) : (
+                  <div style={{ color: '#b45309', fontSize: '0.875rem' }}>No English question with Q ID {englishQid}.</div>
+                )
+              ) : (
+                <QuestionView q={q} mode={mode} size="full" />
+              )}
               {mode === 'student' && (
                 <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
                   Exactly how a student sees this question — options are shuffled during the actual test.
