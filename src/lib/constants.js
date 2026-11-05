@@ -321,6 +321,12 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Motion in Plane & Circular Motion', 'Shortest path, condition for collision, centripetal & tangential acceleration'],
     ['Relative Motion in 2D', 'River & man, rain & man/umbrella'],
   ]),
+  5: physicsLevels([
+    ['Inertia & Momentum', 'Types of inertia, linear momentum, change in linear momentum, impulse'],
+    ['Normal & Tension', '2nd law, normal force, tension, pulley system, equilibrium of concurrent forces'],
+    ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
+    ['Friction', 'Contact force, banking of road, angle of friction & repose'],
+  ]),
   17: physicsLevels([
     ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
     ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
