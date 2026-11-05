@@ -308,7 +308,7 @@ create policy "Dupe dismissals accessible by all" on dupe_dismissals
 create table if not exists mistake_entries (
   id uuid primary key default uuid_generate_v4(),
   student_id uuid not null references students(id) on delete cascade,
-  question_id uuid not null references questions(id) on delete cascade,
+  question_id uuid not null,  -- questions or gseb_questions
   error_type text check (error_type is null or error_type in ('conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other')),
   error_other text,
   reason text,
@@ -326,7 +326,7 @@ create table if not exists mistake_entries (
 create table if not exists mistake_retries (
   id uuid primary key default uuid_generate_v4(),
   student_id uuid not null references students(id) on delete cascade,
-  question_id uuid not null references questions(id) on delete cascade,
+  question_id uuid not null,  -- questions or gseb_questions
   selected text not null,
   option_order text[],
   created_at timestamptz not null default now()

@@ -9,9 +9,8 @@ import { ensureKatex } from '../components/shared/MathText'
 import QuestionView from '../components/shared/QuestionView'
 import { correctOptionKey } from './questionOptions'
 import { orderOptionsForReview } from './optionShuffle'
-import { groupByTest, testDate, testMarks } from './mistakeCopy'
-import { levelBadgeT, neetT, unitName } from './neetI18n'
-import { fromCourseUnitId, practiceUnitName } from './subjects'
+import { groupByTest, testDate, testMarks, testName } from './mistakeCopy'
+import { neetT } from './neetI18n'
 
 // A4 at 96 px per inch.
 const PAGE = { w: 794, h: 1123, margin: 38, foot: 26 }
@@ -29,8 +28,7 @@ function answerLabel(options, isChosen, t) {
 
 function TestHeader({ student, group, medium, t }) {
   const { attempt } = group.test
-  const { unit } = fromCourseUnitId(group.unitId)
-  const name = `${t.unit(unit)} · ${unitName({ name: practiceUnitName(group.unitId) }, group.unitId, medium)} · ${levelBadgeT(group.unitId, attempt.level, medium)} · ${t.mcAttempt(group.test.position)}`
+  const name = testName(group, medium, t)
   const marks = testMarks(attempt)
   return (
     <div className="mr-head">

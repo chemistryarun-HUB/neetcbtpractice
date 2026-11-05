@@ -9,6 +9,8 @@ import ClassLeaderboard from '../../components/performance/ClassLeaderboard'
 import ClassReport from '../../components/performance/ClassReport'
 import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
 import { ContactsHiddenContext } from '../../components/performance/contactsContext'
+import SubjectTabs from '../../components/shared/SubjectTabs'
+import { fromCourseUnitId } from '../../lib/constants'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -39,6 +41,7 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
   const [view, setView] = useState('profile')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [reviewAttempt, setReviewAttempt] = useState(null)
+  const [classSubject, setClassSubject] = useState('all')
 
   useEffect(() => {
     async function load() {
@@ -96,6 +99,21 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
     return map
   }, [attempts])
 
+  // Class Report and Leaderboard read only this, so every number on them follows
+  // the tab. A student's own profile has its own tabs.
+  const classAttemptsByStudent = useMemo(() => {
+    if (classSubject === 'all') return attemptsByStudent
+    return Object.fromEntries(Object.entries(attemptsByStudent).map(([id, rows]) => [id, rows.filter(a => fromCourseUnitId(a.unit_id).subject === classSubject)]))
+  }, [attemptsByStudent, classSubject])
+  const classSubjectCounts = useMemo(() => {
+    const counts = { all: attempts.length }
+    for (const a of attempts) {
+      const s = fromCourseUnitId(a.unit_id).subject
+      counts[s] = (counts[s] || 0) + 1
+    }
+    return counts
+  }, [attempts])
+
   const selectedStudent = students.find(s => s.id === selectedStudentId) || null
 
   function handleSelectStudent(id) {
@@ -146,12 +164,17 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
               )}
             </div>
 
+            {students.length > 0 && view !== 'profile' && (
+              <SubjectTabs value={classSubject} onChange={setClassSubject} counts={classSubjectCounts} />
+            )}
+
             {students.length === 0 ? (
               <div className="empty-state">No students yet. Add students from the Students tab.</div>
             ) : view === 'leaderboard' ? (
               <ClassLeaderboard
                 students={students}
-                attemptsByStudent={attemptsByStudent}
+                attemptsByStudent={classAttemptsByStudent}
+                onlyWithAttempts={classSubject !== 'all'}
                 selectedClass={selectedClass}
                 onSelectClass={setSelectedClass}
                 selectedStudentId={selectedStudentId}
@@ -162,7 +185,7 @@ export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideConta
             ) : view === 'classReport' ? (
               <ClassReport
                 students={students}
-                attemptsByStudent={attemptsByStudent}
+                attemptsByStudent={classAttemptsByStudent}
                 selectedClass={selectedClass}
                 onSelectClass={setSelectedClass}
                 onSelectStudent={handleSelectStudent}

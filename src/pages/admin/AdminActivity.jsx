@@ -7,7 +7,7 @@ import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import { fromCourseUnitId } from '../../lib/constants'
 import { practiceUnitName } from '../../lib/subjects'
-import { GSEB_SUBJECT_LABELS } from '../../lib/gseb'
+import { GSEB_SUBJECT_LABELS, paperTitle } from '../../lib/gseb'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -86,10 +86,15 @@ export default function AdminActivity() {
   const [openStudent, setOpenStudent] = useState(null)   // expanded row in "By student"
   const [review, setReview] = useState(null)             // practice attempt under review
 
-  // A level-practice test opens the same answer-by-answer review as Performance,
-  // a GSEB test its result page; practice papers go to the student's Performance.
+  // Level practice and GSEB tests open the same answer-by-answer review as
+  // Performance; practice papers go to the student's Performance page.
   async function openReview(e) {
-    if (e.kind === 'gseb') { navigate(`/admin/gseb/result/${e.id}`); return }
+    if (e.kind === 'gseb') {
+      const { data, error } = await supabase.from('gseb_attempts').select('*, paper:gseb_papers(subject, year, session, set_no, medium)').eq('id', e.id).single()
+      if (error) { toast.error(error.message); return }
+      setReview({ ...data, kind: 'gseb', review_title: data.paper ? paperTitle(data.paper) : data.title || 'GSEB test' })
+      return
+    }
     if (e.kind !== 'practice') { navigate(`/admin/performance?student=${e.student_id}`); return }
     const { data, error } = await supabase.from('test_attempts').select(ATTEMPT_COLUMNS).eq('id', e.id).single()
     if (error) { toast.error(error.message); return }

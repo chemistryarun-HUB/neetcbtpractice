@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Eye, MessageCircle } from 'lucide-react'
 import InfoTooltip from '../shared/InfoTooltip'
+import SubjectTabs, { TAB_SUBJECTS } from '../shared/SubjectTabs'
 import {
   unitName, unitNumberLabel, levelDef, totalQuestions, accuracyOf, aggregateAccuracy, avgTimePerQuestion,
   computeStreak, clearedInfo, attemptClearedOwnBar, attemptsInOrder, trendLabel, groupByUnitLevel, mostRecent, fmtDuration, fmtWhen,
@@ -11,14 +11,11 @@ import { fromCourseUnitId, levelBadge } from '../../lib/constants'
 import { unitsFor } from '../../lib/subjects'
 import { GSEB_SUBJECT_LABELS, paperTitle } from '../../lib/gseb'
 import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../hooks/useAuth'
 import { examTarget } from '../../lib/students'
 
-const SUBJECTS = ['Chemistry', 'Physics', 'Biology']
 const SUBJECT_SHORT = { Chemistry: 'Chem', Physics: 'Phy', Biology: 'Bio' }
 const subjectOfAttempt = a => fromCourseUnitId(a.unit_id).subject
 const gsebSubject = a => GSEB_SUBJECT_LABELS[a.paper?.subject || a.subject] || null
-const RESULT_BASE = { student: '/student', admin: '/admin', faculty: '/faculty' }
 
 function accuracyByUnit(list) {
   const byUnit = {}
@@ -46,8 +43,6 @@ function initials(name) {
 }
 
 export default function StudentProfile({ student, progress, attempts: allAttempts, onOpenReview, showContactActions = true }) {
-  const navigate = useNavigate()
-  const { role } = useAuth()
   const [unitFilter, setUnitFilter] = useState('all')
   const [subject, setSubject] = useState('all')
   const [gsebAttempts, setGsebAttempts] = useState([])
@@ -58,7 +53,7 @@ export default function StudentProfile({ student, progress, attempts: allAttempt
     setSubject('all')
     setUnitFilter('all')
     supabase.from('gseb_attempts')
-      .select('id, paper_id, mode, subject, title, score, correct_count, wrong_count, skipped_count, time_taken, submitted_at, paper:gseb_papers(subject, year, session, set_no, medium)')
+      .select('id, student_id, paper_id, mode, subject, title, score, correct_count, wrong_count, skipped_count, time_taken, submitted_at, question_ids, answers, paper:gseb_papers(subject, year, session, set_no, medium)')
       .eq('student_id', student.id).eq('submitted', true).order('submitted_at', { ascending: false })
       .then(({ data }) => { if (!cancelled) setGsebAttempts(data || []) })
     return () => { cancelled = true }
@@ -137,7 +132,7 @@ export default function StudentProfile({ student, progress, attempts: allAttempt
 
   const unlockedUnits = Object.keys(progress?.unlocked_levels_by_unit || {})
   const unlockedUnitsCount = subject === 'all' ? unlockedUnits.length : unlockedUnits.filter(id => fromCourseUnitId(id).subject === subject).length
-  const totalUnitCount = (subject === 'all' ? SUBJECTS : [subject]).reduce((sum, s) => sum + unitsFor(s).length, 0)
+  const totalUnitCount = (subject === 'all' ? TAB_SUBJECTS : [subject]).reduce((sum, s) => sum + unitsFor(s).length, 0)
 
   // The WhatsApp message is about the student overall, whichever tab is open.
   // Only worth naming a weak unit once there's enough attempts there to mean
@@ -191,16 +186,8 @@ export default function StudentProfile({ student, progress, attempts: allAttempt
         )}
       </div>
 
-      <div className="perf-subjects" role="tablist" aria-label="Subject">
-        <button role="tab" aria-selected={subject === 'all'} className={subject === 'all' ? 'active' : ''} onClick={() => pickSubject('all')}>
-          All <span>{allAttempts.length + gsebAttempts.length}</span>
-        </button>
-        {SUBJECTS.map(s => (
-          <button key={s} role="tab" aria-selected={subject === s} className={subject === s ? 'active' : ''} onClick={() => pickSubject(s)}>
-            {s} <span>{countFor(s)}</span>
-          </button>
-        ))}
-      </div>
+      <SubjectTabs value={subject} onChange={pickSubject}
+        counts={{ all: allAttempts.length + gsebAttempts.length, ...Object.fromEntries(TAB_SUBJECTS.map(s => [s, countFor(s)])) }} />
 
       <div className="stats-grid">
         <div className="stat-card">
@@ -351,10 +338,11 @@ export default function StudentProfile({ student, progress, attempts: allAttempt
                 {shownGseb.map(a => {
                   const total = totalQuestions(a)
                   const when = fmtWhen(a.submitted_at)
-                  const open = () => navigate(`${RESULT_BASE[role] || '/student'}/gseb/result/${a.id}`, { state: { back: true } })
+                  const title = a.paper ? paperTitle(a.paper) : a.title || 'GSEB test'
+                  const open = () => onOpenReview({ ...a, kind: 'gseb', review_title: title })
                   return (
                     <tr key={a.id} style={{ cursor: 'pointer' }} onClick={open}>
-                      <td style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{a.paper ? paperTitle(a.paper) : a.title || 'GSEB test'}</td>
+                      <td style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{title}</td>
                       <td>{gsebSubject(a) || '—'}</td>
                       <td style={{ textAlign: 'right', fontWeight: 700, whiteSpace: 'nowrap' }}>{a.correct_count ?? 0}/{total}</td>
                       <td style={{ textAlign: 'right', color: 'var(--green)', fontWeight: 600 }}>{a.correct_count ?? 0}</td>

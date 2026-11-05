@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
+import MathText from '../shared/MathText'
 import InfoTooltip from '../shared/InfoTooltip'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { attemptGrading } from '../../lib/attemptGrading'
@@ -129,10 +130,12 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
     return () => window.removeEventListener('keydown', onKey)
   })   // no dep array: the handler closes over index/visible, which change every render
 
+  // A GSEB attempt has no unit or level, and is 1 mark a question.
+  const gseb = attempt.kind === 'gseb'
   const total = totalQuestions(attempt)
-  const maxScore = total * MARKS_CORRECT
-  const lDef = levelDef(attempt.unit_id, attempt.level)
-  const syllabus = [unitName(attempt.unit_id), lDef && `${lDef.name}${lDef.topic && lDef.topic !== lDef.name ? ` — ${lDef.topic}` : ''}`]
+  const maxScore = gseb ? total : total * MARKS_CORRECT
+  const lDef = gseb ? null : levelDef(attempt.unit_id, attempt.level)
+  const syllabus = gseb ? '' : [unitName(attempt.unit_id), lDef && `${lDef.name}${lDef.topic && lDef.topic !== lDef.name ? ` — ${lDef.topic}` : ''}`]
     .filter(Boolean).join(' · ')
 
   return (
@@ -148,10 +151,16 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         {/* "·" between every pair: "Unit 01 Level 03" butts two numbers
             together — the "Level 3 2 times" misread this app has hit before. */}
         <div className="ar-title">
-          <span>{fromCourseUnitId(attempt.unit_id).subject !== 'Chemistry' && `${fromCourseUnitId(attempt.unit_id).subject} · `}{unitNumberLabel(attempt.unit_id, { pad: true })}</span>
-          <span className="ar-sep">·</span>
-          <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
-          <InfoTooltip text={syllabus} align="left" />
+          {gseb ? (
+            <span className="ar-gseb-title" title={attempt.review_title}>{attempt.review_title}</span>
+          ) : (
+            <>
+              <span>{fromCourseUnitId(attempt.unit_id).subject !== 'Chemistry' && `${fromCourseUnitId(attempt.unit_id).subject} · `}{unitNumberLabel(attempt.unit_id, { pad: true })}</span>
+              <span className="ar-sep">·</span>
+              <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
+              <InfoTooltip text={syllabus} align="left" />
+            </>
+          )}
           {attemptNo != null && (
             <span className="ar-attempt"><span className="ar-sep">·</span><span className="ar-wide-only">Attempt </span>#{attemptNo}</span>
           )}
@@ -260,6 +269,12 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 </div>
               )}
 
+              {(cur.q.explanation || cur.q.explanation_image) && (
+                <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--gray-50)', borderRadius: 8, fontSize: '0.9375rem', whiteSpace: 'pre-wrap' }}>
+                  <strong>Explanation:</strong> <MathText text={cur.q.explanation} />
+                  {cur.q.explanation_image && <img src={cur.q.explanation_image} alt="Explanation" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
+                </div>
+              )}
             </div>
           )}
         </div>

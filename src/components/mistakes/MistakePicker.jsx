@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronRight, RotateCcw, X } from 'lucide-react'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
-import { ERROR_TYPES, groupByChapter } from '../../lib/mistakeCopy'
-import { levelBadgeT, levelName, neetT, unitName } from '../../lib/neetI18n'
-import { fromCourseUnitId, practiceUnitName } from '../../lib/subjects'
+import { ERROR_TYPES, groupByChapter, groupLabel } from '../../lib/mistakeCopy'
+import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
 
 const NOT_MARKED = 'none'
-const levelKey = (unitId, level) => `${unitId}-${level}`
-const itemLevelKey = it => levelKey(it.unitId, it.level)
+const levelKey = (groupKey, level) => `${groupKey}-${level}`
+const itemLevelKey = it => levelKey(it.groupKey, it.level)
 const statusOf = it => (it.wrongCount > 0 ? 'wrong' : 'skipped')
 const typeOf = it => it.entry?.error_type || NOT_MARKED
 
@@ -20,15 +19,15 @@ function Check({ state, onChange, label }) {
 // Chooses which pending questions go into a re-attempt: wrong or skipped, Error
 // Type, chapter and level, in any mix. Each filter's counts allow for the other
 // filters, so a number on screen is always how many questions tapping it gives.
-export default function MistakePicker({ items, medium, presetUnit = null, rightToday = 0, onStart, onClose }) {
+export default function MistakePicker({ items, medium, presetGroup = null, rightToday = 0, onStart, onClose }) {
   useBodyScrollLock()
   const t = neetT(medium)
   const [status, setStatus] = useState('both')
   const [errorType, setErrorType] = useState('all')
   const [excluded, setExcluded] = useState(() => new Set(
-    presetUnit == null ? [] : items.filter(it => it.unitId !== presetUnit).map(itemLevelKey)
+    presetGroup == null ? [] : items.filter(it => it.groupKey !== presetGroup).map(itemLevelKey)
   ))
-  const [expanded, setExpanded] = useState(() => new Set(presetUnit == null ? [] : [presetUnit]))
+  const [expanded, setExpanded] = useState(() => new Set(presetGroup == null ? [] : [presetGroup]))
 
   useEffect(() => {
     function onKey(e) { if (e.key === 'Escape') onClose() }
@@ -58,7 +57,7 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
   const inFilters = it => passStatus(it) && passType(it)
   const multiSubject = new Set(units.map(u => u.subject)).size > 1
 
-  const allLevelKeys = units.flatMap(u => u.levels.map(l => levelKey(u.unitId, l.level)))
+  const allLevelKeys = units.flatMap(u => u.levels.map(l => levelKey(u.key, l.level)))
   const stateOf = keys => {
     const off = keys.filter(k => excluded.has(k)).length
     return off === 0 ? 'all' : off === keys.length ? 'none' : 'some'
@@ -71,10 +70,10 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
       return next
     })
   }
-  function toggleExpanded(unitId) {
+  function toggleExpanded(groupKey) {
     setExpanded(prev => {
       const next = new Set(prev)
-      if (next.has(unitId)) next.delete(unitId); else next.add(unitId)
+      if (next.has(groupKey)) next.delete(groupKey); else next.add(groupKey)
       return next
     })
   }
@@ -120,24 +119,25 @@ export default function MistakePicker({ items, medium, presetUnit = null, rightT
                 <span className="mcp-name">{t.mcAllChapters}</span>
               </label>
               {units.map(unit => {
-                const keys = unit.levels.map(l => levelKey(unit.unitId, l.level))
-                const open = expanded.has(unit.unitId)
+                const keys = unit.levels.map(l => levelKey(unit.key, l.level))
+                const open = expanded.has(unit.key) && unit.levels.length > 1
+                const label = groupLabel(unit, medium, t)
                 const subjectHead = multiSubject && unit.subject !== lastSubject
                 lastSubject = unit.subject
                 const unitCount = unit.items.filter(inFilters).length
                 return (
-                  <div key={unit.unitId}>
+                  <div key={unit.key}>
                     {subjectHead && <div className="mcp-subject">{t.subject[unit.subject] || unit.subject}</div>}
                     <div className="mcp-row">
-                      <Check state={stateOf(keys)} label={practiceUnitName(unit.unitId)} onChange={() => toggleKeys(keys)} />
-                      <button className="mcp-name mcp-unit" onClick={() => (unit.levels.length > 1 ? toggleExpanded(unit.unitId) : toggleKeys(keys))}>
-                        <span>{t.unit(fromCourseUnitId(unit.unitId).unit)}: {unitName({ name: practiceUnitName(unit.unitId) }, unit.unitId, medium)}</span>
+                      <Check state={stateOf(keys)} label={label} onChange={() => toggleKeys(keys)} />
+                      <button className="mcp-name mcp-unit" onClick={() => (unit.levels.length > 1 ? toggleExpanded(unit.key) : toggleKeys(keys))}>
+                        <span>{label}</span>
                         {unit.levels.length > 1 && <ChevronRight size={15} className={`mcp-chev${open ? ' open' : ''}`} />}
                       </button>
                       <span className="mcp-count">{unitCount}</span>
                     </div>
                     {open && unit.levels.map(level => {
-                      const key = levelKey(unit.unitId, level.level)
+                      const key = levelKey(unit.key, level.level)
                       const name = levelName(unit.unitId, level.level, medium)
                       const badge = levelBadgeT(unit.unitId, level.level, medium)
                       return (

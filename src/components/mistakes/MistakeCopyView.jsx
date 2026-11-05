@@ -6,18 +6,19 @@ import MathText from '../shared/MathText'
 import MistakePicker from './MistakePicker'
 import MistakeRetest from './MistakeRetest'
 import MistakeStudy, { itemKind } from './MistakeStudy'
+import SubjectTabs, { TAB_SUBJECTS } from '../shared/SubjectTabs'
 import {
-  buildMistakeCopy, errorSummary, groupByChapter, groupByTest, loadMistakeData,
-  saveMistakeEntry, setMistakesChecked, testDate, testMarks,
+  buildMistakeCopy, errorSummary, groupByChapter, groupByTest, groupName, loadMistakeData,
+  saveMistakeEntry, setMistakesChecked, testDate, testMarks, testName,
 } from '../../lib/mistakeCopy'
-import { levelBadgeT, levelName, neetT, unitName } from '../../lib/neetI18n'
-import { practiceUnitName, fromCourseUnitId } from '../../lib/subjects'
+import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
 
 const FILTERS = [
   ['all', 'mcFilterAll', () => true],
   ['wrong', 'mcFilterWrong', it => it.wrongCount > 0],
   ['skipped', 'mcFilterSkipped', it => it.wrongCount === 0],
   ['repeat', 'mcFilterRepeat', it => it.repeat],
+  ['gseb', 'mcFilterGseb', it => it.source === 'gseb'],
 ]
 
 // Every page is an image: a whole heavy copy would hang a phone, so past this
@@ -76,7 +77,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   const items = useMemo(() => (data ? buildMistakeCopy(data) : []), [data])
   const byId = useMemo(() => new Map(items.map(it => [it.q.id, it])), [items])
-  const subjects = useMemo(() => [...new Set(items.map(it => it.subject))], [items])
+  const subjectCounts = { all: items.length, ...Object.fromEntries(TAB_SUBJECTS.map(s => [s, items.filter(it => it.subject === s).length])) }
   const inSubject = subject === 'all' ? items : items.filter(it => it.subject === subject)
   const pending = inSubject.filter(it => it.status === 'pending')
   const cleared = inSubject.filter(it => it.status === 'cleared')
@@ -164,7 +165,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
       <div className="mc-title">
         <div>
           <h2>{t.mistakeCopy}{teacher ? ` · ${student.name}` : ''}</h2>
-          <p>{teacher ? 'Wrong and skipped questions from level tests. Students re-attempt from their own login.' : t.mistakeIntro}</p>
+          <p>{teacher ? 'Wrong and skipped questions from level tests and GSEB papers. Students re-attempt from their own login.' : t.mistakeIntro}</p>
         </div>
         {visible.length > 0 && visible.length <= MAX_PDF_QUESTIONS && (
           <button className="btn btn-ghost btn-sm mc-icon-btn" onClick={() => downloadPdf(visible)} disabled={!!pdfProgress}>
@@ -184,14 +185,8 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
         </div>
       ) : (
         <>
-          {subjects.length > 1 && (
-            <div className="mc-pills mc-subjects">
-              <button className={`mc-pill${subject === 'all' ? ' active' : ''}`} onClick={() => setSubject('all')}>{t.mcFilterAll}</button>
-              {subjects.map(s => (
-                <button key={s} className={`mc-pill${subject === s ? ' active' : ''}`} onClick={() => setSubject(s)}>{t.subject[s] || s}</button>
-              ))}
-            </div>
-          )}
+          <SubjectTabs value={subject} onChange={s => { setSubject(s); setFilter('all') }} counts={subjectCounts}
+            labels={t.subject} allLabel={t.mcFilterAll} />
 
           <section className="mc-hero">
             <div className="mc-hero-main">
@@ -209,7 +204,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             </div>
             {editable && pending.length > 0 && (
               <div className="mc-hero-action">
-                <button className="btn btn-primary mc-hero-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetUnit: null })}>
+                <button className="btn btn-primary mc-hero-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetGroup: null })}>
                   <RotateCcw size={17} /> {t.mcReattemptBtn}
                 </button>
                 {ready.length === 0 && <small>{t.mcNoneReady}</small>}
@@ -257,22 +252,24 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             const unchecked = group.items.filter(it => !it.entry?.checked_at).map(it => it.q.id)
             const retryable = group.items.filter(it => it.canRetry)
             const wrong = group.items.filter(it => it.wrongCount > 0).length
-            const showSubject = view === 'chapter' && subjects.length > 1 && subject === 'all' && group.subject !== lastSubject
+            const showSubject = view === 'chapter' && subject === 'all' && group.subject !== lastSubject
             lastSubject = group.subject
-            const { unit } = fromCourseUnitId(group.unitId)
+            const { attempt } = group.test || {}
             return (
               <div key={group.key}>
                 {showSubject && <h3 className="mc-subject-head">{t.subject[group.subject] || group.subject}</h3>}
                 <div className={`mc-unit${isOpen ? ' open' : ''}`}>
                   <button className="mc-unit-head" aria-expanded={isOpen} onClick={() => setOpenGroups(g => ({ ...g, [group.key]: !isOpen }))}>
-                    <span className="unit-num">{unit}</span>
+                    <span className="unit-num">{group.groupNumber ?? '–'}</span>
                     <span className="mc-unit-title">
-                      <strong>{unitName({ name: practiceUnitName(group.unitId) }, group.unitId, medium)}</strong>
+                      {view === 'test' && group.source === 'gseb'
+                        ? <strong>GSEB · {testName(group, medium, t)}</strong>
+                        : <strong>{groupName(group, medium)}</strong>}
                       {view === 'chapter' ? (
                         tab === 'pending' && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
                       ) : (
                         <small>
-                          {levelBadgeT(group.unitId, group.test.attempt.level, medium)} · {t.mcAttempt(group.test.position)} · {testDate(group.test.attempt)} · {t.mcMarks(testMarks(group.test.attempt).score, testMarks(group.test.attempt).max)}
+                          {group.source !== 'gseb' && `${levelBadgeT(group.unitId, attempt.level, medium)} · `}{t.mcAttempt(group.test.position)} · {testDate(attempt)} · {t.mcMarks(testMarks(attempt).score, testMarks(attempt).max)}
                         </small>
                       )}
                     </span>
@@ -285,7 +282,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                       <div className="mc-unit-actions">
                         {editable && tab === 'pending' && retryable.length > 0 && (
                           <button className="btn btn-primary btn-sm mc-icon-btn"
-                            onClick={() => (view === 'chapter' ? setPicker({ presetUnit: group.unitId }) : startRetest(retryable))}>
+                            onClick={() => (view === 'chapter' ? setPicker({ presetGroup: group.key }) : startRetest(retryable))}>
                             <RotateCcw size={14} /> {view === 'chapter' ? t.mcReattemptChapter : t.mcReattemptTest}
                           </button>
                         )}
@@ -300,7 +297,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                       </div>
                       {view === 'chapter' ? group.levels.map(level => (
                         <div key={level.level}>
-                          <div className="mc-level-head">{levelBadgeT(group.unitId, level.level, medium)}{levelName(group.unitId, level.level, medium) ? ` · ${levelName(group.unitId, level.level, medium)}` : ''}</div>
+                          {level.level != null && (
+                            <div className="mc-level-head">{levelBadgeT(group.unitId, level.level, medium)}{levelName(group.unitId, level.level, medium) ? ` · ${levelName(group.unitId, level.level, medium)}` : ''}</div>
+                          )}
                           {renderRows(level.items, group.levels.flatMap(l => l.items))}
                         </div>
                       )) : renderRows(group.items, group.items)}
@@ -314,7 +313,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
       )}
 
       {picker && (
-        <MistakePicker items={ready} medium={medium} presetUnit={picker.presetUnit} rightToday={pending.length - ready.length}
+        <MistakePicker items={ready} medium={medium} presetGroup={picker.presetGroup} rightToday={pending.length - ready.length}
           onStart={startRetest} onClose={() => setPicker(null)} />
       )}
 

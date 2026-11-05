@@ -1,62 +1,46 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ArrowLeft, RotateCcw } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
-import QuestionView from '../../components/shared/QuestionView'
-import MathText from '../../components/shared/MathText'
+import AttemptReviewer from '../../components/performance/AttemptReviewer'
 import { attemptGrading } from '../../lib/attemptGrading'
-import { optionEntries } from '../../lib/questionOptions'
 import { fmtDuration } from '../../lib/performanceMetrics'
-import { paperTitle, paperTag, chapterBreakdown, gsebQid } from '../../lib/gseb'
+import { paperTitle, chapterBreakdown, GSEB_QUESTION_SELECT, gsebReviewQuestion } from '../../lib/gseb'
 import { startGsebPractice } from '../../lib/gsebBank'
 
 const STATUS_LABEL = { correct: 'Correct', wrong: 'Wrong', skipped: 'Skipped' }
-const STATUS_COLOR = { correct: '#15803d', wrong: '#b91c1c', skipped: '#b45309' }
 
 export default function GsebResultPage() {
   const { attemptId } = useParams()
-  const { user, role } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-  // Also how admin and faculty read a student's paper: the same page, any
-  // student's attempt, nothing to re-attempt.
-  const teacher = role !== 'student'
-  const homePath = role === 'admin' ? '/admin' : role === 'faculty' ? '/faculty/dashboard' : '/student/dashboard'
-  const [studentName, setStudentName] = useState('')
   const [attempt, setAttempt] = useState(null)
   const [paper, setPaper] = useState(null)
   const [questions, setQuestions] = useState([])
-  const [filter, setFilter] = useState(null) // null | 'correct' | 'wrong' | 'skipped'
+  const [review, setReview] = useState(null) // null | 'all' | 'correct' | 'wrong' | 'skipped'
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      let query = supabase.from('gseb_attempts').select('*').eq('id', attemptId).eq('submitted', true)
-      if (!teacher) query = query.eq('student_id', user.id)
-      const { data: att } = await query.single()
-      if (!att) { navigate(teacher ? homePath : '/student/gseb', { replace: true }); return }
-      if (teacher) {
-        const { data: s } = await supabase.from('students').select('name').eq('id', att.student_id).maybeSingle()
-        setStudentName(s?.name || '')
-      }
+      const { data: att } = await supabase.from('gseb_attempts').select('*')
+        .eq('id', attemptId).eq('student_id', user.id).eq('submitted', true).single()
+      if (!att) { navigate('/student/gseb', { replace: true }); return }
       // Chapter-wise tests have no paper_id; their questions carry
       // their own paper so the review can say which year each came from.
       const [{ data: p }, { data: qs }] = await Promise.all([
         att.paper_id ? supabase.from('gseb_papers').select('*').eq('id', att.paper_id).single() : { data: null },
-        supabase.from('gseb_questions').select('*, paper:gseb_papers(year, session, subject, medium, set_no)').in('id', att.question_ids),
+        supabase.from('gseb_questions').select(GSEB_QUESTION_SELECT).in('id', att.question_ids),
       ])
-      const byId = Object.fromEntries((qs || []).map(q => [q.id, q]))
+      const byId = Object.fromEntries((qs || []).map(q => [q.id, gsebReviewQuestion(q)]))
       setAttempt(att)
       setPaper(p)
       setQuestions((att.question_ids || []).map(id => byId[id]).filter(Boolean))
       setLoading(false)
     }
     load()
-  }, [attemptId, user?.id, teacher, homePath, navigate])
-
-  const grading = useMemo(() => attemptGrading(attempt), [attempt])
+  }, [attemptId, user.id, navigate])
 
   async function again() {
     if (attempt.paper_id) { navigate(`/student/gseb/test/${attempt.paper_id}`); return }
@@ -77,24 +61,20 @@ export default function GsebResultPage() {
   const pct = total ? Math.round((attempt.score / total) * 100) : 0
   const ringColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626'
   const subject = paper?.subject || attempt.subject
-  const practice = !attempt.paper_id
+  const grading = attemptGrading(attempt)
   const chapters = subject ? chapterBreakdown(subject, questions, q => grading.statusOf(q)) : []
-  const visible = filter ? questions.filter(q => grading.statusOf(q) === filter) : questions
+  const title = paper ? paperTitle(paper) : attempt.title || 'GSEB test'
 
   return (
     <div className="dashboard">
       <header className="topbar">
-        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate(homePath)}>NEETCBT</div>
+        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate('/student/dashboard')}>NEETCBT</div>
       </header>
       <div className="page-content" style={{ maxWidth: 900, margin: '0 auto' }}>
-        {teacher || location.state?.back ? (
-          <button className="back-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }} onClick={() => navigate(-1)}><ArrowLeft size={15} /> Back</button>
-        ) : (
-          <Link to="/student/gseb" className="back-btn"><ArrowLeft size={15} /> All GSEB papers</Link>
-        )}
+        <Link to="/student/gseb" className="back-btn"><ArrowLeft size={15} /> All GSEB papers</Link>
 
         <div className="rp-hero">
-          <div className="rp-hero-label">{studentName ? `${studentName} · ` : ''}{paper ? paperTitle(paper) : attempt.title || 'GSEB test'}</div>
+          <div className="rp-hero-label">{title}</div>
           <div className="rp-ring" style={{ '--p': pct, '--c': ringColor }}>
             <div className="rp-ring-inner">
               <div className="rp-score">{attempt.score}</div>
@@ -105,23 +85,24 @@ export default function GsebResultPage() {
             Time taken {fmtDuration(attempt.time_taken)}
             {paper?.key_status === 'provisional' && ' · graded on the provisional answer key'}
           </div>
-          {!teacher && (
-            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-              <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                onClick={again}>
-                <RotateCcw size={14} /> Attempt again
-              </button>
-            </div>
-          )}
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              onClick={again}>
+              <RotateCcw size={14} /> Attempt again
+            </button>
+          </div>
         </div>
 
-        <div className="result-tiles" style={{ marginTop: 0 }}>
+        <div className="result-tiles" style={{ marginTop: 0, marginBottom: '0.75rem' }}>
           {['correct', 'wrong', 'skipped'].map(s => (
-            <div key={s} className={`result-tile ${s} ${filter === s ? 'active' : ''}`} onClick={() => setFilter(f => f === s ? null : s)}>
+            <div key={s} className={`result-tile ${s}`} onClick={() => setReview(s)}>
               <div className="tile-num">{attempt[`${s}_count`]}</div>
               <div className="tile-label">{STATUS_LABEL[s]}</div>
             </div>
           ))}
+        </div>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <button className="btn btn-primary" onClick={() => setReview('all')}>Review all {total} questions →</button>
         </div>
 
         {chapters.length > 0 && (
@@ -144,46 +125,16 @@ export default function GsebResultPage() {
             </div>
           </div>
         )}
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <h3 style={{ margin: 0 }}>Review {filter ? `(${STATUS_LABEL[filter].toLowerCase()} only)` : ''}</h3>
-          {filter && <button className="btn btn-ghost btn-sm" onClick={() => setFilter(null)}>Show all</button>}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {visible.map(q => {
-            const n = questions.indexOf(q) + 1
-            const status = grading.statusOf(q)
-            const keyChanged = grading.keyChangedOf(q)
-            return (
-              <div key={q.id} className="card card-body">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <strong>Q{practice ? n : q.q_no}</strong>
-                  {practice && q.paper && (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>GSEB {paperTag(q.paper)} · Q{q.q_no}</span>
-                  )}
-                  <code style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)' }}>{gsebQid(q.paper || paper, 'A', q.q_no)}</code>
-                  <span style={{ marginLeft: 'auto', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: STATUS_COLOR[status] }}>
-                    {STATUS_LABEL[status]}
-                  </span>
-                </div>
-                <QuestionView q={q} mode="review" size="compact" options={optionEntries(q)} isChosen={opt => grading.isChosen(q, opt)} />
-                {keyChanged && (
-                  <div style={{ marginTop: '0.5rem', fontSize: '0.8125rem', color: '#b45309' }}>
-                    The answer key for this question changed after you submitted. You were marked {keyChanged.graded}; under the current key it is {keyChanged.now}.
-                  </div>
-                )}
-                {(q.explanation || q.explanation_image) && (
-                  <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--gray-50)', borderRadius: 8, fontSize: '0.875rem', whiteSpace: 'pre-wrap' }}>
-                    <strong>Explanation:</strong> <MathText text={q.explanation} />
-                    {q.explanation_image && <img src={q.explanation_image} alt="Explanation" style={{ display: 'block', maxWidth: '100%', marginTop: '0.5rem' }} />}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
       </div>
+
+      {review && (
+        <AttemptReviewer
+          attempt={{ ...attempt, kind: 'gseb', review_title: title }}
+          questions={questions}
+          initialFilter={review === 'all' ? null : review}
+          onClose={() => setReview(null)}
+        />
+      )}
     </div>
   )
 }

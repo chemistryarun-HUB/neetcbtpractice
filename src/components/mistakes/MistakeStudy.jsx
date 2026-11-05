@@ -5,7 +5,6 @@ import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
 import { ERROR_TYPES, fmtDay } from '../../lib/mistakeCopy'
 import { levelBadgeT, neetT } from '../../lib/neetI18n'
-import { fromCourseUnitId } from '../../lib/subjects'
 
 const TONE = {
   wrong: { fg: '#b91c1c', bg: '#fee2e2', border: '#fca5a5', solid: '#dc2626' },
@@ -54,13 +53,15 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
   const { q, entry } = cur
   const kind = itemKind(cur)
   const errorType = entry?.error_type
-  const { unit } = fromCourseUnitId(cur.unitId)
+  const heading = cur.source === 'gseb'
+    ? `GSEB${cur.groupNumber ? ` · Ch ${cur.groupNumber}` : ''}`
+    : `${t.unit(cur.groupNumber)} · ${levelBadgeT(cur.unitId, cur.level, medium)}`
 
   return (
     <div className="attempt-reviewer test-run" role="dialog" aria-label={t.mistakeCopy} lang={medium}>
       <div className="ar-header">
         <button onClick={onClose} title={t.mcClose} className="ar-close" aria-label={t.mcClose}><X size={18} /></button>
-        <div className="ar-title"><span>{t.unit(unit)} · {levelBadgeT(cur.unitId, cur.level, medium)}</span></div>
+        <div className="ar-title"><span>{heading}</span></div>
         <div className="ar-stats tp-progress"><span>{index + 1}<em>/{items.length}</em></span></div>
       </div>
 
