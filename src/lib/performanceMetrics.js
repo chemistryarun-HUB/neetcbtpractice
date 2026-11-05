@@ -1,8 +1,15 @@
-import { MARKS_CORRECT, UNIT_LEVELS, thresholdPctFor } from './constants'
+import { MARKS_CORRECT, UNIT_LEVELS, fromCourseUnitId, thresholdPctFor } from './constants'
 import { practiceUnitName } from './subjects'
 
 export function unitName(unitId) {
   return practiceUnitName(unitId)
+}
+
+// attempts store the practice unit id, where Physics unit 2 is 102: "Unit 102"
+// means nothing to a reader, so screens show the chapter number instead.
+export function unitNumberLabel(unitId, { pad = false } = {}) {
+  const { unit } = fromCourseUnitId(unitId)
+  return `Unit ${pad ? String(unit).padStart(2, '0') : unit}`
 }
 
 export function levelDef(unitId, level) {

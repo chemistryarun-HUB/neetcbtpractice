@@ -739,6 +739,13 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .spinner.spinner-sm { width: 16px; height: 16px; border-width: 2px; border-color: rgba(255,255,255,0.4); border-top-color: #fff; }
 .pp-tag { font-size: 11px; font-style: italic; text-align: right; color: #333; margin-top: 1px; }
 
+/* Subject tabs on a student's Performance profile. */
+.perf-subjects { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 1rem; }
+.perf-subjects button { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 36px; border: 1.5px solid var(--gray-200); border-radius: 9999px; background: #fff; padding: 0.2rem 0.9rem; font-size: 0.875rem; font-weight: 600; color: var(--gray-600); cursor: pointer; }
+.perf-subjects button span { font-size: 0.75rem; font-weight: 700; color: var(--gray-400); font-variant-numeric: tabular-nums; }
+.perf-subjects button.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.perf-subjects button.active span { color: rgba(255,255,255,0.8); }
+
 /* Mistake Copy (components/mistakes). The only filled button on the page is
    Re-attempt; everything else stays quiet so it is obvious what to do next. */
 .mistake-copy { max-width: 860px; margin: 0 auto; }

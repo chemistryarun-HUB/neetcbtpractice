@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ArrowLeft, RotateCcw } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
@@ -17,8 +17,14 @@ const STATUS_COLOR = { correct: '#15803d', wrong: '#b91c1c', skipped: '#b45309' 
 
 export default function GsebResultPage() {
   const { attemptId } = useParams()
-  const { user } = useAuth()
+  const { user, role } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  // Also how admin and faculty read a student's paper: the same page, any
+  // student's attempt, nothing to re-attempt.
+  const teacher = role !== 'student'
+  const homePath = role === 'admin' ? '/admin' : role === 'faculty' ? '/faculty/dashboard' : '/student/dashboard'
+  const [studentName, setStudentName] = useState('')
   const [attempt, setAttempt] = useState(null)
   const [paper, setPaper] = useState(null)
   const [questions, setQuestions] = useState([])
@@ -27,9 +33,14 @@ export default function GsebResultPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: att } = await supabase.from('gseb_attempts').select('*')
-        .eq('id', attemptId).eq('student_id', user.id).eq('submitted', true).single()
-      if (!att) { navigate('/student/gseb', { replace: true }); return }
+      let query = supabase.from('gseb_attempts').select('*').eq('id', attemptId).eq('submitted', true)
+      if (!teacher) query = query.eq('student_id', user.id)
+      const { data: att } = await query.single()
+      if (!att) { navigate(teacher ? homePath : '/student/gseb', { replace: true }); return }
+      if (teacher) {
+        const { data: s } = await supabase.from('students').select('name').eq('id', att.student_id).maybeSingle()
+        setStudentName(s?.name || '')
+      }
       // Chapter-wise tests have no paper_id; their questions carry
       // their own paper so the review can say which year each came from.
       const [{ data: p }, { data: qs }] = await Promise.all([
@@ -43,7 +54,7 @@ export default function GsebResultPage() {
       setLoading(false)
     }
     load()
-  }, [attemptId, user.id, navigate])
+  }, [attemptId, user?.id, teacher, homePath, navigate])
 
   const grading = useMemo(() => attemptGrading(attempt), [attempt])
 
@@ -73,13 +84,17 @@ export default function GsebResultPage() {
   return (
     <div className="dashboard">
       <header className="topbar">
-        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate('/student/dashboard')}>NEETCBT</div>
+        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate(homePath)}>NEETCBT</div>
       </header>
       <div className="page-content" style={{ maxWidth: 900, margin: '0 auto' }}>
-        <Link to="/student/gseb" className="back-btn"><ArrowLeft size={15} /> All GSEB papers</Link>
+        {teacher || location.state?.back ? (
+          <button className="back-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }} onClick={() => navigate(-1)}><ArrowLeft size={15} /> Back</button>
+        ) : (
+          <Link to="/student/gseb" className="back-btn"><ArrowLeft size={15} /> All GSEB papers</Link>
+        )}
 
         <div className="rp-hero">
-          <div className="rp-hero-label">{paper ? paperTitle(paper) : attempt.title || 'GSEB test'}</div>
+          <div className="rp-hero-label">{studentName ? `${studentName} · ` : ''}{paper ? paperTitle(paper) : attempt.title || 'GSEB test'}</div>
           <div className="rp-ring" style={{ '--p': pct, '--c': ringColor }}>
             <div className="rp-ring-inner">
               <div className="rp-score">{attempt.score}</div>
@@ -90,12 +105,14 @@ export default function GsebResultPage() {
             Time taken {fmtDuration(attempt.time_taken)}
             {paper?.key_status === 'provisional' && ' · graded on the provisional answer key'}
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-              onClick={again}>
-              <RotateCcw size={14} /> Attempt again
-            </button>
-          </div>
+          {!teacher && (
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
+              <button className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                onClick={again}>
+                <RotateCcw size={14} /> Attempt again
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="result-tiles" style={{ marginTop: 0 }}>

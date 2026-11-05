@@ -4,8 +4,8 @@ import QuestionView from '../shared/QuestionView'
 import InfoTooltip from '../shared/InfoTooltip'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { attemptGrading } from '../../lib/attemptGrading'
-import { accuracyOf, totalQuestions, fmtDuration, unitName, levelDef } from '../../lib/performanceMetrics'
-import { levelBadge, MARKS_CORRECT } from '../../lib/constants'
+import { accuracyOf, totalQuestions, fmtDuration, unitName, unitNumberLabel, levelDef } from '../../lib/performanceMetrics'
+import { fromCourseUnitId, levelBadge, MARKS_CORRECT } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
 import { ERROR_TYPES, saveMistakeEntry } from '../../lib/mistakeCopy'
 import { neetT } from '../../lib/neetI18n'
@@ -148,7 +148,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         {/* "·" between every pair: "Unit 01 Level 03" butts two numbers
             together — the "Level 3 2 times" misread this app has hit before. */}
         <div className="ar-title">
-          <span>Unit {String(attempt.unit_id).padStart(2, '0')}</span>
+          <span>{fromCourseUnitId(attempt.unit_id).subject !== 'Chemistry' && `${fromCourseUnitId(attempt.unit_id).subject} · `}{unitNumberLabel(attempt.unit_id, { pad: true })}</span>
           <span className="ar-sep">·</span>
           <span>{levelBadge(attempt.unit_id, attempt.level, { pad: true })}</span>
           <InfoTooltip text={syllabus} align="left" />
