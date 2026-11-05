@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronRight, Layers } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { NEET_CHEMISTRY_SYLLABUS, UNIT_LEVELS, levelBadge } from '../../lib/constants'
+import { levelBadge, levelDefsFor } from '../../lib/constants'
+import { SYLLABUS_SECTIONS } from '../../lib/subjects'
+import SubjectTabs, { TAB_SUBJECTS } from './SubjectTabs'
 
 const DIFFS = ['Easy', 'Medium', 'Hard']
 // Same palette as the .badge-easy/medium/hard classes elsewhere in the app —
@@ -17,6 +19,8 @@ function add(counts, diff) {
   counts.total++
   counts[diff]++
 }
+// Unit numbers restart in every subject, so a unit is only itself with its subject.
+const unitKey = (subject, unitId) => `${subject}:${unitId}`
 
 // A thin stacked bar showing the Easy/Medium/Hard split of one row's `counts`.
 // Reuses the same 10px-pill-of-segments look as .perf-breakdown-bar on the
@@ -58,6 +62,7 @@ export default function DifficultyReport() {
   const [rows, setRows] = useState(null) // null = loading
   const [expanded, setExpanded] = useState(() => new Set())
   const [search, setSearch] = useState('')
+  const [subject, setSubject] = useState('all')
 
   useEffect(() => {
     let cancelled = false
@@ -65,8 +70,7 @@ export default function DifficultyReport() {
       const all = []
       for (let from = 0; ; from += 1000) {
         const { data, error } = await supabase.from('questions')
-          .select('unit, level, difficulty_level')
-          .eq('subject', 'Chemistry')   // this report covers the Chemistry syllabus
+          .select('subject, unit, level, difficulty_level')
           .eq('is_active', true)
           .range(from, from + 999)
         if (error) break
@@ -79,7 +83,7 @@ export default function DifficultyReport() {
     return () => { cancelled = true }
   }, [])
 
-  // unitId -> { counts, levels: { levelId -> counts } }
+  // "subject:unitId" -> { counts, levels: { levelId -> counts } }
   const byUnit = useMemo(() => {
     if (!rows) return null
     const map = {}
@@ -87,7 +91,7 @@ export default function DifficultyReport() {
       const uid = Number((r.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || null
       if (!uid) continue
       const diff = DIFFS.includes(r.difficulty_level) ? r.difficulty_level : 'Unset'
-      const u = (map[uid] ||= { counts: emptyCounts(), levels: {} })
+      const u = (map[unitKey(r.subject || 'Chemistry', uid)] ||= { counts: emptyCounts(), levels: {} })
       add(u.counts, diff)
       const l = (u.levels[r.level] ||= emptyCounts())
       add(l, diff)
@@ -97,19 +101,31 @@ export default function DifficultyReport() {
 
   const grand = useMemo(() => {
     const g = emptyCounts()
-    if (byUnit) for (const u of Object.values(byUnit)) {
+    if (byUnit) for (const [key, u] of Object.entries(byUnit)) {
+      if (subject !== 'all' && !key.startsWith(`${subject}:`)) continue
       g.total += u.counts.total
       for (const d of DIFFS) g[d] += u.counts[d]
       g.Unset += u.counts.Unset
     }
     return g
+  }, [byUnit, subject])
+
+  const subjectCounts = useMemo(() => {
+    const counts = { all: 0 }
+    if (byUnit) for (const [key, u] of Object.entries(byUnit)) {
+      const s = key.split(':')[0]
+      counts[s] = (counts[s] || 0) + u.counts.total
+      counts.all += u.counts.total
+    }
+    return counts
   }, [byUnit])
 
   const q = search.trim().toLowerCase()
-  const sections = NEET_CHEMISTRY_SYLLABUS.map(sec => ({
-    ...sec,
+  const sections = (subject === 'all' ? TAB_SUBJECTS : [subject]).flatMap(s => SYLLABUS_SECTIONS[s].map(sec => ({
+    subject: s,
+    label: subject === 'all' ? `${s} · ${sec.section}` : sec.section,
     units: sec.units.filter(u => !q || u.name.toLowerCase().includes(q) || `unit ${u.id}` === q || String(u.id) === q),
-  })).filter(sec => sec.units.length > 0)
+  }))).filter(sec => sec.units.length > 0)
 
   function toggle(uid) {
     setExpanded(prev => {
@@ -118,7 +134,7 @@ export default function DifficultyReport() {
       return next
     })
   }
-  const allShownIds = sections.flatMap(s => s.units.map(u => u.id))
+  const allShownIds = sections.flatMap(s => s.units.map(u => unitKey(s.subject, u.id)))
   const allExpanded = allShownIds.length > 0 && allShownIds.every(id => expanded.has(id))
 
   if (rows === null) {
@@ -134,6 +150,8 @@ export default function DifficultyReport() {
       </div>
 
       <div style={{ padding: '1rem 1.25rem' }}>
+        <SubjectTabs value={subject} onChange={setSubject} counts={subjectCounts} />
+
         {/* Bank-wide totals — the headline numbers before any drill-down. */}
         <div style={{ display: 'flex', gap: '1.75rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
           <div>
@@ -185,20 +203,21 @@ export default function DifficultyReport() {
         {/* Unit accordion, grouped by syllabus section. */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {sections.map(sec => (
-            <div key={sec.section}>
+            <div key={sec.label}>
               <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--gray-400)', padding: '0.4rem 0.1rem' }}>
-                {sec.section}
+                {sec.label}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.4rem' }}>
                 {sec.units.map(u => {
-                  const data = byUnit[u.id]
+                  const key = unitKey(sec.subject, u.id)
+                  const data = byUnit[key]
                   const counts = data?.counts || emptyCounts()
-                  const isOpen = expanded.has(u.id)
-                  const levelDefs = UNIT_LEVELS[u.id] || []
+                  const isOpen = expanded.has(key)
+                  const levelDefs = levelDefsFor(sec.subject, u.id)
                   return (
-                    <div key={u.id} style={{ border: '1px solid var(--gray-200)', borderRadius: 8, overflow: 'hidden' }}>
+                    <div key={key} style={{ border: '1px solid var(--gray-200)', borderRadius: 8, overflow: 'hidden' }}>
                       <button
-                        onClick={() => toggle(u.id)}
+                        onClick={() => toggle(key)}
                         style={{
                           width: '100%', display: 'flex', alignItems: 'center', gap: '0.65rem',
                           padding: '0.55rem 0.7rem', background: isOpen ? 'var(--gray-50)' : '#fff',
@@ -242,7 +261,7 @@ export default function DifficultyReport() {
                                 return (
                                   <tr key={l.id} style={{ borderTop: '1px solid var(--gray-100)' }}>
                                     <td style={{ padding: '0.4rem 0.7rem' }}>
-                                      <span style={{ fontWeight: 700, color: 'var(--gray-600)' }}>{levelBadge(u.id, l.id)}</span>
+                                      <span style={{ fontWeight: 700, color: 'var(--gray-600)' }}>{levelBadge(u.id, l.id, { subject: sec.subject })}</span>
                                       <span style={{ color: 'var(--gray-400)', marginLeft: '0.4rem' }}>{l.name}</span>
                                     </td>
                                     <td style={{ textAlign: 'center' }}><DiffCell n={lc.Easy} diff="Easy" /></td>
