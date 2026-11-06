@@ -161,7 +161,7 @@ export const UNIT_LEVELS = {
   ],
   10: [
     { id: 1, name: 'Group-13',               topic: 'Electronic Configuration, Atomic Radii, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards air, Reactivity towards acids and alkalies, Reactivity towards halogens, Important Trends and Anomalous Properties of Boron' },
-    { id: 2, name: 'Group-14',               topic: 'p-Block Elements: Group 14 (Carbon family): electronic configuration, trends in properties, allotropes of carbon, oxides, silicon, silicones, silicates, zeolites' },
+    { id: 2, name: 'Group-14',               topic: 'Electronic Configuration, Covalent Radius, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards oxygen, Reactivity towards water, Reactivity towards halogens, Important Trends and Anomalous Properties of Carbon, Allotropes of Carbon' },
     { id: 3, name: 'Group-15',               topic: 'p-Block Elements: Group 15 (Nitrogen family): electronic configuration, trends in properties, nitrogen, ammonia, oxides and oxoacids of nitrogen, phosphorus, phosphine, halides and oxoacids of phosphorus' },
     { id: 4, name: 'Group-16',               topic: 'p-Block Elements: Group 16 (Oxygen family): electronic configuration, trends in properties, dioxygen, ozone, oxides, sulphur, sulphur dioxide, sulphuric acid, oxoacids of sulphur' },
     { id: 5, name: 'Group-17',               topic: 'p-Block Elements: Group 17 (Halogens): electronic configuration, trends in properties, chlorine, hydrogen chloride, interhalogen compounds, oxoacids of halogens' },
