@@ -23,7 +23,7 @@ for (const { row, images } of recs) {
   }
 }
 console.log('images uploaded', up)
-const rows = recs.map(r => r.row)
+const rows = recs.map(r => ({ mtc_label_a: 'num', mtc_label_b: 'lower_pu', ...r.row }))
 for (let i = 0; i < rows.length; i += 200) {
   const { error } = await sb.from('questions').insert(rows.slice(i, i + 200))
   if (error) throw error
