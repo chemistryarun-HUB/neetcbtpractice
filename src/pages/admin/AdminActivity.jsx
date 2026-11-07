@@ -5,7 +5,7 @@ import { Activity, Search, Users, ClipboardList, CheckCircle2, Clock, ChevronRig
 import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { fromCourseUnitId } from '../../lib/constants'
+import { fromCourseUnitId, levelBadge } from '../../lib/constants'
 import { practiceUnitName } from '../../lib/subjects'
 import { GSEB_SUBJECT_LABELS, paperTitle } from '../../lib/gseb'
 
@@ -127,8 +127,8 @@ export default function AdminActivity() {
           const total = (a.correct_count || 0) + (a.wrong_count || 0) + (a.skipped_count || 0)
           return {
             id: a.id, kind: 'practice', student_id: a.student_id, at: a.submitted_at, subject: sub,
-            what: `${practiceUnitName(a.unit_id)} · Level ${a.level}`,
-            short: `Unit ${unit} · L${a.level}`,
+            what: `${practiceUnitName(a.unit_id)} · ${levelBadge(a.unit_id, a.level)}`,
+            short: `Unit ${unit} · ${levelBadge(a.unit_id, a.level).replace('Level ', 'L')}`,
             scorePct: pct(a.score, total * 4), correct: a.correct_count || 0, wrong: a.wrong_count || 0,
             answered: (a.correct_count || 0) + (a.wrong_count || 0), total, time: a.time_taken,
           }

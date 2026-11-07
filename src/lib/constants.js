@@ -459,10 +459,20 @@ export function isChapterTestLevel(unitId, levelId, subject = 'Chemistry') {
   return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
-// Short display label for a level — "CCT" for the Complete Chapter Test,
-// else "Level N" (optionally zero-padded to match a table's other numbers).
+// A unit with one level is one pool of the whole chapter, so it is labelled CCT
+// as well (Arun, 2026-11-07). Label only: isChapterTestLevel() stays false for
+// it, because the CCT logic — draw from every OTHER level, count the others'
+// questions — has nothing to work with in a one-level unit.
+export function isOnlyLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
+  return defs.length === 1 && defs[0].id === Number(levelId)
+}
+
+// Short display label for a level — "CCT" for the Complete Chapter Test and for
+// a unit's only level, else "Level N" (optionally zero-padded to match a table's
+// other numbers).
 export function levelBadge(unitId, levelId, { pad = false, subject = 'Chemistry' } = {}) {
-  if (isChapterTestLevel(unitId, levelId, subject)) return 'CCT'
+  if (isChapterTestLevel(unitId, levelId, subject) || isOnlyLevel(unitId, levelId, subject)) return 'CCT'
   if (levelId == null) return 'Level —'
   return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
 }
