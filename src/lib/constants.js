@@ -399,12 +399,9 @@ export const PHYSICS_UNIT_LEVELS = {
 // Biology levels. Like the mechanism modules, a chapter can be one practice
 // pool: a single level, always unlocked, no chapter test.
 export const BIOLOGY_UNIT_LEVELS = {
-  1: [
-    { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
-  ],
-  // Units 2-18: one practice pool each, shown as CCT (single-level units are
+  // Units 1-18: one practice pool each, shown as CCT (single-level units are
   // labelled CCT, see isChapterTestLevel). Arun asked for CCT only for now.
-  ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(n => [n, [
+  ...Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(n => [n, [
     { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
   ]])),
 }
