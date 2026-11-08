@@ -18,3 +18,4 @@ const set = {
 const { data, error: e } = await sb.from('questions').update(set).eq('qid', 'NCU03524').select('qid, question_type, correct_option, is_published, content_locked')
 if (e) { console.error(e); process.exit(1) }
 console.log('DONE', JSON.stringify(data))
+// run
