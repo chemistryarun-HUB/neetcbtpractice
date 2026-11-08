@@ -1,13 +1,18 @@
-import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
-const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
-let all = [], from = 0
-for (;;) {
-  const { data, error } = await sb.from('questions').select('*').eq('subject', 'Chemistry').like('unit', 'Unit 3 -%').order('qid').range(from, from + 499)
-  if (error) { console.error(error); process.exit(1) }
-  all = all.concat(data); if (data.length < 500) break; from += 500
+const rows = JSON.parse(fs.readFileSync('scripts/chem-upload/dump/unit3.json', 'utf8'))
+fs.mkdirSync('scripts/chem-upload/dump/img', { recursive: true })
+const keys = ['question_image', 'option1_image', 'option2_image', 'option3_image', 'option4_image']
+const log = []
+for (const q of rows) for (const k of keys) {
+  const u = q[k]; if (!u) continue
+  try {
+    const r = await fetch(u)
+    const buf = Buffer.from(await r.arrayBuffer())
+    const ext = (u.split('.').pop() || 'png').split('?')[0].slice(0, 5)
+    const f = `${q.qid}_${k.replace('_image', '')}.${ext}`
+    if (r.ok) fs.writeFileSync(`scripts/chem-upload/dump/img/${f}`, buf)
+    log.push(`${q.qid} ${k} ${r.status} ${buf.length} ${r.headers.get('content-type')} ${u}`)
+  } catch (e) { log.push(`${q.qid} ${k} ERR ${e.message} ${u}`) }
 }
-fs.mkdirSync('scripts/chem-upload/dump', { recursive: true })
-fs.writeFileSync('scripts/chem-upload/dump/unit3.json', JSON.stringify(all))
-const c = {}; for (const q of all) { const k = `L${q.level} pub=${q.is_published}`; c[k] = (c[k] || 0) + 1 }
-console.log('rows', all.length, c, 'cols', Object.keys(all[0] || {}).join(','))
+fs.writeFileSync('scripts/chem-upload/dump/img/_log.txt', log.join('\n'))
+console.log(log.join('\n'))
