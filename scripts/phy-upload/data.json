@@ -1,0 +1,2753 @@
+[
+ {
+  "rec": {
+   "qid": "NPU06001",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $\\vec F = 2\\hat i + b\\hat j + \\hat k$ is applied on a particle and it undergoes a displacement $\\hat i - 2\\hat j - \\hat k$. What is the value of $b$, if the work done on the particle is zero?",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q1",
+   "is_published": false,
+   "option1": "$0$",
+   "option2": "$\\tfrac{1}{2}$",
+   "option3": "$2$",
+   "option4": "$\\tfrac{1}{3}$",
+   "correct_option": "$\\tfrac{1}{2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06002",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of mass $m$ moves on a straight line with its velocity increasing with distance according to $v = \\alpha\\sqrt{x}$, where $\\alpha$ is a constant. The total work done by all the forces applied on the particle during its displacement from $x = 0$ to $x = d$ will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q2",
+   "is_published": false,
+   "option1": "$\\dfrac{m}{2\\alpha^2 d}$",
+   "option2": "$\\dfrac{md}{2\\alpha^2}$",
+   "option3": "$2m\\alpha^2 d$",
+   "option4": "$\\dfrac{m\\alpha^2 d}{2}$",
+   "correct_option": "$\\dfrac{m\\alpha^2 d}{2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06003",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $(3x^2 + 2x - 5)\\ \\text{N}$ displaces a body from $x = 2\\ \\text{m}$ to $x = 4\\ \\text{m}$. The work done by this force is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q3",
+   "is_published": false,
+   "option1": "$54\\ \\text{J}$",
+   "option2": "$60\\ \\text{J}$",
+   "option3": "$62\\ \\text{J}$",
+   "option4": "$58\\ \\text{J}$",
+   "correct_option": "$58\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06004",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $100\\ \\text{kg}$ slides over a distance of $10\\ \\text{m}$ on a horizontal surface. If the coefficient of friction between the surfaces is $0.4$, the work done against friction (in J) is ($g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q4",
+   "is_published": false,
+   "option1": "$4200$",
+   "option2": "$3900$",
+   "option3": "$4000$",
+   "option4": "$4500$",
+   "correct_option": "$4000$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06005",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $1\\ \\text{kg}$ is pushed up a surface inclined to the horizontal at an angle of $60^\\circ$ by a force of $10\\ \\text{N}$ parallel to the inclined surface, as shown in the figure ($\\mu_s = 0.1$). When the block is pushed up by $10\\ \\text{m}$ along the inclined surface, the work done against the frictional force is ($g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q5",
+   "is_published": false,
+   "option1": "$5\\sqrt{3}\\ \\text{J}$",
+   "option2": "$5\\ \\text{J}$",
+   "option3": "$5\\times 10^{3}\\ \\text{J}$",
+   "option4": "$10\\ \\text{J}$",
+   "correct_option": "$5\\ \\text{J}$"
+  },
+  "imgs": [
+   "NPU06005"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06006",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $\\vec F = (2 + 3x)\\hat i$ acts on a particle in the $x$ direction, where $F$ is in newton and $x$ is in metre. The work done by this force during a displacement from $x = 0$ to $x = 4\\ \\text{m}$ is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q6",
+   "is_published": false,
+   "option1": "$24\\ \\text{J}$",
+   "option2": "$32\\ \\text{J}$",
+   "option3": "$16\\ \\text{J}$",
+   "option4": "$40\\ \\text{J}$",
+   "correct_option": "$32\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06007",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $10\\ \\text{kg}$ is moving along the $x$-axis under the action of force $F = 5x\\ \\text{N}$. The work done by the force in moving the block from $x = 2\\ \\text{m}$ to $x = 4\\ \\text{m}$ is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q7",
+   "is_published": false,
+   "option1": "$30\\ \\text{J}$",
+   "option2": "$20\\ \\text{J}$",
+   "option3": "$60\\ \\text{J}$",
+   "option4": "$15\\ \\text{J}$",
+   "correct_option": "$30\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06008",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A small particle moves from position $2\\hat i + 3\\hat j - 4\\hat k$ to position $5\\hat i - 2\\hat j + \\hat k$ under the action of the force $5\\hat i + 2\\hat j + 7\\hat k\\ \\text{N}$. The work done is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q8",
+   "is_published": false,
+   "option1": "$25\\ \\text{J}$",
+   "option2": "$60\\ \\text{J}$",
+   "option3": "$32\\ \\text{J}$",
+   "option4": "$40\\ \\text{J}$",
+   "correct_option": "$40\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06009",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $F = (5 + 3y^2)$ acts on a particle in the $y$-direction, where $F$ is in newton and $y$ is in metre. The work done by the force during a displacement from $y = 2\\ \\text{m}$ to $y = 5\\ \\text{m}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q9",
+   "is_published": false,
+   "option1": "$117\\ \\text{J}$",
+   "option2": "$132\\ \\text{J}$",
+   "option3": "$147\\ \\text{J}$",
+   "option4": "$96\\ \\text{J}$",
+   "correct_option": "$132\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06010",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $m$ dropped from a height $h$ reaches the ground with a speed of $0.8\\sqrt{gh}$. The work done by the air-friction is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q10",
+   "is_published": false,
+   "option1": "$-0.68\\,mgh$",
+   "option2": "$mgh$",
+   "option3": "$0.64\\,mgh$",
+   "option4": "$1.64\\,mgh$",
+   "correct_option": "$-0.68\\,mgh$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06011",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $\\vec F = (5y + 20)\\hat j\\ \\text{N}$ acts on a particle. The work done by this force when the particle is moved from $y = 0$ to $y = 10\\ \\text{m}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q11",
+   "is_published": false,
+   "option1": "$300\\ \\text{J}$",
+   "option2": "$250\\ \\text{J}$",
+   "option3": "$600\\ \\text{J}$",
+   "option4": "$450\\ \\text{J}$",
+   "correct_option": "$450\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06012",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A person pushes a box on a rough horizontal platform surface. He applies a force of $200\\ \\text{N}$ over a distance of $15\\ \\text{m}$. Thereafter, he gets progressively tired and his applied force reduces linearly with distance to $100\\ \\text{N}$. The total distance through which the box has been moved is $30\\ \\text{m}$. What is the work done by the person during the total movement of the box?",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q12",
+   "is_published": false,
+   "option1": "$3280\\ \\text{J}$",
+   "option2": "$2780\\ \\text{J}$",
+   "option3": "$5690\\ \\text{J}$",
+   "option4": "$5250\\ \\text{J}$",
+   "correct_option": "$5250\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06013",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Which one of the following forces cannot be expressed in terms of potential energy?",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q13",
+   "is_published": false,
+   "option1": "Coulomb's force",
+   "option2": "Gravitational force",
+   "option3": "Frictional force",
+   "option4": "Restoring force",
+   "correct_option": "Frictional force"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06014",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bullet of mass $50\\ \\text{g}$ is fired with a speed $100\\ \\text{m/s}$ on a plywood and emerges with $40\\ \\text{m/s}$. The percentage loss of kinetic energy is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q14",
+   "is_published": false,
+   "option1": "$84\\%$",
+   "option2": "$16\\%$",
+   "option3": "$32\\%$",
+   "option4": "$44\\%$",
+   "correct_option": "$84\\%$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06015",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A stationary particle breaks into two parts of masses $m_A$ and $m_B$ which move with velocities $v_A$ and $v_B$ respectively. The ratio of their kinetic energies $(K_B : K_A)$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q15",
+   "is_published": false,
+   "option1": "$v_B : v_A$",
+   "option2": "$m_B : m_A$",
+   "option3": "$m_B v_B : m_A v_A$",
+   "option4": "$1 : 1$",
+   "correct_option": "$v_B : v_A$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06016",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A car accelerates from rest at $u\\ \\text{m s}^{-1}$. The energy spent in this process is $E\\ \\text{J}$. The energy required to accelerate the car from $u\\ \\text{m s}^{-1}$ to $2u\\ \\text{m s}^{-1}$ is $nE\\ \\text{J}$. The value of $n$ is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q16",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$4$",
+   "option3": "$3$",
+   "option4": "$1$",
+   "correct_option": "$3$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06017",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A spherical body of mass $2\\ \\text{kg}$ starting from rest acquires a kinetic energy of $10000\\ \\text{J}$ at the end of the $5^{\\text{th}}$ second. The force acting on the body is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q17",
+   "is_published": false,
+   "option1": "$20\\ \\text{N}$",
+   "option2": "$40\\ \\text{N}$",
+   "option3": "$80\\ \\text{N}$",
+   "option4": "$100\\ \\text{N}$",
+   "correct_option": "$40\\ \\text{N}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06018",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A $0.5\\ \\text{kg}$ block moving at a speed of $12\\ \\text{m s}^{-1}$ compresses a spring through a distance $30\\ \\text{cm}$ when its speed is halved. The spring constant of the spring is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q18",
+   "is_published": false,
+   "option1": "$300\\ \\text{N m}^{-1}$",
+   "option2": "$450\\ \\text{N m}^{-1}$",
+   "option3": "$900\\ \\text{N m}^{-1}$",
+   "option4": "$600\\ \\text{N m}^{-1}$",
+   "correct_option": "$600\\ \\text{N m}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06019",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "In the given figure, the block of mass $m$ is dropped from the point $A$. The expression for the kinetic energy of the block when it reaches point $B$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q19",
+   "is_published": false,
+   "option1": "$mgy_0$",
+   "option2": "$\\tfrac{1}{2}mgy_0^{2}$",
+   "option3": "$\\tfrac{1}{2}mgy^{2}$",
+   "option4": "$mg(y - y_0)$",
+   "correct_option": "$mgy_0$"
+  },
+  "imgs": [
+   "NPU06019"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06020",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "If the kinetic energy of a moving body becomes four times its initial kinetic energy, then the percentage change in its momentum will be",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q20",
+   "is_published": false,
+   "option1": "$100\\%$",
+   "option2": "$200\\%$",
+   "option3": "$300\\%$",
+   "option4": "$400\\%$",
+   "correct_option": "$100\\%$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06021",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A ball of mass $4\\ \\text{kg}$, moving with a velocity of $10\\ \\text{m s}^{-1}$, collides with a spring of natural length $8\\ \\text{m}$ and force constant $100\\ \\text{N m}^{-1}$. The length of the compressed spring is $x\\ \\text{m}$. The value of $x$, to the nearest integer, is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q21",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$4$",
+   "option3": "$8$",
+   "option4": "$6$",
+   "correct_option": "$6$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06022",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Two solids $A$ and $B$ of mass $1\\ \\text{kg}$ and $2\\ \\text{kg}$ respectively are moving with equal linear momentum. The ratio of their kinetic energies $(K.E.)_A : (K.E.)_B$ will be $\\dfrac{A}{1}$, so the value of $A$ will be",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q22",
+   "is_published": false,
+   "option1": "$4$",
+   "option2": "$2$",
+   "option3": "$\\tfrac{1}{2}$",
+   "option4": "$1$",
+   "correct_option": "$2$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06023",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Two particles having masses $4\\ \\text{g}$ and $16\\ \\text{g}$ respectively are moving with equal kinetic energies. The ratio of the magnitudes of their linear momentum is $n : 2$. The value of $n$ will be",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q23",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$2$",
+   "option3": "$4$",
+   "option4": "$8$",
+   "correct_option": "$1$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06024",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force acts on a $2\\ \\text{kg}$ object so that its position is given as a function of time as $x = 3t^2 + 5$. What is the work done by this force in the first $5$ seconds?",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q24",
+   "is_published": false,
+   "option1": "$875\\ \\text{J}$",
+   "option2": "$850\\ \\text{J}$",
+   "option3": "$950\\ \\text{J}$",
+   "option4": "$900\\ \\text{J}$",
+   "correct_option": "$900\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06025",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle which is experiencing a force given by $\\vec F = 3\\hat i - 12\\hat j$ undergoes a displacement of $\\vec d = 4\\hat i$. If the particle had a kinetic energy of $3\\ \\text{J}$ at the beginning of the displacement, what is its kinetic energy at the end of the displacement?",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q25",
+   "is_published": false,
+   "option1": "$9\\ \\text{J}$",
+   "option2": "$15\\ \\text{J}$",
+   "option3": "$12\\ \\text{J}$",
+   "option4": "$10\\ \\text{J}$",
+   "correct_option": "$15\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06026",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle moves in the $x$-$y$ plane under the influence of a force $\\vec F$ such that its linear momentum is $\\vec p(t) = \\hat i\\cos(kt) - \\hat j\\sin(kt)$. If $k$ is constant, the angle between $\\vec F$ and $\\vec p$ will be",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q26",
+   "is_published": false,
+   "option1": "$\\tfrac{\\pi}{4}$",
+   "option2": "$\\tfrac{\\pi}{6}$",
+   "option3": "$\\tfrac{\\pi}{2}$",
+   "option4": "$\\tfrac{\\pi}{3}$",
+   "correct_option": "$\\tfrac{\\pi}{2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06027",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "To maintain a speed of $80\\ \\text{km h}^{-1}$ by a bus of mass $500\\ \\text{kg}$ on a plane rough road for $4\\ \\text{km}$ distance, the work done by the engine of the bus will be (take $g = 9.8\\ \\text{m s}^{-2}$ and the coefficient of friction between tyre of bus and road is $0.04$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q27",
+   "is_published": false,
+   "option1": "$392\\ \\text{kJ}$",
+   "option2": "$784\\ \\text{kJ}$",
+   "option3": "$1568\\ \\text{kJ}$",
+   "option4": "$196\\ \\text{kJ}$",
+   "correct_option": "$784\\ \\text{kJ}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06028",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $2\\ \\text{kg}$ is initially at rest. It starts moving unidirectionally under the influence of a source of constant power $P$. Its displacement in $4\\ \\text{s}$ is $\\tfrac{1}{3}\\alpha^2\\sqrt{P}\\ \\text{m}$. The value of $\\alpha$ will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q28",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$8$",
+   "option3": "$16$",
+   "option4": "$4$",
+   "correct_option": "$4$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06029",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A constant power delivering machine has towed a box, which was initially at rest, along a horizontal straight line. The distance moved by the box in time $t$ is proportional to",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q29",
+   "is_published": false,
+   "option1": "$t^{2/3}$",
+   "option2": "$t^{3/2}$",
+   "option3": "$t$",
+   "option4": "$t^{1/2}$",
+   "correct_option": "$t^{3/2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06030",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "In a reactor, $2\\ \\text{kg}$ of ${}_{92}\\text{U}^{235}$ fuel is fully used up in $30$ days. The energy released per fission is $200\\ \\text{MeV}$. Given that the Avogadro number $N = 6.023\\times 10^{26}$ per kilomole and $1\\ \\text{eV} = 1.6\\times 10^{-19}\\ \\text{J}$, the power output of the reactor is close to",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q30",
+   "is_published": false,
+   "option1": "$35\\ \\text{MW}$",
+   "option2": "$60\\ \\text{MW}$",
+   "option3": "$125\\ \\text{MW}$",
+   "option4": "$54\\ \\text{MW}$",
+   "correct_option": "$60\\ \\text{MW}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06031",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A stone of mass $m$, tied to a string, is being whirled in a vertical circle with a uniform speed. The tension in the string is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q31",
+   "is_published": false,
+   "option1": "the same throughout the motion",
+   "option2": "minimum when the rope is in the horizontal position",
+   "option3": "minimum at the highest position of the circular path",
+   "option4": "minimum at the lowest position of the circular path",
+   "correct_option": "minimum at the highest position of the circular path"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06032",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "For a particle in uniform circular motion, the acceleration $\\vec a$ at any point $P(R, \\theta)$ on the circular path of radius $R$ is (when $\\theta$ is measured from the positive $x$-axis and $v$ is uniform speed)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q32",
+   "is_published": false,
+   "option1": "$-\\dfrac{v^2}{R}\\sin\\theta\\,\\hat i + \\dfrac{v^2}{R}\\cos\\theta\\,\\hat j$",
+   "option2": "$-\\dfrac{v^2}{R}\\cos\\theta\\,\\hat i + \\dfrac{v^2}{R}\\sin\\theta\\,\\hat j$",
+   "option3": "$-\\dfrac{v^2}{R}\\cos\\theta\\,\\hat i - \\dfrac{v^2}{R}\\sin\\theta\\,\\hat j$",
+   "option4": "$-\\dfrac{v^2}{R}\\hat i + \\dfrac{v^2}{R}\\hat j$",
+   "correct_option": "$-\\dfrac{v^2}{R}\\cos\\theta\\,\\hat i - \\dfrac{v^2}{R}\\sin\\theta\\,\\hat j$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06033",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $\\vec f = x^2y\\,\\hat i + y^2\\,\\hat j$ acts on a particle in a plane $x + y = 10$. The work done by this force during a displacement from $(0, 0)$ to $(4\\ \\text{m}, 2\\ \\text{m})$ is, rounded off to the nearest integer,",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q33",
+   "is_published": false,
+   "option1": "$112\\ \\text{J}$",
+   "option2": "$149\\ \\text{J}$",
+   "option3": "$34\\ \\text{J}$",
+   "option4": "$152\\ \\text{J}$",
+   "correct_option": "$152\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06034",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A force $F = \\alpha + \\beta x^2$ acts on an object in the $x$-direction. The work done by the force is $5\\ \\text{J}$ when the object is displaced by $1\\ \\text{m}$. If the constant $\\alpha = 1\\ \\text{N}$, then $\\beta$ will be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q34",
+   "is_published": false,
+   "option1": "$15\\ \\text{N/m}^2$",
+   "option2": "$12\\ \\text{N/m}^2$",
+   "option3": "$8\\ \\text{N/m}^2$",
+   "option4": "$10\\ \\text{N/m}^2$",
+   "correct_option": "$12\\ \\text{N/m}^2$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06035",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Identify the correct statements from the following:\n(A) Work done by a man in lifting a bucket out of a well by means of a rope tied to the bucket is negative.\n(B) Work done by gravitational force in lifting a bucket out of a well by a rope tied to the bucket is negative.\n(C) Work done by friction on a body sliding down an inclined plane is positive.\n(D) Work done by an applied force on a body moving on a rough horizontal plane with uniform velocity is zero.\n(E) Work done by the air resistance on an oscillating pendulum is negative.\nChoose the correct answer from the options given below:",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q35",
+   "is_published": false,
+   "option1": "B and E only",
+   "option2": "A and C only",
+   "option3": "B, D and E only",
+   "option4": "B and D only",
+   "correct_option": "B and E only"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06036",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $0.5\\ \\text{kg}$ travels on a straight line path with velocity $v = (3x^2 + 4)\\ \\text{m s}^{-1}$. The net work done by the force during its displacement from $x = 0$ to $x = 2\\ \\text{m}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q36",
+   "is_published": false,
+   "option1": "$64\\ \\text{J}$",
+   "option2": "$60\\ \\text{J}$",
+   "option3": "$120\\ \\text{J}$",
+   "option4": "$128\\ \\text{J}$",
+   "correct_option": "$60\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06037",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Arrange the four graphs in descending order of total work done, where $W_1, W_2, W_3$ and $W_4$ are the work done corresponding to figures $a, b, c$ and $d$ respectively.",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q37",
+   "is_published": false,
+   "option1": "$W_3 > W_2 > W_1 > W_4$",
+   "option2": "$W_3 > W_2 > W_4 > W_1$",
+   "option3": "$W_2 > W_3 > W_4 > W_1$",
+   "option4": "$W_2 > W_3 > W_1 > W_4$",
+   "correct_option": "$W_3 > W_2 > W_1 > W_4$"
+  },
+  "imgs": [
+   "NPU06037"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06038",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of mass $500\\ \\text{g}$ is moving in a straight line with velocity $v = bx^{5/2}$. The work done by the net force during its displacement from $x = 0$ to $x = 4\\ \\text{m}$ is (take $b = 0.25\\ \\text{m}^{-3/2}\\text{s}^{-1}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q38",
+   "is_published": false,
+   "option1": "$2\\ \\text{J}$",
+   "option2": "$4\\ \\text{J}$",
+   "option3": "$8\\ \\text{J}$",
+   "option4": "$16\\ \\text{J}$",
+   "correct_option": "$16\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06039",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Two persons $A$ and $B$ perform the same amount of work moving a body through a certain distance $d$ with application of forces acting at angles $45^\\circ$ and $60^\\circ$ with the direction of displacement respectively. The ratio of the force applied by person $A$ to the force applied by person $B$ is $\\dfrac{1}{\\sqrt{x}}$. The value of $x$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q39",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$3$",
+   "option3": "$4$",
+   "option4": "$2$",
+   "correct_option": "$2$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06040",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A porter lifts a heavy suitcase of mass $80\\ \\text{kg}$ and at the destination lowers it down by a distance of $80\\ \\text{cm}$ with a constant velocity. Calculate the work done by the porter in lowering the suitcase. (take $g = 9.8\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q40",
+   "is_published": false,
+   "option1": "$-62720.0\\ \\text{J}$",
+   "option2": "$-627.2\\ \\text{J}$",
+   "option3": "$+627.2\\ \\text{J}$",
+   "option4": "$784.0\\ \\text{J}$",
+   "correct_option": "$-627.2\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06041",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Consider a force $\\vec F = -x\\hat i + y\\hat j$. The work done by this force in moving a particle from point $A(1, 0)$ to $B(0, 1)$ along the line segment is (all quantities are in SI units)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q41",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$\\tfrac{1}{2}$",
+   "option3": "$1$",
+   "option4": "$\\tfrac{3}{2}$",
+   "correct_option": "$1$"
+  },
+  "imgs": [
+   "NPU06041"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06042",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A uniform cable of mass $M$ and length $L$ is placed on a horizontal surface such that its $\\left(\\tfrac{1}{n}\\right)^{\\text{th}}$ part is hanging below the edge of the surface. To lift the hanging part of the cable up to the surface, the work done should be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q42",
+   "is_published": false,
+   "option1": "$\\dfrac{MgL}{2n^2}$",
+   "option2": "$\\dfrac{MgL}{n^2}$",
+   "option3": "$nMgL$",
+   "option4": "$\\dfrac{2MgL}{n^2}$",
+   "correct_option": "$\\dfrac{MgL}{2n^2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06043",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle is released from height $S$ above the surface of the earth. At a certain height its kinetic energy is three times its potential energy. The height from the surface of the earth and the speed of the particle at that instant are respectively",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q43",
+   "is_published": false,
+   "option1": "$\\dfrac{S}{2},\\ \\sqrt{\\dfrac{3gS}{2}}$",
+   "option2": "$\\dfrac{S}{2},\\ \\dfrac{3gS}{2}$",
+   "option3": "$\\dfrac{S}{4},\\ \\dfrac{3gS}{2}$",
+   "option4": "$\\dfrac{S}{4},\\ \\sqrt{\\dfrac{3gS}{2}}$",
+   "correct_option": "$\\dfrac{S}{4},\\ \\sqrt{\\dfrac{3gS}{2}}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06044",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $1\\ \\text{kg}$, moving along $x$ with speed $v_i = 10\\ \\text{m/s}$, enters a rough region ranging from $x = 0.1\\ \\text{m}$ to $x = 1.9\\ \\text{m}$. The retarding force acting on the block in this range is $F_r = -kx\\ \\text{N}$, with $k = 10\\ \\text{N/m}$. Then the final speed of the block as it crosses the rough region is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q44",
+   "is_published": false,
+   "option1": "$10\\ \\text{m/s}$",
+   "option2": "$4\\ \\text{m/s}$",
+   "option3": "$6\\ \\text{m/s}$",
+   "option4": "$8\\ \\text{m/s}$",
+   "correct_option": "$8\\ \\text{m/s}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06045",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A ball having kinetic energy $KE$ is projected at an angle of $60^\\circ$ from the horizontal. What will be the kinetic energy of the ball at the highest point of its flight?",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q45",
+   "is_published": false,
+   "option1": "$\\dfrac{KE}{8}$",
+   "option2": "$\\dfrac{KE}{2}$",
+   "option3": "$\\dfrac{KE}{16}$",
+   "option4": "$\\dfrac{KE}{4}$",
+   "correct_option": "$\\dfrac{KE}{4}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06046",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.\nAssertion A: In a central force field, the work done is independent of the path chosen.\nReason R: Every force encountered in mechanics does not have an associated potential energy.\nIn the light of the above statements, choose the most appropriate answer from the options given below.",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q46",
+   "is_published": false,
+   "option1": "A is false but R is true",
+   "option2": "Both A and R are true but R is NOT the correct explanation of A",
+   "option3": "A is true but R is false",
+   "option4": "Both A and R are true and R is the correct explanation of A",
+   "correct_option": "Both A and R are true but R is NOT the correct explanation of A"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06047",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bead of mass $m$ slides without friction on the wall of a vertical circular hoop of radius $R$, as shown in the figure. The bead moves under the combined action of gravity and a massless spring ($k$) attached to the bottom of the hoop. The equilibrium length of the spring is $R$. If the bead is released from the top of the hoop with (negligible) zero initial speed, the velocity of the bead when the length of the spring becomes $R$ would be (spring constant is $k$, $g$ is acceleration due to gravity)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q47",
+   "is_published": false,
+   "option1": "$\\sqrt{3Rg + \\dfrac{kR^2}{m}}$",
+   "option2": "$2\\sqrt{gR + \\dfrac{kR^2}{m}}$",
+   "option3": "$\\sqrt{2Rg + \\dfrac{kR^2}{m}}$",
+   "option4": "$\\sqrt{2Rg + \\dfrac{4kR^2}{m}}$",
+   "correct_option": "$\\sqrt{3Rg + \\dfrac{kR^2}{m}}$"
+  },
+  "imgs": [
+   "NPU06047"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06048",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "If a rubber ball falls from a height $h$ and rebounds up to the height of $h/2$, the percentage loss of total energy of the initial system as well as the velocity of the ball before it strikes the ground, respectively, are",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q48",
+   "is_published": false,
+   "option1": "$50\\%,\\ \\sqrt{2gh}$",
+   "option2": "$50\\%,\\ \\sqrt{gh}$",
+   "option3": "$40\\%,\\ \\sqrt{2gh}$",
+   "option4": "$50\\%,\\ \\sqrt{\\dfrac{gh}{2}}$",
+   "correct_option": "$50\\%,\\ \\sqrt{2gh}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06049",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $50\\ \\text{kg}$ is lifted to a height of $20\\ \\text{m}$ from the ground in the two different ways shown in the figures: Case 1, pulled straight up; Case 2, along a ramp inclined at $30^\\circ$. The ratio of the work done against gravity in the two cases will be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q49",
+   "is_published": false,
+   "option1": "$1 : 2$",
+   "option2": "$\\sqrt{3} : 2$",
+   "option3": "$2 : 1$",
+   "option4": "$1 : 1$",
+   "correct_option": "$1 : 1$"
+  },
+  "imgs": [
+   "NPU06049"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06050",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Two bodies of masses $4\\ \\text{g}$ and $25\\ \\text{g}$ are moving with equal kinetic energies. The ratio of the magnitudes of their linear momentum is",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q50",
+   "is_published": false,
+   "option1": "$3 : 5$",
+   "option2": "$5 : 4$",
+   "option3": "$2 : 5$",
+   "option4": "$4 : 5$",
+   "correct_option": "$2 : 5$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06051",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "The potential energy function (in J) of a particle in a region of space is given as $U = (2x^2 + 3y^3 + 2z)$. Here $x$, $y$ and $z$ are in metres. The magnitude of the $x$-component of force (in N) acting on the particle at point $P(1, 2, 3)\\ \\text{m}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q51",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$6$",
+   "option3": "$4$",
+   "option4": "$8$",
+   "correct_option": "$4$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06052",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bob of mass $m$ is suspended by a light string of length $L$. It is imparted a minimum horizontal velocity at the lowest point $A$ such that it just completes a half circle reaching the topmost position $B$. The ratio of kinetic energies $\\dfrac{(K.E.)_A}{(K.E.)_B}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q52",
+   "is_published": false,
+   "option1": "$3 : 2$",
+   "option2": "$5 : 1$",
+   "option3": "$2 : 5$",
+   "option4": "$1 : 5$",
+   "correct_option": "$5 : 1$"
+  },
+  "imgs": [
+   "NPU06052"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06053",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "The bob of a pendulum was released from a horizontal position. The length of the pendulum is $10\\ \\text{m}$. If it dissipates $10\\%$ of its initial energy against air resistance, the speed with which the bob arrives at the lowest point is (use $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q53",
+   "is_published": false,
+   "option1": "$6\\sqrt{5}\\ \\text{m s}^{-1}$",
+   "option2": "$5\\sqrt{6}\\ \\text{m s}^{-1}$",
+   "option3": "$5\\sqrt{5}\\ \\text{m s}^{-1}$",
+   "option4": "$2\\sqrt{5}\\ \\text{m s}^{-1}$",
+   "correct_option": "$6\\sqrt{5}\\ \\text{m s}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06054",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle is placed at the point $A$ of a frictionless track $ABC$ as shown in the figure. It is gently pushed towards the right. The speed of the particle when it reaches the point $B$ is (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q54",
+   "is_published": false,
+   "option1": "$20\\ \\text{m s}^{-1}$",
+   "option2": "$\\sqrt{10}\\ \\text{m s}^{-1}$",
+   "option3": "$2\\sqrt{10}\\ \\text{m s}^{-1}$",
+   "option4": "$10\\ \\text{m s}^{-1}$",
+   "correct_option": "$\\sqrt{10}\\ \\text{m s}^{-1}$"
+  },
+  "imgs": [
+   "NPU06054"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06055",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A solid circular disc of mass $50\\ \\text{kg}$ rolls along a horizontal floor so that its centre of mass has a speed of $0.4\\ \\text{m s}^{-1}$. The absolute value of work done on the disc to stop it is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q55",
+   "is_published": false,
+   "option1": "$4\\ \\text{J}$",
+   "option2": "$8\\ \\text{J}$",
+   "option3": "$6\\ \\text{J}$",
+   "option4": "$12\\ \\text{J}$",
+   "correct_option": "$6\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06056",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "An artillery piece of mass $M_1$ fires a shell of mass $M_2$ horizontally. Instantaneously after the firing, the ratio of the kinetic energy of the artillery and that of the shell is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q56",
+   "is_published": false,
+   "option1": "$\\dfrac{M_1}{M_1 + M_2}$",
+   "option2": "$\\dfrac{M_2}{M_1}$",
+   "option3": "$\\dfrac{M_2}{M_1 + M_2}$",
+   "option4": "$\\dfrac{M_1}{M_2}$",
+   "correct_option": "$\\dfrac{M_2}{M_1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06057",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body is dropped on the ground from a height $h_1$ and after hitting the ground, it rebounds to a height $h_2$. If the ratio of velocities of the body just before and after hitting the ground is $4$, then the percentage loss in kinetic energy of the body is $\\dfrac{x}{4}$. The value of $x$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q57",
+   "is_published": false,
+   "option1": "$300$",
+   "option2": "$375$",
+   "option3": "$360$",
+   "option4": "$400$",
+   "correct_option": "$375$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06058",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $5\\ \\text{kg}$ is moving with a momentum of $10\\ \\text{kg m s}^{-1}$. Now a force of $2\\ \\text{N}$ acts on the body in the direction of its motion for $5\\ \\text{s}$. The increase in the kinetic energy of the body is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q58",
+   "is_published": false,
+   "option1": "$40\\ \\text{J}$",
+   "option2": "$20\\ \\text{J}$",
+   "option3": "$25\\ \\text{J}$",
+   "option4": "$30\\ \\text{J}$",
+   "correct_option": "$30\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06059",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body is released from a height equal to the radius $R$ of the earth. The velocity of the body when it strikes the surface of the earth will be (given $g$ = acceleration due to gravity on the earth)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q59",
+   "is_published": false,
+   "option1": "$\\sqrt{2gR}$",
+   "option2": "$\\sqrt{gR}$",
+   "option3": "$\\sqrt{4gR}$",
+   "option4": "$\\sqrt{\\dfrac{gR}{2}}$",
+   "correct_option": "$\\sqrt{gR}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06060",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A $0.4\\ \\text{kg}$ mass takes $8\\ \\text{s}$ to reach the ground when dropped from a certain height $P$ above the surface of the earth. The loss of potential energy in the last second of fall is [take $g = 10\\ \\text{m s}^{-2}$]",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q60",
+   "is_published": false,
+   "option1": "$75\\ \\text{J}$",
+   "option2": "$150\\ \\text{J}$",
+   "option3": "$300\\ \\text{J}$",
+   "option4": "$600\\ \\text{J}$",
+   "correct_option": "$300\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06061",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A lift of mass $M = 500\\ \\text{kg}$ is descending with a speed of $2\\ \\text{m s}^{-1}$. Its supporting cable begins to slip, thus allowing it to fall with a constant acceleration of $2\\ \\text{m s}^{-2}$. The kinetic energy of the lift at the end of a fall through a distance of $6\\ \\text{m}$ will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q61",
+   "is_published": false,
+   "option1": "$6\\ \\text{kJ}$",
+   "option2": "$14\\ \\text{kJ}$",
+   "option3": "$3\\ \\text{kJ}$",
+   "option4": "$7\\ \\text{kJ}$",
+   "correct_option": "$7\\ \\text{kJ}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06062",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block is fastened to a horizontal spring. The block is pulled to a distance $x = 10\\ \\text{cm}$ from its equilibrium position (at $x = 0$) on a frictionless surface from rest. The energy of the block at $x = 5\\ \\text{cm}$ is $0.25\\ \\text{J}$. The spring constant is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q62",
+   "is_published": false,
+   "option1": "$50\\ \\text{N m}^{-1}$",
+   "option2": "$67\\ \\text{N m}^{-1}$",
+   "option3": "$100\\ \\text{N m}^{-1}$",
+   "option4": "$133\\ \\text{N m}^{-1}$",
+   "correct_option": "$67\\ \\text{N m}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06063",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bag of sand of mass $9.8\\ \\text{kg}$ is suspended by a rope. A bullet of $200\\ \\text{g}$ travelling with speed $10\\ \\text{m s}^{-1}$ gets embedded in it, then the loss of kinetic energy will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q63",
+   "is_published": false,
+   "option1": "$4.9\\ \\text{J}$",
+   "option2": "$9.8\\ \\text{J}$",
+   "option3": "$14.7\\ \\text{J}$",
+   "option4": "$19.6\\ \\text{J}$",
+   "correct_option": "$9.8\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06064",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "As per the given figure, two blocks each of mass $250\\ \\text{g}$ are connected to a spring of spring constant $2\\ \\text{N m}^{-1}$. If both are given velocity $v$ in opposite directions, then the maximum elongation of the spring is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q64",
+   "is_published": false,
+   "option1": "$\\dfrac{v}{2\\sqrt{2}}$",
+   "option2": "$\\dfrac{v}{2}$",
+   "option3": "$\\dfrac{v}{4}$",
+   "option4": "$\\dfrac{v}{\\sqrt{2}}$",
+   "correct_option": "$\\dfrac{v}{2}$"
+  },
+  "imgs": [
+   "NPU06064"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06065",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $m$ (as shown in the figure) moving with kinetic energy $E$ compresses a spring through a distance $25\\ \\text{cm}$ when its speed is halved. The value of the spring constant of the spring used will be $nE\\ \\text{N m}^{-1}$ for $n =$",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q65",
+   "is_published": false,
+   "option1": "$12$",
+   "option2": "$32$",
+   "option3": "$24$",
+   "option4": "$48$",
+   "correct_option": "$24$"
+  },
+  "imgs": [
+   "NPU06065"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06066",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bullet of mass $200\\ \\text{g}$ having initial kinetic energy $90\\ \\text{J}$ is shot inside a long swimming pool as shown in the figure. If its kinetic energy reduces to $40\\ \\text{J}$ within $1\\ \\text{s}$, the minimum length of the pool the bullet has to travel so that it completely comes to rest is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q66",
+   "is_published": false,
+   "option1": "$45\\ \\text{m}$",
+   "option2": "$90\\ \\text{m}$",
+   "option3": "$125\\ \\text{m}$",
+   "option4": "$25\\ \\text{m}$",
+   "correct_option": "$45\\ \\text{m}$"
+  },
+  "imgs": [
+   "NPU06066"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06067",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle experiences a variable force $\\vec F = (4x\\hat i + 3y^2\\hat j)$ in a horizontal $x$-$y$ plane. Assume distance in metres and force in newton. If the particle moves from point $(1, 2)$ to point $(2, 3)$ in the $x$-$y$ plane, then its kinetic energy changes by",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q67",
+   "is_published": false,
+   "option1": "$25\\ \\text{J}$",
+   "option2": "$50\\ \\text{J}$",
+   "option3": "$12.5\\ \\text{J}$",
+   "option4": "$0\\ \\text{J}$",
+   "correct_option": "$25\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06068",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A ball of mass $100\\ \\text{g}$ is dropped from a height $h = 10\\ \\text{cm}$ on a platform fixed at the top of a vertical spring (as shown in the figure). The ball stays on the platform and the platform is depressed by a distance $\\dfrac{h}{2}$. The spring constant is (use $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q68",
+   "is_published": false,
+   "option1": "$40\\ \\text{N m}^{-1}$",
+   "option2": "$60\\ \\text{N m}^{-1}$",
+   "option3": "$80\\ \\text{N m}^{-1}$",
+   "option4": "$120\\ \\text{N m}^{-1}$",
+   "correct_option": "$120\\ \\text{N m}^{-1}$"
+  },
+  "imgs": [
+   "NPU06068"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06069",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Potential energy as a function of $r$ is given by $U = \\dfrac{A}{r^{10}} - \\dfrac{B}{r^{5}}$, where $r$ is the interatomic distance, and $A$ and $B$ are positive constants. The equilibrium distance between the two atoms will be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q69",
+   "is_published": false,
+   "option1": "$\\left(\\dfrac{A}{B}\\right)^{1/5}$",
+   "option2": "$\\left(\\dfrac{B}{A}\\right)^{1/5}$",
+   "option3": "$\\left(\\dfrac{2A}{B}\\right)^{1/5}$",
+   "option4": "$\\left(\\dfrac{B}{2A}\\right)^{1/5}$",
+   "correct_option": "$\\left(\\dfrac{2A}{B}\\right)^{1/5}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06070",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A rolling wheel of $12\\ \\text{kg}$ is on an inclined plane at position $P$ and connected to a mass of $3\\ \\text{kg}$ through a string of fixed length and pulley as shown in the figure. Consider $PR$ as friction free surface. The velocity of the centre of mass of the wheel when it reaches the bottom $Q$ of the inclined plane $PQ$ will be $\\dfrac{1}{2}\\sqrt{xgh}\\ \\text{m s}^{-1}$. The value of $x$ (rounded off to the nearest integer) is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q70",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$3$",
+   "option3": "$4$",
+   "option4": "$6$",
+   "correct_option": "$3$"
+  },
+  "imgs": [
+   "NPU06070"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06071",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A pendulum is suspended by a string of length $250\\ \\text{cm}$. The mass of the bob of the pendulum is $200\\ \\text{g}$. The bob is pulled aside until the string is at $60^\\circ$ with the vertical, as shown in the figure. After releasing the bob, the maximum velocity attained by the bob will be (if $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q71",
+   "is_published": false,
+   "option1": "$5\\ \\text{m s}^{-1}$",
+   "option2": "$2.5\\ \\text{m s}^{-1}$",
+   "option3": "$10\\ \\text{m s}^{-1}$",
+   "option4": "$5\\sqrt{2}\\ \\text{m s}^{-1}$",
+   "correct_option": "$5\\ \\text{m s}^{-1}$"
+  },
+  "imgs": [
+   "NPU06071"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06072",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A uniform chain of length $3\\ \\text{m}$ and mass $3\\ \\text{kg}$ overhangs a smooth table with $2\\ \\text{m}$ lying on the table. If $K$ is the kinetic energy of the chain as it completely slips off the table, then the value of $K$ is (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q72",
+   "is_published": false,
+   "option1": "$30\\ \\text{J}$",
+   "option2": "$45\\ \\text{J}$",
+   "option3": "$40\\ \\text{J}$",
+   "option4": "$50\\ \\text{J}$",
+   "correct_option": "$40\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06073",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block moving horizontally on a smooth surface with a speed of $40\\ \\text{m s}^{-1}$ splits into two equal parts. If one of the parts moves at $60\\ \\text{m s}^{-1}$ in the same direction, then the fractional change in the kinetic energy will be $x : 4$, where $x =$",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q73",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$4$",
+   "option3": "$1$",
+   "option4": "$3$",
+   "correct_option": "$1$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06074",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block moving horizontally on a smooth surface with a speed of $40\\ \\text{m s}^{-1}$ splits into two parts with masses in the ratio of $1 : 2$. If the smaller part moves at $60\\ \\text{m s}^{-1}$ in the same direction, then the fractional change in kinetic energy is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q74",
+   "is_published": false,
+   "option1": "$\\tfrac{1}{3}$",
+   "option2": "$\\tfrac{2}{3}$",
+   "option3": "$\\tfrac{1}{4}$",
+   "option4": "$\\tfrac{1}{8}$",
+   "correct_option": "$\\tfrac{1}{8}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06075",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "An engine is attached to a wagon through a shock absorber of length $1.5\\ \\text{m}$. The system with a total mass of $40{,}000\\ \\text{kg}$ is moving with a speed of $72\\ \\text{km h}^{-1}$ when the brakes are applied to bring it to rest. In the process of the system being brought to rest, the spring of the shock absorber gets compressed by $1.0\\ \\text{m}$. If $90\\%$ of the energy of the wagon is lost due to friction, the spring constant is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q75",
+   "is_published": false,
+   "option1": "$8\\times 10^{5}\\ \\text{N m}^{-1}$",
+   "option2": "$32\\times 10^{5}\\ \\text{N m}^{-1}$",
+   "option3": "$24\\times 10^{5}\\ \\text{N m}^{-1}$",
+   "option4": "$16\\times 10^{5}\\ \\text{N m}^{-1}$",
+   "correct_option": "$16\\times 10^{5}\\ \\text{N m}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06076",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "As shown in the figure, a particle of mass $10\\ \\text{kg}$ is placed at a point $A$. When the particle is slightly displaced to its right, it starts moving and reaches the point $B$. The speed of the particle at $B$ is $x\\ \\text{m s}^{-1}$ (take $g = 10\\ \\text{m s}^{-2}$). The value of $x$ to the nearest integer is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q76",
+   "is_published": false,
+   "option1": "$10$",
+   "option2": "$5$",
+   "option3": "$15$",
+   "option4": "$20$",
+   "correct_option": "$10$"
+  },
+  "imgs": [
+   "NPU06076"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06077",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of mass $m$ moves in a circular orbit under the central potential field $U(r) = -\\dfrac{C}{r}$, where $C$ is a positive constant. The correct radius-velocity graph of the particle\\'s motion is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q77",
+   "is_published": false,
+   "option1": "",
+   "option2": "",
+   "option3": "",
+   "option4": "",
+   "correct_option": "option1"
+  },
+  "imgs": [
+   "NPU06077O1",
+   "NPU06077O2",
+   "NPU06077O3",
+   "NPU06077O4"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06078",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "The potential energy $U$ of a diatomic molecule is a function dependent on $r$ (interatomic distance) as $U = \\dfrac{\\alpha}{r^{10}} - \\dfrac{\\beta}{r^{5}} - 3$, where $\\alpha$ and $\\beta$ are positive constants. The equilibrium distance between the two atoms will be $\\left(\\dfrac{2\\alpha}{\\beta}\\right)^{a/5}$, where $a =$",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q78",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$2$",
+   "option3": "$3$",
+   "option4": "$5$",
+   "correct_option": "$1$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06079",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A small block starts slipping down from a point $B$ on an inclined plane $AB$, which makes an angle $\\theta$ with the horizontal. The section $BC$ is smooth and the remaining section $CA$ is rough with coefficient of friction $\\mu$. It is found that the block comes to rest as it reaches the bottom (point $A$) of the inclined plane. If $BC = 2AC$, the coefficient of friction is given by $\\mu = k\\tan\\theta$. The value of $k$ is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q79",
+   "is_published": false,
+   "option1": "$2$",
+   "option2": "$4$",
+   "option3": "$3$",
+   "option4": "$6$",
+   "correct_option": "$3$"
+  },
+  "imgs": [
+   "NPU06079"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06080",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A cricket ball of mass $0.15\\ \\text{kg}$ is thrown vertically up by a bowling machine so that it rises to a maximum height of $20\\ \\text{m}$ after leaving the machine. If the part pushing the ball applies a constant force $F$ on the ball and moves horizontally a distance of $0.2\\ \\text{m}$ while launching the ball, the value of $F$ (in N) is ($g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q80",
+   "is_published": false,
+   "option1": "$75\\ \\text{N}$",
+   "option2": "$300\\ \\text{N}$",
+   "option3": "$150\\ \\text{N}$",
+   "option4": "$225\\ \\text{N}$",
+   "correct_option": "$150\\ \\text{N}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06081",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Hydrogen ion and singly ionized helium atom are accelerated, from rest, through the same potential difference. The ratio of final speeds of hydrogen and helium ions is close to",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q81",
+   "is_published": false,
+   "option1": "$1 : 2$",
+   "option2": "$10 : 7$",
+   "option3": "$2 : 1$",
+   "option4": "$5 : 7$",
+   "correct_option": "$2 : 1$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06082",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of charge $q$ and mass $m$ is subjected to an electric field $E = E_0(1 - ax^2)$ in the $x$-direction, where $a$ and $E_0$ are constants. Initially the particle was at rest at $x = 0$. Other than the initial position, the kinetic energy of the particle becomes zero when the distance of the particle from the origin is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q82",
+   "is_published": false,
+   "option1": "$a$",
+   "option2": "$\\sqrt{\\dfrac{2}{a}}$",
+   "option3": "$\\sqrt{\\dfrac{3}{a}}$",
+   "option4": "$\\sqrt{\\dfrac{1}{a}}$",
+   "correct_option": "$\\sqrt{\\dfrac{3}{a}}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06083",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "If the potential energy between two molecules is given by $U = -\\dfrac{A}{r^{6}} + \\dfrac{B}{r^{12}}$, then at equilibrium, the separation between the molecules and the potential energy are",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q83",
+   "is_published": false,
+   "option1": "$\\left(\\dfrac{B}{2A}\\right)^{1/6},\\ -\\dfrac{A^2}{2B}$",
+   "option2": "$\\left(\\dfrac{B}{A}\\right)^{1/6},\\ 0$",
+   "option3": "$\\left(\\dfrac{2B}{A}\\right)^{1/6},\\ -\\dfrac{A^2}{4B}$",
+   "option4": "$\\left(\\dfrac{B}{2A}\\right)^{1/6},\\ \\dfrac{A^2}{2B}$",
+   "correct_option": "$\\left(\\dfrac{2B}{A}\\right)^{1/6},\\ -\\dfrac{A^2}{4B}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06084",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle ($m = 1\\ \\text{kg}$) slides down a frictionless track $AOC$ starting from rest at a point $A$ (height $2\\ \\text{m}$). After reaching $C$, the particle continues to move freely in air as a projectile. When it reaches its highest point $P$ (height $1\\ \\text{m}$), the kinetic energy of the particle is (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q84",
+   "is_published": false,
+   "option1": "$20\\ \\text{J}$",
+   "option2": "$5\\ \\text{J}$",
+   "option3": "$15\\ \\text{J}$",
+   "option4": "$10\\ \\text{J}$",
+   "correct_option": "$10\\ \\text{J}$"
+  },
+  "imgs": [
+   "NPU06084"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06085",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle moves in one dimension from rest under the influence of a force that varies with the distance travelled by the particle as shown in the figure. The kinetic energy of the particle after it has travelled $3\\ \\text{m}$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q85",
+   "is_published": false,
+   "option1": "$4\\ \\text{J}$",
+   "option2": "$2.5\\ \\text{J}$",
+   "option3": "$6.5\\ \\text{J}$",
+   "option4": "$5\\ \\text{J}$",
+   "correct_option": "$6.5\\ \\text{J}$"
+  },
+  "imgs": [
+   "NPU06085"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06086",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $m$, lying on a smooth horizontal surface, is attached to a spring (of negligible mass) of spring constant $k$. The other end of the spring is fixed, as shown in the figure. The block is initially at rest in its equilibrium position. If now the block is pulled with a constant force $F$, the maximum speed of the block is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q86",
+   "is_published": false,
+   "option1": "$\\dfrac{F}{\\sqrt{mk}}$",
+   "option2": "$\\dfrac{2F}{\\sqrt{mk}}$",
+   "option3": "$\\dfrac{\\pi F}{\\sqrt{mk}}$",
+   "option4": "$\\dfrac{F}{\\pi\\sqrt{mk}}$",
+   "correct_option": "$\\dfrac{F}{\\sqrt{mk}}$"
+  },
+  "imgs": [
+   "NPU06086"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06087",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of mass $20\\ \\text{g}$ is released with an initial velocity $5\\ \\text{m s}^{-1}$ along the curve from the point $A$, as shown in the figure. The point $A$ is at height $h$ from point $B$. The particle slides along the frictionless surface. When the particle reaches point $B$, its angular momentum about $O$ will be (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q87",
+   "is_published": false,
+   "option1": "$3\\ \\text{kg m}^2\\text{s}^{-1}$",
+   "option2": "$2\\ \\text{kg m}^2\\text{s}^{-1}$",
+   "option3": "$6\\ \\text{kg m}^2\\text{s}^{-1}$",
+   "option4": "$8\\ \\text{kg m}^2\\text{s}^{-1}$",
+   "correct_option": "$6\\ \\text{kg m}^2\\text{s}^{-1}$"
+  },
+  "imgs": [
+   "NPU06087"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06088",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "An object of mass $1000\\ \\text{g}$ experiences a time dependent force $\\vec F = (2t\\hat i + 3t^2\\hat j)\\ \\text{N}$. The power generated by the force at time $t$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q88",
+   "is_published": false,
+   "option1": "$(2t^2 + 3t^3)\\ \\text{W}$",
+   "option2": "$(2t^2 + 18t^3)\\ \\text{W}$",
+   "option3": "$(3t^3 + 5t^5)\\ \\text{W}$",
+   "option4": "$(2t^3 + 3t^5)\\ \\text{W}$",
+   "correct_option": "$(2t^3 + 3t^5)\\ \\text{W}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06089",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $4\\ \\text{kg}$ is placed on a plane at a point $P$ having coordinate $(3, 4)\\ \\text{m}$. Under the action of force $\\vec F = (2\\hat i + 3\\hat j)\\ \\text{N}$, it moves to a new point $Q$ having coordinates $(6, 10)\\ \\text{m}$ in $4$ s. The average power and instantaneous power at the end of $4$ s are in the ratio of",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q89",
+   "is_published": false,
+   "option1": "$13 : 6$",
+   "option2": "$4 : 3$",
+   "option3": "$1 : 2$",
+   "option4": "$6 : 13$",
+   "correct_option": "$6 : 13$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06090",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A sand dropper drops sand of mass $m(t)$ on a conveyor belt at a rate proportional to the square root of the speed ($v$) of the belt, i.e. $\\dfrac{dm}{dt} \\propto \\sqrt{v}$. If $P$ is the power delivered to run the belt at constant speed, then which of the following relationships is true?",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q90",
+   "is_published": false,
+   "option1": "$P \\propto \\sqrt{v}$",
+   "option2": "$P \\propto v$",
+   "option3": "$P^2 \\propto v^5$",
+   "option4": "$P^2 \\propto v^3$",
+   "correct_option": "$P^2 \\propto v^5$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06091",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body is moving unidirectionally under the influence of a constant power source. Its displacement in time $t$ is proportional to",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q91",
+   "is_published": false,
+   "option1": "$t$",
+   "option2": "$t^{3/2}$",
+   "option3": "$t^2$",
+   "option4": "$t^{2/3}$",
+   "correct_option": "$t^{3/2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06092",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $2\\ \\text{kg}$ begins to move under the action of a time dependent force given by $\\vec F = (6t\\,\\hat i + 6t^2\\,\\hat j)\\ \\text{N}$. The power developed by the force at time $t$ is given by",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q92",
+   "is_published": false,
+   "option1": "$(6t^4 + 9t^5)\\ \\text{W}$",
+   "option2": "$(3t^3 + 6t^5)\\ \\text{W}$",
+   "option3": "$(9t^5 + 6t^3)\\ \\text{W}$",
+   "option4": "$(9t^3 + 6t^5)\\ \\text{W}$",
+   "correct_option": "$(9t^3 + 6t^5)\\ \\text{W}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06093",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "If the maximum load carried by an elevator is $1400\\ \\text{kg}$ ($600\\ \\text{kg}$ passengers $+ 800\\ \\text{kg}$ elevator), which is moving up with a uniform speed of $3\\ \\text{m s}^{-1}$ and the frictional force acting on it is $2000\\ \\text{N}$, then the maximum power used by the motor is ($g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q93",
+   "is_published": false,
+   "option1": "$42\\ \\text{kW}$",
+   "option2": "$48\\ \\text{kW}$",
+   "option3": "$54\\ \\text{kW}$",
+   "option4": "$36\\ \\text{kW}$",
+   "correct_option": "$48\\ \\text{kW}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06094",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $5\\ \\text{kg}$ starting from rest is pulled up on a smooth incline plane making an angle of $30^\\circ$ with the horizontal with an effective acceleration of $1\\ \\text{m s}^{-2}$. The power delivered by the pulling force at $t = 10\\ \\text{s}$ from the start is (use $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q94",
+   "is_published": false,
+   "option1": "$250\\ \\text{W}$",
+   "option2": "$150\\ \\text{W}$",
+   "option3": "$350\\ \\text{W}$",
+   "option4": "$300\\ \\text{W}$",
+   "correct_option": "$300\\ \\text{W}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06095",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "The ratio of powers of two motors is $\\dfrac{3\\sqrt{x}}{\\sqrt{x} + 1}$, that are capable of raising $300\\ \\text{kg}$ water in $5$ minutes and $50\\ \\text{kg}$ water in $2$ minutes respectively from a well of $100\\ \\text{m}$ deep. The value of $x$ will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q95",
+   "is_published": false,
+   "option1": "$16$",
+   "option2": "$2$",
+   "option3": "$2.4$",
+   "option4": "$4$",
+   "correct_option": "$16$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06096",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $1\\ \\text{kg}$ begins to move under the action of a time dependent force $\\vec F = (t\\hat i + 3t^2\\hat j)\\ \\text{N}$, where $\\hat i$ and $\\hat j$ are the unit vectors along the $x$ and $y$ axes. The power developed by the above force at the time $t = 2\\ \\text{s}$ will be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q96",
+   "is_published": false,
+   "option1": "$76\\ \\text{W}$",
+   "option2": "$124\\ \\text{W}$",
+   "option3": "$100\\ \\text{W}$",
+   "option4": "$52\\ \\text{W}$",
+   "correct_option": "$100\\ \\text{W}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06097",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Sand is being dropped from a stationary dropper at a rate of $0.5\\ \\text{kg s}^{-1}$ on a conveyor belt moving with a velocity of $5\\ \\text{m s}^{-1}$. The power needed to keep the belt moving with the same velocity will be",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q97",
+   "is_published": false,
+   "option1": "$1.25\\ \\text{W}$",
+   "option2": "$2.5\\ \\text{W}$",
+   "option3": "$6.25\\ \\text{W}$",
+   "option4": "$12.5\\ \\text{W}$",
+   "correct_option": "$12.5\\ \\text{W}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06098",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A particle of mass $m$ is moving in a circular path of constant radius $r$ such that its centripetal acceleration $a_c$ is varying with time $t$ as $a_c = k^2rt^2$, where $k$ is a constant. The power delivered to the particle by the force acting on it is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q98",
+   "is_published": false,
+   "option1": "Zero",
+   "option2": "$2mk^2r^2t$",
+   "option3": "$mk^2r^2t$",
+   "option4": "$2mk^2rt$",
+   "correct_option": "$mk^2r^2t$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06099",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Water falls from a $40\\ \\text{m}$ high dam at the rate of $9\\times 10^{4}\\ \\text{kg}$ per hour. Fifty percent of the gravitational potential energy can be converted into electrical energy. Using this hydroelectric energy, the number of $100\\ \\text{W}$ lamps that can be lit is (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q99",
+   "is_published": false,
+   "option1": "$25$",
+   "option2": "$50$",
+   "option3": "$100$",
+   "option4": "$18$",
+   "correct_option": "$50$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06100",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A $60\\ \\text{HP}$ electric motor lifts an elevator having a maximum total load capacity of $2000\\ \\text{kg}$. If the frictional force on the elevator is $4000\\ \\text{N}$, the speed of the elevator at full load is close to ($1\\ \\text{HP} = 746\\ \\text{W}$, $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q100",
+   "is_published": false,
+   "option1": "$1.7\\ \\text{m s}^{-1}$",
+   "option2": "$1.9\\ \\text{m s}^{-1}$",
+   "option3": "$1.5\\ \\text{m s}^{-1}$",
+   "option4": "$2.0\\ \\text{m s}^{-1}$",
+   "correct_option": "$1.9\\ \\text{m s}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06101",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A bob of mass $m$ is suspended at a point $O$ by a light string of length $l$ and left to perform vertical motion (circular) as shown in the figure. Initially, by applying horizontal velocity $v_0$ at the point $A$, the string becomes slack when the bob reaches the point $D$. The ratio of the kinetic energy of the bob at the points $B$ and $C$ is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q101",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$2$",
+   "option3": "$4$",
+   "option4": "$3$",
+   "correct_option": "$2$"
+  },
+  "imgs": [
+   "NPU06101"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06102",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $100\\ \\text{g}$ is moving in a circular path of radius $2\\ \\text{m}$ in a vertical plane as shown in the figure. The velocity of the body at point $A$ is $10\\ \\text{m/s}$. The ratio of its kinetic energies at point $B$ and $C$ is (take acceleration due to gravity as $10\\ \\text{m/s}^2$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q102",
+   "is_published": false,
+   "option1": "$\\dfrac{2+\\sqrt{2}}{3}$",
+   "option2": "$\\dfrac{2+\\sqrt{3}}{3}$",
+   "option3": "$\\dfrac{3+\\sqrt{3}}{2}$",
+   "option4": "$\\dfrac{3-\\sqrt{2}}{2}$",
+   "correct_option": "$\\dfrac{3+\\sqrt{3}}{2}$"
+  },
+  "imgs": [
+   "NPU06102"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06103",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $m$ connected to a massless and unstretchable string goes in a vertical circle of radius $R$ under gravity $g$. The other end of the string is fixed at the centre of the circle. If the velocity at the top of the circular path is $n\\sqrt{gR}$, where $n \\geq 1$, then the ratio of the kinetic energy of the body at the bottom to that at the top of the circle is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q103",
+   "is_published": false,
+   "option1": "$\\dfrac{n^2}{n^2 + 4}$",
+   "option2": "$\\dfrac{n^2 + 4}{n^2}$",
+   "option3": "$\\dfrac{n + 4}{n}$",
+   "option4": "$\\dfrac{n}{n + 4}$",
+   "correct_option": "$\\dfrac{n^2 + 4}{n^2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06104",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A circular table is rotating with an angular velocity of $\\omega\\ \\text{rad/s}$ about its axis (see figure). There is a smooth groove along a radial direction on the table. A steel ball is gently placed at a distance of $1\\ \\text{m}$ on the groove. All the surfaces are smooth. If the radius of the table is $3\\ \\text{m}$, the radial velocity of the ball with respect to the table at the time the ball leaves the table is $x\\sqrt{2}\\,\\omega\\ \\text{m/s}$, where the value of $x$ is",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q104",
+   "is_published": false,
+   "option1": "$4$",
+   "option2": "$2$",
+   "option3": "$1$",
+   "option4": "$3$",
+   "correct_option": "$2$"
+  },
+  "imgs": [
+   "NPU06104"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06105",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $25\\ \\text{kg}$ is pulled along a horizontal surface by a force at an angle $45^\\circ$ with the horizontal. The friction coefficient between the block and the surface is $0.25$. The block travels at a uniform velocity. The work done by the applied force during a displacement of $5\\ \\text{m}$ of the block is (take $g = 9.8\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q105",
+   "is_published": false,
+   "option1": "$970\\ \\text{J}$",
+   "option2": "$735\\ \\text{J}$",
+   "option3": "$245\\ \\text{J}$",
+   "option4": "$490\\ \\text{J}$",
+   "correct_option": "$245\\ \\text{J}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06106",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A piston of mass $M$ is hung from a massless spring whose restoring force law goes as $F = -kx^3$, where $k$ is the spring constant of appropriate dimension. The piston separates the vertical chamber into two parts, where the bottom part is filled with $n$ moles of an ideal gas. An external work is done on the gas isothermally (at a constant temperature $T$) with the help of a heating filament (with negligible volume) mounted in the lower part of the chamber, so that the piston goes up from a height $L_0$ to $L_1$. The total energy delivered by the filament is (assume the spring to be in its natural length before heating)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q106",
+   "is_published": false,
+   "option1": "$3nRT\\ln\\!\\left(\\dfrac{L_1}{L_0}\\right) + 2Mg(L_1 - L_0) + \\dfrac{k}{3}\\left(L_1^3 - L_0^3\\right)$",
+   "option2": "$nRT\\ln\\!\\left(\\dfrac{L_1^2}{L_0^2}\\right) + \\dfrac{Mg}{2}(L_1 - L_0) + \\dfrac{k}{4}\\left(L_1^4 - L_0^4\\right)$",
+   "option3": "$nRT\\ln\\!\\left(\\dfrac{L_1}{L_0}\\right) + Mg(L_1 - L_0) + \\dfrac{k}{4}\\left(L_1^4 - L_0^4\\right)$",
+   "option4": "$nRT\\ln\\!\\left(\\dfrac{L_1}{L_0}\\right) + Mg(L_1 - L_0) + \\dfrac{3k}{4}\\left(L_1^4 - L_0^4\\right)$",
+   "correct_option": "$nRT\\ln\\!\\left(\\dfrac{L_1}{L_0}\\right) + Mg(L_1 - L_0) + \\dfrac{k}{4}\\left(L_1^4 - L_0^4\\right)$"
+  },
+  "imgs": [
+   "NPU06106"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06107",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block of mass $2\\ \\text{kg}$ is attached to one end of a massless spring whose other end is fixed at a wall. The spring-mass system moves on a frictionless horizontal table. The spring's natural length is $2\\ \\text{m}$ and spring constant is $200\\ \\text{N/m}$. The block is pushed such that the length of the spring becomes $1\\ \\text{m}$ and then released. At distance $x\\ \\text{m}$ ($x < 2$) from the wall, the speed of the block will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2025",
+   "source": "Mathongo Phy Ch6 Q107",
+   "is_published": false,
+   "option1": "$10\\left[1 - (2 - x)\\right]^{3/2}\\ \\text{m/s}$",
+   "option2": "$10\\left[1 - (2 - x)^2\\right]^{1/2}\\ \\text{m/s}$",
+   "option3": "$10\\left[1 - (2 - x)^2\\right]\\ \\text{m/s}$",
+   "option4": "$10\\left[1 - (2 - x)^2\\right]^2\\ \\text{m/s}$",
+   "correct_option": "$10\\left[1 - (2 - x)^2\\right]^{1/2}\\ \\text{m/s}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06108",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A block is simply released from the top of an inclined plane as shown in the figure. The maximum compression in the spring when the block hits the spring is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q108",
+   "is_published": false,
+   "option1": "$\\sqrt{6}\\ \\text{m}$",
+   "option2": "$\\sqrt{5}\\ \\text{m}$",
+   "option3": "$1\\ \\text{m}$",
+   "option4": "$2\\ \\text{m}$",
+   "correct_option": "$2\\ \\text{m}$"
+  },
+  "imgs": [
+   "NPU06108"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06109",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A small particle of mass $m$ moves in such a way that its potential energy is $U = \\tfrac{1}{2}m\\omega^2r^2$, where $\\omega$ is a constant and $r$ is the distance of the particle from the origin. Assuming Bohr\\'s quantization of momentum and circular orbit, the radius of the $n^{\\text{th}}$ orbit will be proportional to",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q109",
+   "is_published": false,
+   "option1": "$\\sqrt{n}$",
+   "option2": "$\\dfrac{1}{n}$",
+   "option3": "$n^2$",
+   "option4": "$n$",
+   "correct_option": "$\\sqrt{n}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06110",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A closed circular tube of average radius $15\\ \\text{cm}$, whose inner walls are rough, is kept in a vertical plane. A block of mass $1\\ \\text{kg}$ just fits inside the tube. The speed of the block is $22\\ \\text{m s}^{-1}$ when it is introduced at the top of the tube. After completing five oscillations, the block stops at the bottom region of the tube. The magnitude of the work done by the tube on the block is (given $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q110",
+   "is_published": false,
+   "option1": "$242\\ \\text{J}$",
+   "option2": "$239\\ \\text{J}$",
+   "option3": "$3\\ \\text{J}$",
+   "option4": "$245\\ \\text{J}$",
+   "correct_option": "$245\\ \\text{J}$"
+  },
+  "imgs": [
+   "NPU06110"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06111",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "An object of mass $m$ initially at rest on a smooth horizontal plane starts moving under the action of force $F = 2\\ \\text{N}$. In the process of its linear motion, the angle $\\theta$ (as shown in the figure) between the direction of force and horizontal varies as $\\theta = kx$, where $k$ is a constant and $x$ is the distance covered by the object from its initial position. The expression of kinetic energy of the object will be $E = \\dfrac{n}{k}\\sin\\theta$. The value of $n$ is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2023",
+   "source": "Mathongo Phy Ch6 Q111",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$4$",
+   "option3": "$2$",
+   "option4": "$\\tfrac{1}{2}$",
+   "correct_option": "$2$"
+  },
+  "imgs": [
+   "NPU06111"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06112",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Two inclined planes are placed as shown in the figure. A block is projected from the point $A$ of inclined plane $AB$ along its surface with a velocity just sufficient to carry it to the top point $B$ at a height $10\\ \\text{m}$. After reaching the point $B$ the block slides down on inclined plane $BC$. The time it takes to reach the point $C$ from point $A$ is $t(\\sqrt{2} + 1)\\ \\text{s}$. The value of $t$ is (use $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q112",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$2$",
+   "option3": "$4$",
+   "option4": "$2\\sqrt{2}$",
+   "correct_option": "$2$"
+  },
+  "imgs": [
+   "NPU06112"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06113",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A small block slides down from the top of a hemisphere of radius $R = 3\\ \\text{m}$ as shown in the figure. The height $h$ at which the block will lose contact with the surface of the sphere is (assume there is no friction between the block and the hemisphere)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q113",
+   "is_published": false,
+   "option1": "$1\\ \\text{m}$",
+   "option2": "$1.5\\ \\text{m}$",
+   "option3": "$2\\ \\text{m}$",
+   "option4": "$2.25\\ \\text{m}$",
+   "correct_option": "$2\\ \\text{m}$"
+  },
+  "imgs": [
+   "NPU06113"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06114",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "Given below is the plot of a potential energy function $U(x)$ for a system, in which a particle is in one dimensional motion, while a conservative force $F(x)$ acts on it. Suppose that $E_{\\text{mech}} = 8\\ \\text{J}$, the incorrect statement for this system is (where K.E. = kinetic energy)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q114",
+   "is_published": false,
+   "option1": "at $x > x_4$, K.E. is constant throughout the region",
+   "option2": "at $x < x_1$, K.E. is smallest and the particle is moving at the slowest speed",
+   "option3": "at $x = x_2$, K.E. is greatest and the particle is moving at the fastest speed",
+   "option4": "at $x = x_3$, K.E. $= 4\\ \\text{J}$",
+   "correct_option": "at $x < x_1$, K.E. is smallest and the particle is moving at the slowest speed"
+  },
+  "imgs": [
+   "NPU06114"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06115",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A boy is rolling a $0.5\\ \\text{kg}$ ball on the frictionless floor with the speed of $20\\ \\text{m s}^{-1}$. The ball gets deflected by an obstacle on the way. After deflection it moves with $5\\%$ of its initial kinetic energy. What is the speed of the ball now?",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q115",
+   "is_published": false,
+   "option1": "$19.0\\ \\text{m s}^{-1}$",
+   "option2": "$4.4\\ \\text{m s}^{-1}$",
+   "option3": "$14.41\\ \\text{m s}^{-1}$",
+   "option4": "$1.00\\ \\text{m s}^{-1}$",
+   "correct_option": "$4.4\\ \\text{m s}^{-1}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06116",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A wedge of mass $M = 4m$ lies on a frictionless plane. A particle of mass $m$ approaches the wedge with speed $v$. There is no friction between the particle and the plane or between the particle and the wedge. The maximum height climbed by the particle on the wedge is given by",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2019",
+   "source": "Mathongo Phy Ch6 Q116",
+   "is_published": false,
+   "option1": "$\\dfrac{v^2}{g}$",
+   "option2": "$\\dfrac{v^2}{2g}$",
+   "option3": "$\\dfrac{2v^2}{5g}$",
+   "option4": "$\\dfrac{2v^2}{7g}$",
+   "correct_option": "$\\dfrac{2v^2}{5g}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06117",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "An automobile of mass $m$ accelerates starting from the origin and initially at rest, while the engine supplies constant power $P$. The position is given as a function of time by",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q117",
+   "is_published": false,
+   "option1": "$\\left(\\dfrac{9P}{8m}\\right)^{1/2}t^{3/2}$",
+   "option2": "$\\left(\\dfrac{8P}{9m}\\right)^{1/2}t^{2/3}$",
+   "option3": "$\\left(\\dfrac{9m}{8P}\\right)^{1/2}t^{3/2}$",
+   "option4": "$\\left(\\dfrac{8P}{9m}\\right)^{1/2}t^{3/2}$",
+   "correct_option": "$\\left(\\dfrac{8P}{9m}\\right)^{1/2}t^{3/2}$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06118",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $2\\ \\text{kg}$ is driven by an engine delivering a constant power of $1\\ \\text{J s}^{-1}$. The body starts from rest and moves in a straight line. After $9$ s, the body has moved a distance (in m) of",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "Mathongo Phy Ch6 Q118",
+   "is_published": false,
+   "option1": "$9$",
+   "option2": "$12$",
+   "option3": "$18$",
+   "option4": "$27$",
+   "correct_option": "$18$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06119",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A body of mass $m$ kg slides from rest along the curve of a vertical circle from point $A$ to $B$ on a frictionless path. The velocity of the body at $B$ is (given $R = 14\\ \\text{m}$, $g = 10\\ \\text{m/s}^2$ and $\\sqrt{2} = 1.4$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q119",
+   "is_published": false,
+   "option1": "$16.7\\ \\text{m/s}$",
+   "option2": "$19.8\\ \\text{m/s}$",
+   "option3": "$10.6\\ \\text{m/s}$",
+   "option4": "$21.9\\ \\text{m/s}$",
+   "correct_option": "$21.9\\ \\text{m/s}$"
+  },
+  "imgs": [
+   "NPU06119"
+  ]
+ },
+ {
+  "rec": {
+   "qid": "NPU06120",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A ball suspended by a thread swings in a vertical plane so that its magnitude of acceleration at the extreme position and the lowest position are equal. The angle ($\\theta$) of thread deflection in the extreme position will be",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2024",
+   "source": "Mathongo Phy Ch6 Q120",
+   "is_published": false,
+   "option1": "$\\tan^{-1}\\!\\left(\\sqrt{2}\\right)$",
+   "option2": "$2\\tan^{-1}\\!\\left(\\dfrac{1}{2}\\right)$",
+   "option3": "$\\tan^{-1}\\!\\left(\\dfrac{1}{2}\\right)$",
+   "option4": "$2\\tan^{-1}\\!\\left(\\dfrac{1}{\\sqrt{5}}\\right)$",
+   "correct_option": "$2\\tan^{-1}\\!\\left(\\dfrac{1}{2}\\right)$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06121",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A stone tied to a string of length $L$ is whirled in a vertical circle with the other end of the string at the centre. At a certain instant of time, the stone is at its lowest position and has a speed $u$. The magnitude of the change in its velocity, as it reaches a position where the string is horizontal, is $\\sqrt{x(u^2 - gL)}$. The value of $x$ is",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "Mathongo Phy Ch6 Q121",
+   "is_published": false,
+   "option1": "$1$",
+   "option2": "$3$",
+   "option3": "$2$",
+   "option4": "$4$",
+   "correct_option": "$2$"
+  },
+  "imgs": []
+ },
+ {
+  "rec": {
+   "qid": "NPU06122",
+   "question_type": "Single Choice MCQ",
+   "subject": "Physics",
+   "medium": "en",
+   "unit": "Unit 6 - Work Power Energy",
+   "topic": "Complete Chapter Test",
+   "level": 1,
+   "question": "A small bob tied at one end of a thin string of length $1\\ \\text{m}$ is describing a vertical circle so that the maximum and minimum tension in the string is in the ratio $5 : 1$. The velocity of the bob at the highest position is (take $g = 10\\ \\text{m s}^{-2}$)",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "Mathongo Phy Ch6 Q122",
+   "is_published": false,
+   "option1": "$2.5\\ \\text{m s}^{-1}$",
+   "option2": "$7.5\\ \\text{m s}^{-1}$",
+   "option3": "$5\\ \\text{m s}^{-1}$",
+   "option4": "$10\\ \\text{m s}^{-1}$",
+   "correct_option": "$5\\ \\text{m s}^{-1}$"
+  },
+  "imgs": []
+ }
+]
