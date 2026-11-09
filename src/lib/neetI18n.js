@@ -4,7 +4,7 @@
 // Anything without a Gujarati entry falls back to English, so a unit or level
 // added in constants.js or subjects.js shows up straight away and gets its Gujarati name here
 // whenever one is written.
-import { UNIT_LEVELS, isChapterTestLevel, courseUnitId } from './constants'
+import { UNIT_LEVELS, isChapterTestLevel, isOnlyLevel, courseUnitId } from './constants'
 
 export const MEDIUMS = [
   { id: 'en', label: 'English' },
@@ -29,7 +29,7 @@ const STRINGS = {
     howLevelsWork: 'How levels work',
     backToSyllabus: 'Back to Syllabus',
     unit: n => `Unit ${n}`,
-    oneLevel: '1 level · always unlocked',
+    oneLevel: 'CCT (Complete Chapter Test) · always unlocked',
     levelsSummary: (n, last) => `${n} levels · Level 1 and ${last} always unlocked`,
     totalQuestions: 'Total questions',
     attempts: 'Attempts',
@@ -167,7 +167,7 @@ const STRINGS = {
     howLevelsWork: 'લેવલ કેવી રીતે ખૂલે છે',
     backToSyllabus: 'અભ્યાસક્રમ પર પાછા',
     unit: n => `એકમ ${n}`,
-    oneLevel: '1 લેવલ · હંમેશાં ખુલ્લું',
+    oneLevel: 'CCT (સંપૂર્ણ પ્રકરણ ટેસ્ટ) · હંમેશાં ખુલ્લું',
     levelsSummary: (n, last) => `${n} લેવલ · લેવલ 1 અને ${last} હંમેશાં ખુલ્લા`,
     totalQuestions: 'કુલ પ્રશ્નો',
     attempts: 'પ્રયત્નો',
@@ -368,8 +368,6 @@ const GU_LEVELS = {
   127: ['રધરફર્ડ અને બોહર મૉડેલ', 'હાઇડ્રોજન વર્ણપટ'],
   128: ['ન્યુક્લિયસ, દળક્ષતિ અને બંધનઊર્જા', 'રેડિયોઍક્ટિવિટી અને ન્યુક્લિયર પ્રક્રિયાઓ'],
   129: ['વિદ્યુતચુંબકીય તરંગો અને ગુણધર્મો', 'વિદ્યુતચુંબકીય વર્ણપટ'],
-  // Biology (practice unit 200 + n)
-  201: ['સજીવ વિશ્વ'],
   // Chemistry (practice unit = chapter number)
   19: ['જૈવઅણુઓ'],
 }
@@ -402,6 +400,6 @@ export function levelName(unitId, levelId, medium) {
 
 // levelBadge() in the student's medium: "CCT" stays as is in both.
 export function levelBadgeT(unitId, levelId, medium) {
-  if (isChapterTestLevel(unitId, levelId)) return 'CCT'
+  if (isChapterTestLevel(unitId, levelId) || isOnlyLevel(unitId, levelId)) return 'CCT'
   return medium === 'gu' ? `લેવલ ${levelId ?? '—'}` : `Level ${levelId ?? '—'}`
 }

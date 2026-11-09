@@ -49,6 +49,13 @@ export const BIOLOGY_UNITS = u([
   'Organisms and Populations', 'Ecosystem', 'Biodiversity and Conservation',
 ])
 
+// Which branch a Biology unit belongs to, shown in brackets on the student unit
+// card (display only; the stored unit name stays the NCERT chapter name).
+const B = 'Botany', Z = 'Zoology', BZ = 'Botany/Zoology'
+const BIOLOGY_BRANCH = [BZ, B, B, Z, B, B, Z, BZ, BZ, BZ, B, B, B, Z, Z, Z, Z, Z, Z,
+  B, Z, Z, BZ, BZ, Z, Z, B, BZ, BZ, B, B, B]
+export const biologyBranch = unitId => BIOLOGY_BRANCH[Number(unitId) - 1] || ''
+
 export const CHEMISTRY_UNITS = NEET_CHEMISTRY_SYLLABUS.flatMap(s => s.units)
 
 // Subjects that can hold questions. Mathematics is listed in the admin tools

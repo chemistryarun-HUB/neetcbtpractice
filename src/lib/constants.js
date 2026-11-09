@@ -159,6 +159,17 @@ export const UNIT_LEVELS = {
     { id: 4, name: 'Multilevel Questions',                           topic: 'Miscellaneous' },
     { id: 5, name: 'Complete Chapter Test',                   topic: 'Complete Chapter Test' },
   ],
+  10: [
+    { id: 1, name: 'Group-13',               topic: 'Electronic Configuration, Atomic Radii, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards air, Reactivity towards acids and alkalies, Reactivity towards halogens, Important Trends and Anomalous Properties of Boron' },
+    { id: 2, name: 'Group-14',               topic: 'Electronic Configuration, Covalent Radius, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards oxygen, Reactivity towards water, Reactivity towards halogens, Important Trends and Anomalous Properties of Carbon, Allotropes of Carbon' },
+    { id: 3, name: 'Group-15',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards halogens, Reactivity towards metals, Important Trends and Anomalous Properties of Nitrogen' },
+    { id: 4, name: 'Group-16',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards halogens, Important Trends and Anomalous Properties of Oxygen' },
+    { id: 5, name: 'Group-17',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards metals, Reactivity towards halogens, Reactivity of halogens towards other halogens, Important Trends and Anomalous Properties of Fluorine' },
+    { id: 6, name: 'Group-18',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Physical Properties, Chemical Properties, Xenon-fluorine compounds, Xenon-oxygen compounds' },
+    { id: 7, name: 'Compounds',              topic: 'p-Block Elements: Important compounds of p-block elements (preparation, properties, structures and uses)' },
+    { id: 8, name: 'Multilevel Questions',   topic: 'Miscellaneous' },
+    { id: 9, name: 'Complete Chapter Test',  topic: 'Complete Chapter Test' },
+  ],
   11: [
     { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
     { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
@@ -388,9 +399,11 @@ export const PHYSICS_UNIT_LEVELS = {
 // Biology levels. Like the mechanism modules, a chapter can be one practice
 // pool: a single level, always unlocked, no chapter test.
 export const BIOLOGY_UNIT_LEVELS = {
-  1: [
-    { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
-  ],
+  // Units 1-32 (every unit): one practice pool each, shown as CCT (single-level units are
+  // labelled CCT, see isChapterTestLevel). Arun asked for CCT only for now.
+  ...Object.fromEntries(Array.from({ length: 32 }, (_, i) => i + 1).map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
 }
 
 // Student practice keys a unit by one number across subjects: Chemistry n,
@@ -448,10 +461,20 @@ export function isChapterTestLevel(unitId, levelId, subject = 'Chemistry') {
   return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
-// Short display label for a level — "CCT" for the Complete Chapter Test,
-// else "Level N" (optionally zero-padded to match a table's other numbers).
+// A unit with one level is one pool of the whole chapter, so it is labelled CCT
+// as well (Arun, 2026-11-07). Label only: isChapterTestLevel() stays false for
+// it, because the CCT logic — draw from every OTHER level, count the others'
+// questions — has nothing to work with in a one-level unit.
+export function isOnlyLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
+  return defs.length === 1 && defs[0].id === Number(levelId)
+}
+
+// Short display label for a level — "CCT" for the Complete Chapter Test and for
+// a unit's only level, else "Level N" (optionally zero-padded to match a table's
+// other numbers).
 export function levelBadge(unitId, levelId, { pad = false, subject = 'Chemistry' } = {}) {
-  if (isChapterTestLevel(unitId, levelId, subject)) return 'CCT'
+  if (isChapterTestLevel(unitId, levelId, subject) || isOnlyLevel(unitId, levelId, subject)) return 'CCT'
   if (levelId == null) return 'Level —'
   return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
 }
