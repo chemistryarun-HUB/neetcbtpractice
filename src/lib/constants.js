@@ -395,6 +395,12 @@ export const PHYSICS_UNIT_LEVELS = {
     ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
     ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
   ]),
+  // Every Physics unit that has no levels authored yet (1, 6-16, 26, 30-32) gets one
+  // practice pool shown as CCT, like Biology; Arun adds the real levels later
+  // (replace the entry with physicsLevels([...])).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 26, 30, 31, 32].map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
 }
 // Biology levels. Like the mechanism modules, a chapter can be one practice
 // pool: a single level, always unlocked, no chapter test.
