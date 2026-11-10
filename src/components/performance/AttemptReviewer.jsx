@@ -231,8 +231,9 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 {cur.q.question_tag && (
                   <span className="badge" style={{ background: '#f0fdf4', color: '#15803d' }}>{cur.q.question_tag}</span>
                 )}
-                {/* Wrong under the current key, the same test the Mistake Copy uses. */}
-                {(cur.keyChanged?.now ?? cur.status) === 'wrong' && (ownAttempt ? (
+                {/* Wrong or skipped under the current key, the same two the Mistake Copy
+                    collects: a skipped question has a reason too (time, guess, ...). */}
+                {(cur.keyChanged?.now ?? cur.status) !== 'correct' && (ownAttempt ? (
                   <select className={`ar-error-select et-select et-${errorTypes[cur.q.id] || 'none'}`} aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
                     onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
                     <option value="" disabled>{t.mcSelectType}</option>
