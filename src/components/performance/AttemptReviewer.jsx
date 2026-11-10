@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Bookmark } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
 import MathText from '../shared/MathText'
 import InfoTooltip from '../shared/InfoTooltip'
@@ -8,7 +8,7 @@ import { attemptGrading } from '../../lib/attemptGrading'
 import { accuracyOf, totalQuestions, fmtDuration, unitName, unitNumberLabel, levelDef } from '../../lib/performanceMetrics'
 import { fromCourseUnitId, levelBadge, MARKS_CORRECT } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
-import { ERROR_TYPES, saveMistakeEntry } from '../../lib/mistakeCopy'
+import { saveMistakeEntry, typeKeysFor } from '../../lib/mistakeCopy'
 import { neetT } from '../../lib/neetI18n'
 import { useAuth } from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
@@ -25,6 +25,7 @@ const FILTERS = [
   ['correct', 'Correct'],
   ['wrong', 'Wrong'],
   ['skipped', 'Skipped'],
+  ['bookmarked', 'Bookmarked'],
 ]
 
 /**
@@ -53,19 +54,33 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   const ownAttempt = role === 'student' && user?.id === attempt.student_id
   const t = neetT(ownAttempt ? user.medium : 'en')
   const [errorTypes, setErrorTypes] = useState({})
+  const [bookmarks, setBookmarks] = useState({})
 
   // Same entry the Mistake Copy reads, so marking it in either place shows in both.
   useEffect(() => {
     let cancelled = false
     const ids = attempt.question_ids || []
     if (ids.length === 0) return undefined
-    supabase.from('mistake_entries').select('question_id, error_type')
+    supabase.from('mistake_entries').select('question_id, error_type, bookmarked')
       .eq('student_id', attempt.student_id).in('question_id', ids)
       .then(({ data }) => {
-        if (!cancelled) setErrorTypes(Object.fromEntries((data || []).map(e => [e.question_id, e.error_type])))
+        if (cancelled) return
+        setErrorTypes(Object.fromEntries((data || []).map(e => [e.question_id, e.error_type])))
+        setBookmarks(Object.fromEntries((data || []).filter(e => e.bookmarked).map(e => [e.question_id, true])))
       })
     return () => { cancelled = true }
   }, [attempt.id])
+
+  async function toggleBookmark(questionId) {
+    const next = !bookmarks[questionId]
+    setBookmarks(prev => ({ ...prev, [questionId]: next }))
+    try {
+      await saveMistakeEntry(attempt.student_id, questionId, { bookmarked: next })
+    } catch {
+      setBookmarks(prev => ({ ...prev, [questionId]: !next }))
+      toast.error(t.mcSaveFailed)
+    }
+  }
 
   async function chooseErrorType(questionId, type) {
     setErrorTypes(prev => ({ ...prev, [questionId]: type }))
@@ -81,12 +96,14 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   })), [questions, grading])
 
   const counts = useMemo(() => {
-    const c = { all: items.length, correct: 0, wrong: 0, skipped: 0 }
-    for (const it of items) c[it.status]++
+    const c = { all: items.length, correct: 0, wrong: 0, skipped: 0, bookmarked: 0 }
+    for (const it of items) { c[it.status]++; if (bookmarks[it.q.id]) c.bookmarked++ }
     return c
-  }, [items])
+  }, [items, bookmarks])
 
-  const visible = filter ? items.filter(it => it.status === filter) : items
+  // Bookmarked is not a result like the other three: it cuts across them.
+  const matches = it => (filter === 'bookmarked' ? !!bookmarks[it.q.id] : it.status === filter)
+  const visible = filter ? items.filter(matches) : items
   const index = Math.min(pos, Math.max(visible.length - 1, 0))
   const cur = visible[index]
   const atFirst = index <= 0
@@ -123,6 +140,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         case 'c': case 'C': pickFilter('correct'); break
         case 'w': case 'W': pickFilter('wrong'); break
         case 's': case 'S': pickFilter('skipped'); break
+        case 'b': case 'B': if (ownAttempt && cur) toggleBookmark(cur.q.id); break
         default: break
       }
     }
@@ -210,6 +228,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{filter === 'wrong' ? '🎉' : filter === 'correct' ? '📘' : '✨'}</div>
               <div style={{ fontWeight: 700, color: 'var(--gray-700)' }}>
                 {filter === 'wrong' ? 'No wrong answers in this attempt!'
+                  : filter === 'bookmarked' ? t.mcNoBookmarks
                   : filter === 'skipped' ? 'Nothing skipped — every question was answered.'
                   : filter === 'correct' ? 'No correct answers in this attempt yet.'
                   : 'No questions found for this attempt.'}
@@ -236,17 +255,28 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 {(cur.keyChanged?.now ?? cur.status) !== 'correct' && (ownAttempt ? (
                   <select className={`ar-error-select et-select et-${errorTypes[cur.q.id] || 'none'}`} aria-label={t.mcErrorType} value={errorTypes[cur.q.id] || ''}
                     onChange={e => { chooseErrorType(cur.q.id, e.target.value); e.target.blur() }}>
-                    <option value="" disabled>{t.mcSelectType}</option>
-                    {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+                    <option value="" disabled>{cur.status === 'skipped' ? t.mcSelectSkipReason : t.mcSelectType}</option>
+                    {typeKeysFor(cur.status === 'skipped', errorTypes[cur.q.id]).map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
                   </select>
                 ) : errorTypes[cur.q.id] && (
                   <span className="badge" style={{ background: 'var(--gray-100)', color: 'var(--gray-700)' }}>{t.mcErrorTypes[errorTypes[cur.q.id]]}</span>
                 ))}
-                <span className="badge" style={{
-                  marginLeft: 'auto', background: STATUS[cur.status].bg, color: STATUS[cur.status].fg,
-                  border: `1px solid ${STATUS[cur.status].border}`, fontSize: '0.8rem', padding: '0.25rem 0.75rem',
-                }}>
-                  {cur.status === 'correct' ? '✓ ' : cur.status === 'wrong' ? '✗ ' : '– '}{STATUS[cur.status].label}
+                <span className="ar-card-right">
+                  {/* Any question can be starred, right, wrong or skipped. Others see
+                      the star but can't change it. */}
+                  {(ownAttempt || bookmarks[cur.q.id]) && (
+                    <button type="button" className={`ar-bookmark${bookmarks[cur.q.id] ? ' on' : ''}${ownAttempt ? '' : ' readonly'}`}
+                      aria-label={t.mcBookmark} aria-pressed={!!bookmarks[cur.q.id]} title={`${t.mcBookmark} (B)`}
+                      onClick={() => ownAttempt && toggleBookmark(cur.q.id)}>
+                      <Bookmark size={17} fill={bookmarks[cur.q.id] ? 'currentColor' : 'none'} />
+                    </button>
+                  )}
+                  <span className="badge" style={{
+                    background: STATUS[cur.status].bg, color: STATUS[cur.status].fg,
+                    border: `1px solid ${STATUS[cur.status].border}`, fontSize: '0.8rem', padding: '0.25rem 0.75rem',
+                  }}>
+                    {cur.status === 'correct' ? '✓ ' : cur.status === 'wrong' ? '✗ ' : '– '}{STATUS[cur.status].label}
+                  </span>
                 </span>
               </div>
 
@@ -303,6 +333,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                   boxShadow: current ? `0 0 0 2px #fff, 0 0 0 4px ${tone.solid}` : 'none',
                 }}>
                 {it.num}
+                {bookmarks[it.q.id] && <span className="ar-chip-star">★</span>}
                 {it.keyChanged && <span className="ar-chip-flag" />}
               </button>
             )
@@ -329,6 +360,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         <span><kbd>C</kbd> correct</span>
         <span><kbd>W</kbd> wrong</span>
         <span><kbd>S</kbd> skipped</span>
+        {ownAttempt && <span><kbd>B</kbd> bookmark</span>}
         <span><kbd>Home</kbd> <kbd>End</kbd> first / last</span>
         <span><kbd>Esc</kbd> close</span>
       </div>

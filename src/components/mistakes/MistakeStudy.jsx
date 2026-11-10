@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
-import { ERROR_TYPES, fmtDay } from '../../lib/mistakeCopy'
+import { fmtDay, typeKeysFor } from '../../lib/mistakeCopy'
 import { levelBadgeT, neetT } from '../../lib/neetI18n'
 
 const TONE = {
@@ -90,8 +90,8 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
         {editable ? (
           <select className={`form-control ms-type-select et-select et-${errorType || 'none'}`} aria-label={t.mcErrorType} value={errorType || ''}
             onChange={e => { onSave(q.id, { error_type: e.target.value }); e.target.blur() }}>
-            <option value="" disabled>{t.mcSelectType}</option>
-            {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+            <option value="" disabled>{kind === 'skipped' ? t.mcSelectSkipReason : t.mcSelectType}</option>
+            {typeKeysFor(kind === 'skipped', errorType).map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
           </select>
         ) : (
           <span className="ms-type-value">{errorType ? t.mcErrorTypes[errorType] : '—'}</span>

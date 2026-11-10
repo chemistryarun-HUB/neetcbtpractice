@@ -14,7 +14,21 @@ import { practiceUnitName } from './subjects'
 import { GSEB_QUESTION_SELECT, GSEB_SUBJECT_LABELS, chapterName, gsebReviewQuestion, paperTitle } from './gseb'
 import { levelBadgeT, unitName } from './neetI18n'
 
-export const ERROR_TYPES = ['conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other']
+// 'time' (Time Mismanagement) is no longer offered: running out of time shows up as
+// a skipped question, and "Didn't get time" below covers it. A 'time' already saved
+// still reads as its name, and typeKeysFor keeps it in its dropdown.
+export const ERROR_TYPES = ['conceptual', 'calculation', 'reading', 'guesswork', 'silly', 'other']
+// Why a question was left blank. Same column as ERROR_TYPES (a question is
+// tagged once), but a skipped question is offered these instead.
+export const SKIP_REASONS = ['forgot', 'never_read', 'not_understood', 'no_time']
+
+// The dropdown's options for a wrong or a skipped question. A value already saved
+// from the other list (skipped once, wrong later) is kept, so the dropdown never
+// shows a blank for something that is stored.
+export function typeKeysFor(skipped, current) {
+  const list = skipped ? SKIP_REASONS : ERROR_TYPES
+  return current && !list.includes(current) ? [...list, current] : list
+}
 
 // Right on this many different days = Cleared. Getting it right straight after
 // asking the teacher only shows the answer is still fresh, so one day isn't proof.

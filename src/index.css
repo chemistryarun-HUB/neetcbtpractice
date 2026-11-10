@@ -840,6 +840,18 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .et-select.et-guesswork { background-color: #fdf2f8; border-color: #f472b6; color: #be185d; }
 .et-select.et-silly { background-color: #fff7ed; border-color: #fb923c; color: #c2410c; }
 .et-select.et-other { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; }
+.et-select.et-forgot { background-color: #eef2ff; border-color: #818cf8; color: #4338ca; }
+.et-select.et-never_read { background-color: #f7fee7; border-color: #a3e635; color: #4d7c0f; }
+.et-select.et-not_understood { background-color: #fef2f2; border-color: #f87171; color: #b91c1c; }
+.et-select.et-no_time { background-color: #fafaf9; border-color: #a8a29e; color: #57534e; }
+
+/* The review window's star: a toggle beside the Correct / Wrong / Skipped badge. */
+.ar-bookmark { flex-shrink: 0; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--gray-200); border-radius: 50%; background: #fff; color: var(--gray-400); cursor: pointer; }
+.ar-bookmark:hover { border-color: #fbbf24; color: #d97706; }
+.ar-bookmark.on { background: #fffbeb; border-color: #f59e0b; color: #d97706; }
+.ar-bookmark.readonly { cursor: default; }
+.ar-chip-star { position: absolute; top: -5px; right: -3px; font-size: 11px; line-height: 1; color: #f59e0b; text-shadow: 0 0 2px #fff, 0 0 2px #fff; pointer-events: none; }
+.ar-card-right { margin-left: auto; display: inline-flex; align-items: center; gap: 0.5rem; }
 
 .mc-result-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
 .mc-result-tile { background: #fff; border-radius: var(--radius); border: 2px solid var(--gray-200); padding: 0.75rem; text-align: center; font-size: 0.8125rem; font-weight: 600; color: var(--gray-600); }
