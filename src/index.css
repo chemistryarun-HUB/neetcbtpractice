@@ -810,6 +810,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-chip-repeat { background: #ffedd5; color: #c2410c; }
 .mc-chip-progress { background: #dbeafe; color: #1d4ed8; }
 .mc-chip-type { background: var(--gray-100); color: var(--gray-600); }
+.mc-chip-star { background: #fffbeb; color: #d97706; }
 .mc-dot { flex-shrink: 0; display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .mc-dot.wrong { background: #dc2626; }
 .mc-dot.skipped { background: #d97706; }
