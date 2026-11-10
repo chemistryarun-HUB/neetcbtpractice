@@ -12,6 +12,7 @@ import { saveMistakeEntry, typeKeysFor } from '../../lib/mistakeCopy'
 import { neetT } from '../../lib/neetI18n'
 import { useAuth } from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
+import DoubtPanel, { DoubtButton } from '../doubts/DoubtPanel'
 
 // Same three colours as the Correct/Wrong/Skipped result tiles, so the palette
 // at the bottom reads as those tiles broken out question by question.
@@ -55,6 +56,9 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
   const t = neetT(ownAttempt ? user.medium : 'en')
   const [errorTypes, setErrorTypes] = useState({})
   const [bookmarks, setBookmarks] = useState({})
+  // Doubt Desk: test accounts only (students.doubt_desk), own NEET attempts only.
+  const [doubtOpen, setDoubtOpen] = useState(false)
+  const doubtDeskOn = ownAttempt && !!user?.doubt_desk && attempt.kind !== 'gseb'
 
   // Same entry the Mistake Copy reads, so marking it in either place shows in both.
   useEffect(() => {
@@ -128,9 +132,9 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
 
   useEffect(() => {
     function onKey(e) {
-      if (e.key === 'Escape') { e.preventDefault(); onClose(); return }
-      // Arrows and letters belong to the Error Type dropdown while it has focus.
-      if (e.target?.tagName === 'SELECT' || e.ctrlKey || e.metaKey || e.altKey) return
+      if (e.key === 'Escape') { e.preventDefault(); if (doubtOpen) setDoubtOpen(false); else onClose(); return }
+      // Arrows and letters belong to the Error Type dropdown (and the Doubt Desk box) while it has focus.
+      if (['SELECT', 'INPUT', 'TEXTAREA'].includes(e.target?.tagName) || e.ctrlKey || e.metaKey || e.altKey) return
       switch (e.key) {
         case 'ArrowRight': e.preventDefault(); go(1); break
         case 'ArrowLeft':  e.preventDefault(); go(-1); break
@@ -157,7 +161,7 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
     .filter(Boolean).join(' · ')
 
   return (
-    <div className="attempt-reviewer" role="dialog" aria-label="Attempt review">
+    <div className={`attempt-reviewer${doubtDeskOn && doubtOpen ? ' doubt-open' : ''}`} role="dialog" aria-label="Attempt review">
       {/* ── Header: ONE slim row — which attempt · filter · how it went. It
              used to be a two-line header plus a separate filter bar, ~160px of
              chrome before the question even started. ── */}
@@ -294,6 +298,8 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
                 isChosen={opt => grading.isChosen(cur.q, opt)}
               />
 
+              {doubtDeskOn && <DoubtButton onClick={() => setDoubtOpen(true)} />}
+
               {cur.status === 'skipped' && (
                 <div style={{ marginTop: '1rem', fontSize: '0.8125rem', color: '#b45309', background: '#fffbeb', border: '1px dashed #fcd34d', borderRadius: 8, padding: '0.5rem 0.75rem' }}>
                   Not answered — the correct answer is highlighted in green.
@@ -364,6 +370,15 @@ export default function AttemptReviewer({ attempt, questions, studentName, attem
         <span><kbd>Home</kbd> <kbd>End</kbd> first / last</span>
         <span><kbd>Esc</kbd> close</span>
       </div>
+
+      {doubtDeskOn && doubtOpen && cur && (() => {
+        const opts = grading.optionsFor(cur.q)
+        return (
+          <DoubtPanel key={cur.q.id} attempt={attempt} q={cur.q} num={cur.num} chapter={syllabus}
+            shownOrder={opts.map(o => o.key)} chosenKey={opts.find(o => grading.isChosen(cur.q, o))?.key || null}
+            onClose={() => setDoubtOpen(false)} />
+        )
+      })()}
     </div>
   )
 }

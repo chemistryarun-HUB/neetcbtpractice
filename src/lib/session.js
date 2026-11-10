@@ -49,6 +49,7 @@ export function clearSession() {
       s.removeItem(STUDENT_KEY)
       s.removeItem(EXPIRES_KEY)
       s.removeItem(FACULTY_KEY)
+      s.removeItem('neetcbt_doubt_token')   // Doubt Desk token, lib/doubtDesk.js
     } catch { /* private mode — nothing to clear */ }
   }
 }
