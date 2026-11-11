@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
-const F = 'qid.like.NPU13%,qid.like.NPU14%,qid.like.NPU15%'
+const F = 'qid.like.NPU16%,qid.like.NPU17%'
 const { data: rows, error } = await sb.from('questions').select('qid, is_published').or(F).eq('subject', 'Physics')
 if (error) { console.error(error); process.exit(1) }
 console.log('found', rows.length, 'already published', rows.filter(r => r.is_published).length)
