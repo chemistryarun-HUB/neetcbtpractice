@@ -338,41 +338,6 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
     ['Friction', 'Contact force, banking of road, angle of friction & repose'],
   ]),
-  17: physicsLevels([
-    ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
-    ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
-    ["Electric Flux & Gauss's Law", "Electric flux, Gauss's law and its applications: infinite wire, infinite plane sheet, thin spherical shell"],
-    ['Electric Potential & Potential Energy', 'Electric potential, potential difference, potential due to a point charge and a dipole, equipotential surfaces, potential energy'],
-  ]),
-  18: physicsLevels([
-    ['Conductors, Capacitors & Dielectrics', 'Conductors and insulators, dielectrics and polarisation, capacitors and capacitance, combinations, parallel plate capacitor, energy stored'],
-  ]),
-  19: physicsLevels([
-    ["Current, Drift Velocity & Ohm's Law", "Electric current, drift velocity, mobility, current density, Ohm's law"],
-    ['Resistance, Resistivity & Combinations', 'Resistance and resistivity, temperature dependence, series and parallel combinations'],
-    ['Cells, EMF & Internal Resistance', 'EMF, internal resistance, potential difference, cells in series and parallel'],
-    ["Kirchhoff's Laws & Wheatstone Bridge", "Kirchhoff's junction and loop rules, Wheatstone bridge"],
-    ['Potentiometer & Meter Bridge', 'Metre bridge, potentiometer and their uses'],
-    ['Electric Power & Heating', 'Electrical energy and power, heating effect of current'],
-  ]),
-  20: physicsLevels([
-    ["Magnetic Dipole & Earth's Magnetism", "Current loop as a magnetic dipole, bar magnet, magnetic field lines, Gauss's law for magnetism"],
-    ['Magnetic Materials', 'Para-, dia- and ferromagnetic substances, magnetisation, susceptibility, permeability'],
-  ]),
-  21: physicsLevels([
-    ["Biot-Savart & Ampere's Law", "Biot-Savart law, field of a circular loop, Ampere's circuital law, straight wire, solenoid"],
-    ['Force on Moving Charges & Conductors', 'Lorentz force, motion in a magnetic field, velocity selector, force between parallel currents'],
-    ['Torque on Loop & Galvanometer', 'Torque on a current loop, moving coil galvanometer, conversion to ammeter and voltmeter'],
-  ]),
-  22: physicsLevels([
-    ["Faraday's & Lenz's Laws", "Electromagnetic induction, magnetic flux, Faraday's law, Lenz's law"],
-    ['Motional EMF & Eddy Currents', 'Motional EMF, eddy currents, back EMF'],
-    ['Self & Mutual Inductance', 'Self inductance, mutual inductance, energy stored in an inductor'],
-  ]),
-  23: physicsLevels([
-    ['AC Circuits & Resonance', 'Alternating current and voltage, peak and rms values, reactance and impedance, LCR series circuit, resonance'],
-    ['Power in AC & Transformer', 'Power in AC circuits, power factor, wattless current, AC generator and transformer'],
-  ]),
   24: physicsLevels([
     ['Reflection & Spherical Mirrors', 'Reflection of light, spherical mirrors, mirror formula'],
     ['Refraction, TIR & Prism', 'Refraction, total internal reflection and its applications, prism'],
@@ -395,10 +360,10 @@ export const PHYSICS_UNIT_LEVELS = {
     ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
     ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
   ]),
-  // Every Physics unit that has no levels authored yet (1, 6-16, 26, 30-32) gets one
+  // Every Physics unit that has no levels authored yet (1, 6-23, 26, 30-32) gets one
   // practice pool shown as CCT, like Biology; Arun adds the real levels later
-  // (replace the entry with physicsLevels([...])).
-  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 26, 30, 31, 32].map(n => [n, [
+  // (replace the entry with physicsLevels([...])). Units 17-23: CCT only (Arun, 2026-11-11).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26, 30, 31, 32].map(n => [n, [
     { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
   ]])),
 }
