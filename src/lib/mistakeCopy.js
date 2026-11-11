@@ -14,7 +14,21 @@ import { practiceUnitName } from './subjects'
 import { GSEB_QUESTION_SELECT, GSEB_SUBJECT_LABELS, chapterName, gsebReviewQuestion, paperTitle } from './gseb'
 import { levelBadgeT, unitName } from './neetI18n'
 
-export const ERROR_TYPES = ['conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other']
+// 'time' (Time Mismanagement) is no longer offered: running out of time shows up as
+// a skipped question, and "Didn't get time" below covers it. A 'time' already saved
+// still reads as its name, and typeKeysFor keeps it in its dropdown.
+export const ERROR_TYPES = ['conceptual', 'calculation', 'reading', 'guesswork', 'silly', 'other']
+// Why a question was left blank. Same column as ERROR_TYPES (a question is
+// tagged once), but a skipped question is offered these instead.
+export const SKIP_REASONS = ['forgot', 'never_read', 'not_understood', 'no_time']
+
+// The dropdown's options for a wrong or a skipped question. A value already saved
+// from the other list (skipped once, wrong later) is kept, so the dropdown never
+// shows a blank for something that is stored.
+export function typeKeysFor(skipped, current) {
+  const list = skipped ? SKIP_REASONS : ERROR_TYPES
+  return current && !list.includes(current) ? [...list, current] : list
+}
 
 // Right on this many different days = Cleared. Getting it right straight after
 // asking the teacher only shows the answer is still fresh, so one day isn't proof.
@@ -134,15 +148,11 @@ export function testName(group, medium, t) {
  *   correct → counts one day once the question is in the copy; before that it
  *             means nothing, since a question that was never missed isn't a mistake
  */
-export function buildMistakeCopy({ attempts = [], questions = [], entries = [], retries = [], today = istDay(new Date()) }) {
-  const questionById = new Map(questions.map(q => [q.id, q]))
-  const entryByQuestion = new Map(entries.map(e => [e.question_id, e]))
+// Every answer a student has given to each question in their tests, graded against
+// the CURRENT key, as question id -> events. Shared by the Mistake Copy and the
+// Bookmarked list, which need the same replay.
+function replayAttempts(attempts, questionById) {
   const history = new Map()
-  const addEvent = (qid, event) => {
-    if (!history.has(qid)) history.set(qid, [])
-    history.get(qid).push(event)
-  }
-
   const ordered = [...attempts].sort((a, b) => new Date(attemptTime(a)) - new Date(attemptTime(b)))
   const positions = {}
   for (const attempt of ordered) {
@@ -156,7 +166,8 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
     for (const qid of attempt.question_ids || []) {
       const q = questionById.get(qid)
       if (!q) continue
-      addEvent(qid, {
+      if (!history.has(qid)) history.set(qid, [])
+      history.get(qid).push({
         at: attemptTime(attempt),
         status: liveStatusOf(q, responses[qid]),
         selected: responses[qid] || null,
@@ -166,10 +177,18 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
       })
     }
   }
+  return history
+}
+
+export function buildMistakeCopy({ attempts = [], questions = [], entries = [], retries = [], today = istDay(new Date()) }) {
+  const questionById = new Map(questions.map(q => [q.id, q]))
+  const entryByQuestion = new Map(entries.map(e => [e.question_id, e]))
+  const history = replayAttempts(attempts, questionById)
   for (const retry of retries) {
     const q = questionById.get(retry.question_id)
     if (!q) continue
-    addEvent(retry.question_id, {
+    if (!history.has(retry.question_id)) history.set(retry.question_id, [])
+    history.get(retry.question_id).push({
       at: retry.created_at,
       status: liveStatusOf(q, retry.selected),
       selected: retry.selected,
@@ -230,6 +249,42 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
     })
   }
   return items.sort((a, b) => new Date(b.lastMistake.at) - new Date(a.lastMistake.at))
+}
+
+/**
+ * Every question the student has starred, newest star first. Unlike the copy it
+ * holds right answers too, so each item carries what the last attempt of it was
+ * (`kind`) and is shaped like a copy item (same grouping, rows and study view).
+ * A bookmark is never "pending" or "cleared": it stays until the star is removed.
+ */
+export function buildBookmarks({ attempts = [], questions = [], entries = [] }) {
+  const marked = entries.filter(e => e.bookmarked)
+  if (marked.length === 0) return []
+  const questionById = new Map(questions.map(q => [q.id, q]))
+  const history = replayAttempts(attempts, questionById)
+
+  const items = []
+  for (const entry of marked) {
+    const q = questionById.get(entry.question_id)
+    const events = history.get(entry.question_id)
+    // A question that has left the bank leaves the list; so does one with no
+    // recorded attempt, which has no chapter to be filed under.
+    if (!q || !events?.length || q.is_active === false || q.is_published === false) continue
+    events.sort((a, b) => new Date(a.at) - new Date(b.at))
+    const last = events[events.length - 1]
+    items.push({
+      q, entry,
+      status: 'bookmarked',
+      kind: last.status,
+      ...placementOf(q, last.test.attempt),
+      test: last.test,
+      wrongCount: events.filter(e => e.status === 'wrong').length,
+      skippedCount: events.filter(e => e.status === 'skipped').length,
+      repeat: false, lastMistake: last, keyChanged: last.keyChanged,
+      correctDays: 0, clearedOn: null, doneToday: false, canRetry: false,
+    })
+  }
+  return items.sort((a, b) => new Date(b.entry.updated_at) - new Date(a.entry.updated_at))
 }
 
 const subjectRank = s => ['Chemistry', 'Physics', 'Biology'].indexOf(s)

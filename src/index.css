@@ -810,6 +810,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-chip-repeat { background: #ffedd5; color: #c2410c; }
 .mc-chip-progress { background: #dbeafe; color: #1d4ed8; }
 .mc-chip-type { background: var(--gray-100); color: var(--gray-600); }
+.mc-chip-star { background: #fffbeb; color: #d97706; }
 .mc-dot { flex-shrink: 0; display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .mc-dot.wrong { background: #dc2626; }
 .mc-dot.skipped { background: #d97706; }
@@ -840,6 +841,18 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .et-select.et-guesswork { background-color: #fdf2f8; border-color: #f472b6; color: #be185d; }
 .et-select.et-silly { background-color: #fff7ed; border-color: #fb923c; color: #c2410c; }
 .et-select.et-other { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; }
+.et-select.et-forgot { background-color: #eef2ff; border-color: #818cf8; color: #4338ca; }
+.et-select.et-never_read { background-color: #f7fee7; border-color: #a3e635; color: #4d7c0f; }
+.et-select.et-not_understood { background-color: #fef2f2; border-color: #f87171; color: #b91c1c; }
+.et-select.et-no_time { background-color: #fafaf9; border-color: #a8a29e; color: #57534e; }
+
+/* The review window's star: a toggle beside the Correct / Wrong / Skipped badge. */
+.ar-bookmark { flex-shrink: 0; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--gray-200); border-radius: 50%; background: #fff; color: var(--gray-400); cursor: pointer; }
+.ar-bookmark:hover { border-color: #fbbf24; color: #d97706; }
+.ar-bookmark.on { background: #fffbeb; border-color: #f59e0b; color: #d97706; }
+.ar-bookmark.readonly { cursor: default; }
+.ar-chip-star { position: absolute; top: -5px; right: -3px; font-size: 11px; line-height: 1; color: #f59e0b; text-shadow: 0 0 2px #fff, 0 0 2px #fff; pointer-events: none; }
+.ar-card-right { margin-left: auto; display: inline-flex; align-items: center; gap: 0.5rem; }
 
 .mc-result-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
 .mc-result-tile { background: #fff; border-radius: var(--radius); border: 2px solid var(--gray-200); padding: 0.75rem; text-align: center; font-size: 0.8125rem; font-weight: 600; color: var(--gray-600); }
@@ -915,3 +928,44 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mr-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; padding: 5px 8px; border: 1px solid #999; }
 .mr-error { margin-top: 8px; padding: 5px 8px; border: 1px solid #999; }
 .mr-foot { position: absolute; left: 38px; right: 38px; bottom: 16px; text-align: right; font-size: 10.5px; color: #555; }
+
+/* ── Doubt Desk (components/doubts/DoubtPanel.jsx) ──
+   A side panel over the review screen on a wide window, a bottom sheet on a
+   phone. Purple so it never reads as a Correct/Wrong colour. */
+.doubt-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.45rem; background: #7c3aed; color: #fff; border: 0; border-radius: 8px; padding: 0.6rem 1rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+.doubt-btn:hover { background: #6d28d9; }
+.doubt-panel { position: fixed; z-index: 1200; top: 0; right: 0; bottom: 0; width: min(430px, 100vw); background: #fff; box-shadow: -8px 0 24px rgba(0,0,0,0.18); display: flex; flex-direction: column; }
+.doubt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; background: #7c3aed; color: #fff; padding: 0.8rem 1rem; }
+.doubt-head strong { display: block; font-size: 1rem; }
+.doubt-head small { opacity: 0.9; font-size: 0.75rem; }
+.doubt-x { background: none; border: 0; color: #fff; cursor: pointer; padding: 0.15rem; }
+.doubt-body { flex: 1; overflow-y: auto; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem; line-height: 1.55; }
+.doubt-ctx { font-size: 0.78rem; color: var(--gray-500); background: var(--gray-50); border: 1px dashed var(--gray-300); border-radius: 8px; padding: 0.5rem 0.65rem; }
+.doubt-note { color: var(--gray-500); font-size: 0.85rem; }
+.doubt-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.doubt-chips button { border: 1px solid #c4b5fd; background: #f5f3ff; color: #5b21b6; border-radius: 999px; padding: 0.35rem 0.75rem; font-size: 0.8rem; cursor: pointer; }
+.doubt-msg { border-radius: 12px; padding: 0.55rem 0.75rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.doubt-student { align-self: flex-end; max-width: 85%; background: var(--primary-light); border-bottom-right-radius: 3px; }
+.doubt-helper { background: var(--gray-50); border: 1px solid var(--gray-200); border-bottom-left-radius: 3px; }
+.doubt-faculty { background: #ecfdf5; border: 1px solid #6ee7b7; border-bottom-left-radius: 3px; }
+.doubt-who { font-size: 0.72rem; font-weight: 800; color: #047857; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.doubt-typing { color: var(--gray-500); font-style: italic; }
+.doubt-sir { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 10px; padding: 0.55rem 0.75rem; font-size: 0.85rem; }
+.doubt-err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.83rem; }
+.doubt-actions { display: flex; gap: 0.5rem; padding: 0 1rem 0.6rem; }
+.doubt-actions button { border: 1px solid var(--gray-300); background: #fff; border-radius: 999px; padding: 0.35rem 0.8rem; font-size: 0.82rem; cursor: pointer; }
+.doubt-actions button.on { background: #dcfce7; border-color: #86efac; }
+.doubt-input { display: flex; gap: 0.5rem; padding: 0.6rem 1rem calc(0.8rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--gray-200); }
+.doubt-input textarea { flex: 1; resize: none; border: 1px solid var(--gray-300); border-radius: 8px; padding: 0.55rem 0.65rem; font: inherit; font-size: 16px; max-height: 120px; }
+.doubt-input button { background: #7c3aed; color: #fff; border: 0; border-radius: 8px; padding: 0 0.85rem; cursor: pointer; }
+.doubt-input button:disabled { opacity: 0.5; cursor: default; }
+@media (max-width: 640px) {
+  .doubt-panel { top: auto; left: 0; width: 100vw; height: 78vh; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,0.2); }
+  .doubt-head { border-radius: 16px 16px 0 0; }
+}
+.doubt-admin { display: flex; gap: 1rem; align-items: flex-start; }
+.doubt-admin-panel { width: 440px; flex-shrink: 0; background: #fefce8; border: 1px solid #fde047; border-radius: 10px; padding: 1rem; position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+.doubt-admin-q { background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: 0.75rem; font-size: 0.85rem; }
+@media (max-width: 900px) { .doubt-admin { flex-direction: column; } .doubt-admin-panel { width: 100%; position: static; max-height: none; } }
+/* Wide screen: the review slides left so the Doubt Desk panel never covers the question. */
+@media (min-width: 641px) { .attempt-reviewer.doubt-open .ar-content, .attempt-reviewer.doubt-open .ar-footer, .attempt-reviewer.doubt-open .ar-hints { margin-right: 430px; } }

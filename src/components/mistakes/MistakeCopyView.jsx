@@ -8,7 +8,7 @@ import MistakeRetest from './MistakeRetest'
 import MistakeStudy, { itemKind } from './MistakeStudy'
 import SubjectTabs, { TAB_SUBJECTS } from '../shared/SubjectTabs'
 import {
-  buildMistakeCopy, errorSummary, groupByChapter, groupByTest, groupName, loadMistakeData,
+  buildBookmarks, buildMistakeCopy, errorSummary, groupByChapter, groupByTest, groupName, loadMistakeData,
   saveMistakeEntry, setMistakesChecked, testDate, testMarks, testName,
 } from '../../lib/mistakeCopy'
 import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
@@ -38,6 +38,7 @@ function MistakeRow({ item, medium, teacher, t, onOpen }) {
       {item.status === 'pending' && item.correctDays === 1 && <span className="mc-chip mc-chip-progress" title={t.mcOneCorrect}>1/2</span>}
       {item.repeat && item.status === 'pending' && <span className="mc-chip mc-chip-repeat" title={t.mcRepeat}>×{item.wrongCount}</span>}
       {item.entry?.checked_at && <span className="mc-chip mc-chip-cleared" title={t.mcChecked}>✔</span>}
+      {item.entry?.bookmarked && <span className="mc-chip mc-chip-star" title={t.mcBookmarked}>★</span>}
       <ChevronRight size={15} className="mc-row-chev" />
     </button>
   )
@@ -77,11 +78,16 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   const items = useMemo(() => (data ? buildMistakeCopy(data) : []), [data])
   const byId = useMemo(() => new Map(items.map(it => [it.q.id, it])), [items])
+  // Starred questions, right ones included, so they are not part of `items`.
+  const bookmarkItems = useMemo(() => (data ? buildBookmarks(data) : []), [data])
+  const bookmarkById = useMemo(() => new Map(bookmarkItems.map(it => [it.q.id, it])), [bookmarkItems])
+  const bookmarkedIds = useMemo(() => new Set((data?.entries || []).filter(e => e.bookmarked).map(e => e.question_id)), [data])
   const subjectCounts = { all: items.length, ...Object.fromEntries(TAB_SUBJECTS.map(s => [s, items.filter(it => it.subject === s).length])) }
   const inSubject = subject === 'all' ? items : items.filter(it => it.subject === subject)
+  const bookmarks = subject === 'all' ? bookmarkItems : bookmarkItems.filter(it => it.subject === subject)
   const pending = inSubject.filter(it => it.status === 'pending')
   const cleared = inSubject.filter(it => it.status === 'cleared')
-  const inTab = tab === 'pending' ? pending : cleared
+  const inTab = tab === 'pending' ? pending : tab === 'cleared' ? cleared : bookmarks
   const filterFn = FILTERS.find(f => f[0] === filter)[2]
   const visible = inTab.filter(filterFn)
   const groups = view === 'chapter' ? groupByChapter(visible) : groupByTest(visible)
@@ -149,8 +155,14 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   // Ids, not items, so a question stays in the walk-through after marking it
   // takes it out of the filter the walk-through was opened from.
-  const studyItems = study ? study.ids.map(id => byId.get(id)).filter(Boolean) : []
-  const openStudy = (list, startId) => setStudy({ ids: list.map(it => it.q.id), startId })
+  // A bookmark opened from the Bookmarked tab stays in the walk-through even after
+  // its star is removed there, from the snapshot taken when it was opened.
+  const studyItems = study
+    ? study.ids.map(id => (study.fromBookmarks ? bookmarkById : byId).get(id) ?? study.snap.get(id)).filter(Boolean)
+    : []
+  const openStudy = (list, startId) => setStudy({
+    ids: list.map(it => it.q.id), startId, fromBookmarks: tab === 'bookmarked', snap: new Map(list.map(it => [it.q.id, it])),
+  })
 
   function renderRows(list, walk) {
     return list.map(it => (
@@ -178,7 +190,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
         <div className="mc-key-note">Mistake Copy database is not set up yet: run migration_mistake_copy.sql in Supabase. Saving is off until then.</div>
       )}
 
-      {items.length === 0 ? (
+      {items.length === 0 && bookmarkItems.length === 0 ? (
         <div className="mc-empty">
           <div className="mc-empty-mark">🎯</div>
           {t.mcEmptyAll}
@@ -220,6 +232,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
               <button role="tab" aria-selected={tab === 'cleared'} className={tab === 'cleared' ? 'active' : ''} onClick={() => pickTab('cleared')}>
                 {t.mcCleared} <span>{cleared.length}</span>
               </button>
+              <button role="tab" aria-selected={tab === 'bookmarked'} className={tab === 'bookmarked' ? 'active' : ''} onClick={() => pickTab('bookmarked')}>
+                ★ {t.mcBookmarked} <span>{bookmarks.length}</span>
+              </button>
             </div>
             <div className="mc-seg">
               <button className={view === 'chapter' ? 'active' : ''} onClick={() => setView('chapter')}>{t.mcByChapter}</button>
@@ -227,7 +242,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             </div>
           </div>
 
-          {inTab.length > 0 && (
+          {inTab.length > 0 && tab !== 'bookmarked' && (
             <div className="mc-pills mc-filters">
               {FILTERS.map(([key, label, fn]) => {
                 const count = inTab.filter(fn).length
@@ -245,7 +260,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
           {visible.length === 0 ? (
             <div className="mc-empty">
-              {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : t.mcEmptyCleared}
+              {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : tab === 'cleared' ? t.mcEmptyCleared : t.mcEmptyBookmarks}
             </div>
           ) : groups.map(group => {
             const isOpen = !!openGroups[group.key]
@@ -289,7 +304,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                         <button className="btn btn-ghost btn-sm mc-icon-btn" disabled={!!pdfProgress} onClick={() => downloadPdf(group.items)}>
                           <FileDown size={14} /> PDF
                         </button>
-                        {teacher && unchecked.length > 0 && (
+                        {teacher && tab !== 'bookmarked' && unchecked.length > 0 && (
                           <button className="btn btn-ghost btn-sm mc-icon-btn" onClick={() => {
                             if (window.confirm(`Mark ${unchecked.length} question${unchecked.length === 1 ? '' : 's'} as checked?`)) check(unchecked, true)
                           }}>✔ Check all ({unchecked.length})</button>
@@ -319,6 +334,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
       {study && studyItems.length > 0 && (
         <MistakeStudy items={studyItems} startId={study.startId} medium={medium} editable={editable} teacher={teacher}
+          isBookmarked={id => bookmarkedIds.has(id)} onBookmark={id => saveEntry(id, { bookmarked: !bookmarkedIds.has(id) })}
           onSave={saveEntry} onCheck={(id, on) => check([id], on)} onClose={() => setStudy(null)} />
       )}
     </div>
