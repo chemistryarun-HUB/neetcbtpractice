@@ -338,22 +338,10 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
     ['Friction', 'Contact force, banking of road, angle of friction & repose'],
   ]),
-  27: physicsLevels([
-    ['Rutherford & Bohr Model', "Alpha-particle scattering, Rutherford's model, Bohr model, energy levels"],
-    ['Hydrogen Spectrum', 'Hydrogen spectrum and spectral series'],
-  ]),
-  28: physicsLevels([
-    ['Nucleus, Mass Defect & Binding Energy', 'Composition and size of the nucleus, isotopes, isobars, isotones, mass-energy relation, mass defect, binding energy'],
-    ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
-  ]),
-  29: physicsLevels([
-    ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
-    ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
-  ]),
-  // Every Physics unit that has no levels authored yet (1, 6-26, 30-32) gets one
+  // Every Physics unit that has no levels authored yet (1, 6-32) gets one
   // practice pool shown as CCT, like Biology; Arun adds the real levels later
-  // (replace the entry with physicsLevels([...])). Units 17-25: CCT only (Arun, 2026-11-11/12).
-  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 31, 32].map(n => [n, [
+  // (replace the entry with physicsLevels([...])). Units 17-32: CCT only (Arun, 2026-11-11/12).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32].map(n => [n, [
     { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
   ]])),
 }
