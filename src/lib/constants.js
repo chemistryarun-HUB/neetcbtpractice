@@ -338,16 +338,6 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
     ['Friction', 'Contact force, banking of road, angle of friction & repose'],
   ]),
-  24: physicsLevels([
-    ['Reflection & Spherical Mirrors', 'Reflection of light, spherical mirrors, mirror formula'],
-    ['Refraction, TIR & Prism', 'Refraction, total internal reflection and its applications, prism'],
-    ["Lenses & Lens Maker's Formula", "Refraction at spherical surfaces, lenses, thin lens formula, lens maker's formula, power, combination of lenses"],
-    ['Optical Instruments', 'Microscope and astronomical telescope'],
-  ]),
-  25: physicsLevels([
-    ['Interference (Huygens & YDSE)', "Wavefront and Huygens' principle, interference, Young's double slit experiment, coherent sources"],
-    ['Diffraction & Polarisation', 'Diffraction due to a single slit, polarisation, plane polarised light'],
-  ]),
   27: physicsLevels([
     ['Rutherford & Bohr Model', "Alpha-particle scattering, Rutherford's model, Bohr model, energy levels"],
     ['Hydrogen Spectrum', 'Hydrogen spectrum and spectral series'],
@@ -360,10 +350,10 @@ export const PHYSICS_UNIT_LEVELS = {
     ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
     ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
   ]),
-  // Every Physics unit that has no levels authored yet (1, 6-23, 26, 30-32) gets one
+  // Every Physics unit that has no levels authored yet (1, 6-26, 30-32) gets one
   // practice pool shown as CCT, like Biology; Arun adds the real levels later
-  // (replace the entry with physicsLevels([...])). Units 17-23: CCT only (Arun, 2026-11-11).
-  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26, 30, 31, 32].map(n => [n, [
+  // (replace the entry with physicsLevels([...])). Units 17-25: CCT only (Arun, 2026-11-11/12).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 31, 32].map(n => [n, [
     { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
   ]])),
 }
