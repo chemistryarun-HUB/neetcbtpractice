@@ -1,0 +1,25 @@
+name: chem-upload (one-off)
+on:
+  push:
+    branches: [claude/project-thread-mzbuc5]
+    paths: ['scripts/chem-upload/**']
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: node scripts/chem-upload/pub10.mjs
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - run: |
+          git config user.name 'chem-upload'
+          git config user.email 'chem-upload@users.noreply.github.com'
+          git add scripts/chem-upload/dump
+          git commit -m 'One-off: Unit 3 read-only dump' || true
+          git push origin HEAD:claude/project-thread-mzbuc5
