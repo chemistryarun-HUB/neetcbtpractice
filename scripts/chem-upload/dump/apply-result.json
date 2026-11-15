@@ -1,0 +1,158 @@
+{
+ "inserted": [
+  "NCU04400",
+  "NCU04401",
+  "NCU04402",
+  "NCU04403",
+  "NCU04404",
+  "NCU04405",
+  "NCU04406",
+  "NCU04407",
+  "NCU04408",
+  "NCU04409",
+  "NCU04410",
+  "NCU04411",
+  "NCU04412",
+  "NCU04413",
+  "NCU04414",
+  "NCU04415"
+ ],
+ "updated": [
+  "NCU04316",
+  "NCU04319",
+  "NCU04324"
+ ],
+ "skipped": [],
+ "failed": [],
+ "bad": [],
+ "insertCheck": [
+  {
+   "qid": "NCU04400",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 1",
+   "question_tag": "NEET 2026"
+  },
+  {
+   "qid": "NCU04401",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 2",
+   "question_tag": "NEET 2026"
+  },
+  {
+   "qid": "NCU04402",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 3",
+   "question_tag": "NEET 2026"
+  },
+  {
+   "qid": "NCU04403",
+   "is_published": false,
+   "question_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu04/NCU04403_question_image_1794735724317.png",
+   "option1_image": null,
+   "source": "NEET Q.No. 4",
+   "question_tag": "NEET 2026"
+  },
+  {
+   "qid": "NCU04404",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 5",
+   "question_tag": "NEET 2026"
+  },
+  {
+   "qid": "NCU04405",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu04/NCU04405_option1_image_1794735724317.png",
+   "source": "NEET Q.No. 6",
+   "question_tag": "NEET 2025"
+  },
+  {
+   "qid": "NCU04406",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 7",
+   "question_tag": "NEET 2025"
+  },
+  {
+   "qid": "NCU04407",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 15",
+   "question_tag": "NEET 2023"
+  },
+  {
+   "qid": "NCU04408",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 17",
+   "question_tag": "NEET 2022"
+  },
+  {
+   "qid": "NCU04409",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 35",
+   "question_tag": "AIPMT 2014"
+  },
+  {
+   "qid": "NCU04410",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 39",
+   "question_tag": "AIPMT 2012"
+  },
+  {
+   "qid": "NCU04411",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 51",
+   "question_tag": "AIPMT 2010"
+  },
+  {
+   "qid": "NCU04412",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 53",
+   "question_tag": "AIPMT 2010"
+  },
+  {
+   "qid": "NCU04413",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 61",
+   "question_tag": "AIPMT 2006"
+  },
+  {
+   "qid": "NCU04414",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 97",
+   "question_tag": "AIPMT 1995"
+  },
+  {
+   "qid": "NCU04415",
+   "is_published": false,
+   "question_image": null,
+   "option1_image": null,
+   "source": "NEET Q.No. 100",
+   "question_tag": "AIPMT 1991"
+  }
+ ]
+}
