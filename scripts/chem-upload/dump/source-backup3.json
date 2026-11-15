@@ -1,0 +1,536 @@
+[
+ {
+  "qid": "NCU04311",
+  "source": "NEET PYQ Q.No. 1",
+  "source_locked": false,
+  "question_tag": "AIPMT 2008"
+ },
+ {
+  "qid": "NCU04312",
+  "source": "NEET PYQ Q.No. 2",
+  "source_locked": false,
+  "question_tag": "AIPMT 2002"
+ },
+ {
+  "qid": "NCU04313",
+  "source": "NEET PYQ Q.No. 3",
+  "source_locked": false,
+  "question_tag": "AIPMT 1996"
+ },
+ {
+  "qid": "NCU04314",
+  "source": "NEET PYQ Q.No. 4",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04315",
+  "source": "NEET PYQ Q.No. 5",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04316",
+  "source": "NEET PYQ Q.No. 6",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04317",
+  "source": "NEET PYQ Q.No. 7",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04318",
+  "source": "NEET PYQ Q.No. 8",
+  "source_locked": false,
+  "question_tag": "NEET 2023"
+ },
+ {
+  "qid": "NCU04319",
+  "source": "NEET PYQ Q.No. 9",
+  "source_locked": false,
+  "question_tag": "NEET 2022"
+ },
+ {
+  "qid": "NCU04320",
+  "source": "NEET PYQ Q.No. 10",
+  "source_locked": false,
+  "question_tag": "NEET 2021"
+ },
+ {
+  "qid": "NCU04321",
+  "source": "NEET PYQ Q.No. 11",
+  "source_locked": false,
+  "question_tag": "NEET 2020"
+ },
+ {
+  "qid": "NCU04322",
+  "source": "NEET PYQ Q.No. 12",
+  "source_locked": false,
+  "question_tag": "NEET 2019"
+ },
+ {
+  "qid": "NCU04323",
+  "source": "NEET PYQ Q.No. 13",
+  "source_locked": false,
+  "question_tag": "NEET 2019"
+ },
+ {
+  "qid": "NCU04324",
+  "source": "NEET PYQ Q.No. 14",
+  "source_locked": false,
+  "question_tag": "NEET 2019"
+ },
+ {
+  "qid": "NCU04325",
+  "source": "NEET PYQ Q.No. 15",
+  "source_locked": false,
+  "question_tag": "NEET 2017"
+ },
+ {
+  "qid": "NCU04326",
+  "source": "NEET PYQ Q.No. 16",
+  "source_locked": false,
+  "question_tag": "AIPMT 2012"
+ },
+ {
+  "qid": "NCU04327",
+  "source": "NEET PYQ Q.No. 17",
+  "source_locked": false,
+  "question_tag": "AIPMT 2012"
+ },
+ {
+  "qid": "NCU04328",
+  "source": "NEET PYQ Q.No. 18",
+  "source_locked": false,
+  "question_tag": "AIPMT 2011"
+ },
+ {
+  "qid": "NCU04329",
+  "source": "NEET PYQ Q.No. 19",
+  "source_locked": false,
+  "question_tag": "AIPMT 2010"
+ },
+ {
+  "qid": "NCU04330",
+  "source": "NEET PYQ Q.No. 20",
+  "source_locked": false,
+  "question_tag": "AIPMT 2006"
+ },
+ {
+  "qid": "NCU04331",
+  "source": "NEET PYQ Q.No. 21",
+  "source_locked": false,
+  "question_tag": "AIPMT 2004"
+ },
+ {
+  "qid": "NCU04332",
+  "source": "NEET PYQ Q.No. 22",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04333",
+  "source": "NEET PYQ Q.No. 23",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04334",
+  "source": "NEET PYQ Q.No. 24",
+  "source_locked": false,
+  "question_tag": "AIPMT 2001"
+ },
+ {
+  "qid": "NCU04335",
+  "source": "NEET PYQ Q.No. 25",
+  "source_locked": false,
+  "question_tag": "AIPMT 2000"
+ },
+ {
+  "qid": "NCU04336",
+  "source": "NEET PYQ Q.No. 26",
+  "source_locked": false,
+  "question_tag": "AIPMT 1999"
+ },
+ {
+  "qid": "NCU04337",
+  "source": "NEET PYQ Q.No. 27",
+  "source_locked": false,
+  "question_tag": "AIPMT 1998"
+ },
+ {
+  "qid": "NCU04338",
+  "source": "NEET PYQ Q.No. 28",
+  "source_locked": false,
+  "question_tag": "AIPMT 1994"
+ },
+ {
+  "qid": "NCU04339",
+  "source": "NEET PYQ Q.No. 29",
+  "source_locked": false,
+  "question_tag": "AIPMT 1990"
+ },
+ {
+  "qid": "NCU04340",
+  "source": "NEET PYQ Q.No. 30",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04341",
+  "source": "NEET PYQ Q.No. 31",
+  "source_locked": false,
+  "question_tag": "NEET 2013"
+ },
+ {
+  "qid": "NCU04342",
+  "source": "NEET PYQ Q.No. 32",
+  "source_locked": false,
+  "question_tag": "AIPMT 2011"
+ },
+ {
+  "qid": "NCU04343",
+  "source": "NEET PYQ Q.No. 33",
+  "source_locked": false,
+  "question_tag": "AIPMT 2011"
+ },
+ {
+  "qid": "NCU04344",
+  "source": "NEET PYQ Q.No. 34",
+  "source_locked": false,
+  "question_tag": "AIPMT 2010"
+ },
+ {
+  "qid": "NCU04345",
+  "source": "NEET PYQ Q.No. 35",
+  "source_locked": false,
+  "question_tag": "AIPMT 2007"
+ },
+ {
+  "qid": "NCU04346",
+  "source": "NEET PYQ Q.No. 36",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04347",
+  "source": "NEET PYQ Q.No. 37",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04348",
+  "source": "NEET PYQ Q.No. 38",
+  "source_locked": false,
+  "question_tag": "AIPMT 2002"
+ },
+ {
+  "qid": "NCU04349",
+  "source": "NEET PYQ Q.No. 39",
+  "source_locked": false,
+  "question_tag": "AIPMT 2001"
+ },
+ {
+  "qid": "NCU04350",
+  "source": "NEET PYQ Q.No. 40",
+  "source_locked": false,
+  "question_tag": "AIPMT 2001"
+ },
+ {
+  "qid": "NCU04351",
+  "source": "NEET PYQ Q.No. 41",
+  "source_locked": false,
+  "question_tag": "AIPMT 1999"
+ },
+ {
+  "qid": "NCU04352",
+  "source": "NEET PYQ Q.No. 42",
+  "source_locked": false,
+  "question_tag": "AIPMT 1997"
+ },
+ {
+  "qid": "NCU04353",
+  "source": "NEET PYQ Q.No. 43",
+  "source_locked": false,
+  "question_tag": "AIPMT 1995"
+ },
+ {
+  "qid": "NCU04354",
+  "source": "NEET PYQ Q.No. 44",
+  "source_locked": false,
+  "question_tag": "AIPMT 1994"
+ },
+ {
+  "qid": "NCU04355",
+  "source": "NEET PYQ Q.No. 45",
+  "source_locked": false,
+  "question_tag": "NEET 2020"
+ },
+ {
+  "qid": "NCU04356",
+  "source": "NEET PYQ Q.No. 46",
+  "source_locked": false,
+  "question_tag": "NEET 2018"
+ },
+ {
+  "qid": "NCU04357",
+  "source": "NEET PYQ Q.No. 47",
+  "source_locked": false,
+  "question_tag": "AIPMT 2015"
+ },
+ {
+  "qid": "NCU04358",
+  "source": "NEET PYQ Q.No. 48",
+  "source_locked": false,
+  "question_tag": "NEET 2013"
+ },
+ {
+  "qid": "NCU04359",
+  "source": "NEET PYQ Q.No. 49",
+  "source_locked": false,
+  "question_tag": "AIPMT 2009"
+ },
+ {
+  "qid": "NCU04360",
+  "source": "NEET PYQ Q.No. 50",
+  "source_locked": false,
+  "question_tag": "AIPMT 2008"
+ },
+ {
+  "qid": "NCU04361",
+  "source": "NEET PYQ Q.No. 51",
+  "source_locked": false,
+  "question_tag": "AIPMT 2007"
+ },
+ {
+  "qid": "NCU04362",
+  "source": "NEET PYQ Q.No. 52",
+  "source_locked": false,
+  "question_tag": "AIPMT 2005"
+ },
+ {
+  "qid": "NCU04363",
+  "source": "NEET PYQ Q.No. 53",
+  "source_locked": false,
+  "question_tag": "AIPMT 2004"
+ },
+ {
+  "qid": "NCU04364",
+  "source": "NEET PYQ Q.No. 54",
+  "source_locked": false,
+  "question_tag": "NEET 2024"
+ },
+ {
+  "qid": "NCU04365",
+  "source": "NEET PYQ Q.No. 55",
+  "source_locked": false,
+  "question_tag": "NEET 2021"
+ },
+ {
+  "qid": "NCU04366",
+  "source": "NEET PYQ Q.No. 56",
+  "source_locked": false,
+  "question_tag": "NEET 2020"
+ },
+ {
+  "qid": "NCU04367",
+  "source": "NEET PYQ Q.No. 57",
+  "source_locked": false,
+  "question_tag": "NEET 2020"
+ },
+ {
+  "qid": "NCU04368",
+  "source": "NEET PYQ Q.No. 58",
+  "source_locked": false,
+  "question_tag": "NEET 2019"
+ },
+ {
+  "qid": "NCU04369",
+  "source": "NEET PYQ Q.No. 59",
+  "source_locked": false,
+  "question_tag": "NEET 2017"
+ },
+ {
+  "qid": "NCU04370",
+  "source": "NEET PYQ Q.No. 60",
+  "source_locked": false,
+  "question_tag": "NEET 2016"
+ },
+ {
+  "qid": "NCU04371",
+  "source": "NEET PYQ Q.No. 61",
+  "source_locked": false,
+  "question_tag": "NEET 2016"
+ },
+ {
+  "qid": "NCU04372",
+  "source": "NEET PYQ Q.No. 62",
+  "source_locked": false,
+  "question_tag": "NEET 2016"
+ },
+ {
+  "qid": "NCU04373",
+  "source": "NEET PYQ Q.No. 63",
+  "source_locked": false,
+  "question_tag": "NEET 2016"
+ },
+ {
+  "qid": "NCU04374",
+  "source": "NEET PYQ Q.No. 64",
+  "source_locked": false,
+  "question_tag": "AIPMT 2014"
+ },
+ {
+  "qid": "NCU04375",
+  "source": "NEET PYQ Q.No. 65",
+  "source_locked": false,
+  "question_tag": "NEET 2013"
+ },
+ {
+  "qid": "NCU04376",
+  "source": "NEET PYQ Q.No. 66",
+  "source_locked": false,
+  "question_tag": "AIPMT 2012"
+ },
+ {
+  "qid": "NCU04377",
+  "source": "NEET PYQ Q.No. 67",
+  "source_locked": false,
+  "question_tag": "AIPMT 2012"
+ },
+ {
+  "qid": "NCU04378",
+  "source": "NEET PYQ Q.No. 68",
+  "source_locked": false,
+  "question_tag": "AIPMT 2011"
+ },
+ {
+  "qid": "NCU04379",
+  "source": "NEET PYQ Q.No. 69",
+  "source_locked": false,
+  "question_tag": "AIPMT 2010"
+ },
+ {
+  "qid": "NCU04380",
+  "source": "NEET PYQ Q.No. 70",
+  "source_locked": false,
+  "question_tag": "AIPMT 2010"
+ },
+ {
+  "qid": "NCU04381",
+  "source": "NEET PYQ Q.No. 71",
+  "source_locked": false,
+  "question_tag": "AIPMT 2009"
+ },
+ {
+  "qid": "NCU04382",
+  "source": "NEET PYQ Q.No. 72",
+  "source_locked": false,
+  "question_tag": "AIPMT 2008"
+ },
+ {
+  "qid": "NCU04383",
+  "source": "NEET PYQ Q.No. 73",
+  "source_locked": false,
+  "question_tag": "AIPMT 2006"
+ },
+ {
+  "qid": "NCU04384",
+  "source": "NEET PYQ Q.No. 74",
+  "source_locked": false,
+  "question_tag": "AIPMT 2006"
+ },
+ {
+  "qid": "NCU04385",
+  "source": "NEET PYQ Q.No. 75",
+  "source_locked": false,
+  "question_tag": "AIPMT 2005"
+ },
+ {
+  "qid": "NCU04386",
+  "source": "NEET PYQ Q.No. 76",
+  "source_locked": false,
+  "question_tag": "AIPMT 2005"
+ },
+ {
+  "qid": "NCU04387",
+  "source": "NEET PYQ Q.No. 77",
+  "source_locked": false,
+  "question_tag": "AIPMT 2004"
+ },
+ {
+  "qid": "NCU04388",
+  "source": "NEET PYQ Q.No. 78",
+  "source_locked": false,
+  "question_tag": "AIPMT 2004"
+ },
+ {
+  "qid": "NCU04389",
+  "source": "NEET PYQ Q.No. 79",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04390",
+  "source": "NEET PYQ Q.No. 80",
+  "source_locked": false,
+  "question_tag": "AIPMT 2003"
+ },
+ {
+  "qid": "NCU04391",
+  "source": "NEET PYQ Q.No. 81",
+  "source_locked": false,
+  "question_tag": "AIPMT 2002"
+ },
+ {
+  "qid": "NCU04392",
+  "source": "NEET PYQ Q.No. 82",
+  "source_locked": false,
+  "question_tag": "AIPMT 2002"
+ },
+ {
+  "qid": "NCU04393",
+  "source": "NEET PYQ Q.No. 83",
+  "source_locked": false,
+  "question_tag": "AIPMT 2001"
+ },
+ {
+  "qid": "NCU04394",
+  "source": "NEET PYQ Q.No. 84",
+  "source_locked": false,
+  "question_tag": "AIPMT 2000"
+ },
+ {
+  "qid": "NCU04395",
+  "source": "NEET PYQ Q.No. 85",
+  "source_locked": false,
+  "question_tag": "AIPMT 2000"
+ },
+ {
+  "qid": "NCU04396",
+  "source": "NEET PYQ Q.No. 86",
+  "source_locked": false,
+  "question_tag": "AIPMT 2000"
+ },
+ {
+  "qid": "NCU04397",
+  "source": "NEET PYQ Q.No. 87",
+  "source_locked": false,
+  "question_tag": "AIPMT 1998"
+ },
+ {
+  "qid": "NCU04398",
+  "source": "NEET PYQ Q.No. 88",
+  "source_locked": false,
+  "question_tag": "AIPMT 1996"
+ },
+ {
+  "qid": "NCU04399",
+  "source": "NEET PYQ Q.No. 89",
+  "source_locked": false,
+  "question_tag": "AIPMT 1994"
+ }
+]
