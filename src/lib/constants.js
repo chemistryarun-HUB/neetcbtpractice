@@ -24,12 +24,15 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   {
     section: 'Organic Chemistry',
     units: [
-      { id: 13, name: 'Purification and Characterisation of Organic Compounds' },
-      { id: 14, name: 'Some Basic Principles of Organic Chemistry' },
-      { id: 15, name: 'Hydrocarbons' },
-      { id: 16, name: 'Organic Compounds Containing Halogens' },
-      { id: 17, name: 'Organic Compounds Containing Oxygen' },
-      { id: 18, name: 'Organic Compounds Containing Nitrogen' },
+      // Renamed 2026-11-16 to the NCERT Class 12 chapter names. Each name moved one
+      // unit up from where it used to sit (Some Basic Principles was 14, now 13), so
+      // its 76 questions moved with it: unit text and Q ID NCU14… -> NCU13….
+      { id: 13, name: 'Some Basic Principles of Organic Chemistry' },
+      { id: 14, name: 'Hydrocarbons' },
+      { id: 15, name: 'Haloalkanes and Haloarenes' },
+      { id: 16, name: 'Alcohols, Phenols and Ethers' },
+      { id: 17, name: 'Aldehydes, Ketones and Carboxylic Acids' },
+      { id: 18, name: 'Amines' },
       { id: 19, name: 'Biomolecules' },
       { id: 20, name: 'Principles Related to Practical Chemistry' },
     ],
