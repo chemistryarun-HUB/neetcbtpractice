@@ -11,7 +11,9 @@ async function upload(qid, field, file) {
 }
 fs.mkdirSync('scripts/chem-upload/dump', { recursive: true })
 const res = { inserted: [], updated: [], skipped: [], failed: [], bad: [] }
-const { data: pre, error: preErr } = await sb.from('questions').select('qid,unit').or('qid.like.NCU16%,unit.eq.Unit 16 - Alcohols\\, Phenols and Ethers')
+const r1 = await sb.from('questions').select('qid,unit').like('qid', 'NCU16%')
+const r2 = await sb.from('questions').select('qid,unit').eq('unit', 'Unit 16 - Alcohols, Phenols and Ethers')
+const preErr = r1.error || r2.error; const pre = [...(r1.data || []), ...(r2.data || [])]
 if (preErr || (pre || []).length) { fs.writeFileSync('scripts/chem-upload/dump/apply-result.json', JSON.stringify({ abort: true, preErr, pre }, null, 1)); console.log('ABORT', preErr, pre); process.exit(0) }
 // inserts
 const { data: ex } = await sb.from('questions').select('qid').in('qid', insert.map(r => r.qid))
