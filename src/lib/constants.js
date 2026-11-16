@@ -194,6 +194,15 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
   ],
+  // Units 13-18: one level each, the Complete Chapter Test (2026-11-16). A single
+  // level is always unlocked and is badged CCT everywhere; more levels can be
+  // added later by putting them before this one, keeping the CCT last.
+  13: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  14: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  15: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  16: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  17: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  18: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
   19: [
     { id: 1, name: 'Biomolecules', topic: 'Biomolecules — carbohydrates, proteins, vitamins, nucleic acids and hormones.' },
   ],
