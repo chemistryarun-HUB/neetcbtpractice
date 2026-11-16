@@ -1,0 +1,10 @@
+{
+ "abort": true,
+ "preErr": {
+  "code": "PGRST100",
+  "details": "unexpected \")\" expecting letter, digit, \"-\", \"->>\", \"->\" or delimiter (.)",
+  "hint": null,
+  "message": "\"failed to parse logic tree ((qid.like.NCU16%,unit.eq.Unit 16 - Alcohols\\, Phenols and Ethers))\" (line 1, column 67)"
+ },
+ "pre": null
+}
