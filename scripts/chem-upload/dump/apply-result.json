@@ -1,0 +1,15 @@
+{
+ "updated": true,
+ "bad": [],
+ "u": {
+  "option1": "identical",
+  "option2": "positional isomers",
+  "option3": "positional isomers",
+  "option4": "homologues",
+  "correct_option": "option2",
+  "option1_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu22/NCU22050_option1_image_1794912324988.png",
+  "option2_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu22/NCU22050_option2_image_1794912324988.png",
+  "option3_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu22/NCU22050_option3_image_1794912324988.png",
+  "option4_image": "https://vxoxaiekhxewvkpujuxu.supabase.co/storage/v1/object/public/question-images/ncu22/NCU22050_option4_image_1794912324988.png"
+ }
+}
