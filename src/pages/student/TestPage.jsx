@@ -42,17 +42,73 @@ export default function TestPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [attemptId, setAttemptId] = useState(null)
+  const [showConfirm, setShowConfirm] = useState(false)
   const timerRef = useRef(null)
+  const startedAtRef = useRef(Date.now())
   const contentRef = useRef(null)
   const paletteRef = useRef(null)
+
+  // The test in progress is mirrored to this device's storage, so a refresh,
+  // a crashed tab or an iPad reloading the page picks up where the student was
+  // instead of starting a new attempt with every answer gone.
+  const saveKey = `neetcbt_test_${user.id}_${unitNum}_${levelNum}`
+  const MAX_AGE_MS = 12 * 60 * 60 * 1000
+  function readSaved() {
+    try {
+      const s = JSON.parse(localStorage.getItem(saveKey) || 'null')
+      if (!s || !s.attemptId || !Array.isArray(s.questions) || !s.questions.length) return null
+      if (Date.now() - (s.startedAt || 0) > MAX_AGE_MS) return null
+      return s
+    } catch { return null }
+  }
+  function clearSaved() { try { localStorage.removeItem(saveKey) } catch { /* storage blocked */ } }
+
+  function startTimer() {
+    clearInterval(timerRef.current)
+    // Derived from the clock, not counted: a throttled background tab no longer
+    // loses time, and a resumed test keeps its real elapsed time.
+    const tick = () => setElapsed(Math.max(0, Math.floor((Date.now() - startedAtRef.current) / 1000)))
+    tick()
+    timerRef.current = setInterval(tick, 1000)
+  }
 
   useEffect(() => {
     loadQuestions()
     return () => clearInterval(timerRef.current)
   }, [])
 
+  // Save after every answer / question change once the test is running.
+  useEffect(() => {
+    if (loading || !attemptId || !questions.length) return
+    try {
+      localStorage.setItem(saveKey, JSON.stringify({
+        attemptId, questions, answers, currentIdx, medium, startedAt: startedAtRef.current,
+      }))
+    } catch { /* storage full or blocked: the test still works, just can't resume */ }
+  }, [loading, attemptId, questions, answers, currentIdx])
+
   async function loadQuestions() {
     try {
+      // Resume an unfinished attempt on this unit/level if this device has one.
+      const saved = readSaved()
+      if (saved) {
+        const { data: row } = await supabase.from('test_attempts').select('id, submitted').eq('id', saved.attemptId).maybeSingle()
+        if (row && !row.submitted) {
+          const savedMedium = saved.medium || user.medium || 'en'
+          setMedium(savedMedium)
+          setQuestions(saved.questions)
+          setAnswers(saved.answers || {})
+          setCurrentIdx(Math.min(saved.currentIdx || 0, saved.questions.length - 1))
+          setAttemptId(saved.attemptId)
+          startedAtRef.current = saved.startedAt || Date.now()
+          startTimer()
+          setLoading(false)
+          toast.success(neetT(savedMedium).resumed)
+          return
+        }
+        clearSaved()
+      }
+
       const { data: me } = await supabase.from('students').select('medium').eq('id', user.id).maybeSingle()
       const medium = me?.medium || user.medium || 'en'
       setMedium(medium)
@@ -182,7 +238,8 @@ export default function TestPage() {
       setAttemptId(attempt.id)
 
       // Start timer
-      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
+      startedAtRef.current = Date.now()
+      startTimer()
       setLoading(false)
     } catch (err) {
       toast.error(err.message)
@@ -198,7 +255,9 @@ export default function TestPage() {
   const handleSubmit = useCallback(async () => {
     if (submitting) return
     setSubmitting(true)
+    setShowConfirm(false)
     clearInterval(timerRef.current)
+    const timeTaken = Math.max(0, Math.floor((Date.now() - startedAtRef.current) / 1000))
     try {
       let correct = 0, wrong = 0, skipped = 0
       const correctIds = []
@@ -239,19 +298,27 @@ export default function TestPage() {
       }
 
       // Update attempt
-      await supabase.from('test_attempts').update({
+      // The error was never read before: a failed save (network blip, expired
+      // session) looked like a button that does nothing, then went on to the
+      // result page of an attempt that was never submitted.
+      const { error: saveErr } = await supabase.from('test_attempts').update({
         answers: answersPayload,
         score,
         correct_count: correct,
         wrong_count: wrong,
         skipped_count: skipped,
-        time_taken: elapsed,
+        time_taken: timeTaken,
         submitted: true,
         submitted_at: new Date().toISOString(),
       }).eq('id', attemptId)
+      if (saveErr) throw saveErr
+
+      // Past this point the attempt is saved; the rest must not strand the student.
+      clearSaved()
 
       // Record used questions (upsert to handle re-attempts)
-      await supabase.from('used_questions').upsert(usedRecords, { onConflict: 'student_id,question_id' })
+      const { error: usedErr } = await supabase.from('used_questions').upsert(usedRecords, { onConflict: 'student_id,question_id' })
+      if (usedErr) console.warn('used_questions upsert failed', usedErr)
 
       // Check unlock logic — based on score as a % of max possible marks (not raw accuracy)
       const totalQ = questions.length
@@ -290,10 +357,13 @@ export default function TestPage() {
 
       navigate(`/student/result/${attemptId}`)
     } catch (err) {
-      toast.error(err.message)
+      // Answers stay on screen and in storage; the timer keeps running and the
+      // student can press Submit again.
+      toast.error(`${neetT(medium).submitFailed} (${err?.message || 'network'})`)
       setSubmitting(false)
+      startTimer()
     }
-  }, [answers, questions, elapsed, attemptId, levelNum, user.id, submitting])
+  }, [answers, questions, attemptId, levelNum, user.id, submitting, medium])
 
   // Auto-submit on last question if all answered
   function goNext() {
@@ -343,9 +413,12 @@ export default function TestPage() {
 
   const unanswered = questions.length - answeredCount
 
+  // An in-page dialog, not window.confirm: iPad Safari and in-app browsers
+  // (WhatsApp, Instagram) can suppress native dialogs, which made Submit do
+  // nothing at all whenever a question was left unanswered.
   function confirmSubmit() {
-    if (unanswered > 0 && !window.confirm(t.confirmSubmit(unanswered))) return
-    handleSubmit()
+    if (unanswered > 0) setShowConfirm(true)
+    else handleSubmit()
   }
 
   // Same shell as the post-test review (AttemptReviewer): slim blue bar,
@@ -432,6 +505,18 @@ export default function TestPage() {
       </div>
 
       <TestLegend t={t} submitOnLast />
+
+      {showConfirm && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" onClick={() => setShowConfirm(false)}>
+          <div className="modal" style={{ maxWidth: 420, padding: '1.25rem' }} onClick={e => e.stopPropagation()}>
+            <p style={{ margin: '0 0 1rem', fontSize: '1rem', lineHeight: 1.5 }}>{t.confirmSubmit(unanswered)}</p>
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+              <button className="btn btn-ghost" onClick={() => setShowConfirm(false)}>{t.goBack}</button>
+              <button className="btn btn-success" onClick={handleSubmit} disabled={submitting}>{t.submitAnyway}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
