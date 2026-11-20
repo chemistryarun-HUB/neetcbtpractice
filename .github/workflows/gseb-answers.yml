@@ -1,0 +1,24 @@
+name: GSEB model answers (one-off)
+
+# Read-only dump of the Chemistry Part B questions (no writes).
+on:
+  push:
+    branches: [claude/project-thread-2ftyoa]
+    paths: ['scripts/gseb-answers/**', '.github/workflows/gseb-answers.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  answers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: node scripts/gseb-answers/dump-partb.mjs chemistry
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
