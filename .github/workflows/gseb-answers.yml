@@ -1,14 +1,14 @@
 name: GSEB model answers (one-off)
 
-# Read-only dump of the Chemistry Part B questions (no database writes);
-# the dump is committed back to this branch under gseb-dump/ so it can be read.
+# Writes the NCERT-based Chemistry Part B model answers. Dry run unless
+# scripts/gseb-answers/APPLY exists. Removed from the branch after it has run.
 on:
   push:
     branches: [claude/project-thread-2ftyoa]
     paths: ['scripts/gseb-answers/**', '.github/workflows/gseb-answers.yml']
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   answers:
@@ -19,11 +19,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: mkdir -p gseb-dump && node scripts/gseb-answers/dump-partb.mjs chemistry > gseb-dump/chemistry.txt
+      - run: node scripts/gseb-answers/apply-chem-all.mjs $([ -f scripts/gseb-answers/APPLY ] && echo --apply)
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-      - run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add gseb-dump && git commit -m "Dump of Chemistry Part B questions (read-only)" && git push
