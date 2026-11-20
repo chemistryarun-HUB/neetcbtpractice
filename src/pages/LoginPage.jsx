@@ -1,11 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { GraduationCap, Shield, ArrowRight, LogOut } from 'lucide-react'
+import { ArrowRight, LogOut } from 'lucide-react'
+import StudentLoginPage from './StudentLoginPage'
 import { useAuth } from '../hooks/useAuth'
 
 const DASHBOARD_FOR = {
   student: '/student/dashboard',
   admin: '/admin',
-  faculty: '/faculty',
+  faculty: '/faculty/dashboard',
 }
 
 export default function LoginPage() {
@@ -30,7 +31,7 @@ export default function LoginPage() {
           <h1>NEETCBT</h1>
           <p className="tagline">
             Signed in as <strong>{user?.name || user?.email}</strong>
-            {user?.roll_number ? ` (${user.roll_number})` : ''}
+            {user?.roll_number ? ` (${user.roll_number})` : user?.faculty_code ? ` (${user.faculty_code})` : ''}
           </p>
 
           <div className="role-buttons">
@@ -55,30 +56,7 @@ export default function LoginPage() {
     )
   }
 
-  return (
-    <div className="home-page">
-      <div className="home-card">
-        <h1>NEETCBT</h1>
-        <p className="tagline">Chemistry Practice Platform for NEET</p>
-
-        <div className="role-buttons">
-          <Link to="/student/login" className="role-btn student">
-            <GraduationCap size={24} />
-            <div style={{ textAlign: 'left' }}>
-              <div>Student Login</div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 400, opacity: 0.85 }}>Login with Roll Number</div>
-            </div>
-          </Link>
-
-          <Link to="/student/login?admin=1" className="role-btn admin">
-            <Shield size={24} />
-            <div style={{ textAlign: 'left' }}>
-              <div>Admin Login</div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 400, opacity: 0.75 }}>Admin access only</div>
-            </div>
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
+  // Not signed in: the single login form (it works out student / faculty /
+  // admin from the ID typed).
+  return <StudentLoginPage />
 }

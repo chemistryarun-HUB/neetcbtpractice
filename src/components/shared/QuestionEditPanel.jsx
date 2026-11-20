@@ -3,7 +3,8 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { ImagePlus, Lock, LockOpen, Shuffle } from 'lucide-react'
 import { UNIT_LEVELS, levelIdsFor } from '../../lib/constants'
-import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { unitsFor, levelsFor } from '../../lib/subjects'
 import { uploadQuestionImage } from '../../lib/storage'
 import { LOCK_COLUMNS, LOCK_COL_BY_FIELD } from '../../lib/fieldLocks'
 import { correctOptionKey, resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -176,12 +177,16 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
   // Level choices are driven by whichever unit the form currently points at — a
   // hardcoded 1-9 list used to hide the real levels of any unit with more than
   // nine (Unit 3 has 11, so "Miscellaneous" was unreachable).
+  // Units and levels belong to the question's subject (Physics Unit 1 is not
+  // Chemistry Unit 1).
+  const subject = q.subject || 'Chemistry'
+  const subjectUnits = unitsFor(subject)
   const editUnitId = unitIdOf(form.unit)
-  const levelDefs = UNIT_LEVELS[editUnitId] || []
+  const levelDefs = levelsFor(subject, editUnitId)
   const levelOptions = (() => {
     const opts = levelDefs.length > 0
       ? levelDefs.map(l => ({ id: l.id, label: `Level ${l.id}: ${l.name}` }))
-      : levelIdsFor(editUnitId).map(id => ({ id, label: `Level ${id}` }))
+      : (subject === 'Chemistry' ? levelIdsFor(editUnitId) : [1, 2, 3, 4, 5, 6, 7, 8, 9]).map(id => ({ id, label: `Level ${id}` }))
     // Keep whatever the row is already tagged with selectable even if it isn't a
     // defined level, so merely opening the panel can't silently retag the question.
     const current = Number(form.level)
@@ -226,7 +231,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
         correct_option:   resolvedCorrect,
         unit:             form.unit,
         level:            Number(form.level),
-        topic:            deriveTopic(form.unit, form.level),
+        topic:            deriveTopic(form.unit, form.level, subject),
         difficulty_level: form.difficulty_level,
         question_tag:     form.question_tag || null,
         source:           form.source || null,
@@ -476,7 +481,7 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
           <select className="form-control" style={{ fontSize: '0.8125rem' }}
             value={editUnitId || ''}
             onChange={e => {
-              const unit = CHEMISTRY_UNITS.find(u => u.id === Number(e.target.value))
+              const unit = subjectUnits.find(u => u.id === Number(e.target.value))
               // Moving to a different unit means the old level number almost
               // certainly doesn't map to the same topic there — reset to Level 1
               // so it doesn't silently point at the wrong syllabus. That reset is
@@ -484,13 +489,13 @@ export default function QuestionEditPanel({ q, onSaved, onCancel }) {
               // carrying the OLD unit's level must not drag it back.
               setLockable('unit', unit ? `Unit ${unit.id} - ${unit.name}` : '', { level: 1, level_locked: true })
             }}>
-            {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+            {subjectUnits.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
           </select>
         </div>
         <div className="form-group" style={{ margin: 0, flex: '1.2 1 200px' }}>
           <label style={{ fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             Level
-            <InfoTooltip text={deriveFullTopic(form.unit, form.level)} align="left" />
+            <InfoTooltip text={deriveFullTopic(form.unit, form.level, subject)} align="left" />
             <FieldLock label="Level" locked={form.level_locked} onToggle={() => toggleLock('level_locked')} />
           </label>
           <select className="form-control" style={{ fontSize: '0.8125rem' }}

@@ -16,7 +16,14 @@ const ALL_GSEB_SUBJECTS = [
 export const GSEB_SUBJECTS = ALL_GSEB_SUBJECTS.filter(s => s.live)
 export const GSEB_SUBJECT_LABELS = Object.fromEntries(ALL_GSEB_SUBJECTS.map(s => [s.id, s.label]))
 export const GSEB_MEDIUM_LABELS = { en: 'English', gu: 'Gujarati' }
-export const GSEB_SESSION_LABELS = { march: 'March', july: 'July (Supplementary)' }
+// The exam is named without its month (the supplementary month changes year
+// to year): March is the main paper, July the supplementary one.
+export const GSEB_EXAM_LABELS = { march: 'Main Paper', july: 'Supplementary Paper' }
+
+// "2025 · Supplementary Paper"
+export function paperExam(p) {
+  return [p.year, GSEB_EXAM_LABELS[p.session]].filter(Boolean).join(' · ')
+}
 
 // GSEB Std 12 Science follows the NCERT (rationalised) textbooks, so chapters
 // are the NCERT Class 12 chapters. chapter_no on a question is the `id` here.
@@ -58,11 +65,11 @@ export function chapterName(subject, chapterNo) {
   return GSEB_XII_SYLLABUS[subject]?.[Number(chapterNo) - 1] || ''
 }
 
-// "Physics · March 2025 · English · Set 15 (054)"
+// "Physics · 2025 · Main Paper · English · Set 15 (054)"
 export function paperTitle(p) {
   return [
     GSEB_SUBJECT_LABELS[p.subject],
-    `${GSEB_SESSION_LABELS[p.session]?.split(' ')[0] || ''} ${p.year}`.trim(),
+    paperExam(p),
     GSEB_MEDIUM_LABELS[p.medium],
     p.set_no ? `Set ${p.set_no}` : null,
   ].filter(Boolean).join(' · ') + (p.paper_code ? ` (${p.paper_code})` : '')
@@ -275,10 +282,31 @@ export function chapterBreakdown(subject, questions, statusOf) {
   return Object.values(out).sort((a, b) => (a.chapterNo ?? 999) - (b.chapterNo ?? 999))
 }
 
-// "March 2026" tag shown next to a question pulled out of its paper.
+// Question ID, like the NEET bank's Q ID but built from the paper, so nothing
+// is typed or stored: G + subject letter + 2-digit year + exam (M = main,
+// S = supplementary; letters, not months, since the months move year to year)
+// + part + 2-digit Q no. Chemistry March 2024 Part A Q7 → "GC24MA07". A
+// Gujarati paper or a numbered set gets a suffix ("-GU", "-SET2") so two papers
+// of the same exam never share an ID.
+// What the shared review and Mistake Copy screens read off a question: its ID and
+// tag. `q.paper` is the row's joined gseb_papers.
+export const GSEB_QUESTION_SELECT = '*, paper:gseb_papers(year, session, subject, medium, set_no)'
+export function gsebReviewQuestion(q) {
+  return { ...q, qid: gsebQid(q.paper, 'A', q.q_no), question_tag: paperTag(q.paper) }
+}
+
+export function gsebQid(paper, part, qNo) {
+  if (!paper?.subject || !paper.year) return `${part}${String(qNo).padStart(2, '0')}`
+  const subj = { physics: 'P', chemistry: 'C', biology: 'B', maths: 'M' }[paper.subject] || '?'
+  const sess = paper.session === 'july' ? 'S' : 'M'
+  const extra = (paper.medium && paper.medium !== 'en' ? `-${paper.medium.toUpperCase()}` : '') + (paper.set_no ? `-SET${paper.set_no}` : '')
+  return `G${subj}${String(paper.year).slice(-2)}${sess}${part}${String(qNo).padStart(2, '0')}${extra}`
+}
+
+// "2026 · Main Paper" tag shown next to a question pulled out of its paper.
 export function paperTag(p) {
   if (!p) return ''
-  return `${GSEB_SESSION_LABELS[p.session]?.split(' ')[0] || ''} ${p.year}`.trim()
+  return paperExam(p)
 }
 
 // Fisher–Yates on a copy; `n` caps the length.

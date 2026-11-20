@@ -2,7 +2,8 @@
 // Topic is derived from (unit, level) via UNIT_LEVELS — the DB `topic` column is
 // kept in sync with this on every save, so level is always the single source of
 // truth for topic.
-import { UNIT_LEVELS, NEET_CHEMISTRY_SYLLABUS } from './constants'
+import { NEET_CHEMISTRY_SYLLABUS } from './constants'
+import { levelsFor } from './subjects'
 
 // Unit names must match the `unit` column stored in the DB (partial ilike match
 // is used for filtering). Derived from NEET_CHEMISTRY_SYLLABUS (the single
@@ -16,16 +17,16 @@ export function unitIdOf(unitString) {
 }
 
 // Short display name of a level, e.g. "Conformational Isomerism".
-export function deriveTopic(unitString, level) {
+export function deriveTopic(unitString, level, subject = 'Chemistry') {
   const unitId = unitIdOf(unitString)
   if (!unitId) return ''
-  return (UNIT_LEVELS[unitId] || []).find(l => l.id === Number(level))?.name || ''
+  return levelsFor(subject, unitId).find(l => l.id === Number(level))?.name || ''
 }
 
 // Full syllabus text for a level (as opposed to deriveTopic's short display
 // name) — shown in the "i" tooltips.
-export function deriveFullTopic(unitString, level) {
+export function deriveFullTopic(unitString, level, subject = 'Chemistry') {
   const unitId = unitIdOf(unitString)
   if (!unitId) return ''
-  return (UNIT_LEVELS[unitId] || []).find(l => l.id === Number(level))?.topic || ''
+  return levelsFor(subject, unitId).find(l => l.id === Number(level))?.topic || ''
 }

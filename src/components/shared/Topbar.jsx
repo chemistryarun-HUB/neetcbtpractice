@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import { LogOut } from 'lucide-react'
+import { LogOut, Menu, X } from 'lucide-react'
 
 export default function Topbar({ links }) {
   const { logout, user, role } = useAuth()
   const navigate = useNavigate()
+  // On a phone the links don't fit in one row: they fold behind a menu button.
+  const [open, setOpen] = useState(false)
 
   async function handleLogout() {
     await logout()
@@ -17,9 +20,12 @@ export default function Topbar({ links }) {
   return (
     <header className="topbar">
       <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => navigate(homePath)}>NEETCBT</div>
-      <nav className="topbar-nav">
+      <button className="topbar-menu" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
+        {open ? <X size={22} /> : <Menu size={22} />}
+      </button>
+      <nav className={`topbar-nav${open ? ' open' : ''}`}>
         {links.map(l => (
-          <NavLink key={l.to} to={l.to} end={l.end}>
+          <NavLink key={l.to} to={l.to} end={l.end} onClick={() => setOpen(false)}>
             {l.label}
           </NavLink>
         ))}
@@ -27,7 +33,7 @@ export default function Topbar({ links }) {
           {displayName}
         </span>
         <button onClick={handleLogout} title="Logout">
-          <LogOut size={16} />
+          <LogOut size={16} /><span className="topbar-only-menu"> Logout</span>
         </button>
       </nav>
     </header>

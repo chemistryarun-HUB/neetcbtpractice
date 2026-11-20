@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback, useMemo, Fragment } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Upload, Plus, Search, ChevronDown, ChevronUp, ImagePlus, Lock, Maximize2 } from 'lucide-react'
 import { UNIT_LEVELS, levelBadge } from '../../lib/constants'
 import { CHEMISTRY_UNITS, deriveTopic, deriveFullTopic, unitIdOf } from '../../lib/topics'
+import { ALL_SUBJECTS, isActiveSubject, unitsFor, levelsFor } from '../../lib/subjects'
+import { MEDIUMS, mediumLabel, normMedium } from '../../lib/neetI18n'
 import { LOCK_COLUMNS, planLockedUpload, lockSummary, hasAnyFieldLock } from '../../lib/fieldLocks'
 import { uploadQuestionImage } from '../../lib/storage'
 import { resolveCorrectOptionValue } from '../../lib/questionOptions'
@@ -13,6 +15,19 @@ import InfoTooltip from './InfoTooltip'
 import QuestionView from './QuestionView'
 import QuestionReviewer from './QuestionReviewer'
 import DifficultyReport from './DifficultyReport'
+
+// Optional Excel columns carrying an image's web address, and the field each fills.
+const IMAGE_COLUMNS = [
+  ['Question Image', 'question_image'],
+  ['Option 1 Image', 'option1_image'],
+  ['Option 2 Image', 'option2_image'],
+  ['Option 3 Image', 'option3_image'],
+  ['Option 4 Image', 'option4_image'],
+]
+
+// Admin screens are in English, so the Gujarati bank is called "Gujarati" here.
+const fmtCount = n => (n == null ? '' : ` (${n.toLocaleString('en-IN')})`)
+const mediumLabelEn = id => (id === 'gu' ? 'Gujarati' : 'English')
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 function toUuidOrNull(val) {
@@ -94,14 +109,14 @@ function ImageField({ label, file, onChange }) {
 // have silently rejected every row. Returns null when it matches nothing,
 // which the caller reports rather than guessing: a mistyped unit landing 40
 // questions in the wrong module is far worse than being told to fix the cell.
-function resolveUnitId(raw) {
+function resolveUnitId(raw, units = CHEMISTRY_UNITS) {
   const s = String(raw || '').trim()
   if (!s) return null
 
   const num = s.match(/^(?:unit[\s_.:-]*)?(\d{1,2})\b/i)
   if (num) {
     const id = Number(num[1])
-    if (CHEMISTRY_UNITS.some(u => u.id === id)) return id
+    if (units.some(u => u.id === id)) return id
   }
 
   // Name match — ignore a leading "Unit N -", punctuation and spacing, so
@@ -110,7 +125,7 @@ function resolveUnitId(raw) {
     .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim()
   const target = norm(s)
   if (!target) return null
-  const exact = CHEMISTRY_UNITS.find(u => norm(u.name) === target)
+  const exact = units.find(u => norm(u.name) === target)
   return exact ? exact.id : null
 }
 
@@ -136,9 +151,9 @@ function normaliseDifficulty(raw) {
   return null // caller falls back to 'Medium' and reports it
 }
 
-function topicToLevel(unitId, topic) {
-  const levels = UNIT_LEVELS[unitId]
-  if (!levels) return 1
+function topicToLevel(unitId, topic, subject = 'Chemistry') {
+  const levels = levelsFor(subject, unitId)
+  if (!levels.length) return 1
   const t = (topic || '').trim().toLowerCase()
   const match = levels.find(l => l.topic.trim().toLowerCase() === t)
   return match ? match.id : 1
@@ -166,26 +181,35 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
 }
 
 const PAGE_SIZE = 50
+// Far quicker than localeCompare with options, which matters across the whole bank.
+const QID_ORDER = new Intl.Collator(undefined, { numeric: true })
 
-const SUBJECTS = ['Chemistry', 'Physics', 'Biology', 'Mathematics']
+const SUBJECTS = ALL_SUBJECTS
 
 export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [form, setForm] = useState(BLANK)
   const [submitting, setSubmitting] = useState(false)
   const [search, setSearch] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
+  // English and Gujarati are separate banks, so the list always shows one of
+  // them (English by default) and never mixes the two.
+  const [mediumFilter, setMediumFilter] = useState('en')   // 'en' | 'gu'
   // Reviewing happens in a full-screen overlay (QuestionReviewer) rather than an
   // inline row panel — the row panel only ever got the bottom half of a window
   // whose top half was chrome, which is the wrong shape for judging a question
   // the way a student will see it. `reviewIndex` indexes into visibleQuestions.
   const [reviewIndex, setReviewIndex] = useState(null)
   const [reviewStartInEdit, setReviewStartInEdit] = useState(false)
-  const [statusFilter, setStatusFilter] = useState('active') // 'active' | 'inactive' | 'both'
+  // What students can see is the question that matters, so the states are
+  // named for that: live (active + published), awaiting review (active, not
+  // yet published), inactive (discarded) — and All.
+  const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'live' | 'pending' | 'inactive'
   const [page, setPage] = useState(1)
   // Find Duplicates tab state
   const [dupeGroups, setDupeGroups] = useState(null) // null = not yet loaded; else [{ key, items }]
@@ -196,6 +220,8 @@ export default function QuestionUploader({ uploadedBy }) {
   // Upload Excel tab — subject/unit selection
   const [uploadSubject, setUploadSubject] = useState('')
   const [uploadUnitId, setUploadUnitId] = useState('')
+  // Medium for rows whose sheet has no Medium column.
+  const [uploadMedium, setUploadMedium] = useState('en')
   // Parsed sheet awaiting confirmation — nothing is written while this is set.
   const [pendingUpload, setPendingUpload] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -203,11 +229,19 @@ export default function QuestionUploader({ uploadedBy }) {
   const [manualSubject, setManualSubject] = useState('')
   const [manualUnitId, setManualUnitId] = useState('')
   const [manualLevel, setManualLevel] = useState('')
+  const [manualMedium, setManualMedium] = useState('en')
 
-  const availableLevels = unitFilter ? (UNIT_LEVELS[Number(unitFilter)] || []) : []
+  const availableLevels = unitFilter ? levelsFor(subjectFilter, unitFilter) : []
 
-  function buildQuestionsQuery() {
-    let q = supabase.from('questions').select('*')
+  // `status` and `countOnly` let the status dropdown count each state with
+  // exactly the same subject / medium / unit / level filters as the list.
+  function buildQuestionsQuery({ status = statusFilter, countOnly = false } = {}) {
+    let q = countOnly
+      ? supabase.from('questions').select('id', { count: 'exact', head: true })
+      : supabase.from('questions').select('*')
+    if (subjectFilter) q = q.eq('subject', subjectFilter)
+    // English and Gujarati medium are separate banks.
+    q = q.eq('medium', mediumFilter)
     // Filter by unit — Unit 11 keeps a loose match as a leftover safety net from
     // when its rows carried "d and f" / "d- and f-" spellings. Audited 2026-08-24:
     // all 636 of them now read "Unit 11 - d & f Block Elements" and nothing else,
@@ -215,11 +249,13 @@ export default function QuestionUploader({ uploadedBy }) {
     // Kept because it costs nothing and matches whatever spelling turns up.
     if (unitFilter) {
       const uid = Number(unitFilter)
-      if (uid === 11) {
+      if (uid === 11 && subjectFilter === 'Chemistry') {
         q = q.ilike('unit', '%f Block Elements%')
       } else {
-        const unit = CHEMISTRY_UNITS.find(u => u.id === uid)
-        if (unit) q = q.ilike('unit', `%${unit.name}%`)
+        const unit = unitsFor(subjectFilter).find(u => u.id === uid)
+        // Chemistry rows are matched by name as they always were; the new
+        // subjects by the "Unit N - " prefix (their names were never edited).
+        if (unit) q = subjectFilter === 'Chemistry' ? q.ilike('unit', `%${unit.name}%`) : q.ilike('unit', `Unit ${unit.id} - %`)
       }
     }
     if (levelFilter) q = q.eq('level', Number(levelFilter))
@@ -227,13 +263,13 @@ export default function QuestionUploader({ uploadedBy }) {
     // grouping works correctly by numeric unit order even when browsing all units
     // at once — the `unit` column is free text ("Unit 11 - ..."), which sorts
     // wrong alphabetically ("Unit 10" before "Unit 2").
-    q = q.order('qid', { ascending: true })
-    if (statusFilter === 'active') q = q.eq('is_active', true)
-    else if (statusFilter === 'inactive') q = q.eq('is_active', false)
+    if (!countOnly) q = q.order('qid', { ascending: true })
+    if (status === 'live') q = q.eq('is_active', true).eq('is_published', true)
+    else if (status === 'inactive') q = q.eq('is_active', false)
     // Uploaded but not released. Scoped to is_active for the same reason the
     // banner tally is — a retired question is not waiting on anybody.
-    else if (statusFilter === 'pending') q = q.eq('is_published', false).eq('is_active', true)
-    // 'both' — no is_active filter
+    else if (status === 'pending') q = q.eq('is_published', false).eq('is_active', true)
+    // 'all' — no status filter
     return q
   }
 
@@ -242,28 +278,52 @@ export default function QuestionUploader({ uploadedBy }) {
     return Number((q.unit || '').match(/^Unit\s+(\d+)/i)?.[1]) || 999
   }
 
+  // Changing subject then unit fires two loads; the first (a whole subject)
+  // is slower and must not land on top of the second.
+  const loadSeq = useRef(0)
   async function loadQuestions() {
+    const seq = ++loadSeq.current
     setLoading(true)
-    // Paginated — a single Supabase request caps at 1000 rows, which the bank
-    // has grown past, so an unfiltered/large result silently got truncated.
-    const all = []
-    for (let from = 0; ; from += 1000) {
-      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
-      all.push(...(page || []))
-      if (!page || page.length < 1000) break
-    }
+    setLoadingMore(false)
     // Numeric unit order, then level, then qid — lets the admin scan the whole
     // bank (or an unfiltered "all inactive" view) unit-by-unit and level-by-level
     // at a glance, not just within one pre-selected unit.
-    all.sort((a, b) => unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || (a.qid || '').localeCompare(b.qid || '', undefined, { numeric: true }))
-    setQuestions(all)
-    setLoading(false)
+    const subjOrder = q => Math.max(0, ALL_SUBJECTS.indexOf(q.subject || 'Chemistry'))
+    const sorted = rows => rows.sort((a, b) => subjOrder(a) - subjOrder(b) || unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || QID_ORDER.compare(a.qid || '', b.qid || ''))
+    // Paginated — a single Supabase request caps at 1000 rows, which the bank
+    // has grown past, so an unfiltered/large result silently got truncated.
+    // The whole bank is about 14 MB: each page shows as it lands, so a tablet on
+    // ordinary Wi-Fi isn't left on "Loading..." for the lot.
+    for (let from = 0; ; from += 1000) {
+      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
+      // A newer filter took over: stop here rather than fetch the rest for nothing.
+      if (seq !== loadSeq.current) return
+      const rows = page || []
+      // Added to `prev`, not rebuilt from a local list: the table is usable while
+      // this runs, so a row edited meanwhile must keep its edit.
+      setQuestions(prev => sorted(from === 0 ? [...rows] : [...prev, ...rows]))
+      setLoading(false)
+      if (rows.length < 1000) break
+      setLoadingMore(true)
+    }
+    setLoadingMore(false)
   }
 
   // Reset downstream filters and reload when parent filter changes
   useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
-  useEffect(() => { loadQuestions() }, [unitFilter, levelFilter, statusFilter])
+  useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter, mediumFilter])
+
+  // How many questions are in each state, for the status dropdown.
+  const [statusCounts, setStatusCounts] = useState({})
+  async function loadStatusCounts() {
+    const states = ['all', 'live', 'pending', 'inactive']
+    const res = await Promise.all(states.map(st => buildQuestionsQuery({ status: st, countOnly: true })))
+    setStatusCounts(Object.fromEntries(states.map((st, i) => [st, res[i].count ?? null])))
+  }
+  // `questions` changes whenever one is published, activated or uploaded, so
+  // the counts follow every status change on this page.
+  useEffect(() => { loadStatusCounts() }, [subjectFilter, unitFilter, levelFilter, mediumFilter, questions])
 
   // Every single-question mutation (activate/deactivate, edit save) patches the
   // already-loaded rows in place instead of refetching. A refetch flips `loading`
@@ -309,31 +369,33 @@ export default function QuestionUploader({ uploadedBy }) {
 
   // Releases a whole level at once — the unit the admin actually works in, and
   // what they asked for. Scoped by the exact `unit` string rather than a unit id
-  // because that column is free text and is what the rows themselves carry.
+  // because that column is free text and is what the rows themselves carry,
+  // and by the medium on screen: the English and Gujarati banks share unit
+  // strings but are released separately.
   async function publishLevel(unit, level) {
     const { data, error } = await supabase.from('questions')
       .update({ is_published: true })
-      .eq('unit', unit).eq('level', level).eq('is_published', false).eq('is_active', true)
+      .eq('unit', unit).eq('level', level).eq('medium', mediumFilter).eq('is_published', false).eq('is_active', true)
       .select('id')
     if (error) { toast.error(error.message); return }
     const n = (data || []).length
     if (!n) { toast('Nothing pending in this level.'); return }
     toast.success(`${n} question${n !== 1 ? 's' : ''} published — ${levelBadge(unitIdOf(unit), level)} is live for students`)
     setQuestions(prev => prev.map(q =>
-      q.unit === unit && q.level === level ? { ...q, is_published: true } : q))
+      q.unit === unit && q.level === level && (q.medium || 'en') === mediumFilter ? { ...q, is_published: true } : q))
     refreshPendingCounts()
   }
 
   async function unpublishLevel(unit, level) {
     const { data, error } = await supabase.from('questions')
       .update({ is_published: false })
-      .eq('unit', unit).eq('level', level).eq('is_published', true)
+      .eq('unit', unit).eq('level', level).eq('medium', mediumFilter).eq('is_published', true)
       .select('id')
     if (error) { toast.error(error.message); return }
     const n = (data || []).length
     toast.success(`${n} question${n !== 1 ? 's' : ''} hidden from students`)
     setQuestions(prev => prev.map(q =>
-      q.unit === unit && q.level === level ? { ...q, is_published: false } : q))
+      q.unit === unit && q.level === level && (q.medium || 'en') === mediumFilter ? { ...q, is_published: false } : q))
     refreshPendingCounts()
   }
 
@@ -352,7 +414,7 @@ export default function QuestionUploader({ uploadedBy }) {
     const all = []
     for (let from = 0; ; from += 1000) {
       const { data: page, error } = await supabase.from('questions')
-        .select('unit, level').eq('is_published', false).eq('is_active', true)
+        .select('unit, level, medium').eq('is_published', false).eq('is_active', true)
         .range(from, from + 999)
       if (error) return
       all.push(...(page || []))
@@ -362,14 +424,21 @@ export default function QuestionUploader({ uploadedBy }) {
   }, [])
   useEffect(() => { refreshPendingCounts() }, [refreshPendingCounts])
 
-  // unit+level → pending count, for the badges on the level headers.
+  // unit+level → pending count in the medium on screen, for the badges on the
+  // level headers and the banner. The other medium's queue is only counted,
+  // so the banner can say it is there.
   const pendingByLevel = useMemo(() => {
     const m = {}
-    for (const r of pendingRows) m[`${r.unit}||${r.level}`] = (m[`${r.unit}||${r.level}`] || 0) + 1
+    for (const r of pendingRows) {
+      if ((r.medium || 'en') !== mediumFilter) continue
+      m[`${r.unit}||${r.level}`] = (m[`${r.unit}||${r.level}`] || 0) + 1
+    }
     return m
-  }, [pendingRows])
-  const pendingTotal = pendingRows.length
+  }, [pendingRows, mediumFilter])
+  const pendingTotal = Object.values(pendingByLevel).reduce((a, b) => a + b, 0)
   const pendingLevelCount = Object.keys(pendingByLevel).length
+  const otherMedium = MEDIUMS.find(m => m.id !== mediumFilter)
+  const pendingOther = pendingRows.length - pendingTotal
 
   async function loadDuplicates() {
     setDupeLoading(true)
@@ -466,12 +535,16 @@ export default function QuestionUploader({ uploadedBy }) {
     if (!manualSubject) { toast.error('Select a Subject'); return }
     if (!manualUnitId)  { toast.error('Select a Unit'); return }
     if (!manualLevel)   { toast.error('Select a Level'); return }
+    if (form.qid && (manualMedium === 'gu') !== /G$/i.test(form.qid.trim())) {
+      toast.error(manualMedium === 'gu' ? 'Gujarati Q IDs must end in G (e.g. NCU02518G)' : 'English Q IDs must not end in G')
+      return
+    }
 
     setSubmitting(true)
     try {
-      const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(manualUnitId))
+      const selectedUnit = unitsFor(manualSubject).find(u => u.id === Number(manualUnitId))
       const unitLabel = `Unit ${selectedUnit.id} - ${selectedUnit.name}`
-      const unitLevelDefs = UNIT_LEVELS[Number(manualUnitId)] || []
+      const unitLevelDefs = levelsFor(manualSubject, manualUnitId)
       const topic = unitLevelDefs.find(l => l.id === Number(manualLevel))?.name || ''
 
       // Upload question / assertion image first
@@ -482,6 +555,7 @@ export default function QuestionUploader({ uploadedBy }) {
         qid:             form.qid,
         question_type:   form.question_type,
         subject:         manualSubject,
+        medium:          manualMedium,
         unit:            unitLabel,
         chapter_name:    form.chapter_name,
         topic,
@@ -576,7 +650,8 @@ export default function QuestionUploader({ uploadedBy }) {
       return
     }
 
-    const selectedUnit = CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))
+    const subjectUnits = unitsFor(uploadSubject)
+    const selectedUnit = subjectUnits.find(u => u.id === Number(uploadUnitId))
 
     // Returns '' for missing/blank cells instead of the literal string "undefined"
     // (String(undefined) === "undefined", which is truthy and used to slip past validation)
@@ -616,6 +691,9 @@ export default function QuestionUploader({ uploadedBy }) {
         const skipped = []
         const badUnits = []      // rows whose Unit cell matched no unit
         const noUnit = []        // rows with no Unit cell and no dropdown to fall back on
+        const badQid = []        // Q ID suffix doesn't match the row's medium
+        const images = {}        // qid → image fields given as URLs in the sheet
+        const badImage = []      // image cells that aren't a web address
         const levelFixed = []    // rows whose Level doesn't exist in their unit
         const difficultyFixed = [] // rows whose Difficulty Level the DB would reject
 
@@ -625,12 +703,29 @@ export default function QuestionUploader({ uploadedBy }) {
 
           if (!qid || !question) { skipped.push(qid || '(no Q ID)'); continue }
 
+          // A "Medium" column (English / Gujarati) wins over the dropdown.
+          const medium = cell(r, 'Medium') ? normMedium(cell(r, 'Medium')) : uploadMedium
+          // Gujarati Q IDs end in G (NCU02518G), English ones never do. The
+          // upload upserts on Q ID, so a Gujarati row carrying an English ID
+          // would overwrite the English question — refuse it instead.
+          if ((medium === 'gu') !== /G$/i.test(qid)) { badQid.push({ qid, medium }); continue }
+
+          // Optional image columns hold the image's web address (for example
+          // the English question's image, reused by its Gujarati twin). A
+          // blank cell leaves the question's current image alone.
+          for (const [col, field] of IMAGE_COLUMNS) {
+            const url = cell(r, col)
+            if (!url) continue
+            if (!/^https?:\/\/\S+$/i.test(url)) { badImage.push(`${qid} (${col})`); continue }
+            ;(images[qid] ||= {})[field] = url
+          }
+
           // Per-row unit, falling back to the dropdown. Accepts a "Unit" or
           // "Unit ID" header.
           const unitCell = cell(r, 'Unit') || cell(r, 'Unit ID')
           let unitIdNum
           if (unitCell) {
-            const resolved = resolveUnitId(unitCell)
+            const resolved = resolveUnitId(unitCell, subjectUnits)
             if (!resolved) { badUnits.push({ qid, value: unitCell }); continue }
             unitIdNum = resolved
           } else if (selectedUnit) {
@@ -641,7 +736,7 @@ export default function QuestionUploader({ uploadedBy }) {
 
           // Always rebuilt from CHEMISTRY_UNITS, never from the sheet's text —
           // this is what keeps exactly one unit string per unit in the bank.
-          const rowUnit = CHEMISTRY_UNITS.find(u => u.id === unitIdNum)
+          const rowUnit = subjectUnits.find(u => u.id === unitIdNum)
           const unitLabel = `Unit ${rowUnit.id} - ${rowUnit.name}`
 
           const option1  = cell(r, 'Option 1')
@@ -665,7 +760,7 @@ export default function QuestionUploader({ uploadedBy }) {
           // level the unit doesn't define is caught by the guard below.
           const rawLevel = cell(r, 'Level')
           const parsedLevel = parseLevel(rawLevel)
-          let level = parsedLevel ?? topicToLevel(unitIdNum, topic)
+          let level = parsedLevel ?? topicToLevel(unitIdNum, topic, uploadSubject)
 
           // A level the unit doesn't define is a silent black hole: the student
           // dashboard renders levels from UNIT_LEVELS, so a question parked at
@@ -673,7 +768,7 @@ export default function QuestionUploader({ uploadedBy }) {
           // nobody. Pull it back to the unit's first level and say so, rather
           // than accepting a number that can never be reached. Only applies to
           // units that actually declare their levels.
-          const known = UNIT_LEVELS[unitIdNum]
+          const known = levelsFor(uploadSubject, unitIdNum)
           if (known?.length && !known.some(l => l.id === level)) {
             levelFixed.push({ qid, from: level, to: known[0].id, unit: rowUnit.name })
             level = known[0].id
@@ -702,6 +797,7 @@ export default function QuestionUploader({ uploadedBy }) {
             // isn't a real category — see QuestionEditPanel.jsx).
             question_type:    cell(r, 'Question Type') || 'Single Choice MCQ',
             subject:          uploadSubject,
+            medium,
             unit:             unitLabel,
             chapter_name:     cell(r, 'Chapter Name'),
             topic,
@@ -731,7 +827,7 @@ export default function QuestionUploader({ uploadedBy }) {
         const dedupedRecords = Array.from(byQid.values())
         const duplicateCount = records.length - dedupedRecords.length
 
-        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length) {
+        if (dedupedRecords.length === 0 && !badUnits.length && !noUnit.length && !badQid.length) {
           const sampleHeaders = rows[0] ? Object.keys(rows[0]).join(', ') : '(sheet appears empty)'
           toast.error(
             `No valid rows found in sheet "${usedSheetName}". Expected columns "Q ID" and "Question" ` +
@@ -753,6 +849,9 @@ export default function QuestionUploader({ uploadedBy }) {
           skipped,
           badUnits,
           noUnit,
+          badQid,
+          images,
+          badImage,
           levelFixed,
           difficultyFixed,
         })
@@ -813,8 +912,19 @@ export default function QuestionUploader({ uploadedBy }) {
           const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
           if (error) throw error
         }
+        // Images go in their own update, row by row, so that a sheet without
+        // image columns (or with a blank cell) never clears an image a
+        // question already has. Content-locked rows keep theirs.
+        let imageCount = 0
+        for (const [qid, fields] of Object.entries(p.images || {})) {
+          if (lockByQid.get(qid)?.content_locked) continue
+          const { error } = await supabase.from('questions').update(fields).eq('qid', qid)
+          if (error) throw error
+          imageCount++
+        }
 
         const parts = [`${dedupedRecords.length} questions uploaded successfully!`]
+        if (imageCount) parts.push(`${imageCount} got their image${imageCount !== 1 ? 's' : ''} from the sheet.`)
         if (contentLockedCount) parts.push(`${contentLockedCount} were 🔒 content-locked — question/options/answer preserved.`)
         const pinned = Object.entries(fieldLockCounts).filter(([, n]) => n > 0)
         if (pinned.length) parts.push(`🔒 Kept manual values for ${pinned.map(([label, n]) => `${label} (${n})`).join(', ')}.`)
@@ -847,12 +957,12 @@ export default function QuestionUploader({ uploadedBy }) {
   })
 
   // Reset to page 1 when any filter/search changes
-  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, statusFilter])
+  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, mediumFilter, statusFilter])
 
   // When a filter is active, show all results so nothing is hidden behind pages —
   // includes a non-default status filter, since browsing "Inactive" is meant to
   // show every inactive question across the bank at a glance, not 50 at a time.
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter !== 'active'
+  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter === 'pending' || statusFilter === 'inactive'
   const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
 
@@ -911,17 +1021,27 @@ export default function QuestionUploader({ uploadedBy }) {
           upload that is never published is invisible to students AND easy for
           the admin to forget, so the tally is shown on every tab of this page,
           not tucked inside the list, and it links straight to the queue. */}
-      {pendingTotal > 0 && (
+      {(pendingTotal > 0 || pendingOther > 0) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 'var(--radius)', padding: '0.6rem 0.875rem', marginBottom: '0.75rem' }}>
           <span style={{ fontSize: '0.875rem', color: '#92400e' }}>
-            <strong>{pendingTotal} question{pendingTotal !== 1 ? 's' : ''}</strong> across{' '}
-            <strong>{pendingLevelCount} level{pendingLevelCount !== 1 ? 's' : ''}</strong> {pendingTotal !== 1 ? 'are' : 'is'} waiting to be reviewed. Students cannot see {pendingTotal !== 1 ? 'them' : 'it'} yet.
+            {pendingTotal > 0 ? (<>
+              <strong>{mediumLabelEn(mediumFilter)}: {pendingTotal} question{pendingTotal !== 1 ? 's' : ''}</strong> across{' '}
+              <strong>{pendingLevelCount} level{pendingLevelCount !== 1 ? 's' : ''}</strong> {pendingTotal !== 1 ? 'are' : 'is'} waiting to be reviewed. Students cannot see {pendingTotal !== 1 ? 'them' : 'it'} yet.
+            </>) : <>Nothing waiting in {mediumLabelEn(mediumFilter)}.</>}
+            {pendingOther > 0 && (
+              <> {' '}
+                <button type="button" onClick={() => setMediumFilter(otherMedium.id)}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#92400e', textDecoration: 'underline', cursor: 'pointer', font: 'inherit', fontWeight: 600 }}>
+                  {pendingOther} more in {mediumLabelEn(otherMedium.id)}
+                </button>
+              </>
+            )}
           </span>
-          <button className="btn btn-sm"
+          {pendingTotal > 0 && <button className="btn btn-sm"
             style={{ marginLeft: 'auto', background: '#92400e', color: '#fff', fontWeight: 700, fontSize: '0.75rem' }}
             onClick={() => { setTab('list'); setStatusFilter('pending'); setUnitFilter(''); setLevelFilter(''); setSearch('') }}>
             Show them
-          </button>
+          </button>}
         </div>
       )}
 
@@ -943,7 +1063,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   onChange={e => setSearch(e.target.value)}
                 />
               </div>
-              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions</span>
+              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions{loadingMore ? ', loading more…' : ''}</span>
               {visibleQuestions.length > 0 && (
                 <button className="btn btn-primary btn-sm"
                   style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
@@ -959,26 +1079,37 @@ export default function QuestionUploader({ uploadedBy }) {
               {/* Subject */}
               <select
                 className="form-control"
-                style={{ width: '150px', flex: '0 0 150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                style={{ width: '140px', flex: '0 0 140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                 value={subjectFilter}
                 onChange={e => setSubjectFilter(e.target.value)}
               >
                 <option value="">All Subjects</option>
                 {SUBJECTS.map(s => (
-                  <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (coming soon)' : ''}</option>
+                  <option key={s} value={s} disabled={!isActiveSubject(s)}>{s}{!isActiveSubject(s) ? ' (coming soon)' : ''}</option>
                 ))}
+              </select>
+
+              {/* Medium — English and Gujarati are separate banks */}
+              <select
+                className="form-control"
+                style={{ width: '120px', flex: '0 0 120px' }}
+                value={mediumFilter}
+                onChange={e => setMediumFilter(e.target.value)}
+                aria-label="Medium"
+              >
+                {MEDIUMS.map(m => <option key={m.id} value={m.id}>{mediumLabelEn(m.id)}</option>)}
               </select>
 
               {/* Unit — visible once a subject is chosen */}
               {subjectFilter && (
                 <select
                   className="form-control"
-                  style={{ width: '240px', flex: '1 1 240px', maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  style={{ width: 0, flex: '2 1 200px', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={unitFilter}
                   onChange={e => setUnitFilter(e.target.value)}
                 >
                   <option value="">All Units</option>
-                  {CHEMISTRY_UNITS.map(u => (
+                  {unitsFor(subjectFilter).map(u => (
                     <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
                   ))}
                 </select>
@@ -988,7 +1119,7 @@ export default function QuestionUploader({ uploadedBy }) {
               {unitFilter && (
                 <select
                   className="form-control"
-                  style={{ width: '220px', flex: '1 1 220px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  style={{ width: 0, flex: '1.4 1 150px', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   value={levelFilter}
                   onChange={e => setLevelFilter(e.target.value)}
                 >
@@ -1004,9 +1135,9 @@ export default function QuestionUploader({ uploadedBy }) {
 
               {/* Reset filters link */}
               {(subjectFilter || unitFilter || levelFilter) && (
-                <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem' }}
+                <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem', flexShrink: 0, whiteSpace: 'nowrap' }} title="Reset filters"
                   onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter('') }}>
-                  ✕ Reset filters
+                  ✕ Reset
                 </button>
               )}
 
@@ -1016,14 +1147,14 @@ export default function QuestionUploader({ uploadedBy }) {
                   can be scanned at a glance instead of hunting unit by unit. */}
               <select
                 className="form-control"
-                style={{ width: '170px', flex: '0 0 170px', marginLeft: 'auto', fontWeight: statusFilter !== 'active' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'both' ? 'var(--primary)' : undefined }}
+                style={{ width: '190px', flex: '0 0 190px', marginLeft: 'auto', fontWeight: statusFilter !== 'all' ? 700 : 400, color: statusFilter === 'inactive' ? '#b91c1c' : statusFilter === 'pending' ? '#92400e' : statusFilter === 'live' ? '#15803d' : undefined }}
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
-                <option value="active">Active Qs</option>
-                <option value="pending">Awaiting review{pendingTotal ? ` (${pendingTotal})` : ''}</option>
-                <option value="inactive">Inactive Qs</option>
-                <option value="both">Both</option>
+                <option value="all">All Questions{fmtCount(statusCounts.all)}</option>
+                <option value="live">● Live{fmtCount(statusCounts.live)}</option>
+                <option value="pending">● Awaiting review{fmtCount(statusCounts.pending)}</option>
+                <option value="inactive">● Inactive{fmtCount(statusCounts.inactive)}</option>
               </select>
             </div>
           </div>
@@ -1056,19 +1187,20 @@ export default function QuestionUploader({ uploadedBy }) {
                     // so e.g. every inactive question across the whole bank can be
                     // scanned unit-by-unit and level-by-level in one view instead of
                     // having to pick one unit at a time.
-                    const showUnitHeader = !unitFilter && q.unit !== lastUnit
-                    if (showUnitHeader) { lastUnit = q.unit; lastLevel = null }
+                    const unitKey = `${q.subject}|${q.unit}`
+                    const showUnitHeader = !unitFilter && unitKey !== lastUnit
+                    if (showUnitHeader) { lastUnit = unitKey; lastLevel = null }
                     const showLevelHeader = !levelFilter && (showUnitHeader || q.level !== lastLevel)
                     if (showLevelHeader) lastLevel = q.level
-                    const unitCount = showUnitHeader ? filtered.filter(x => x.unit === q.unit).length : 0
-                    const levelCount = showLevelHeader ? filtered.filter(x => x.unit === q.unit && x.level === q.level).length : 0
+                    const unitCount = showUnitHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit).length : 0
+                    const levelCount = showLevelHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit && x.level === q.level).length : 0
                     return (
                       <Fragment key={q.id}>
                         {showUnitHeader && (
                           <tr>
                             <td colSpan={9} style={{ padding: '0.6rem 0.75rem', background: 'var(--gray-700, #374151)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8125rem', fontWeight: 700, color: '#fff' }}>
-                                {q.unit}
+                                {q.subject && q.subject !== 'Chemistry' ? `${q.subject} · ` : ''}{q.unit}
                                 <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.7)' }}>· {unitCount} question{unitCount !== 1 ? 's' : ''}</span>
                               </div>
                             </td>
@@ -1078,7 +1210,7 @@ export default function QuestionUploader({ uploadedBy }) {
                           <tr>
                             <td colSpan={9} style={{ padding: '0.5rem 0.75rem', background: 'var(--gray-100)', borderTop: '1px solid var(--gray-200)' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gray-700)' }}>
-                                {levelBadge(unitIdOf(q.unit), q.level)}: {deriveTopic(q.unit, q.level) || q.topic || '—'}
+                                {levelBadge(unitIdOf(q.unit), q.level, { subject: q.subject })}: {deriveTopic(q.unit, q.level, q.subject) || q.topic || '—'}
                                 <InfoTooltip text={deriveFullTopic(q.unit, q.level)} />
                                 <span style={{ fontWeight: 400, color: 'var(--gray-400)' }}>· {levelCount} question{levelCount !== 1 ? 's' : ''}</span>
                                 <button className="btn btn-ghost btn-sm"
@@ -1129,7 +1261,7 @@ export default function QuestionUploader({ uploadedBy }) {
                                 onClick={e => { e.stopPropagation(); setPublished(q.id, true) }}
                                 title="Not yet released — students cannot see this question. Click to publish just this one."
                                 style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d', borderRadius: '3px', padding: '0 4px', cursor: 'pointer' }}>
-                                unpublished
+                                awaiting review
                               </span>
                             )}
                             {(q.content_locked || hasAnyFieldLock(q)) && (
@@ -1170,7 +1302,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 </tbody>
               </table>
             )}
-            {!loading && filtered.length === 0 && <div className="empty-state">No questions found</div>}
+            {!loading && !loadingMore && filtered.length === 0 && <div className="empty-state">No questions found</div>}
             {!isFiltering && totalPages > 1 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderTop: '1px solid var(--gray-100)', fontSize: '0.875rem' }}>
                 <button className="btn btn-outline btn-sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>← Prev</button>
@@ -1224,7 +1356,14 @@ export default function QuestionUploader({ uploadedBy }) {
                 <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualSubject}
                   onChange={e => { setManualSubject(e.target.value); setManualUnitId(''); setManualLevel('') }} required>
                   <option value="">— choose —</option>
-                  {SUBJECTS.map(s => <option key={s} value={s} disabled={s !== 'Chemistry'}>{s}{s !== 'Chemistry' ? ' (soon)' : ''}</option>)}
+                  {SUBJECTS.map(s => <option key={s} value={s} disabled={!isActiveSubject(s)}>{s}{!isActiveSubject(s) ? ' (soon)' : ''}</option>)}
+                </select>
+              </div>
+              <div className="form-group" style={{ margin: 0, minWidth: '120px' }}>
+                <label style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Medium *</label>
+                <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualMedium}
+                  onChange={e => setManualMedium(e.target.value)}>
+                  {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
                 </select>
               </div>
               {manualSubject && (
@@ -1233,7 +1372,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualUnitId}
                     onChange={e => { setManualUnitId(e.target.value); setManualLevel('') }} required>
                     <option value="">— choose —</option>
-                    {CHEMISTRY_UNITS.map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
+                    {unitsFor(manualSubject).map(u => <option key={u.id} value={u.id}>Unit {u.id} — {u.name}</option>)}
                   </select>
                 </div>
               )}
@@ -1245,10 +1384,10 @@ export default function QuestionUploader({ uploadedBy }) {
                       1-9 number box). The unit's last level is always the Complete
                       Chapter Test, which draws from the other levels rather than
                       owning questions, so it's never an authoring target. */}
-                  {(UNIT_LEVELS[Number(manualUnitId)] || []).length > 0 ? (
+                  {levelsFor(manualSubject, manualUnitId).length > 0 ? (
                     <select className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} value={manualLevel} onChange={e => setManualLevel(e.target.value)} required>
                       <option value="">— choose —</option>
-                      {UNIT_LEVELS[Number(manualUnitId)].slice(0, -1).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
+                      {levelsFor(manualSubject, manualUnitId).slice(0, -1).map(l => <option key={l.id} value={l.id}>L{l.id}: {l.name}</option>)}
                     </select>
                   ) : (
                     <input type="number" className="form-control" style={{ fontSize: '0.8125rem', padding: '0.3rem 0.5rem' }} min={1} max={9} placeholder="1 – 9"
@@ -1500,7 +1639,7 @@ export default function QuestionUploader({ uploadedBy }) {
         <div className="card card-body">
           <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Upload Questions via Excel</h3>
           <p className="text-muted" style={{ marginBottom: '1rem' }}>
-            Pick the subject, then upload. Add a Unit column to your sheet to send one file to many units at once — you'll see exactly where every row is going before anything is saved.
+            Pick the subject and medium, then upload. Add a Unit column to your sheet to send one file to many units at once — you'll see exactly where every row is going before anything is saved.
           </p>
 
           {/* Step 1: Subject */}
@@ -1514,10 +1653,22 @@ export default function QuestionUploader({ uploadedBy }) {
             >
               <option value="">— Choose subject —</option>
               {SUBJECTS.map(s => (
-                <option key={s} value={s} disabled={s !== 'Chemistry'}>
-                  {s}{s !== 'Chemistry' ? ' (coming soon)' : ''}
+                <option key={s} value={s} disabled={!isActiveSubject(s)}>
+                  {s}{!isActiveSubject(s) ? ' (coming soon)' : ''}
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label style={{ fontWeight: 600 }}>Medium</label>
+            <select
+              className="form-control"
+              style={{ maxWidth: '280px' }}
+              value={uploadMedium}
+              onChange={e => setUploadMedium(e.target.value)}
+            >
+              {MEDIUMS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
           </div>
 
@@ -1532,7 +1683,7 @@ export default function QuestionUploader({ uploadedBy }) {
                 onChange={e => setUploadUnitId(e.target.value)}
               >
                 <option value="">— Choose unit —</option>
-                {CHEMISTRY_UNITS.map(u => (
+                {unitsFor(uploadSubject).map(u => (
                   <option key={u.id} value={u.id}>Unit {u.id} - {u.name}</option>
                 ))}
               </select>
@@ -1542,10 +1693,13 @@ export default function QuestionUploader({ uploadedBy }) {
           {/* Preview — every row's destination, before anything is written. */}
           {pendingUpload && (() => {
             const byUnit = {}
-            for (const r of pendingUpload.records) byUnit[r.unit] = (byUnit[r.unit] || 0) + 1
+            for (const r of pendingUpload.records) {
+              const key = `${r.unit} · ${mediumLabel(r.medium)}`
+              byUnit[key] = (byUnit[key] || 0) + 1
+            }
             const rows = Object.entries(byUnit).sort((a, b) =>
               (Number(a[0].match(/^Unit\s+(\d+)/)?.[1]) || 0) - (Number(b[0].match(/^Unit\s+(\d+)/)?.[1]) || 0))
-            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length
+            const problems = pendingUpload.badUnits.length + pendingUpload.noUnit.length + pendingUpload.badQid.length
             return (
               <div style={{ border: '1.5px solid var(--primary)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1.25rem', background: 'var(--gray-50)' }}>
                 <div style={{ fontWeight: 700, marginBottom: '0.15rem' }}>
@@ -1581,6 +1735,25 @@ export default function QuestionUploader({ uploadedBy }) {
                         {pendingUpload.noUnit.length > 6 ? ` and ${pendingUpload.noUnit.length - 6} more` : ''}
                       </div>
                     )}
+                    {pendingUpload.badQid.length > 0 && (
+                      <div style={{ marginTop: '0.35rem' }}>
+                        Q ID doesn’t match the medium (Gujarati IDs must end in G, English IDs must not):{' '}
+                        {pendingUpload.badQid.slice(0, 6).map(b => `${b.qid} (${b.medium === 'gu' ? 'Gujarati' : 'English'})`).join(', ')}
+                        {pendingUpload.badQid.length > 6 ? ` and ${pendingUpload.badQid.length - 6} more` : ''}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {Object.keys(pendingUpload.images || {}).length > 0 && (
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#1e40af', marginBottom: '0.75rem' }}>
+                    <strong>{Object.keys(pendingUpload.images).length} question{Object.keys(pendingUpload.images).length !== 1 ? 's' : ''}</strong> will get images from the sheet’s image columns.
+                  </div>
+                )}
+                {pendingUpload.badImage?.length > 0 && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '0.6rem 0.75rem', fontSize: '0.8125rem', color: '#92400e', marginBottom: '0.75rem' }}>
+                    <strong>{pendingUpload.badImage.length} image cell{pendingUpload.badImage.length !== 1 ? 's are' : ' is'} not a web address</strong> and will be ignored (the question still uploads): {pendingUpload.badImage.slice(0, 5).join(', ')}
+                    {pendingUpload.badImage.length > 5 ? ` and ${pendingUpload.badImage.length - 5} more` : ''}
                   </div>
                 )}
 
@@ -1627,9 +1800,9 @@ export default function QuestionUploader({ uploadedBy }) {
             {uploadSubject ? (
               <>
                 <div style={{ marginBottom: '0.75rem', padding: '0.6rem 0.875rem', background: 'var(--primary-light)', border: '1px solid var(--primary)', borderRadius: 'var(--radius)', fontSize: '0.8125rem', color: 'var(--primary-dark)' }}>
-                  Uploading as <strong>{uploadSubject}</strong>.{' '}
+                  Uploading as <strong>{uploadSubject}</strong>, <strong>{mediumLabel(uploadMedium)}</strong> medium (a <code>Medium</code> column overrides this per row).{' '}
                   {uploadUnitId ? (
-                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {CHEMISTRY_UNITS.find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
+                    <>Rows without a <code>Unit</code> column go to <strong>Unit {uploadUnitId} - {unitsFor(uploadSubject).find(u => u.id === Number(uploadUnitId))?.name}</strong>.</>
                   ) : (
                     <>No unit selected — every row must carry its own <code>Unit</code> value.</>
                   )}
@@ -1654,6 +1827,7 @@ export default function QuestionUploader({ uploadedBy }) {
           <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: '#166534', lineHeight: 1.8 }}>
             <strong>"Correct Option" values:</strong> must be exactly <code>Option 1</code>, <code>Option 2</code>, <code>Option 3</code>, or <code>Option 4</code><br />
             <strong>Sheet name:</strong> reads the first sheet automatically (any name is fine)<br />
+            <strong>Images (optional):</strong> columns <code>Question Image</code>, <code>Option 1 Image</code> … <code>Option 4 Image</code> take the image’s web address; a blank cell keeps the current image<br />
             <strong>Level assignment (Unit 11 only):</strong> "General Introduction" → 1 · "General Trends" → 2 · "Oxides" → 3 · "KMnO4" → 4 · "K2Cr2O7" → 5 · "Lanthanoid" → 6 · "Actinoid" → 7 · "Miscellaneous" → 8
           </div>
 

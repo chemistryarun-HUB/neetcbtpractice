@@ -2,11 +2,13 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
-import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, levelBadge, isChapterTestLevel } from '../../lib/constants'
+import { UNIT_LEVELS, QUESTIONS_PER_ATTEMPT, MARKS_CORRECT, thresholdPctFor, nextLevelIdFor, isChapterTestLevel, fromCourseUnitId } from '../../lib/constants'
+import { neetT, levelName, levelBadgeT } from '../../lib/neetI18n'
 import { correctOptionKey } from '../../lib/questionOptions'
 import { orderOptionsForAttempt } from '../../lib/optionShuffle'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import QuestionView from '../../components/shared/QuestionView'
+import TestLegend from '../../components/shared/TestLegend'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -27,6 +29,11 @@ export default function TestPage() {
   const levelNum = Number(level)
   const { user } = useAuth()
   const navigate = useNavigate()
+  // Which bank this test draws from; confirmed against the students row in
+  // loadQuestions, since a test link can be opened without the dashboard
+  // having refreshed the stored session first.
+  const [medium, setMedium] = useState(user.medium || 'en')
+  const t = neetT(medium)
 
   const [questions, setQuestions] = useState([])  // shuffled question objects with shuffled options
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -35,17 +42,77 @@ export default function TestPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [attemptId, setAttemptId] = useState(null)
+  const [showConfirm, setShowConfirm] = useState(false)
   const timerRef = useRef(null)
+  const startedAtRef = useRef(Date.now())
   const contentRef = useRef(null)
   const paletteRef = useRef(null)
+
+  // The test in progress is mirrored to this device's storage, so a refresh,
+  // a crashed tab or an iPad reloading the page picks up where the student was
+  // instead of starting a new attempt with every answer gone.
+  const saveKey = `neetcbt_test_${user.id}_${unitNum}_${levelNum}`
+  const MAX_AGE_MS = 12 * 60 * 60 * 1000
+  function readSaved() {
+    try {
+      const s = JSON.parse(localStorage.getItem(saveKey) || 'null')
+      if (!s || !s.attemptId || !Array.isArray(s.questions) || !s.questions.length) return null
+      if (Date.now() - (s.startedAt || 0) > MAX_AGE_MS) return null
+      return s
+    } catch { return null }
+  }
+  function clearSaved() { try { localStorage.removeItem(saveKey) } catch { /* storage blocked */ } }
+
+  function startTimer() {
+    clearInterval(timerRef.current)
+    // Derived from the clock, not counted: a throttled background tab no longer
+    // loses time, and a resumed test keeps its real elapsed time.
+    const tick = () => setElapsed(Math.max(0, Math.floor((Date.now() - startedAtRef.current) / 1000)))
+    tick()
+    timerRef.current = setInterval(tick, 1000)
+  }
 
   useEffect(() => {
     loadQuestions()
     return () => clearInterval(timerRef.current)
   }, [])
 
+  // Save after every answer / question change once the test is running.
+  useEffect(() => {
+    if (loading || !attemptId || !questions.length) return
+    try {
+      localStorage.setItem(saveKey, JSON.stringify({
+        attemptId, questions, answers, currentIdx, medium, startedAt: startedAtRef.current,
+      }))
+    } catch { /* storage full or blocked: the test still works, just can't resume */ }
+  }, [loading, attemptId, questions, answers, currentIdx])
+
   async function loadQuestions() {
     try {
+      // Resume an unfinished attempt on this unit/level if this device has one.
+      const saved = readSaved()
+      if (saved) {
+        const { data: row } = await supabase.from('test_attempts').select('id, submitted').eq('id', saved.attemptId).maybeSingle()
+        if (row && !row.submitted) {
+          const savedMedium = saved.medium || user.medium || 'en'
+          setMedium(savedMedium)
+          setQuestions(saved.questions)
+          setAnswers(saved.answers || {})
+          setCurrentIdx(Math.min(saved.currentIdx || 0, saved.questions.length - 1))
+          setAttemptId(saved.attemptId)
+          startedAtRef.current = saved.startedAt || Date.now()
+          startTimer()
+          setLoading(false)
+          toast.success(neetT(savedMedium).resumed)
+          return
+        }
+        clearSaved()
+      }
+
+      const { data: me } = await supabase.from('students').select('medium').eq('id', user.id).maybeSingle()
+      const medium = me?.medium || user.medium || 'en'
+      setMedium(medium)
+
       // Get already-used question IDs for this student at this level (within this unit)
       const { data: used } = await supabase
         .from('used_questions')
@@ -72,8 +139,11 @@ export default function TestPage() {
       const lastLevelId = unitLevelDefs.length > 1 ? unitLevelDefs[unitLevelDefs.length - 1].id : null
       const isChapterTest = levelNum === lastLevelId
 
-      // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry"
-      const unitPrefix = `Unit ${unitNum} -`
+      // Build unit filter: unit column stored as "Unit 1 - Some Basic Concepts in Chemistry".
+      // The route carries the practice unit id (Physics chapter 15 = 115), and
+      // unit numbers restart per subject, so subject is filtered as well.
+      const { subject, unit: subjectUnit } = fromCourseUnitId(unitNum)
+      const unitPrefix = `Unit ${subjectUnit} -`
 
       // Get fresh (unused) questions — always filtered to this unit.
       // is_published gates questions the admin has uploaded but not reviewed
@@ -81,6 +151,10 @@ export default function TestPage() {
       // both have to be repeated on the fallback fetch below.
       let allQQuery = supabase.from('questions').select('*')
         .ilike('unit', `${unitPrefix}%`)
+        // Unit numbers restart per subject; medium keeps English and
+        // Gujarati banks apart.
+        .eq('subject', subject)
+        .eq('medium', medium)
         .eq('is_active', true)
         .eq('is_published', true)
       if (!isChapterTest) allQQuery = allQQuery.eq('level', levelNum)
@@ -94,6 +168,10 @@ export default function TestPage() {
         let fbQuery = supabase.from('questions').select('*')
           .in('id', ids)
           .ilike('unit', `${unitPrefix}%`)
+        // Unit numbers restart per subject; medium keeps English and
+        // Gujarati banks apart.
+        .eq('subject', subject)
+        .eq('medium', medium)
           .eq('is_active', true)
           .eq('is_published', true)
         if (!isChapterTest) fbQuery = fbQuery.eq('level', levelNum)
@@ -111,7 +189,7 @@ export default function TestPage() {
       pool = pool.filter(q => (q.unit || '').startsWith(unitPrefix))
 
       if (pool.length === 0) {
-        toast.error('No questions available for this level yet.')
+        toast.error(neetT(medium).noQuestions)
         navigate('/student/dashboard')
         return
       }
@@ -160,7 +238,8 @@ export default function TestPage() {
       setAttemptId(attempt.id)
 
       // Start timer
-      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
+      startedAtRef.current = Date.now()
+      startTimer()
       setLoading(false)
     } catch (err) {
       toast.error(err.message)
@@ -176,7 +255,9 @@ export default function TestPage() {
   const handleSubmit = useCallback(async () => {
     if (submitting) return
     setSubmitting(true)
+    setShowConfirm(false)
     clearInterval(timerRef.current)
+    const timeTaken = Math.max(0, Math.floor((Date.now() - startedAtRef.current) / 1000))
     try {
       let correct = 0, wrong = 0, skipped = 0
       const correctIds = []
@@ -217,19 +298,27 @@ export default function TestPage() {
       }
 
       // Update attempt
-      await supabase.from('test_attempts').update({
+      // The error was never read before: a failed save (network blip, expired
+      // session) looked like a button that does nothing, then went on to the
+      // result page of an attempt that was never submitted.
+      const { error: saveErr } = await supabase.from('test_attempts').update({
         answers: answersPayload,
         score,
         correct_count: correct,
         wrong_count: wrong,
         skipped_count: skipped,
-        time_taken: elapsed,
+        time_taken: timeTaken,
         submitted: true,
         submitted_at: new Date().toISOString(),
       }).eq('id', attemptId)
+      if (saveErr) throw saveErr
+
+      // Past this point the attempt is saved; the rest must not strand the student.
+      clearSaved()
 
       // Record used questions (upsert to handle re-attempts)
-      await supabase.from('used_questions').upsert(usedRecords, { onConflict: 'student_id,question_id' })
+      const { error: usedErr } = await supabase.from('used_questions').upsert(usedRecords, { onConflict: 'student_id,question_id' })
+      if (usedErr) console.warn('used_questions upsert failed', usedErr)
 
       // Check unlock logic — based on score as a % of max possible marks (not raw accuracy)
       const totalQ = questions.length
@@ -268,10 +357,13 @@ export default function TestPage() {
 
       navigate(`/student/result/${attemptId}`)
     } catch (err) {
-      toast.error(err.message)
+      // Answers stay on screen and in storage; the timer keeps running and the
+      // student can press Submit again.
+      toast.error(`${neetT(medium).submitFailed} (${err?.message || 'network'})`)
       setSubmitting(false)
+      startTimer()
     }
-  }, [answers, questions, elapsed, attemptId, levelNum, user.id, submitting])
+  }, [answers, questions, attemptId, levelNum, user.id, submitting, medium])
 
   // Auto-submit on last question if all answered
   function goNext() {
@@ -321,23 +413,26 @@ export default function TestPage() {
 
   const unanswered = questions.length - answeredCount
 
+  // An in-page dialog, not window.confirm: iPad Safari and in-app browsers
+  // (WhatsApp, Instagram) can suppress native dialogs, which made Submit do
+  // nothing at all whenever a question was left unanswered.
   function confirmSubmit() {
-    if (unanswered > 0 && !window.confirm(`${unanswered} question${unanswered === 1 ? ' is' : 's are'} still unanswered (they score 0). Submit anyway?`)) return
-    handleSubmit()
+    if (unanswered > 0) setShowConfirm(true)
+    else handleSubmit()
   }
 
   // Same shell as the post-test review (AttemptReviewer): slim blue bar,
   // one question card, palette + prev/next footer. Keeps the test and its
   // review looking like one product.
   return (
-    <div className="attempt-reviewer test-run" role="main">
+    <div className="attempt-reviewer test-run" role="main" lang={medium}>
       <div className="ar-header">
         <div className="ar-title">
-          <span>{isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadge(unitNum, levelNum)}: ${levelInfo?.name}`}</span>
+          <span>{isChapterTestLevel(unitNum, levelNum) ? 'CCT' : `${levelBadgeT(unitNum, levelNum, medium)}: ${levelName(unitNum, levelNum, medium)}`}</span>
           <InfoTooltip text={levelInfo?.topic || levelInfo?.name} align="left" />
         </div>
         <div className="ar-stats tp-progress">
-          <span><small>Answered</small> {answeredCount}<em>/{questions.length}</em></span>
+          <span><small>{t.answered}</small> {answeredCount}<em>/{questions.length}</em></span>
         </div>
         <div className="stopwatch tp-timer">⏱ {mins}:{secs}</div>
       </div>
@@ -345,18 +440,6 @@ export default function TestPage() {
       <div ref={contentRef} className="ar-content">
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <div className="ar-card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--gray-500)' }}>Q{currentIdx + 1}</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>of {questions.length}</span>
-              <span className="badge" style={{
-                marginLeft: 'auto', fontSize: '0.8rem', padding: '0.25rem 0.75rem',
-                background: answers[current.id] ? 'var(--primary-light)' : 'var(--gray-100)',
-                color: answers[current.id] ? 'var(--primary-dark)' : 'var(--gray-500)',
-              }}>
-                {answers[current.id] ? '✓ Answered' : 'Not answered'}
-              </span>
-            </div>
-
             <QuestionView
               q={current}
               mode="attempt"
@@ -367,7 +450,7 @@ export default function TestPage() {
             />
           </div>
           <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--gray-400)', textAlign: 'center' }}>
-            +4 for correct · −1 for wrong · 0 for skipped
+            {t.marking}
           </div>
         </div>
       </div>
@@ -375,7 +458,7 @@ export default function TestPage() {
       <div className="ar-footer">
         <button className="btn btn-ghost btn-sm" onClick={goPrev} disabled={currentIdx === 0}
           style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Previous question">
-          <ChevronLeft size={16} /> <span className="ar-nav-label">Previous</span>
+          <ChevronLeft size={16} /> <span className="ar-nav-label">{t.previous}</span>
         </button>
 
         <div ref={paletteRef} className="ar-palette">
@@ -384,7 +467,7 @@ export default function TestPage() {
             const done = !!answers[qq.id]
             return (
               <button key={qq.id} data-current={isCur} onClick={() => setCurrentIdx(i)}
-                title={`Q${i + 1} · ${done ? 'answered' : 'not answered'}`}
+                title={`Q${i + 1} · ${done ? t.isAnswered : t.notAnswered}`}
                 className="ar-chip"
                 style={{
                   background: isCur ? 'var(--primary)' : done ? 'var(--primary-light)' : '#fff',
@@ -404,28 +487,36 @@ export default function TestPage() {
             delete a[current.id]
             setAnswers(a)
           }}>
-            Clear
+            {t.clear}
           </button>
         )}
-        <div className="ar-count">{currentIdx + 1} of {questions.length}</div>
+        <div className="ar-count">{currentIdx + 1} {t.of(questions.length)}</div>
 
         {!isLastQ ? (
           <button className="btn btn-primary btn-sm" onClick={goNext}
             style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label="Next question">
-            <span className="ar-nav-label">Next</span> <ChevronRight size={16} />
+            <span className="ar-nav-label">{t.next}</span> <ChevronRight size={16} />
           </button>
         ) : (
           <button className="btn btn-success btn-sm" onClick={confirmSubmit} disabled={submitting} style={{ flexShrink: 0 }}>
-            {submitting ? 'Submitting...' : '✓ Submit'}
+            {submitting ? t.submitting : t.submit}
           </button>
         )}
       </div>
 
-      <div className="ar-hints">
-        <span><kbd>←</kbd> <kbd>→</kbd> prev / next</span>
-        <span><kbd>1</kbd>–<kbd>4</kbd> choose option</span>
-        <span><kbd>Backspace</kbd> clear</span>
-      </div>
+      <TestLegend t={t} submitOnLast />
+
+      {showConfirm && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" onClick={() => setShowConfirm(false)}>
+          <div className="modal" style={{ maxWidth: 420, padding: '1.25rem' }} onClick={e => e.stopPropagation()}>
+            <p style={{ margin: '0 0 1rem', fontSize: '1rem', lineHeight: 1.5 }}>{t.confirmSubmit(unanswered)}</p>
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+              <button className="btn btn-ghost" onClick={() => setShowConfirm(false)}>{t.goBack}</button>
+              <button className="btn btn-success" onClick={handleSubmit} disabled={submitting}>{t.submitAnyway}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

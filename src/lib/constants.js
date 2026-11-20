@@ -24,12 +24,15 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   {
     section: 'Organic Chemistry',
     units: [
-      { id: 13, name: 'Purification and Characterisation of Organic Compounds' },
-      { id: 14, name: 'Some Basic Principles of Organic Chemistry' },
-      { id: 15, name: 'Hydrocarbons' },
-      { id: 16, name: 'Organic Compounds Containing Halogens' },
-      { id: 17, name: 'Organic Compounds Containing Oxygen' },
-      { id: 18, name: 'Organic Compounds Containing Nitrogen' },
+      // Renamed 2026-11-16 to the NCERT Class 12 chapter names. Each name moved one
+      // unit up from where it used to sit (Some Basic Principles was 14, now 13), so
+      // its 76 questions moved with it: unit text and Q ID NCU14… -> NCU13….
+      { id: 13, name: 'Some Basic Principles of Organic Chemistry' },
+      { id: 14, name: 'Hydrocarbons' },
+      { id: 15, name: 'Haloalkanes and Haloarenes' },
+      { id: 16, name: 'Alcohols, Phenols and Ethers' },
+      { id: 17, name: 'Aldehydes, Ketones and Carboxylic Acids' },
+      { id: 18, name: 'Amines' },
       { id: 19, name: 'Biomolecules' },
       { id: 20, name: 'Principles Related to Practical Chemistry' },
     ],
@@ -159,6 +162,17 @@ export const UNIT_LEVELS = {
     { id: 4, name: 'Multilevel Questions',                           topic: 'Miscellaneous' },
     { id: 5, name: 'Complete Chapter Test',                   topic: 'Complete Chapter Test' },
   ],
+  10: [
+    { id: 1, name: 'Group-13',               topic: 'Electronic Configuration, Atomic Radii, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards air, Reactivity towards acids and alkalies, Reactivity towards halogens, Important Trends and Anomalous Properties of Boron' },
+    { id: 2, name: 'Group-14',               topic: 'Electronic Configuration, Covalent Radius, Ionization Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards oxygen, Reactivity towards water, Reactivity towards halogens, Important Trends and Anomalous Properties of Carbon, Allotropes of Carbon' },
+    { id: 3, name: 'Group-15',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards halogens, Reactivity towards metals, Important Trends and Anomalous Properties of Nitrogen' },
+    { id: 4, name: 'Group-16',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards halogens, Important Trends and Anomalous Properties of Oxygen' },
+    { id: 5, name: 'Group-17',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Electronegativity, Physical Properties, Chemical Properties, Oxidation states and trends in chemical reactivity, Reactivity towards hydrogen, Reactivity towards oxygen, Reactivity towards metals, Reactivity towards halogens, Reactivity of halogens towards other halogens, Important Trends and Anomalous Properties of Fluorine' },
+    { id: 6, name: 'Group-18',               topic: 'Occurrence, Electronic Configuration, Atomic and Ionic Radii, Ionisation Enthalpy, Electron gain enthalpy, Physical Properties, Chemical Properties, Xenon-fluorine compounds, Xenon-oxygen compounds' },
+    { id: 7, name: 'Compounds',              topic: 'p-Block Elements: Important compounds of p-block elements (preparation, properties, structures and uses)' },
+    { id: 8, name: 'Multilevel Questions',   topic: 'Miscellaneous' },
+    { id: 9, name: 'Complete Chapter Test',  topic: 'Complete Chapter Test' },
+  ],
   11: [
     { id: 1, name: 'Transition Elements Intro',                        topic: 'Transition Elements: General Introduction, Electronic Configuration, Occurrence and Characteristics' },
     { id: 2, name: 'General Trends in Properties',                     topic: 'Transition Elements: General Trends in Properties' },
@@ -179,6 +193,18 @@ export const UNIT_LEVELS = {
     { id: 6, name: 'Isomerism',                             topic: 'Isomerism in coordination compounds.' },
     { id: 7, name: 'Multilevel Questions',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
+  ],
+  // Units 13-18: one level each, the Complete Chapter Test (2026-11-16). A single
+  // level is always unlocked and is badged CCT everywhere; more levels can be
+  // added later by putting them before this one, keeping the CCT last.
+  13: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  14: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  15: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  16: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  17: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  18: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  19: [
+    { id: 1, name: 'Biomolecules', topic: 'Biomolecules — carbohydrates, proteins, vitamins, nucleic acids and hormones.' },
   ],
   21: [
     { id: 1, name: 'Basics of Organic Chemistry',                        topic: 'Basics of Organic Chemistry' },
@@ -287,6 +313,83 @@ export const UNIT_LEVELS = {
 // Kept for backward-compat with any existing imports
 export const UNIT_11_LEVELS = UNIT_LEVELS[11]
 
+// Levels of the other subjects, same shape as UNIT_LEVELS (unit numbers
+// restart at 1 per subject — see lib/subjects.js). Filled in as authored.
+// Physics levels, lecture-wise inside each chapter, then Multilevel and the
+// Complete Chapter Test like every Chemistry unit. Topic doubles as the
+// level's description in the "i" tooltip.
+const physicsLevels = names => [
+  ...names.map(([name, topic], i) => ({ id: i + 1, name, topic })),
+  { id: names.length + 1, name: 'Multilevel Questions', topic: 'Miscellaneous' },
+  { id: names.length + 2, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+]
+// Keyed by Arun's 32-unit Physics list (lib/subjects.js). Electrostatics (17)
+// holds what NCERT splits across charges/fields and potential.
+export const PHYSICS_UNIT_LEVELS = {
+  2: physicsLevels([
+    ['Units & Dimensional Analysis', 'System of units and measurements, Dimensional formula, Principle of homogeneity, Application of dimensional analysis'],
+    ['Error Analysis', 'Significant figures, Rounding off, Accuracy, Precision, Errors'],
+    ['Measuring Instruments', 'Metre scale, Vernier callipers, Screw gauge, Spherometer'],
+  ]),
+  3: physicsLevels([
+    ['Uniform Motion (a = 0)', 'Distance, Displacement, Speed, Velocity'],
+    ['Uniformly Accelerated Motion (a = constant)', 'Equation of motion, Free fall'],
+    ['Non-uniformly Accelerated Motion (a = variable)', 'Calculus method'],
+    ['Relative Motion', 'Relative motion in 1 D'],
+    ['Graph', 'Graphs of motion in one dimension'],
+  ]),
+  4: physicsLevels([
+    ['Scalar and Vector', 'Addition, subtraction, dot & cross product, rotation of vector'],
+    ['Projectile Motion', 'Horizontal & angular projectile motion'],
+    ['Motion in Plane & Circular Motion', 'Shortest path, condition for collision, centripetal & tangential acceleration'],
+    ['Relative Motion in 2D', 'River & man, rain & man/umbrella'],
+  ]),
+  5: physicsLevels([
+    ['Inertia & Momentum', 'Types of inertia, linear momentum, change in linear momentum, impulse'],
+    ['Normal & Tension', '2nd law, normal force, tension, pulley system, equilibrium of concurrent forces'],
+    ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
+    ['Friction', 'Contact force, banking of road, angle of friction & repose'],
+  ]),
+  // Every Physics unit that has no levels authored yet (1, 6-32) gets one
+  // practice pool shown as CCT, like Biology; Arun adds the real levels later
+  // (replace the entry with physicsLevels([...])). Units 17-32: CCT only (Arun, 2026-11-11/12).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32].map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
+}
+// Biology levels. Like the mechanism modules, a chapter can be one practice
+// pool: a single level, always unlocked, no chapter test.
+export const BIOLOGY_UNIT_LEVELS = {
+  // Units 1-32 (every unit): one practice pool each, shown as CCT (single-level units are
+  // labelled CCT, see isChapterTestLevel). Arun asked for CCT only for now.
+  ...Object.fromEntries(Array.from({ length: 32 }, (_, i) => i + 1).map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
+}
+
+// Student practice keys a unit by one number across subjects: Chemistry n,
+// Physics 100 + n, Biology 200 + n. That number is what the test route,
+// student_progress.unlocked_levels_by_unit, used_questions.unit_id and
+// test_attempts.unit_id hold, so Physics unit 15 and Chemistry unit 15
+// never share progress. Questions themselves keep subject + "Unit 15 - ...".
+export const COURSE_OFFSET = { Chemistry: 0, Physics: 100, Biology: 200 }
+export const courseUnitId = (subject, unit) => (COURSE_OFFSET[subject || 'Chemistry'] ?? 0) + Number(unit)
+export function fromCourseUnitId(id) {
+  const n = Number(id)
+  if (n > 200) return { subject: 'Biology', unit: n - 200 }
+  if (n > 100) return { subject: 'Physics', unit: n - 100 }
+  return { subject: 'Chemistry', unit: n }
+}
+// Every lookup keyed on a practice unit id (badges, CCT, next level, the
+// performance screens) then finds Physics and Biology levels in UNIT_LEVELS.
+for (const [subject, levels] of [['Physics', PHYSICS_UNIT_LEVELS], ['Biology', BIOLOGY_UNIT_LEVELS]]) {
+  for (const [n, defs] of Object.entries(levels)) UNIT_LEVELS[courseUnitId(subject, n)] = defs
+}
+const LEVELS = { Chemistry: UNIT_LEVELS, Physics: PHYSICS_UNIT_LEVELS, Biology: BIOLOGY_UNIT_LEVELS }
+export function levelDefsFor(subject, unitId) {
+  return (LEVELS[subject || 'Chemistry'] || {})[Number(unitId)] || []
+}
+
 /**
  * Level ids defined for a unit. Falls back to a generic 1-9 range only for units
  * whose levels haven't been authored into UNIT_LEVELS yet, so an admin can still
@@ -314,15 +417,25 @@ export function levelIdsFor(unitId) {
 // without the length > 1 guard that one level counts as "last", and every badge
 // in the app — syllabus card, test header, result screen, attempt review, the
 // performance table and the parent PDF — would label it CCT instead of Level 1.
-export function isChapterTestLevel(unitId, levelId) {
-  const defs = UNIT_LEVELS[Number(unitId)] || []
+export function isChapterTestLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
   return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
-// Short display label for a level — "CCT" for the Complete Chapter Test,
-// else "Level N" (optionally zero-padded to match a table's other numbers).
-export function levelBadge(unitId, levelId, { pad = false } = {}) {
-  if (isChapterTestLevel(unitId, levelId)) return 'CCT'
+// A unit with one level is one pool of the whole chapter, so it is labelled CCT
+// as well (Arun, 2026-11-07). Label only: isChapterTestLevel() stays false for
+// it, because the CCT logic — draw from every OTHER level, count the others'
+// questions — has nothing to work with in a one-level unit.
+export function isOnlyLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
+  return defs.length === 1 && defs[0].id === Number(levelId)
+}
+
+// Short display label for a level — "CCT" for the Complete Chapter Test and for
+// a unit's only level, else "Level N" (optionally zero-padded to match a table's
+// other numbers).
+export function levelBadge(unitId, levelId, { pad = false, subject = 'Chemistry' } = {}) {
+  if (isChapterTestLevel(unitId, levelId, subject) || isOnlyLevel(unitId, levelId, subject)) return 'CCT'
   if (levelId == null) return 'Level —'
   return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
-import { Users, BookOpen, FileQuestion, BarChart3 } from 'lucide-react'
+import { Users, BookOpen, FileQuestion, BarChart3, Inbox, Activity, NotebookPen } from 'lucide-react'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/admin/questions', label: 'Questions' },
   { to: '/admin/key-changes', label: 'Answer Keys' },
   { to: '/admin/videos', label: 'Lectures' },
+  { to: '/admin/doubts', label: 'Doubts' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
   { to: '/admin/gseb', label: 'GSEB Papers' },
@@ -18,6 +19,8 @@ const NAV = [
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ students: 0, faculty: 0, questions: 0, pending: 0 })
+  const [facultyReview, setFacultyReview] = useState(0)
+  const [activeToday, setActiveToday] = useState(null)
 
   useEffect(() => {
     async function load() {
@@ -34,6 +37,19 @@ export default function AdminDashboard() {
       setStats({ students: s.count || 0, faculty: f.count || 0, questions: q.count || 0, pending: p.count || 0 })
     }
     load()
+    // Faculty drafts + suggested corrections waiting for the admin.
+    Promise.all([
+      supabase.from('questions').select('id', { count: 'exact', head: true }).eq('review_status', 'pending'),
+      supabase.from('question_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'open'),
+    ]).then(([a, b]) => setFacultyReview((a.count || 0) + (b.count || 0)))
+    // Students who submitted any test today (level practice, practice paper, GSEB).
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const since = today.toISOString()
+    Promise.all([
+      supabase.from('test_attempts').select('student_id').eq('submitted', true).gte('submitted_at', since).limit(5000),
+      supabase.from('practice_paper_attempts').select('student_id').gte('submitted_at', since).limit(5000),
+      supabase.from('gseb_attempts').select('student_id').eq('submitted', true).gte('submitted_at', since).limit(5000),
+    ]).then(rs => setActiveToday(new Set(rs.flatMap(r => (r.data || []).map(x => x.student_id))).size))
   }, [])
 
   return (
@@ -83,7 +99,19 @@ export default function AdminDashboard() {
               <BookOpen size={32} color="var(--primary)" />
               <div>
                 <div style={{ fontWeight: 700 }}>Manage Faculty</div>
-                <div className="text-muted">Add / remove faculty</div>
+                <div className="text-muted">Add faculty · Faculty IDs</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/faculty-review" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', border: facultyReview ? '1.5px solid #f59e0b' : undefined }}>
+              <Inbox size={32} color={facultyReview ? '#d97706' : 'var(--primary)'} />
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  Faculty Review
+                  {facultyReview > 0 && <span className="badge" style={{ background: '#dc2626', color: '#fff', marginLeft: 6 }}>{facultyReview}</span>}
+                </div>
+                <div className="text-muted">New questions & corrections from faculty</div>
               </div>
             </div>
           </Link>
@@ -102,6 +130,27 @@ export default function AdminDashboard() {
               <div>
                 <div style={{ fontWeight: 700 }}>Student Performance</div>
                 <div className="text-muted">Browse & review attempts</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/mistakes" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
+              <NotebookPen size={32} color="var(--primary)" />
+              <div>
+                <div style={{ fontWeight: 700 }}>Mistake Copy</div>
+                <div className="text-muted">Each student's error register · mark checked</div>
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/activity" style={{ textDecoration: 'none' }}>
+            <div className="card card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
+              <Activity size={32} color="var(--primary)" />
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  Recent Activity
+                  {activeToday > 0 && <span className="badge" style={{ background: '#dcfce7', color: '#15803d', marginLeft: 6 }}>{activeToday} today</span>}
+                </div>
+                <div className="text-muted">Who practised, when, what — newest first</div>
               </div>
             </div>
           </Link>

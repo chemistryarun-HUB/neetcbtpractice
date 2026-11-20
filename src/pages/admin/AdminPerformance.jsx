@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Menu } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Menu, NotebookPen } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import { supabase } from '../../lib/supabase'
 import StudentSidebar from '../../components/performance/StudentSidebar'
@@ -7,6 +8,9 @@ import StudentProfile from '../../components/performance/StudentProfile'
 import ClassLeaderboard from '../../components/performance/ClassLeaderboard'
 import ClassReport from '../../components/performance/ClassReport'
 import AttemptReviewModal from '../../components/performance/AttemptReviewModal'
+import { ContactsHiddenContext } from '../../components/performance/contactsContext'
+import SubjectTabs from '../../components/shared/SubjectTabs'
+import { fromCourseUnitId } from '../../lib/constants'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -15,6 +19,7 @@ const NAV = [
   { to: '/admin/questions', label: 'Questions' },
   { to: '/admin/key-changes', label: 'Answer Keys' },
   { to: '/admin/videos', label: 'Lectures' },
+  { to: '/admin/doubts', label: 'Doubts' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
   { to: '/admin/gseb', label: 'GSEB Papers' },
@@ -22,17 +27,22 @@ const NAV = [
 
 const ATTEMPT_COLUMNS = 'id, student_id, unit_id, level, attempt_number, score, correct_count, wrong_count, skipped_count, time_taken, submitted, started_at, submitted_at, question_ids, answers'
 
-export default function AdminPerformance() {
+// Also the faculty Performance page: `nav`/`crumb` swap the chrome, and
+// `hideContacts` strips every phone number before it reaches the components.
+export default function AdminPerformance({ nav = NAV, crumb = 'Admin', hideContacts = false, mistakesPath = '/admin/mistakes' }) {
   const [students, setStudents] = useState([])
   const [attempts, setAttempts] = useState([])
   const [progressByStudent, setProgressByStudent] = useState({})
   const [loading, setLoading] = useState(true)
 
-  const [selectedStudentId, setSelectedStudentId] = useState(null)
+  // ?student=<id> opens that student straight away (linked from Students).
+  const [params] = useSearchParams()
+  const [selectedStudentId, setSelectedStudentId] = useState(params.get('student'))
   const [selectedClass, setSelectedClass] = useState('all')
   const [view, setView] = useState('profile')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [reviewAttempt, setReviewAttempt] = useState(null)
+  const [classSubject, setClassSubject] = useState('all')
 
   useEffect(() => {
     async function load() {
@@ -42,7 +52,11 @@ export default function AdminPerformance() {
       // everyone.
       const { data: studentRows } = await supabase
         .from('students').select('*').order('name')
-      const rows = studentRows || []
+      const rows = (studentRows || []).map(s => {
+        if (!hideContacts) return s
+        const { phone_student: _a, phone_mother: _b, phone_father: _c, password_hash: _d, ...safe } = s
+        return safe
+      })
       setStudents(rows)
 
       const ids = rows.map(s => s.id)
@@ -86,6 +100,21 @@ export default function AdminPerformance() {
     return map
   }, [attempts])
 
+  // Class Report and Leaderboard read only this, so every number on them follows
+  // the tab. A student's own profile has its own tabs.
+  const classAttemptsByStudent = useMemo(() => {
+    if (classSubject === 'all') return attemptsByStudent
+    return Object.fromEntries(Object.entries(attemptsByStudent).map(([id, rows]) => [id, rows.filter(a => fromCourseUnitId(a.unit_id).subject === classSubject)]))
+  }, [attemptsByStudent, classSubject])
+  const classSubjectCounts = useMemo(() => {
+    const counts = { all: attempts.length }
+    for (const a of attempts) {
+      const s = fromCourseUnitId(a.unit_id).subject
+      counts[s] = (counts[s] || 0) + 1
+    }
+    return counts
+  }, [attempts])
+
   const selectedStudent = students.find(s => s.id === selectedStudentId) || null
 
   function handleSelectStudent(id) {
@@ -101,8 +130,9 @@ export default function AdminPerformance() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
 
   return (
+    <ContactsHiddenContext.Provider value={hideContacts}>
     <div className="dashboard">
-      <Topbar links={NAV} />
+      <Topbar links={nav} />
       <div className="perf-shell">
         <StudentSidebar
           students={students}
@@ -122,19 +152,30 @@ export default function AdminPerformance() {
                 <Menu size={18} />
               </button>
               <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', margin: 0 }}>
-                <strong style={{ color: 'var(--gray-600)' }}>Admin</strong> / Students
+                <strong style={{ color: 'var(--gray-600)' }}>{crumb}</strong> / Students
                 {view === 'profile' && selectedStudent && <> / <strong style={{ color: 'var(--gray-600)' }}>{selectedStudent.name}</strong></>}
                 {view === 'leaderboard' && <> / <strong style={{ color: 'var(--gray-600)' }}>Leaderboard</strong></>}
                 {view === 'classReport' && <> / <strong style={{ color: 'var(--gray-600)' }}>Class Report</strong></>}
               </p>
+              {view === 'profile' && selectedStudent && (
+                <Link to={`${mistakesPath}?student=${selectedStudent.id}`} className="btn btn-outline btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
+                  <NotebookPen size={15} /> Mistake Copy
+                </Link>
+              )}
             </div>
+
+            {students.length > 0 && view !== 'profile' && (
+              <SubjectTabs value={classSubject} onChange={setClassSubject} counts={classSubjectCounts} />
+            )}
 
             {students.length === 0 ? (
               <div className="empty-state">No students yet. Add students from the Students tab.</div>
             ) : view === 'leaderboard' ? (
               <ClassLeaderboard
                 students={students}
-                attemptsByStudent={attemptsByStudent}
+                attemptsByStudent={classAttemptsByStudent}
+                onlyWithAttempts={classSubject !== 'all'}
                 selectedClass={selectedClass}
                 onSelectClass={setSelectedClass}
                 selectedStudentId={selectedStudentId}
@@ -145,7 +186,7 @@ export default function AdminPerformance() {
             ) : view === 'classReport' ? (
               <ClassReport
                 students={students}
-                attemptsByStudent={attemptsByStudent}
+                attemptsByStudent={classAttemptsByStudent}
                 selectedClass={selectedClass}
                 onSelectClass={setSelectedClass}
                 onSelectStudent={handleSelectStudent}
@@ -157,6 +198,7 @@ export default function AdminPerformance() {
                 progress={progressByStudent[selectedStudent.id]}
                 attempts={attemptsByStudent[selectedStudent.id] || []}
                 onOpenReview={setReviewAttempt}
+                showContactActions={!hideContacts}
               />
             ) : (
               <div className="empty-state">Select a student from the sidebar</div>
@@ -173,5 +215,6 @@ export default function AdminPerformance() {
         />
       )}
     </div>
+    </ContactsHiddenContext.Provider>
   )
 }

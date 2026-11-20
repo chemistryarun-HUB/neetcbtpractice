@@ -15,29 +15,7 @@ export async function loginAsStudent(rollNumber, password) {
   return { role: 'student', student: data }
 }
 
-export async function loginAsFaculty() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/faculty/dashboard`,
-    },
-  })
-  if (error) throw error
-  return data
-}
-
-export async function getCurrentFaculty() {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-
-  const { data } = await supabase
-    .from('faculty')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
-
-  return data
-}
+// Faculty sign in with a Faculty ID — see lib/faculty.js.
 
 // Nothing imports this module today — hooks/useAuth.jsx is the live path — but
 // it is kept in step deliberately: clearing sessionStorage by hand was correct
