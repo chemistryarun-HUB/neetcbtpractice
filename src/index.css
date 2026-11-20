@@ -726,6 +726,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .pp-sec span { font-size: 12.5px; font-style: italic; }
 .pp-cols { display: flex; position: relative; }
 .pp-cols::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; }
+.pp-cols.one::before { display: none; }
 .pp-col { flex-shrink: 0; }
 .pp-foot { position: absolute; left: 40px; right: 40px; bottom: 22px; display: flex; justify-content: space-between; font-size: 11px; padding-top: 4px; border-top: 1px solid #000; }
 .pp-key { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 12px; border-top: 1px solid #000; border-left: 1px solid #000; }

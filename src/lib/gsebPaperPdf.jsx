@@ -1,6 +1,8 @@
-// A GSEB board paper as a PDF to save or print: A4 pages in two columns with a
-// rule between them like the printed paper, Part A (MCQs) and Part B (written,
-// section by section) each starting on a new page, and an optional answer key.
+// A GSEB board paper as a PDF to save or print: A4 pages in one full-width
+// column (Arun, 2026-11-20: two columns forced long equations onto several
+// lines), Part A (MCQs) and Part B (written, section by section) each starting
+// on a new page, and an optional answer key. Set COLS = 2 to go back to two
+// columns with a rule between them like the printed paper.
 //
 // The browser lays the pages out and each one is captured as an image
 // (html2canvas → jsPDF), as reportPdf.js does: KaTeX maths, mhchem and the
@@ -8,7 +10,8 @@
 // drawing cannot do. The cost is text that isn't selectable.
 //
 // Questions are never split across a column: each one is measured at column
-// width first, then placed whole, top to bottom, left column then right.
+// width first, then placed whole, top to bottom (left column then right when
+// there are two).
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import MathText, { ensureKatex } from '../components/shared/MathText'
@@ -20,7 +23,8 @@ import { optionEntries, correctOptionKey } from './questionOptions'
 // A4 at 96 px per inch; all sizes below are CSS px.
 const PAGE = { w: 794, h: 1123, margin: 40, foot: 30, gap: 30 }
 const INNER_W = PAGE.w - 2 * PAGE.margin
-const COL_W = (INNER_W - PAGE.gap) / 2
+const COLS = 1
+const COL_W = COLS === 2 ? (INNER_W - PAGE.gap) / 2 : INNER_W
 const INNER_H = PAGE.h - 2 * PAGE.margin - PAGE.foot
 const SCALE = 2 // ~190 dpi: sharp on paper, about 300 KB a page
 const LETTERS = ['A', 'B', 'C', 'D']
@@ -261,7 +265,7 @@ function customSheet({ subject, title, minutes, mcq, subjective, showYear }) {
   }
 }
 
-// Fills columns top to bottom, left then right, a new page when both are full.
+// Fills columns top to bottom, left then right, a new page when all are full.
 function paginate(blocks, heights) {
   const pages = []
   let page = null
@@ -280,7 +284,7 @@ function paginate(blocks, heights) {
     for (;;) {
       const room = INNER_H - page.top - page.used[page.col]
       if (need <= room || page.used[page.col] === 0) break // too tall for any column: give it a fresh one
-      if (page.col === 0) page.col = 1
+      if (page.col === 0 && COLS === 2) page.col = 1
       else { finish(); newPage() }
     }
     page.cols[page.col].push(i)
@@ -289,6 +293,7 @@ function paginate(blocks, heights) {
   finish()
   // A part that ends part-way down a page reads better split evenly.
   function balance(p) {
+    if (COLS !== 2) return
     const items = [...p.cols[0], ...p.cols[1]]
     if (p.cols[1].length && p.used[1] > INNER_H - p.top - 40) return // a full page stays as filled
     let best = null
@@ -324,10 +329,10 @@ function buildPage(page, nodes, index, total, footer) {
   for (const i of page.full) el.appendChild(nodes[i].cloneNode(true))
   if (page.cols[0].length) {
     const cols = document.createElement('div')
-    cols.className = 'pp-cols'
+    cols.className = COLS === 2 ? 'pp-cols' : 'pp-cols one'
     cols.style.height = `${INNER_H - page.top}px`
     cols.style.gap = `${PAGE.gap}px`
-    for (const list of page.cols) {
+    for (const list of page.cols.slice(0, COLS)) {
       const col = document.createElement('div')
       col.className = 'pp-col'
       col.style.width = `${COL_W}px`
