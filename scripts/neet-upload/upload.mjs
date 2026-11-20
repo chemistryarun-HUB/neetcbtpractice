@@ -18,8 +18,15 @@ for (const u of units) {
   console.log(p, 'existing', nums.length, 'max', next[u] - 1)
 }
 // skip items already inserted (same source text) so a re-run is safe
-const { data: done, error: e0 } = await sb.from('questions').select('source').like('source', 'ExamGOAL NEET Phy %')
-if (e0) { console.error(e0); process.exit(1) }
+async function allRows(cols) {
+  const out = []
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await sb.from('questions').select(cols).like('source', 'ExamGOAL NEET Phy %').order('qid').range(from, from + 999)
+    if (error) { console.error(error); process.exit(1) }
+    out.push(...data); if (data.length < 1000) return out
+  }
+}
+const done = await allRows('qid, source')
 const seen = new Set(done.map(d => d.source))
 const todo = items.filter(i => !seen.has(i.rec.source))
 console.log('items', items.length, 'already in DB', items.length - todo.length)
@@ -52,8 +59,7 @@ console.log('images set', n)
 const map = todo.map(t => `${t.rec.qid}\t${t.rec.source}`)
 console.log('MAP\n' + map.join('\n'))
 const srcs = new Set(items.map(i => i.rec.source))
-const { data: all2, error: e9 } = await sb.from('questions').select('qid, unit, level, is_published, source').like('source', 'ExamGOAL NEET Phy %').range(0, 9999)
-if (e9) { console.error(e9); process.exit(1) }
+const all2 = await allRows('qid, unit, level, is_published, source')
 const after = all2.filter(q => srcs.has(q.source))
 const c = {}; for (const q of after) { const k = `${q.unit.split(' - ')[0]} L${q.level} pub=${q.is_published}`; c[k] = (c[k] || 0) + 1 }
 console.log('DONE', after.length, JSON.stringify(c))
