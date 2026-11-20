@@ -51,6 +51,9 @@ for (const it of todo) {
 console.log('images set', n)
 const map = todo.map(t => `${t.rec.qid}\t${t.rec.source}`)
 console.log('MAP\n' + map.join('\n'))
-const { data: after } = await sb.from('questions').select('qid, unit, level, is_published').in('source', items.map(i => i.rec.source))
+const srcs = new Set(items.map(i => i.rec.source))
+const { data: all2, error: e9 } = await sb.from('questions').select('qid, unit, level, is_published, source').like('source', 'ExamGOAL NEET Phy %').range(0, 9999)
+if (e9) { console.error(e9); process.exit(1) }
+const after = all2.filter(q => srcs.has(q.source))
 const c = {}; for (const q of after) { const k = `${q.unit.split(' - ')[0]} L${q.level} pub=${q.is_published}`; c[k] = (c[k] || 0) + 1 }
 console.log('DONE', after.length, JSON.stringify(c))
