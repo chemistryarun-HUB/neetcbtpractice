@@ -1,4 +1,4 @@
-// One-off: insert AIIMS Physics PYQ drafts (ExamGOAL) unit-wise; qids continue each unit's sequence.
+// One-off: insert JIPMER Physics PYQ drafts (ExamGOAL) unit-wise; qids continue each unit's sequence.
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
@@ -21,7 +21,7 @@ for (const u of units) {
 async function allRows(cols) {
   const out = []
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await sb.from('questions').select(cols).like('source', 'AIIMS Unit-%').order('qid').range(from, from + 999)
+    const { data, error } = await sb.from('questions').select(cols).like('source', 'JIPMER Unit-%').order('qid').range(from, from + 999)
     if (error) { console.error(error); process.exit(1) }
     out.push(...data); if (data.length < 1000) return out
   }
