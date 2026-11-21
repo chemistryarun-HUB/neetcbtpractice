@@ -1,5 +1,5 @@
 // Subjects and their units. A Biology unit IS an NCERT chapter (Class 11 first,
-// then Class 12 continuing the numbering); Physics uses Arun's 32-unit list.
+// then Class 12 continuing the numbering); Physics uses Arun's 31-unit list.
 //
 // Unit numbers restart at 1 in every subject, so a unit is only meaningful
 // together with its subject. Chemistry keeps its own syllabus + levels in
@@ -11,8 +11,10 @@ export { COURSE_OFFSET, courseUnitId, fromCourseUnitId } from './constants'
 
 const u = names => names.map((name, i) => ({ id: i + 1, name }))
 
-// Physics follows Arun's 32-unit list (2026-10-31), grouped Mechanics 1 ...
+// Physics follows Arun's unit list (2026-10-31), grouped Mechanics 1 ...
 // Miscellaneous rather than NCERT chapter order. See PHYSICS_SECTIONS below.
+// 2026-11-21 (Arun): Communication System removed from the syllabus, so
+// Experimental Physics moved from Unit 32 to Unit 31.
 export const PHYSICS_UNITS = u([
   // Mechanics 1
   'Mathematics in Physics', 'Units and Dimensions', 'Motion In One Dimension', 'Motion In Two Dimensions',
@@ -30,7 +32,7 @@ export const PHYSICS_UNITS = u([
   // Modern Physics
   'Dual Nature of Matter', 'Atomic Physics', 'Nuclear Physics',
   // Miscellaneous Physics
-  'Electromagnetic Waves', 'Semiconductors', 'Communication System', 'Experimental Physics',
+  'Electromagnetic Waves', 'Semiconductors', 'Experimental Physics',
 ])
 
 export const BIOLOGY_UNITS = u([
@@ -96,7 +98,7 @@ const byRange = (units, groups) => groups.map(([section, from, to]) => (
 const PHYSICS_SECTIONS = byRange(PHYSICS_UNITS, [
   ['Mechanics 1', 1, 9], ['Mechanics 2', 10, 13], ['Thermodynamics', 14, 16],
   ['Electromagnetism', 17, 23], ['Optics', 24, 25], ['Modern Physics', 26, 28],
-  ['Miscellaneous Physics', 29, 32],
+  ['Miscellaneous Physics', 29, 31],
 ])
 const byClass = (units, last11) => [
   { section: 'Class 11', units: units.filter(x => x.id <= last11) },
