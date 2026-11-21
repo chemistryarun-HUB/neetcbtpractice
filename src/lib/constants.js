@@ -323,7 +323,7 @@ const physicsLevels = names => [
   { id: names.length + 1, name: 'Multilevel Questions', topic: 'Miscellaneous' },
   { id: names.length + 2, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
 ]
-// Keyed by Arun's 32-unit Physics list (lib/subjects.js). Electrostatics (17)
+// Keyed by Arun's 31-unit Physics list (lib/subjects.js). Electrostatics (17)
 // holds what NCERT splits across charges/fields and potential.
 export const PHYSICS_UNIT_LEVELS = {
   2: physicsLevels([
@@ -350,10 +350,10 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
     ['Friction', 'Contact force, banking of road, angle of friction & repose'],
   ]),
-  // Every Physics unit that has no levels authored yet (1, 6-32) gets one
+  // Every Physics unit that has no levels authored yet (1, 6-31) gets one
   // practice pool shown as CCT, like Biology; Arun adds the real levels later
-  // (replace the entry with physicsLevels([...])). Units 17-32: CCT only (Arun, 2026-11-11/12).
-  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32].map(n => [n, [
+  // (replace the entry with physicsLevels([...])). Units 17-31: CCT only (Arun, 2026-11-11/12).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].map(n => [n, [
     { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
   ]])),
 }

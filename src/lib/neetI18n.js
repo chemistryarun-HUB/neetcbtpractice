@@ -338,7 +338,7 @@ const GU_SECTIONS = {
 
 // Keyed by practice unit id (courseUnitId: Physics unit n is 100 + n,
 // Biology chapter n is 200 + n).
-// Physics follows Arun's 32-unit list; Biology the GSEB Gujarati medium books.
+// Physics follows Arun's 31-unit list (Communication System removed 2026-11-21); Biology the GSEB Gujarati medium books.
 const GU_PHYSICS_UNITS = [
   // Mechanics 1
   'ભૌતિકશાસ્ત્રમાં ગણિત', 'એકમો અને પરિમાણ', 'એક પરિમાણમાં ગતિ', 'દ્વિ-પરિમાણમાં ગતિ',
@@ -356,7 +356,7 @@ const GU_PHYSICS_UNITS = [
   // Modern Physics
   'દ્રવ્યની દ્વૈત પ્રકૃતિ', 'પરમાણુ ભૌતિકશાસ્ત્ર', 'ન્યુક્લિયર ભૌતિકશાસ્ત્ર',
   // Miscellaneous Physics
-  'વિદ્યુતચુંબકીય તરંગો', 'સેમિકન્ડક્ટર', 'સંદેશાવ્યવહાર પ્રણાલી', 'પ્રાયોગિક ભૌતિકશાસ્ત્ર',
+  'વિદ્યુતચુંબકીય તરંગો', 'સેમિકન્ડક્ટર', 'પ્રાયોગિક ભૌતિકશાસ્ત્ર',
 ]
 // Biology chapter names as Arun supplied them (GSEB Gujarati medium books).
 const GU_BIOLOGY_UNITS = [
