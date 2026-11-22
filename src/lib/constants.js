@@ -138,14 +138,15 @@ export const UNIT_LEVELS = {
     { id: 4, name: 'Multilevel Questions',                      topic: 'Miscellaneous' },
     { id: 5, name: 'Complete Chapter Test',              topic: 'Complete Chapter Test' },
   ],
-  // Unit 6 Equilibrium: levels follow NCERT XI Unit 6 (kech106) sections (Arun, 2026-11-22).
+  // Unit 6 Equilibrium: levels follow NCERT XI Unit 6 (kech106) sections; i-button text = NCERT main
+  // headings only (6.1, 6.2 ...), no sub-headings (Arun, 2026-11-22).
   6: [
-    { id: 1, name: 'Chemical Equilibrium & Kc/Kp',        topic: "Equilibrium in physical processes: Solid-liquid, Liquid-vapour, Solid-vapour equilibrium, Equilibrium involving dissolution of solids or gases in liquids, General characteristics of equilibria involving physical processes. Equilibrium in chemical processes - Dynamic equilibrium, Law of chemical equilibrium and equilibrium constant, Homogeneous equilibria, Equilibrium constant in gaseous systems (relation between Kp and Kc), Heterogeneous equilibria. Applications of equilibrium constants: Predicting the extent of a reaction, Predicting the direction of the reaction (reaction quotient Q), Calculating equilibrium concentrations. Relationship between equilibrium constant K, reaction quotient Q and Gibbs energy G." },
-    { id: 2, name: "Le Chatelier's Principle",            topic: "Factors affecting equilibria (Le Chatelier's principle): Effect of concentration change, Effect of pressure change, Effect of inert gas addition, Effect of temperature change, Effect of a catalyst." },
-    { id: 3, name: 'Acids, Bases & pH',                   topic: "Ionic equilibrium in solution, Acids, bases and salts: Arrhenius concept, Brönsted-Lowry acids and bases (conjugate acid-base pairs), Lewis acids and bases. Ionization of acids and bases: Ionization constant of water and its ionic product, The pH scale, Ionization constants of weak acids, Ionization of weak bases, Relation between Ka and Kb, Di- and polybasic acids and di- and polyacidic bases, Factors affecting acid strength." },
-    { id: 4, name: 'Common Ion Effect & Salt Hydrolysis', topic: "Common ion effect in the ionization of acids and bases, Hydrolysis of salts and the pH of their solutions." },
-    { id: 5, name: 'Buffer Solutions',                    topic: "Buffer solutions, Designing buffer solution (Henderson-Hasselbalch equation for acidic and basic buffers)." },
-    { id: 6, name: 'Solubility Product',                  topic: "Solubility equilibria of sparingly soluble salts, Solubility product constant (Ksp) and its relation with solubility, Common ion effect on solubility of ionic salts." },
+    { id: 1, name: 'Chemical Equilibrium & Kc/Kp',        topic: "Equilibrium in Physical Processes, Equilibrium in Chemical Processes - Dynamic Equilibrium, Law of Chemical Equilibrium and Equilibrium Constant, Homogeneous Equilibria, Heterogeneous Equilibria, Applications of Equilibrium Constants, Relationship between Equilibrium Constant K, Reaction Quotient Q and Gibbs Energy G" },
+    { id: 2, name: "Le Chatelier's Principle",            topic: "Factors Affecting Equilibria" },
+    { id: 3, name: 'Acids, Bases & pH',                   topic: "Ionic Equilibrium in Solution, Acids, Bases and Salts, Ionization of Acids and Bases" },
+    { id: 4, name: 'Common Ion Effect & Salt Hydrolysis', topic: "Ionization of Acids and Bases: Common Ion Effect and Hydrolysis of Salts" },
+    { id: 5, name: 'Buffer Solutions',                    topic: "Buffer Solutions" },
+    { id: 6, name: 'Solubility Product',                  topic: "Solubility Equilibria of Sparingly Soluble Ionic Salts" },
     { id: 7, name: 'Multilevel Questions',                topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',               topic: 'Complete Chapter Test' },
   ],
