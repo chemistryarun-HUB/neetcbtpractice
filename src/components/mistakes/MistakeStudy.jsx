@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { Bookmark, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import QuestionView from '../shared/QuestionView'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { orderOptionsForReview } from '../../lib/optionShuffle'
-import { ERROR_TYPES, fmtDay } from '../../lib/mistakeCopy'
+import { fmtDay, typeKeysFor } from '../../lib/mistakeCopy'
 import { levelBadgeT, neetT } from '../../lib/neetI18n'
 
 const TONE = {
   wrong: { fg: '#b91c1c', bg: '#fee2e2', border: '#fca5a5', solid: '#dc2626' },
   skipped: { fg: '#b45309', bg: '#fffbeb', border: '#fcd34d', solid: '#d97706' },
   cleared: { fg: '#15803d', bg: '#dcfce7', border: '#86efac', solid: '#16a34a' },
+  correct: { fg: '#15803d', bg: '#dcfce7', border: '#86efac', solid: '#16a34a' },
 }
-export const itemKind = it => (it.status === 'cleared' ? 'cleared' : it.wrongCount > 0 ? 'wrong' : 'skipped')
+// A bookmark knows how its last attempt went; a copy item is wrong, skipped or cleared.
+export const itemKind = it => it.kind || (it.status === 'cleared' ? 'cleared' : it.wrongCount > 0 ? 'wrong' : 'skipped')
 
 // Attempts from before the key-based fix stored the option's text, so match either.
 function chosenTest(selected) {
@@ -23,7 +25,7 @@ function chosenTest(selected) {
 // away, so marking a chapter is pick, next, pick, next. The student gets the
 // question alone, so a re-attempt isn't answered from memory of the green option;
 // the teacher sees both answers and marks it checked.
-export default function MistakeStudy({ items, startId, medium, editable, teacher, onSave, onCheck, onClose }) {
+export default function MistakeStudy({ items, startId, medium, editable, teacher, isBookmarked, onSave, onCheck, onBookmark, onClose }) {
   useBodyScrollLock()
   const t = neetT(medium)
   const [index, setIndex] = useState(() => Math.max(items.findIndex(it => it.q.id === startId), 0))
@@ -70,7 +72,7 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
           <div className="ar-card">
             <div className="ms-meta">
               <span className="mc-chip" style={{ background: TONE[kind].bg, color: TONE[kind].fg }}>
-                {kind === 'cleared' ? t.mcClearedOn(fmtDay(cur.clearedOn)) : kind === 'wrong' ? t.mcWrongTimes(cur.wrongCount) : t.mcSkipped}
+                {kind === 'cleared' ? t.mcClearedOn(fmtDay(cur.clearedOn)) : kind === 'correct' ? t.mcResultCorrect : kind === 'wrong' ? t.mcWrongTimes(cur.wrongCount) : t.mcSkipped}
               </span>
               {cur.repeat && kind !== 'cleared' && <span className="mc-chip mc-chip-repeat">{t.mcRepeat}</span>}
               {cur.status === 'pending' && cur.correctDays === 1 && <span className="mc-chip mc-chip-progress">{t.mcOneCorrect}</span>}
@@ -86,18 +88,27 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
       </div>
 
       <div className="ms-typebar">
-        <span className="ms-type-label">{t.mcErrorType}</span>
-        {editable ? (
+        {/* A question answered right has no mistake to tag, so the dropdown is only
+            for wrong and skipped ones. The star is for all of them. */}
+        {kind !== 'correct' && kind !== 'cleared' && <span className="ms-type-label">{t.mcErrorType}</span>}
+        {kind !== 'correct' && (editable ? (
           <select className={`form-control ms-type-select et-select et-${errorType || 'none'}`} aria-label={t.mcErrorType} value={errorType || ''}
             onChange={e => { onSave(q.id, { error_type: e.target.value }); e.target.blur() }}>
-            <option value="" disabled>{t.mcSelectType}</option>
-            {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
+            <option value="" disabled>{kind === 'skipped' ? t.mcSelectSkipReason : t.mcSelectType}</option>
+            {typeKeysFor(kind === 'skipped', errorType).map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
           </select>
         ) : (
           <span className="ms-type-value">{errorType ? t.mcErrorTypes[errorType] : '—'}</span>
+        ))}
+        {(editable || isBookmarked(q.id)) && (
+          <button type="button" className={`ar-bookmark${isBookmarked(q.id) ? ' on' : ''}${editable ? '' : ' readonly'}`}
+            aria-label={t.mcBookmark} aria-pressed={isBookmarked(q.id)} title={t.mcBookmark}
+            onClick={() => editable && onBookmark(q.id)}>
+            <Bookmark size={17} fill={isBookmarked(q.id) ? 'currentColor' : 'none'} />
+          </button>
         )}
         {entry?.checked_at && <span className="ms-checked">{t.mcCheckedBy(entry.checked_by || '—', fmtDay(entry.checked_at))}</span>}
-        {teacher && (
+        {teacher && kind !== 'correct' && (
           <button className={`btn btn-sm ms-check-btn ${entry?.checked_at ? 'btn-ghost' : 'btn-primary'}`} onClick={() => onCheck(q.id, !entry?.checked_at)}>
             {entry?.checked_at ? 'Remove check' : '✔ Mark checked'}
           </button>
@@ -122,6 +133,7 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
                   boxShadow: current ? `0 0 0 2px #fff, 0 0 0 4px ${tone.solid}` : 'none',
                 }}>
                 {i + 1}
+                {isBookmarked(it.q.id) && <span className="ar-chip-star">★</span>}
               </button>
             )
           })}

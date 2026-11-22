@@ -1,0 +1,1352 @@
+{
+"2020M-1": {
+"marks": 2,
+"ch": 3,
+"q": "A first order reaction takes 40 minutes for 30% decomposition. Calculate $t_{1/2}$."
+},
+"2020M-2": {
+"marks": 2,
+"ch": 4,
+"q": "Explain Lanthanoid contraction."
+},
+"2020M-3": {
+"marks": 2,
+"ch": 5,
+"q": "Draw structures of geometrical isomers of $\\ce{[Fe(NH3)2(CN)4]-}$"
+},
+"2020M-4": {
+"marks": 2,
+"ch": 5,
+"q": "Write any four limitations of valence bond theory of complex compound."
+},
+"2020M-5": {
+"marks": 2,
+"ch": 6,
+"q": "Write two step equation for the following conversion.\nBut-1-ene into But-2-ene"
+},
+"2020M-6": {
+"marks": 2,
+"ch": 9,
+"q": "Write the reaction of aniline and ethenamine with nitrous acid."
+},
+"2020M-7": {
+"marks": 2,
+"ch": 10,
+"q": "Write the reaction equation to show the presence of –CHO and >C=O group in Glucose."
+},
+"2020M-8": {
+"marks": 2,
+"ch": 10,
+"q": "Classify the following into monosaccharides and disaccharides.\nRibose, 2-deoxy ribose; maltose; galactose; fructose and lactose."
+},
+"2020M-9": {
+"marks": 2,
+"ch": 2,
+"q": "A solution of $\\ce{CuSO4}$ is electrolysed for 8 minutes 45 seconds with a current of 5 amperes. What is the mass of copper deposited at the cathode?"
+},
+"2020M-10": {
+"marks": 2,
+"ch": 4,
+"q": "Which of the 3d series of the transition metals exhibits the largest number of oxidation state and why?"
+},
+"2020M-11": {
+"marks": 2,
+"ch": 8,
+"q": "Explain Cannizzaro reaction."
+},
+"2020M-12": {
+"marks": 2,
+"ch": 9,
+"q": "Explain Carbyl Amine Test giving reactions."
+},
+"2020M-13": {
+"marks": 3,
+"ch": 1,
+"q": "If $\\ce{N2}$ gas is bubbled through water at 293 K, how many millimoles of $\\ce{N2}$ gas would dissolve in 1 litre of water? Assume that $\\ce{N2}$ exerts a partial pressure of 0.987 bar. Given that Henry's law constant for $\\ce{N2}$ at 293 K is 76.48 kbar."
+},
+"2020M-14": {
+"marks": 3,
+"ch": 3,
+"q": "The following results have been obtained during the kinetic studies of the reaction 2A + B $\\rightarrow$ C + D.\nExperiment | [A]/$\\mathrm{mol\\,L^{-1}}$ | [B]/$\\mathrm{mol\\,L^{-1}}$ | Initial rate of formation of D/$\\mathrm{mol\\,L^{-1}\\,min^{-1}}$\nI | 0.1 | 0.1 | $6.0 \\times 10^{-3}$\nII | 0.3 | 0.2 | $7.2 \\times 10^{-2}$\nIII | 0.3 | 0.4 | $2.88 \\times 10^{-2}$\nIV | 0.4 | 0.1 | $2.40 \\times 10^{-2}$\nDetermine the rate law and the rate constant for the reaction."
+},
+"2020M-15": {
+"marks": 3,
+"ch": 6,
+"q": "Write three chemical reactions for preparation of Alkyl halides from Alcohols. (Indicate byproducts if any)."
+},
+"2020M-16": {
+"marks": 3,
+"ch": 9,
+"q": "Write structures and IUPAC names of\n(i) the amide which gives propanamine by Hoffmann bromamide reaction.\n(ii) the amine produced by the Hoffmann degradation of benzamide."
+},
+"2020M-17": {
+"marks": 3,
+"ch": 9,
+"q": "How will you convert\n(i) Benzene into aniline\n(ii) Benzene into N, N-dimethylaniline\n(iii) $\\ce{Cl-(CH2)4-Cl}$ into hexan-1,6-diamine ?"
+},
+"2020M-18": {
+"marks": 3,
+"ch": 4,
+"q": "Describe the preparation of potassium dichromate, from iron chromite ore with equation."
+},
+"2020M-19": {
+"marks": 3,
+"ch": 7,
+"q": "Write the equation of the reaction of hydrogen iodide with :\n(i) 1-Propoxypropane, (ii) methoxybenzene\n(iii) benzyl ethyl ether"
+},
+"2020M-20": {
+"marks": 3,
+"ch": 2,
+"q": "How much electricity in terms of Faraday is required to produce\n(i) 20.0 g of Ca from molten $\\ce{CaCl2}$\n(ii) 40.0 g of Al from molten $\\ce{Al2O3}$"
+},
+"2020M-21": {
+"marks": 3,
+"ch": 7,
+"q": "Write the reactions of Williamson synthesis of 2-ethoxy-3-methyl pentane starting from ethanol and 3 methyl pentan-2-ol."
+},
+"2020M-22": {
+"marks": 4,
+"ch": 1,
+"q": "Two elements A and B form compounds having formula $\\ce{AB2}$ and $\\ce{AB4}$. When dissolved in 20 g of benzene ($\\ce{C6H6}$), 1 g of $\\ce{AB2}$ lowers the freezing point by 2.3 K whereas 1 g of $\\ce{AB4}$ lowers it by 1.3 K. The molar depression constant for benzene is $5.1\\ \\mathrm{K\\,kg\\,mol^{-1}}$. Calculate atomic masses of A and B."
+},
+"2020M-23": {
+"marks": 4,
+"ch": 2,
+"q": "Resistance of conductivity cell filled with $0.1\\ \\mathrm{mol\\,L^{-1}}$ $\\ce{KCl}$ solution is $100\\ \\Omega$. If the resistance of the same cell when filled with $0.03\\ \\mathrm{mol\\,L^{-1}}$ $\\ce{KCl}$ solution is $520\\ \\Omega$, calculate the conductivity and molar conductivity of $0.03\\ \\mathrm{mol\\,L^{-1}}$ $\\ce{KCl}$ solution. The conductivity of $0.1\\ \\mathrm{mol\\,L^{-1}}$ $\\ce{KCl}$ solution is $1.29\\ \\mathrm{S/m}$."
+},
+"2020M-24": {
+"marks": 4,
+"ch": 2,
+"q": "Three electrolytic cells A, B, C contain solution $\\ce{NiSO4}$, $\\ce{AgNO3}$ and $\\ce{CuSO4}$, respectively are connected in series. A steady current of 1.5 amperes was passed through them until 1.45 g of silver deposited at the cathode of cell B. How long did the current flow ? What mass of Copper and Nickel were deposited ? Atomic mass of Ag = 108u, Ni = 58.7u, Cu 63.5u"
+},
+"2020M-25": {
+"marks": 4,
+"ch": 5,
+"q": "(i) Explain that complex $\\ce{[Ti(H2O)6]^{3+}}$ is violet in colour, on the basis of crystal field theory\n(ii) Discuss the nature of bonding in metal carbonyls."
+},
+"2020M-26": {
+"marks": 4,
+"ch": 8,
+"q": "(i) Explain Tollen's test for identification of aldehyde with chemical equation.\n(ii) Write only equation of propanone of the following reactions.\n(a) Wolff-Kishner reduction\n(b) Aldol condensation"
+},
+"2020M-27": {
+"marks": 4,
+"ch": 7,
+"q": "Explain the preparation of alcohol from alkene by acid catalyzed hydration with its mechanism."
+},
+"2021M-1": {
+"marks": 2,
+"ch": 2,
+"q": "How much electricity is required in coulomb for the oxidation of\n(i) 1 mol of $\\ce{H2O}$ to $\\ce{O2}$ (ii) 1 mol of $\\ce{FeO}$ to $\\ce{Fe2O3}$"
+},
+"2021M-2": {
+"marks": 2,
+"ch": 2,
+"q": "Predict the products of electrolysis in each of the following:\n(i) An aqueous solution of $\\ce{AgNO3}$ with silver electrodes.\n(ii) A dilute solution of $\\ce{H2SO4}$ with platinum electrodes."
+},
+"2021M-3": {
+"marks": 2,
+"ch": 3,
+"q": "In a reaction, 2A $\\rightarrow$ Products, the concentration of A decreases from 0.5 $\\mathrm{mol\\,L^{-1}}$ to 0.4 $\\mathrm{mol\\,L^{-1}}$ in 10 minutes. Calculate the rate during this interval?"
+},
+"2021M-4": {
+"marks": 2,
+"ch": 6,
+"q": "Write following conversion into two steps.\nEthanol to Ethyl Fluoride"
+},
+"2021M-5": {
+"marks": 2,
+"ch": 4,
+"q": "Calculate the magnetic moment of a trivalent ion in aqueous solution if its atomic number is 26."
+},
+"2021M-6": {
+"marks": 2,
+"ch": 7,
+"q": "Write following conversion in two steps:\nPhenol to Salicylic acid"
+},
+"2021M-7": {
+"marks": 2,
+"ch": 10,
+"q": "Explain Difference between Nucleoside and Nucleotide."
+},
+"2021M-8": {
+"marks": 2,
+"ch": 10,
+"q": "What are the different types of RNA found in the cell?"
+},
+"2021M-9": {
+"marks": 2,
+"ch": 9,
+"q": "Describe Hoffmann's bromamide degradation reaction."
+},
+"2021M-10": {
+"marks": 2,
+"ch": 10,
+"q": "What happens when D-glucose is treated with $\\ce{HI}$? Explain with suitable reaction."
+},
+"2021M-11": {
+"marks": 2,
+"ch": 5,
+"q": "Write all the geometrical isomers of $\\ce{[Pt(NH3)(Br)(Cl)(py)]}$ and how many of these will exhibit optical isomers ?"
+},
+"2021M-12": {
+"marks": 2,
+"ch": 5,
+"q": "Explain Linkage isomerism."
+},
+"2021M-13": {
+"marks": 3,
+"ch": 1,
+"q": "Explain following Terms: (1) Isotonic, (2) Hypertonic, (3) Hypotonic"
+},
+"2021M-14": {
+"marks": 3,
+"ch": 2,
+"q": "Write the Nernst Equation and calculate potential of the following cells at 298 K.\n$\\ce{Mg(s)/Mg^{2+}}(0.001\\ \\mathrm{M}) \\parallel \\ce{Cu^{2+}}(0.0001\\ \\mathrm{M})\\ce{/Cu(s)}$\n$E^{\\circ}_{(\\ce{Mg^{2+}/Mg})} = -2.36\\ \\mathrm{V}$ and $E^{\\circ}_{(\\ce{Cu^{2+}/Cu})} = 0.34\\ \\mathrm{V}$"
+},
+"2021M-15": {
+"marks": 3,
+"ch": 4,
+"q": "Describe the preparation of potassium permanganate. How does the acidified permanganate solution react with oxalic acid? Write the ionic equations for the reactions."
+},
+"2021M-16": {
+"marks": 3,
+"ch": 5,
+"q": "Discuss the nature of bonding in $\\ce{K4[Fe(CN)6]}$ on the basis of valence bond theory."
+},
+"2021M-17": {
+"marks": 3,
+"ch": 6,
+"q": "Write the equations for the preparation of 1-iodobutane from\n(i) 1-butanol (ii) 1-chlorobutane (iii) but-1-ene"
+},
+"2021M-18": {
+"marks": 3,
+"ch": 8,
+"q": "Write chemical reactions to affect the following transformations.\n(i) Butanal to butanoic acid\n(ii) Acetone to propane\n(iii) Benzaldehyde to m-nitro benzaldehyde"
+},
+"2021M-19": {
+"marks": 3,
+"ch": 9,
+"q": "Arrange the following in increasing order of their basic strength.\n(i) $\\ce{C6H5NH2}$, $\\ce{C6H5N(CH3)2}$, $\\ce{(C2H5)2NH}$\n(ii) Aniline, p-nitro aniline, p-toluidine\n(iii) $\\ce{C6H5NH2}$, $\\ce{C6H5NHCH3}$, $\\ce{C6H5CH2NH2}$"
+},
+"2021M-20": {
+"marks": 3,
+"ch": 7,
+"q": "Write the names of reagents and equations for the preparation of following ethers by Williamson's synthesis:\n(i) 1-propoxy propane\n(ii) Ethoxy benzene\n(iii) 2-methoxy-2-methyl propane"
+},
+"2021M-21": {
+"marks": 3,
+"ch": 9,
+"q": "Convert the following conversions :\nAniline to P-Nitroaniline"
+},
+"2021M-22": {
+"marks": 4,
+"ch": 1,
+"q": "(i) 18 g of Glucose $\\ce{C6H12O6}$, is dissolved in 1 kg of water in a saucepan. At what temperature will the solution boil at 1.013 bar? $K_b$ for water is 0.52 k $\\mathrm{kg\\,mol^{-1}}$ ? [C = 12, H = 1, O = 16 $\\mathrm{g\\,mol^{-1}}$]\n(ii) 200 $\\mathrm{cm^{3}}$ of aqueous solution of a protein contains 1.26 g of the protein. The osmotic pressure of such a solution at 300K is found to be $2.57 \\times 10^{-3}$ bar. Calculate the molar mass of the protein."
+},
+"2021M-23": {
+"marks": 4,
+"ch": 3,
+"q": "During nuclear explosion, one of the products is $\\ce{^{90}Sr}$ with half-life of 28.1 years. If $1\\ \\mu\\mathrm{g}$ of $\\ce{^{90}Sr}$ was absorbed in the bones of a newly born baby instead of calcium. How much of it will remain after 10 years and 60 years if it is not lost metabolically."
+},
+"2021M-24": {
+"marks": 4,
+"ch": 2,
+"q": "Discuss the method to determine electrode potential of copper and zinc by using standard hydrogen electrode."
+},
+"2021M-25": {
+"marks": 4,
+"ch": 5,
+"q": "Write down the IUPAC name of the following complexes and calculate their magnetic moment.\n(i) $\\ce{K3[Co(C2O4)3]}$\n(ii) $\\ce{Cs[FeCl4]}$"
+},
+"2021M-26": {
+"marks": 4,
+"ch": 9,
+"q": "Give the structures of A and B in the following reactions.\n(i) $\\ce{CH3CH2Br} \\xrightarrow{\\ce{KCN}}$ A $\\xrightarrow{\\begin{array}{l}\\mathrlap{\\text{(i)}\\ \\text{DIBAL-H,}}\\hphantom{\\text{(i)}\\ \\text{DIBAL-H,}} \\\\ \\text{(ii)}\\ \\ce{H2O}\\end{array}}$ B\n(ii) $\\ce{C6H5NO2} \\xrightarrow{\\ce{Fe/HCl}}$ A $\\xrightarrow{\\ce{(CH3CO)2O},\\ \\text{Pyridine}}$ B"
+},
+"2021M-27": {
+"marks": 4,
+"ch": 7,
+"q": "Explain:\n(i) Lucas test\n(ii) Cannizzaro reaction"
+},
+"2022S-1": {
+"marks": 2,
+"ch": 2,
+"q": "$\\Lambda^{\\circ}_{m}$ for $\\ce{NaCl}$, $\\ce{HCl}$ and NaAc are 126.4, 425.9 and 91.0 $\\mathrm{S\\,cm^{2}\\,mol^{-1}}$ respectively. Calculate $\\Lambda^{\\circ}$ for HAc."
+},
+"2022S-2": {
+"marks": 2,
+"ch": 2,
+"q": "Calculate equilibrium constant for the reaction occurring in the following cell at 298 K temperature.\n$\\ce{Co} \\mid \\ce{Co^{2+}(aq)} \\parallel \\ce{Ni^{2+}(aq)} \\mid \\ce{Ni}$\n$E^{\\circ}_{(\\ce{Co^{2+}}|\\ce{Co})} = -0.28\\ \\mathrm{V} \\qquad E^{\\circ}_{(\\ce{Ni^{2+}}|\\ce{Ni})} = -0.25\\ \\mathrm{V}$"
+},
+"2022S-3": {
+"marks": 2,
+"ch": 3,
+"q": "The rate of a reaction quadruples when the temperature changes from 293 K to 313 K. Calculate the energy of activation of the reaction assuming that it does not change with temperature."
+},
+"2022S-4": {
+"marks": 2,
+"ch": 5,
+"q": "Draw the geometrical isomers of $\\ce{[CoCl2(en)2]}$."
+},
+"2022S-5": {
+"marks": 2,
+"ch": 6,
+"q": "Give conversion: Ethene into butane."
+},
+"2022S-6": {
+"marks": 2,
+"ch": 9,
+"q": "Give IUPAC name of the following compounds.\n(i) $\\ce{CH3-CH(CH3)-N(CH3)-CH3}$\n(ii) $\\ce{CH3-CH2-NHCOCH3}$"
+},
+"2022S-7": {
+"marks": 2,
+"ch": 10,
+"q": "Write short note : Glycogen"
+},
+"2022S-8": {
+"marks": 2,
+"ch": 10,
+"q": "Write down Chemical reaction of glucose for the presence of carbonyl group"
+},
+"2022S-9": {
+"marks": 2,
+"ch": 10,
+"q": "What is Peptide Bond ? Explain with example."
+},
+"2022S-10": {
+"marks": 2,
+"ch": 4,
+"q": "Write down uses of d & f-Block element."
+},
+"2022S-11": {
+"marks": 2,
+"ch": 4,
+"q": "Write note on Interstitial Compounds."
+},
+"2022S-12": {
+"marks": 2,
+"ch": 5,
+"q": "Explain $\\ce{[NiCl4]^{2-}}$ complex ion by valence bond theory."
+},
+"2022S-13": {
+"marks": 3,
+"ch": 7,
+"q": "Write the equation of the reaction of hydrogen iodide with :\n(i) 1-propoxypropane\n(ii) methoxybenzene and\n(iii) benzyl ethyl ether."
+},
+"2022S-14": {
+"marks": 3,
+"ch": 3,
+"q": "The half-life for radioactive decay of $\\ce{^{14}C}$ is 5730 years. An archaeological artifact containing wood had only 80% of the $\\ce{^{14}C}$ found in a living tree. Estimate the age of the sample."
+},
+"2022S-15": {
+"marks": 3,
+"ch": 6,
+"q": "Explain $\\beta$-Elimination reaction for Alkyl halide."
+},
+"2022S-16": {
+"marks": 3,
+"ch": 9,
+"q": "How will you convert : Methanamine into Ethanamine."
+},
+"2022S-17": {
+"marks": 3,
+"ch": 9,
+"q": "Give conversion (three steps)\nAniline into 4-Bromo aniline."
+},
+"2022S-18": {
+"marks": 3,
+"ch": 4,
+"q": "Write reaction to prepare $\\ce{KMnO4}$ and its two properties."
+},
+"2022S-19": {
+"marks": 3,
+"ch": 7,
+"q": "Explain the reaction Hydroboration oxidation to prepare propan-1-ol from propene."
+},
+"2022S-20": {
+"marks": 3,
+"ch": 8,
+"q": "Write reactions to obtain acetic acid from ethanenitrile, acetyl chloride and ethyl ethonoate."
+},
+"2022S-21": {
+"marks": 3,
+"ch": 2,
+"q": "The molar conductivity of $0.025\\ \\mathrm{mol\\,L^{-1}}$ methanoic acid is $46.1\\ \\mathrm{S\\,cm^{2}\\,mol^{-1}}$. Calculate its degree of dissociation and dissociation constant. Given $\\lambda^{\\circ}(\\ce{H+}) = 349.6\\ \\mathrm{S\\,cm^{2}\\,mol^{-1}}$ and $\\lambda^{\\circ}(\\ce{HCOO-}) = 54.6\\ \\mathrm{S\\,cm^{2}\\,mol^{-1}}$"
+},
+"2022S-22": {
+"marks": 4,
+"ch": 1,
+"q": "2g of benzoic acid $\\ce{(C6H5COOH)}$ dissolved in 25g of benzene shows a depression in freezing point equal to 1.62K molal depression constant for benzene is 4.9K $\\mathrm{kg\\,mol^{-1}}$. What is the percentage association of acid if it forms dimer in solution? (Molecular mass of benzoic acid is 122 $\\mathrm{g\\,mol^{-1}}$)"
+},
+"2022S-23": {
+"marks": 4,
+"ch": 2,
+"q": "Predict the products of electrolysis in each of the following :\n(i) An aqueous solution of $\\ce{AgNO3}$ with silver electrodes.\n(ii) An aqueous solution of $\\ce{AgNO3}$ with platinum electrodes.\n(iii) A dilute solution of $\\ce{H2SO4}$ with platinum electrodes.\n(iv) An aqueous solution of $\\ce{CuCl2}$ with platinum electrodes."
+},
+"2022S-24": {
+"marks": 4,
+"ch": 7,
+"q": "Write Kolbe and Reimer Tiemann reaction of phenol."
+},
+"2022S-25": {
+"marks": 4,
+"ch": 5,
+"q": "Discuss the nature of bonding in the following coordination entities on the basis of valence bond theory : $\\ce{[Co(C2O4)3]^{3-}}$"
+},
+"2022S-26": {
+"marks": 4,
+"ch": 8,
+"q": "Write chemical reactions to affect the following transformations :\n(i) Butan-1-ol to butanoic acid\n(ii) Benzyl alcohol to phenylethanoic acid\n(iii) 3-Nitrobromobenzene to 3-nitrobenzoic acid\n(iv) 4-Methylacetophenone to benzene-1,4-dicarboxylic acid"
+},
+"2022S-27": {
+"marks": 4,
+"ch": 3,
+"q": "What is half-life of a reaction? Derive formula for half-life of zero and first order reaction."
+},
+"2022M-1": {
+"marks": 2,
+"ch": 2,
+"q": "What is Ionic conductance ? Which factors affect on it."
+},
+"2022M-2": {
+"marks": 2,
+"ch": 2,
+"q": "A solution of $\\ce{Ni(NO3)2}$ is electrolysed between platinum electrodes using a current of 5 amperes for 20 minutes. What mass of Ni is deposited at the cathode ? (Atomic mass of Ni = 58.7 u)"
+},
+"2022M-3": {
+"marks": 2,
+"ch": 3,
+"q": "State two differences between molecularity and order of reaction."
+},
+"2022M-4": {
+"marks": 2,
+"ch": 5,
+"q": "Write down IUPAC Name of the following Compound.\n(1) $\\ce{K2[Zn(OH)4]}$, (2) $\\ce{K3[Cr(C2O4)3]}$"
+},
+"2022M-5": {
+"marks": 2,
+"ch": 5,
+"q": "Draw the isomers of $\\ce{[Co(NH3)3(NO2)3]}$ complex."
+},
+"2022M-6": {
+"marks": 2,
+"ch": 6,
+"q": "Give conversion : 1-chlorobutane into n-octane"
+},
+"2022M-7": {
+"marks": 2,
+"ch": 9,
+"q": "Why cannot aromatic primary amines be prepared by Gabriel phthalimide synthesis ?"
+},
+"2022M-8": {
+"marks": 2,
+"ch": 4,
+"q": "Preparation of $\\ce{K2Cr2O7}$ from Chromite ore."
+},
+"2022M-9": {
+"marks": 2,
+"ch": 10,
+"q": "State the reactions which prove the presense of –C(=O)– and primary –OH group in glucose."
+},
+"2022M-10": {
+"marks": 2,
+"ch": 10,
+"q": "Write note on Starch."
+},
+"2022M-11": {
+"marks": 2,
+"ch": 10,
+"q": "Explain Amphoteric Nature of Amino acid."
+},
+"2022M-12": {
+"marks": 2,
+"ch": 4,
+"q": "Why are $\\ce{Mn^{2+}}$ compounds more stable than $\\ce{Fe^{2+}}$ towards oxidatioin to their +3 state ?"
+},
+"2022M-13": {
+"marks": 3,
+"ch": 6,
+"q": "Arrange the compounds of each set in order of reactivity towards $\\mathrm{S_N2}$ displacement :\n(i) 2-Bromo-2-methylbutane, 1-Bromopentane, 2-Bromopentane\n(ii) 1-Bromo-3-methylbutane, 2-Bromo-2-methylbutane, 2-Bromo-3-methylbutane,\n(iii) 1-Bromobutane, 1-Bromo-2,2-dimethylpropane, 1-Bromo-2-methylbutane, 1-Bromo-3 methylbutane."
+},
+"2022M-14": {
+"marks": 3,
+"ch": 3,
+"q": "Derive equation of rate constant and half reaction time for zero order reaction."
+},
+"2022M-15": {
+"marks": 3,
+"ch": 4,
+"q": "What is interstitial compound ? Write its characteristics."
+},
+"2022M-16": {
+"marks": 3,
+"ch": 8,
+"q": "Write the reactions of formaldehyde, acetaldehyde and acetone with methyl magnesium bromide."
+},
+"2022M-17": {
+"marks": 3,
+"ch": 7,
+"q": "Write the mechanism of acid dehydration of ethanol to yield ethene."
+},
+"2022M-18": {
+"marks": 3,
+"ch": 8,
+"q": "Complete the reactions :\n(i) $\\ce{C6H5COOH + SOCl2 ->}$\n(ii) $\\ce{CH3COOH} \\xrightarrow{\\begin{array}{l}\\text{(i) }\\ce{X2}/\\text{Red P}\\\\ \\text{(ii) }\\ce{H2O}\\end{array}}$\n(iii) $\\ce{CH3CH2COOH + NH3} \\xrightarrow{\\Delta}$"
+},
+"2022M-19": {
+"marks": 3,
+"ch": 9,
+"q": "Give conversion in three steps : Nitrobenzene into chlorobenzene."
+},
+"2022M-20": {
+"marks": 3,
+"ch": 9,
+"q": "Convert Aniline into 1, 3, 5 tribromo benzene."
+},
+"2022M-21": {
+"marks": 3,
+"ch": 2,
+"q": "Explain Standard Hydrogen Electrode."
+},
+"2022M-22": {
+"marks": 4,
+"ch": 1,
+"q": "0.6 mL of $\\ce{CH3COOH}$ having density $1.06\\ \\mathrm{g\\,mL^{-1}}$ is dissolved in 1 litre of water. The depression in freezing point observed for this strength of acid was $0.0205\\ ^{\\circ}\\mathrm{C}$. Calculate the Van't Hoff factor and the dissociation constant of acid ($K_f = 1.86\\ \\mathrm{K\\,kg\\,mol^{-1}}$ and molecular mass of $\\ce{CH3COOH}$ = $60\\ \\mathrm{g\\,mol^{-1}}$)"
+},
+"2022M-23": {
+"marks": 4,
+"ch": 2,
+"q": "Explain variation of conductivity and molar conductivity with concentration."
+},
+"2022M-24": {
+"marks": 4,
+"ch": 5,
+"q": "Explain on the basis of valence bond theory that $\\ce{[Fe(H2O)6]^{3+}}$ is paramagnetic where as $\\ce{[Fe(CN)6]^{4-}}$ is diamagnetic."
+},
+"2022M-25": {
+"marks": 4,
+"ch": 7,
+"q": "Write the reactions to prepared phenol from Aniline and Cumene."
+},
+"2022M-26": {
+"marks": 4,
+"ch": 8,
+"q": "Write Wolff-Kishner and Clemmensen reduction of aldehyde and ketone."
+},
+"2022M-27": {
+"marks": 4,
+"ch": 3,
+"q": "The rate constant for the first order decomposition of $\\ce{H2O2}$ is given by the following equation :\n$\\log k = 14.34 - 1.25 \\times 10^{4}\\ \\mathrm{K}/T$\nCalculate $E_a$ for this reaction and at what temperature will its half-period be 256 minutes?"
+},
+"2023M-1": {
+"marks": 2,
+"ch": 3,
+"q": "How catalyst increases the rate of reaction? Explain it by graph."
+},
+"2023M-2": {
+"marks": 2,
+"ch": 2,
+"q": "Calculate the potential of hydrogen electrode in contact with a solution whose pH is 10."
+},
+"2023M-3": {
+"marks": 2,
+"ch": 2,
+"q": "Explain Kohlrausch Law with example."
+},
+"2023M-4": {
+"marks": 2,
+"ch": 5,
+"q": "Explain the nature of bonding in metal carbonyls."
+},
+"2023M-5": {
+"marks": 2,
+"ch": 6,
+"q": "Write down chemical equations to prepare following substances from 1-Chloropropane.\n(i) Propene (ii) Propan-1-ol"
+},
+"2023M-6": {
+"marks": 2,
+"ch": 9,
+"q": "Write down chemical equations to prepare orange and yellow dye from diazonium salt."
+},
+"2023M-7": {
+"marks": 2,
+"ch": 10,
+"q": "Write down structural difference between DNA and RNA : [Any two points]"
+},
+"2023M-8": {
+"marks": 2,
+"ch": 10,
+"q": "What is the effect of denaturation on the structure of proteins?"
+},
+"2023M-9": {
+"marks": 2,
+"ch": 4,
+"q": "Explain $\\ce{TiCl3}$ is paramagnetic and $\\ce{TiCl4}$ is diamagnetic"
+},
+"2023M-10": {
+"marks": 2,
+"ch": 10,
+"q": "Explain preparation of glucose."
+},
+"2023M-11": {
+"marks": 2,
+"ch": 5,
+"q": "Draw Geometrical isomers of $\\ce{[CoCl2(en)2]+}$"
+},
+"2023M-12": {
+"marks": 2,
+"ch": 4,
+"q": "Write short note on alloys."
+},
+"2023M-13": {
+"marks": 3,
+"ch": 7,
+"q": "Explain preparation of phenol by Cumene's process."
+},
+"2023M-14": {
+"marks": 3,
+"ch": 3,
+"q": "The following data were obtained during the first order thermal decomposition of $\\ce{N2O5(g)}$ at constant volume : $\\ce{2N2O5(g) -> 2N2O4(g) + O2(g)}$\nS.No | Time $\\ce{(s)}$ | Total Pressure (atm)\n1 | 0 | 0.5\n2 | 100 | 0.512\nCalculate the rate constant."
+},
+"2023M-15": {
+"marks": 3,
+"ch": 6,
+"q": "Write the equations for the preparation of 1-iodobutane from\n(i) 1-butanol (ii) 1-chlorobutane\n(iii) but-1-ene."
+},
+"2023M-16": {
+"marks": 3,
+"ch": 9,
+"q": "Explain Hoffmann bromamide degradation reaction."
+},
+"2023M-17": {
+"marks": 3,
+"ch": 9,
+"q": "Explain Acylation of Amine compound."
+},
+"2023M-18": {
+"marks": 3,
+"ch": 4,
+"q": "Give reason :\n(i) Transition elements exhibit higher enthalpies of atomisation.\n(ii) In aqueous solution, $\\ce{Cr^{2+}}$ is stronger reducing agent than $\\ce{Fe^{2+}}$.\n(iii) The second ionisation enthalpy of Cu is higher then Zn."
+},
+"2023M-19": {
+"marks": 3,
+"ch": 7,
+"q": "Explain dehydration reaction of alcohol to form alkene."
+},
+"2023M-20": {
+"marks": 3,
+"ch": 7,
+"q": "Explain different Friedel-Crafts reactions of anisole."
+},
+"2023M-21": {
+"marks": 3,
+"ch": 2,
+"q": "What is limiting molar conductivity? Explain relation between molar conductivity and concentration of solution with strong electrolyte."
+},
+"2023M-22": {
+"marks": 4,
+"ch": 1,
+"q": "Vapour pressure of Chloroform $\\ce{(CHCl3)}$ and Dichloromethane $\\ce{(CH2Cl2)}$ at 298 K are 200 mm Hg and 415 mm Hg respectively.\n(i) Calculate the vapour pressure of the solution prepared by mixing 50 g of $\\ce{CHCl3}$ and 30 g of $\\ce{CH2Cl2}$ at 298 K.\n(ii) Calculate mole fractions of each component in vapour phase.\n[Atomic mass: H = 1, C = 12, Cl = 35.5]"
+},
+"2023M-23": {
+"marks": 4,
+"ch": 1,
+"q": "Calculate the depression in the freezing point of water when 10 g of $\\ce{CH3CH2CHClCOOH}$ is added to 250 g of water.\n$K_a = 1.4 \\times 10^{-3}$, $K_f$ = 1.86 $\\mathrm{K\\,kg\\,mol^{-1}}$\n[Atomic mass: H = 1, C = 12, O = 16, Cl = 35.5]"
+},
+"2023M-24": {
+"marks": 4,
+"ch": 2,
+"q": "$\\Lambda^{\\circ}_{m}$ for $\\ce{NaCl}$, $\\ce{HCl}$ and NaAc are 126.4, 425.9 and 91.0 $\\mathrm{S\\,cm^{2}\\,mol^{-1}}$ respectively. Conductivity of 0.00241 M acetic acid is $7.896 \\times 10^{-5}\\ \\mathrm{S\\,cm^{-1}}$. Calculate molar conductivity and dissociation constant of acetic acid."
+},
+"2023M-25": {
+"marks": 4,
+"ch": 5,
+"q": "$\\ce{[Mn(H2O)6]^{2+}}$ contains five unpaired electrons, while $\\ce{[Mn(CN)6]^{4-}}$ contains only one unpaired electron. Explain using crystal field theory."
+},
+"2023M-26": {
+"marks": 4,
+"ch": 8,
+"q": "An organic compound with the molecular formula $\\ce{C9H10O}$ forms 2, 4-DNP derivative, reduces Tollens' reagent and undergoes Cannizzaro reaction. On vigorous oxidation it gives 1,2-benzenedicarboxylic acid. Identify the compound and write down it's above chemical reactions."
+},
+"2023M-27": {
+"marks": 4,
+"ch": 7,
+"q": "What is meant by hydroboration-oxidation reaction? Illustrate it with an example."
+},
+"2023S-1": {
+"marks": 2,
+"ch": 10,
+"q": "Which product obtain during Hydrolysis of following compound\n(1) Sucrose (2) Lactose"
+},
+"2023S-2": {
+"marks": 2,
+"ch": 10,
+"q": "What is reducing sugar ? Explain with example."
+},
+"2023S-3": {
+"marks": 2,
+"ch": 6,
+"q": "Explain Swartz reaction with example."
+},
+"2023S-4": {
+"marks": 2,
+"ch": 9,
+"q": "Write note on Carbyl Amine Test"
+},
+"2023S-5": {
+"marks": 2,
+"ch": 9,
+"q": "Write Gabriel phthalimide synthesis for preparation of primary amine."
+},
+"2023S-6": {
+"marks": 2,
+"ch": 4,
+"q": "Discuss comparison between Lanthanoids and Actinoids."
+},
+"2023S-7": {
+"marks": 2,
+"ch": 3,
+"q": "The rate constants of a reaction at 500 K and 700 K are 0.02 $\\mathrm{s^{-1}}$ and 0.07 $\\mathrm{s^{-1}}$ respectively. Calculate the value of $E_a$."
+},
+"2023S-8": {
+"marks": 2,
+"ch": 5,
+"q": "Draw Geometrical and Optical Isomers of $\\ce{[Co(NH3)Cl(en)2]^{2+}}$."
+},
+"2023S-9": {
+"marks": 2,
+"ch": 6,
+"q": "Give conversion: Benzene to 4-Bromonitro Benzene"
+},
+"2023S-10": {
+"marks": 2,
+"ch": 10,
+"q": "Give only chemical reactions to prove that in structure of Glucose, there are five Alcoholic (–OH) Groups and out of it one is primary Alcoholic (–OH) Group."
+},
+"2023S-11": {
+"marks": 2,
+"ch": 4,
+"q": "Why the transition elements are hard and have high melting and boiling point ?"
+},
+"2023S-12": {
+"marks": 2,
+"ch": 5,
+"q": "What is crystal field splitting energy ? How does the magnitude of $\\Delta_o$ decide the actual configuration of d orbitals in a coordination entity ?"
+},
+"2023S-13": {
+"marks": 3,
+"ch": 6,
+"q": "Explain $\\beta$-Elimination reaction of Haloalkane."
+},
+"2023S-14": {
+"marks": 3,
+"ch": 1,
+"q": "Heptane and Octane form an ideal solution. At 373 K, the vapour pressures of the two liquid components are 105.2 kPa and 46.8 kPa respectively. What will be the vapour pressure of a mixture of 26.0 g of heptane and 35 g of octane?"
+},
+"2023S-15": {
+"marks": 3,
+"ch": 3,
+"q": "Derive integrated rate equation for zero order reaction."
+},
+"2023S-16": {
+"marks": 3,
+"ch": 3,
+"q": "During nuclear explosion, one of the products is $\\ce{^{90}Sr}$ with half life of 28.1 years. If $1\\ \\mu\\mathrm{g}$ of $\\ce{^{90}Sr}$ was absorbed in the bones of a newly born baby instead of Calcium. How much of it will remain after 10 years. If it is not lost metabolically."
+},
+"2023S-17": {
+"marks": 3,
+"ch": 4,
+"q": "Write General Chemical reactions of the Lanthanoids. (Any six)"
+},
+"2023S-18": {
+"marks": 3,
+"ch": 9,
+"q": "Explain Nitration of Aniline."
+},
+"2023S-19": {
+"marks": 3,
+"ch": 7,
+"q": "Write the products of the following reactions :\n(a) $\\ce{CH3-CH=CH2} \\xrightarrow{\\ce{H2O/H+}}$\n(b) $\\ce{CH3-CH2-CH(CH3)-CHO} \\xrightarrow{\\ce{NaBH4}}$\n(c) $\\ce{C6H5OC2H5} \\xrightarrow{\\text{Conc}\\ \\ce{H2SO4},\\ \\text{Conc}\\ \\ce{HNO3}}$"
+},
+"2023S-20": {
+"marks": 3,
+"ch": 7,
+"q": "Write the mechanism of hydration of ethene to yield ethanol."
+},
+"2023S-21": {
+"marks": 3,
+"ch": 2,
+"q": "Derive Nernst Equation for Daniell Cell."
+},
+"2023S-22": {
+"marks": 4,
+"ch": 1,
+"q": "0.6 ml of acetic acid ($\\ce{CH3COOH}$), having density $1.06\\ \\mathrm{g\\,ml^{-1}}$, is dissolved in 1 litre of water. The depression in freezing point observed for this strength of acid was $0.0205\\ ^{\\circ}\\mathrm{C}$. Calculate the Van't Hoff factor and the dissociation constant of acid."
+},
+"2023S-23": {
+"marks": 4,
+"ch": 2,
+"q": "Three electrolytic cells, A,B,C containing solutions of $\\ce{ZnSO4}$, $\\ce{AgNO3}$, and $\\ce{CuSO4}$ respectively are connected in series. A steady current of 1.5 amperes was passed through them until 1.45g of silver deposited at the cathode of cell B. How long did the current flow? What mass of copper and zinc were deposited?\n(Atomic Mass Ag: 108 u, Cu: 63.5 u, Zn: 65.3 u)"
+},
+"2023S-24": {
+"marks": 4,
+"ch": 2,
+"q": "Write only reactions taking place on Anode and Cathode in:\n(a) Dry cell (b) Lead storage battery\n(c) Fuel cell (d) Corrosion of Iron"
+},
+"2023S-25": {
+"marks": 4,
+"ch": 8,
+"q": "(a) Give simple chemical test to distinguish between propanal and propanone.\n(b) Explain aldol condensation reaction giving example."
+},
+"2023S-26": {
+"marks": 4,
+"ch": 5,
+"q": "(a) (i) Write IUPAC name of $\\ce{K3[Cr(C2O4)3]}$, complex.\n(ii) Write formula of Tetrammine aquachlorido cobalt (III) chloride.\n(b) $\\ce{[Cr(NH3)6]^{3+}}$, is paramagnetic while $\\ce{[Ni(CN)4]^{2-}}$, is diamagnetic. Explain why?"
+},
+"2023S-27": {
+"marks": 4,
+"ch": 7,
+"q": "Explain preparation of Ethers by William Son Synthesis."
+},
+"2024S-1": {
+"marks": 2,
+"ch": 2,
+"q": "The conductivity of 0.001 M $\\ce{CH3COOH}$ is $4.9 \\times 10^{-5}\\ \\mathrm{S\\,cm^{-1}}$, calculate degree of dissociation of $\\ce{CH3COOH}$ if $\\Lambda^{\\circ}_{m}$ for $\\ce{CH3COOH}$ is $390.5\\ \\mathrm{S\\,cm^{2}\\,mol^{-1}}$."
+},
+"2024S-2": {
+"marks": 2,
+"ch": 3,
+"q": "Explain pseudo first order reaction."
+},
+"2024S-3": {
+"marks": 2,
+"ch": 4,
+"q": "Aqueous solution of $\\ce{TiCl3}$ is coloured where as aqueous solution of $\\ce{TiCl4}$ is colourless. Give reason."
+},
+"2024S-4": {
+"marks": 2,
+"ch": 4,
+"q": "State the characteristics of Interstitial compounds."
+},
+"2024S-5": {
+"marks": 2,
+"ch": 5,
+"q": "Draw the geometrical isomers of $\\ce{[Co(NH3)3(NO2)3]}$."
+},
+"2024S-6": {
+"marks": 2,
+"ch": 5,
+"q": "Explain Ambidentate Ligand with example."
+},
+"2024S-7": {
+"marks": 2,
+"ch": 6,
+"q": "Give following conversion in two steps : Benzyl chloride into Benzyl bromide."
+},
+"2024S-8": {
+"marks": 2,
+"ch": 6,
+"q": "State the reaction equation of Ethyl Chloride with the following compounds :\n(i) Aqueous $\\ce{KOH}$ (ii) Alcoholic $\\ce{KOH}$"
+},
+"2024S-9": {
+"marks": 2,
+"ch": 7,
+"q": "Give reason : Ethanol has higher boiling point then that of methoxy methane."
+},
+"2024S-10": {
+"marks": 2,
+"ch": 8,
+"q": "Explain : Clemmensen reaction with one example."
+},
+"2024S-11": {
+"marks": 2,
+"ch": 10,
+"q": "Exaplain : Sucrose is a non reducing sugar (figure not essential)."
+},
+"2024S-12": {
+"marks": 2,
+"ch": 10,
+"q": "State the difference between globular and fibrous proteins."
+},
+"2024S-13": {
+"marks": 3,
+"ch": 1,
+"q": "Explain osmosis and osmatic pressure. Derive formula to find the molecular mass of solute on the basis of osmatic pressure of solution."
+},
+"2024S-14": {
+"marks": 3,
+"ch": 2,
+"q": "Calculate cell potential of following given cell at 298 K temperature.\n$\\ce{Mg(s)} \\mid \\ce{Mg^{2+}}(0.001\\ \\mathrm{M}) \\parallel \\ce{Cl-}(0.02\\ \\mathrm{M}) \\mid \\ce{Cl2}(\\mathrm{g},\\ 1\\ \\text{bar}) \\mid \\ce{Pt(s)}$\n$E^{\\circ}_{(\\ce{Mg^{2+}/Mg})} = -2.36\\ \\mathrm{V}$\n$E^{\\circ}_{(\\ce{Cl2/Cl-})} = 1.36\\ \\mathrm{V}$"
+},
+"2024S-15": {
+"marks": 3,
+"ch": 3,
+"q": "Derive equation of rate constant and half life of reaction for the zeroth order reaction."
+},
+"2024S-16": {
+"marks": 3,
+"ch": 4,
+"q": "State the balance reaction equations of acidic permanganate ion with\n(i) $\\ce{Fe^{2+}}$, (ii) $\\ce{C2O4^{2-}}$, (iii) $\\ce{SO2}$"
+},
+"2024S-17": {
+"marks": 3,
+"ch": 6,
+"q": "Although chlorine is an electron withdrawing group, yet it is ortho, para directing in electrophilic aromatic substitution reaction, Explain."
+},
+"2024S-18": {
+"marks": 3,
+"ch": 7,
+"q": "State the reactions to prepare primary, secondary and tertiary alcohol from Grignard's reagent."
+},
+"2024S-19": {
+"marks": 3,
+"ch": 8,
+"q": "State the reaction equation to prepare Benzoic Acid from the following compounds.\n(i) Ethyl benzene (ii) Benzoic anhydride\n(iii) Benzamide"
+},
+"2024S-20": {
+"marks": 3,
+"ch": 8,
+"q": "Give following conversion in three steps :\nEthanoic acid into Methanol"
+},
+"2024S-21": {
+"marks": 3,
+"ch": 9,
+"q": "Write only\n(i) Carbylamine, (ii) Diazotisation and\n(iii) Acylation reaction of Aniline"
+},
+"2024S-22": {
+"marks": 4,
+"ch": 1,
+"q": "Benzene and toluene form ideal solution over the entire range of composition. The vapour pressure of pure benzene and toluene at 300 K are 50.7 mm Hg and 32.1 mm Hg respectively. Calculate the mole fraction of benzene in vapour phase if 78 gm of benzene is mixed with 138 gm of toluene.\n(Atomic mass : C = 12 u, H = 1 u)."
+},
+"2024S-23": {
+"marks": 4,
+"ch": 2,
+"q": "Explain the chemistry of corrosion of iron and state the methods to prevent the corrosion."
+},
+"2024S-24": {
+"marks": 4,
+"ch": 3,
+"q": "The time required for 10% completion of a first order reaction at 298 K is equal to that required for its 25% completion at 308 K. Calculate the value of energy of activation for the reaction."
+},
+"2024S-25": {
+"marks": 4,
+"ch": 5,
+"q": "Explain on the basis of valance bond theory that $\\ce{[Ni(CN)4]^{2-}}$ ion with square planar structure and the $\\ce{[NiCl4]^{2-}}$ ion with tetrahydral geometry."
+},
+"2024S-26": {
+"marks": 4,
+"ch": 7,
+"q": "State Kolbe and Reimer - Tiemann reaction of phenol."
+},
+"2024S-27": {
+"marks": 4,
+"ch": 8,
+"q": "An organic compound with the molecular formula $\\ce{C8H8O}$ forms 2, 4 - DNP derivative, reduce Tollen's reagent and undergoes cannizzaro reaction. On vigorous oxidation it gives 1, 4 benzene di-carboxylic acid. Identify the compound and write the equation for the reactions involved."
+},
+"2025M-1": {
+"marks": 2,
+"ch": 2,
+"q": "Write Faraday's laws of Electrolysis."
+},
+"2025M-2": {
+"marks": 2,
+"ch": 3,
+"q": "Explain that for First order reaction Half-life time (t½) is independent of intial concentration [R]₀."
+},
+"2025M-3": {
+"marks": 2,
+"ch": 4,
+"q": "Give two examples of disproportionation reaction in aqueous solution. (only equations)"
+},
+"2025M-4": {
+"marks": 2,
+"ch": 4,
+"q": "Scandium (Z = 21) is a transition element but Zn (Z = 30) is not. Explain it."
+},
+"2025M-5": {
+"marks": 2,
+"ch": 5,
+"q": "Write the IUPAC name of the following coordination compounds.\n(i) [Ag(NH₃)₂][Ag(CN)₂] (ii) [Pt(NH₃)₂Cl(NO₂)]"
+},
+"2025M-6": {
+"marks": 2,
+"ch": 5,
+"q": "Draw the structure of optical isomers of [Cr(NH₃)₂Cl₂(en)]⁺"
+},
+"2025M-7": {
+"marks": 2,
+"ch": 6,
+"q": "Convert Ethanol to Ethyl Fluoride in two steps."
+},
+"2025M-8": {
+"marks": 2,
+"ch": 6,
+"q": "A Hydrocarbon C₅H₁₀ does not react with Chlorine in dark but gives a single Monochloro compound C₅H₉Cl in bright sunlight. Identify the hydrocarbon by giving reactions."
+},
+"2025M-9": {
+"marks": 2,
+"ch": 7,
+"q": "Complete the following reaction :\n(i) (CH₃)₃C–OH —(Cu, 573 K)→\n(ii) CH₃–CH = CH – CH₂OH —(PCC)→"
+},
+"2025M-10": {
+"marks": 2,
+"ch": 8,
+"q": "How will you get But-2-enal from Ethanal. (Only reactions)"
+},
+"2025M-11": {
+"marks": 2,
+"ch": 10,
+"q": "Mention the reactions of D-Glucose with\n(i) Bromine Water and (ii) HNO₃"
+},
+"2025M-12": {
+"marks": 2,
+"ch": 10,
+"q": "Mention only the name of diseases which caused by deficiency of Vitamin-B₆, Vitamin-B₁₂, Thiamine and Ascorbic Acid."
+},
+"2025M-13": {
+"marks": 3,
+"ch": 1,
+"q": "Define freezing point and derive the formula related with ΔTf, Kf and Molar Mass."
+},
+"2025M-14": {
+"marks": 3,
+"ch": 2,
+"q": "The Cell in which the following reaction occurs:\n2Fe³⁺(aq) + 2I⁻(aq) → 2Fe²⁺(aq) + I₂(s)\nAt 298 K: E°(Fe³⁺/Fe²⁺) = 0.77 V, E°(I₂/I⁻) = 0.54 V\nCalculate the standard Gibb's energy and the equilibrium constant of the cell reaction."
+},
+"2025M-15": {
+"marks": 3,
+"ch": 3,
+"q": "The first order rate constant for the decomposition of Ethyl Iodide by the reaction C₂H₅I(g) → C₂H₄(g) + HI(g) at 600K is 1.60 × 10⁻⁵ s⁻¹. Its energy of Activation is 209 kJ/mol. Calculate the rate constant of the reaction at 700 K."
+},
+"2025M-16": {
+"marks": 3,
+"ch": 4,
+"q": "State only Ionic reactions [In Acidic Medium] when KMnO₄ reacts with\n(i) I⁻ (ii) Fe²⁺ (iii) S²⁻"
+},
+"2025M-17": {
+"marks": 3,
+"ch": 6,
+"q": "Write the equations for the preparation of 1-Iodobutane from\n(i) Butan-1-ol (ii) 1-Chlorobutane (iii) But-1-ene"
+},
+"2025M-18": {
+"marks": 3,
+"ch": 7,
+"q": "Explain Reimer - Tiemann Reaction."
+},
+"2025M-19": {
+"marks": 3,
+"ch": 8,
+"q": "Write only reactions when Cyclohexanecarbaldehyde reacts with\n(i) PhMgBr (ii) Tollen's Reagent\n(iii) Zinc amalgam with dilute HCl"
+},
+"2025M-20": {
+"marks": 3,
+"ch": 9,
+"q": "How will you convert Aniline to 4-Bromo Aniline. Explain it by giving equations."
+},
+"2025M-21": {
+"marks": 3,
+"ch": 9,
+"q": "Describe a method for the identification of 1°, 2° and 3° amines. Also write chemical equations of the reaction involved."
+},
+"2025M-22": {
+"marks": 4,
+"ch": 1,
+"q": "Calculate the depression in the freezing point of water when 20 g of CH₃CH₂CHClCOOH is added to 500 g of water. Ka = 1.4 × 10⁻³, Kf = 1.86 K kg mol⁻¹ (Atomic mass C = 12 u, H = 1 u, O = 16 u, Cl = 35.5 u)"
+},
+"2025M-23": {
+"marks": 4,
+"ch": 2,
+"q": "Write only reactions which occurs on Anode and Cathode of Fuel Cell and Mercury Cell."
+},
+"2025M-24": {
+"marks": 4,
+"ch": 3,
+"q": "The following data were obtained during the first order thermal decomposition of SO₂Cl₂ at a constant volume. SO₂Cl₂(g) → SO₂(g) + Cl₂(g) Calculate the rate of the reaction when total pressure is 0.65 atm.\nExperiment | Time/s | Total Pressure (atm)\n1 | 0 | 0.5\n2 | 100 | 0.6"
+},
+"2025M-25": {
+"marks": 4,
+"ch": 5,
+"q": "Explain on the basis of valence bond theory that [Ni(CN)₄]²⁻ ion with square planar structure is diamagnetic and [NiCl₄]²⁻ ion with tetrahedral geometry is paramagnetic."
+},
+"2025M-26": {
+"marks": 4,
+"ch": 7,
+"q": "Write the names of reagent and equation for the preparation of the following Ether by Williamson's synthesis.\n(i) 1-propoxy propane\n(ii) Ethoxy benzene\n(iii) 2-Methoxy-2-Methyl propane\n(iv) 1-Methoxy ethane"
+},
+"2025M-27": {
+"marks": 4,
+"ch": 8,
+"q": "An organic compound (A) with the molecular formula C₈H₈O forms an Orange - red precipitate with 2, 4 - DNP reagent and gives yellow precipitate on heating with iodine in the presence of sodium hydroxide. It neither reduces Tollen's or Fehling's reagent, nor does it decolourise bromine water or Baeyer's reagent. On drastic oxidation with chromic acid, it gives a carboxylic Acid (B) having molecular formula C₇H₆O₂. Identify the compounds (A) and (B) and explain the reactions involved."
+},
+"2025S-1": {
+"marks": 2,
+"ch": 2,
+"q": "The conductivity of 0.001028 mol L⁻¹ acetic acid is 4.95 × 10⁻⁵ S cm⁻¹. Calculate its degree of dissociation if Λ°m for acetic acid is 390.5 S cm² mol⁻¹."
+},
+"2025S-2": {
+"marks": 2,
+"ch": 3,
+"q": "A reaction is first order with respect to A and second order with respect to B.\n(i) Write the differential rate equation\n(ii) How is the rate affected. When the concentration of both A and B are double."
+},
+"2025S-3": {
+"marks": 2,
+"ch": 4,
+"q": "On what ground can you say that Scandium (Z = 21) is a transition element but Zinc (Z = 30) is not ?"
+},
+"2025S-4": {
+"marks": 2,
+"ch": 4,
+"q": "Give Reason : The Transition metal generally form coloured compound."
+},
+"2025S-5": {
+"marks": 2,
+"ch": 5,
+"q": "What is Chelate ligand ? Give its one example."
+},
+"2025S-6": {
+"marks": 2,
+"ch": 5,
+"q": "Explain linkage Isomerism."
+},
+"2025S-7": {
+"marks": 2,
+"ch": 6,
+"q": "Write two step conversion from But-1-ene to But-2-ene."
+},
+"2025S-8": {
+"marks": 2,
+"ch": 6,
+"q": "p-Dichlorobenzene has higher melting point than those of O and m isomer ? Give Reason."
+},
+"2025S-9": {
+"marks": 2,
+"ch": 7,
+"q": "You are given benzene, Conc. H₂SO₄ and NaOH. Write the equations for the preparation of Phenol using these reagent."
+},
+"2025S-10": {
+"marks": 2,
+"ch": 8,
+"q": "Give simple chemical test to distinguish between propanal and propanone."
+},
+"2025S-11": {
+"marks": 2,
+"ch": 10,
+"q": "Explain peptide linkage by giving one example."
+},
+"2025S-12": {
+"marks": 2,
+"ch": 10,
+"q": "What products would be formed when a nucleotide from DNA containing thymine is hydrolysed ?"
+},
+"2025S-13": {
+"marks": 3,
+"ch": 1,
+"q": "Write any 3 differences between Ideal and Non-Ideal solutions."
+},
+"2025S-14": {
+"marks": 3,
+"ch": 2,
+"q": "Potential of given cell is 2.67 V at 298 K temperature, then find concentration x of solution of Anode half cell.\nMg(s) | Mg²⁺(xM) || Cu²⁺(0.0001M) | Cu(s)\n1bar\n[E°Mg²⁺|Mg = −2.36 V, E°Cu²⁺|Cu = 0.34 V]"
+},
+"2025S-15": {
+"marks": 3,
+"ch": 3,
+"q": "Answer the following question on catalyst\n(i) How it increases the rate of reaction\n(ii) Write any 4 characteristics of catalyst"
+},
+"2025S-16": {
+"marks": 3,
+"ch": 4,
+"q": "Complete the reaction and balance it.\n(i) MnO₂ + KOH + O₂ →\n(ii) MnO₄⁻ + H₂O + I⁻ —(OH⁻)→\n(iii) MnO₄⁻ + S₂O₃²⁻ + H₂O —(OH⁻)→"
+},
+"2025S-17": {
+"marks": 3,
+"ch": 7,
+"q": "Write equation of preparing Aspirin from Phenol in three steps."
+},
+"2025S-18": {
+"marks": 3,
+"ch": 6,
+"q": "Explain Mechanism of following reaction\nCH₃Cl + :OH⁻ → CH₃OH + :Cl⁻"
+},
+"2025S-19": {
+"marks": 3,
+"ch": 8,
+"q": "Although Phenoxide ion has more number of resonating structure than Carboxylate ion, Carboxylic acid is a stronger acid than Phenol. Why?"
+},
+"2025S-20": {
+"marks": 3,
+"ch": 9,
+"q": "Identify X, Y, Z from the following reactions (Write formula)\nC₆H₅CH₂Cl —(X)→ C₆H₅CH₂NO₂ —(Sn + HCl)→ Y —(Z)→ C₆H₅CH₂NC"
+},
+"2025S-21": {
+"marks": 3,
+"ch": 9,
+"q": "Arrange the following :\n(1) In increasing order of basic strength : Aniline, p-nitro aniline and p-toluidine\n(2) In increasing order of Boiling point. C₂H₅OH, (CH₃)₂NH, C₂H₅NH₂\n(3) In increasing order of solubility. C₆H₅NH₂, (C₂H₅)₂NH, C₂H₅NH₂"
+},
+"2025S-22": {
+"marks": 4,
+"ch": 1,
+"q": "Two elements A and B form compounds having formula AB₂ and AB₄. When dissolved in 20g of benzene (C₆H₆) 1 g of AB₂ lowers the freezing point by 2.3K where as 1.0g of AB₄ lowers its by 1.3K. The molal depression constant for benzene is 5.1 KKg mol⁻¹. Calculate atomic masses of A & B."
+},
+"2025S-23": {
+"marks": 4,
+"ch": 2,
+"q": "Write principle, construction and Cathodic Anodic reaction of Hydrogen fuel cell (Diagram not required)"
+},
+"2025S-24": {
+"marks": 4,
+"ch": 3,
+"q": "The rate constant for the first order decomposition of H₂O₂ is given by the following equation\nlogK = 14.34 − 1.25 × 10⁴ K/T\nCalculate Eₐ for this reaction and at what temperature will its half-period be 256 minutes."
+},
+"2025S-25": {
+"marks": 4,
+"ch": 5,
+"q": "Answer the following questions for the given complex : [Co(NH₃)₅Cl]SO₄\n(i) Write its IUPAC Name\n(ii) Write its ionisation Isomer\n(iii) Write its primary & secondary valence of central metal ion.\n(iv) Write its Hybridisation."
+},
+"2025S-26": {
+"marks": 4,
+"ch": 7,
+"q": "Write products of the following reactions.\n(i) (CH₃)₃C–OH —(Cu, 573K)→\n(ii) CH₃–CH(OH)–CH₃ —(1) conc H₂SO₄)→\n(iii) CH₃–O–C₂H₅ + HI →\n(iv) Cyclohexanol (C₆H₁₁OH) —(Na₂Cr₂O₇ | H₂SO₄)→"
+},
+"2025S-27": {
+"marks": 4,
+"ch": 8,
+"q": "Explain the following reactions.\n(i) Cannizzaro Reaction\n(ii) Etard Reaction"
+},
+"2026M-1": {
+"marks": 2,
+"ch": 5,
+"q": "Explain the nature of bonding in metal carbonyls."
+},
+"2026M-2": {
+"marks": 2,
+"ch": 6,
+"q": "Give one example of each for Swarts reaction and Finkelstein reaction of alkyl halide."
+},
+"2026M-3": {
+"marks": 2,
+"ch": 7,
+"q": "Write the mechanism of acid dehydration of ethanol to yield ethene."
+},
+"2026M-4": {
+"marks": 2,
+"ch": 2,
+"q": "A solution of $\\ce{Ni(NO3)2}$ is electrolysed between platinum electrodes using a current of 5 amperes for 20 minutes. What mass of Ni is deposited at the cathode? (Atomic mass of Ni = 58.7u)"
+},
+"2026M-5": {
+"marks": 2,
+"ch": 3,
+"q": "What is meant by pseudo first order reaction? Explain giving example."
+},
+"2026M-6": {
+"marks": 2,
+"ch": 4,
+"q": "What are alloys? Name an important alloy which contains some of the lanthanoid metals. Mention its uses."
+},
+"2026M-7": {
+"marks": 2,
+"ch": 4,
+"q": "Predict which of the following will be coloured in aqueous solution? $\\ce{Ti^{3+}}$, $\\ce{V^{3+}}$, $\\ce{Cu+}$, $\\ce{Sc^{3+}}$, $\\ce{Mn^{2+}}$, $\\ce{Fe^{3+}}$ and $\\ce{Co^{2+}}$. Give reasons for each. [Ti (Z=22), V (Z=23), Cu (Z=29), Sc (Z=21), Mn (Z=25), Fe (Z=26), Co (Z=27)]"
+},
+"2026M-8": {
+"marks": 2,
+"ch": 5,
+"q": "Draw all the isomers (geometrical and optical) of $\\ce{[CoCl2(en)2]+}$"
+},
+"2026M-9": {
+"marks": 2,
+"ch": 6,
+"q": "Arrange each set of compounds in order of increasing boiling points.\n(i) Bromomethane, Bromoform, Chloromethane, Dibromomethane.\n(ii) 1-Chloropropane, Isopropyl chloride, 1-Chlorobutane."
+},
+"2026M-10": {
+"marks": 2,
+"ch": 8,
+"q": "Predict the products formed when cyclohexanecarbaldehyde reacts with following reagents.\n(i) $\\ce{PhMgBr}$ and then $\\ce{H3O+}$\n(ii) Tollens' reagent"
+},
+"2026M-11": {
+"marks": 2,
+"ch": 10,
+"q": "The melting points and solubility in water of amino acids are generally higher than that of the corresponding halo acids. Explain."
+},
+"2026M-12": {
+"marks": 2,
+"ch": 10,
+"q": "How are vitamins classified? Name the vitamin responsible for the coagulation of blood."
+},
+"2026M-13": {
+"marks": 3,
+"ch": 1,
+"q": "Write Van't Hoff law of osmotic pressure and explain its mathematical formation and also derive the formula to calculate osmotic pressure."
+},
+"2026M-14": {
+"marks": 3,
+"ch": 2,
+"q": "Write the Nernst equation and calculate the potential of the following cell at 298 K.\n$\\ce{Mg(s)}$ | $\\ce{Mg^{2+}}$(0.001 M) || $\\ce{Cu^{2+}}$(0.0001 M) | $\\ce{Cu(s)}$\n[$E^{\\circ}_{\\ce{Mg^{2+}/Mg}} = -2.36$ V and $E^{\\circ}_{\\ce{Cu^{2+}/Cu}} = +0.34$ V]"
+},
+"2026M-15": {
+"marks": 3,
+"ch": 3,
+"q": "Derive the formula of first order reaction for,\n(i) Rate constant K,\n(ii) Half life period $t_{1/2}$ (graph is not required)"
+},
+"2026M-16": {
+"marks": 3,
+"ch": 4,
+"q": "Describe the preparation of potassium dichromate from iron chromite ore. What is the effect of increasing pH on a solution of potassium dichromate?"
+},
+"2026M-17": {
+"marks": 3,
+"ch": 7,
+"q": "How the following conversions can be carried out?\n(i) Isopropyl alcohol to Iodoform\n(ii) Benzyl alcohol to 2-phenylethanoic acid\n(iii) Chlorobenzene to p-nitrophenol"
+},
+"2026M-18": {
+"marks": 3,
+"ch": 7,
+"q": "Write the major product of the following reactions:\n(a) $\\ce{CH3-CH=CH2 ->[H2O/H+]}$\n(b) $\\ce{CH3-CH2-CH(CH3)-CHO ->[NaBH4]}$\n(c) $\\ce{C6H5-OC2H5 ->[Conc. H2SO4 / Conc. HNO3]}$"
+},
+"2026M-19": {
+"marks": 3,
+"ch": 8,
+"q": "Write structural formulas and names of four possible aldol condensation products from propanal and butanal."
+},
+"2026M-20": {
+"marks": 3,
+"ch": 9,
+"q": "How will you convert 4-nitrotoluene to 2-bromobenzoic acid?"
+},
+"2026M-21": {
+"marks": 3,
+"ch": 9,
+"q": "Write only chemical equations of the following reactions\n(i) Carbylamine reaction\n(ii) Hoffmann's bromamide reaction\n(iii) Coupling reaction"
+},
+"2026M-22": {
+"marks": 4,
+"ch": 1,
+"q": "0.6 mL of $\\ce{CH3COOH}$ having density 1.06 $\\mathrm{g\\,mL^{-1}}$ is dissolved in 1 litre of water. The depression in freezing point observed for this strength of acid was $0.0205\\,^{\\circ}\\mathrm{C}$. Calculate the van't Hoff factor and the dissociation constant of the acid. ($K_f$ = 1.86 $\\mathrm{K\\,kg\\,mol^{-1}}$ and molecular mass of $\\ce{CH3COOH}$ = 60 $\\mathrm{g\\,mol^{-1}}$)"
+},
+"2026M-23": {
+"marks": 4,
+"ch": 2,
+"q": "Define conductivity and molar conductivity for the solution of an electrolyte. Discuss their variation with concentration."
+},
+"2026M-24": {
+"marks": 4,
+"ch": 3,
+"q": "The time required for 10% completion of a first order reaction at 298 K is equal to that required for its 25% completion at 308 K. If the value of A is $4 \\times 10^{10}\\ \\mathrm{s^{-1}}$, calculate rate constant at 318 K and $E_a$ assuming $E_a$ does not change with temperature."
+},
+"2026M-25": {
+"marks": 4,
+"ch": 5,
+"q": "Answer the following questions for co-ordination complex $\\ce{K[Cr(H2O)2(C2O4)2]*3H2O}$\n(i) Give IUPAC name of complex\n(ii) Give oxidation number & coordination number of central metal ion\n(iii) Give d-orbital electronic configuration as per CFT\n(iv) Give the shape of complex and calculate its magnetic moment [Cr (Z=24)]"
+},
+"2026M-26": {
+"marks": 4,
+"ch": 7,
+"q": "Give equations of the following reactions:\n(i) Oxidation of propan-1-ol with alkaline $\\ce{KMnO4}$ solution.\n(ii) Bromine in $\\ce{CS2}$ with phenol.\n(iii) Dilute $\\ce{HNO3}$ with phenol.\n(iv) Treating phenol with chloroform in presence of aqueous $\\ce{NaOH}$."
+},
+"2026M-27": {
+"marks": 4,
+"ch": 8,
+"q": "An organic compound with the molecular formula $\\ce{C9H10O}$ forms 2,4-DNP derivative, reduces Tollens' reagent and undergoes Cannizzaro reaction. On vigorous oxidation it gives 1,2-benzenedicarboxylic acid. Identify the compound and write down its above chemical reactions."
+}
+}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronRight, RotateCcw, X } from 'lucide-react'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
-import { ERROR_TYPES, groupByChapter, groupLabel } from '../../lib/mistakeCopy'
+import { ERROR_TYPES, SKIP_REASONS, groupByChapter, groupLabel } from '../../lib/mistakeCopy'
 import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
 
 const NOT_MARKED = 'none'
@@ -78,7 +78,9 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
     })
   }
   const statusOptions = [['both', t.mcBoth], ['wrong', t.mcFilterWrong], ['skipped', t.mcFilterSkipped]]
-  const typeOptions = [...ERROR_TYPES.map(type => [type, t.mcErrorTypes[type]]), [NOT_MARKED, t.mcNotMarked]]
+  const typeOption = type => (
+    <option key={type} value={type} disabled={!typeCounts[type] && type !== errorType}>{t.mcErrorTypes[type]} ({typeCounts[type] || 0})</option>
+  )
 
   let lastSubject = null
   return (
@@ -105,9 +107,9 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
             <h4>{t.mcErrorType}</h4>
             <select className="form-control mcp-select" aria-label={t.mcErrorType} value={errorType} onChange={e => setErrorType(e.target.value)}>
               <option value="all">{t.mcAllTypes} ({forType.length})</option>
-              {typeOptions.map(([type, label]) => (
-                <option key={type} value={type} disabled={!typeCounts[type] && type !== errorType}>{label} ({typeCounts[type] || 0})</option>
-              ))}
+              <optgroup label={t.mcGroupWrong}>{ERROR_TYPES.map(typeOption)}</optgroup>
+              <optgroup label={t.mcGroupSkipped}>{SKIP_REASONS.map(typeOption)}</optgroup>
+              <option value={NOT_MARKED}>{t.mcNotMarked} ({typeCounts[NOT_MARKED] || 0})</option>
             </select>
           </section>
 

@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { UNIT_LEVELS, isChapterTestLevel, courseUnitId, fromCourseUnitId } from '../../lib/constants'
 import { neetT, sectionName, unitName, unitTitle, levelName as levelNameT, levelBadgeT } from '../../lib/neetI18n'
-import { ACTIVE_SUBJECTS, SYLLABUS_SECTIONS } from '../../lib/subjects'
+import { ACTIVE_SUBJECTS, SYLLABUS_SECTIONS, biologyBranch } from '../../lib/subjects'
 
 // The subject tab a student last looked at (a per-device convenience).
 const SUBJECT_KEY = 'neetcbt_dashboard_subject'
@@ -374,7 +374,7 @@ export default function StudentDashboard() {
                     onClick={() => isActive && setSelectedUnit({ ...unit, key, subject })}
                   >
                     <div className="unit-num">{unit.id}</div>
-                    <span>{unitName(unit, key, medium)}</span>
+                    <span>{unitName(unit, key, medium)}{subject === 'Biology' && biologyBranch(unit.id) ? ` (${biologyBranch(unit.id)})` : ''}</span>
                     {isActive && <ChevronRight size={16} style={{ marginLeft: 'auto', color: 'var(--primary)' }} />}
                     {!isActive && <Lock size={14} style={{ marginLeft: 'auto', color: 'var(--gray-300)' }} />}
                   </div>

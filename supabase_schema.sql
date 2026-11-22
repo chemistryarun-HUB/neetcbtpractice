@@ -309,7 +309,8 @@ create table if not exists mistake_entries (
   id uuid primary key default uuid_generate_v4(),
   student_id uuid not null references students(id) on delete cascade,
   question_id uuid not null,  -- questions or gseb_questions
-  error_type text check (error_type is null or error_type in ('conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other')),
+  error_type text check (error_type is null or error_type in ('conceptual', 'calculation', 'reading', 'time', 'guesswork', 'silly', 'other', 'forgot', 'never_read', 'not_understood', 'no_time')),
+  bookmarked boolean not null default false,  -- migration_skip_reasons_bookmarks.sql
   error_other text,
   reason text,
   solution text,

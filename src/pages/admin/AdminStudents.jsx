@@ -24,6 +24,7 @@ const NAV = [
   { to: '/admin/questions', label: 'Questions' },
   { to: '/admin/key-changes', label: 'Answer Keys' },
   { to: '/admin/videos', label: 'Lectures' },
+  { to: '/admin/doubts', label: 'Doubts' },
   { to: '/admin/performance', label: 'Performance' },
   { to: '/admin/practice-papers', label: 'Practice Papers' },
   { to: '/admin/gseb', label: 'GSEB Papers' },

@@ -4,7 +4,7 @@
 // Anything without a Gujarati entry falls back to English, so a unit or level
 // added in constants.js or subjects.js shows up straight away and gets its Gujarati name here
 // whenever one is written.
-import { UNIT_LEVELS, isChapterTestLevel, courseUnitId } from './constants'
+import { UNIT_LEVELS, isChapterTestLevel, isOnlyLevel, courseUnitId } from './constants'
 
 export const MEDIUMS = [
   { id: 'en', label: 'English' },
@@ -29,7 +29,7 @@ const STRINGS = {
     howLevelsWork: 'How levels work',
     backToSyllabus: 'Back to Syllabus',
     unit: n => `Unit ${n}`,
-    oneLevel: '1 level · always unlocked',
+    oneLevel: 'CCT (Complete Chapter Test) · always unlocked',
     levelsSummary: (n, last) => `${n} levels · Level 1 and ${last} always unlocked`,
     totalQuestions: 'Total questions',
     attempts: 'Attempts',
@@ -54,6 +54,10 @@ const STRINGS = {
     submit: '✓ Submit',
     submitting: 'Submitting...',
     confirmSubmit: n => `${n} question${n === 1 ? ' is' : 's are'} still unanswered (they score 0). Submit anyway?`,
+    submitAnyway: 'Submit anyway',
+    goBack: 'Go back',
+    resumed: 'Your test was restored — carry on from where you were.',
+    submitFailed: 'Could not submit. Your answers are safe, please check the internet and press Submit again',
     hintNav: 'prev / next',
     hintChoose: 'choose option',
     hintClear: 'clear',
@@ -114,6 +118,7 @@ const STRINGS = {
     mcDone: 'Done',
     mcNoneReady: 'All done for today. Come back tomorrow',
     mcSelectType: 'Select type of error',
+    mcSelectSkipReason: 'Reason for skipping',
     mcPickerTitle: 'Choose questions to re-attempt',
     mcPickerStatus: 'Wrong or skipped',
     mcPickerChapters: 'Chapters and levels',
@@ -129,7 +134,16 @@ const STRINGS = {
     mcSummary: 'Your mistakes',
     mcErrorType: 'Type of Error',
     mcSaveFailed: 'Could not save. Please try again.',
-    mcErrorTypes: { conceptual: 'Conceptual', calculation: 'Calculation', reading: 'Reading / Oversight', time: 'Time Mismanagement', guesswork: 'Guesswork', silly: 'Silly Mistake', other: 'Other' },
+    mcErrorTypes: {
+      conceptual: 'Conceptual', calculation: 'Calculation', reading: 'Reading / Oversight', time: 'Time Mismanagement', guesswork: 'Guesswork', silly: 'Silly Mistake', other: 'Other',
+      forgot: 'Forgot Concept', never_read: 'Never read this concept', not_understood: "Didn't understand Problem", no_time: "Didn't get time",
+    },
+    mcGroupWrong: 'Wrong answers',
+    mcGroupSkipped: 'Skipped',
+    mcBookmark: 'Bookmark',
+    mcBookmarked: 'Bookmarked',
+    mcNoBookmarks: 'No bookmarked questions in this attempt yet. Tap the star on a question to save it.',
+    mcEmptyBookmarks: 'No bookmarks yet. Tap the star on a question in a test review to keep it here.',
     mcRetestTitle: 'Mistake re-attempt',
     mcRetestMarks: 'No marks: this does not change your score or level unlocks',
     mcRetestConfirm: n => `${n} question${n === 1 ? ' is' : 's are'} unanswered. Submit anyway?`,
@@ -167,7 +181,7 @@ const STRINGS = {
     howLevelsWork: 'લેવલ કેવી રીતે ખૂલે છે',
     backToSyllabus: 'અભ્યાસક્રમ પર પાછા',
     unit: n => `એકમ ${n}`,
-    oneLevel: '1 લેવલ · હંમેશાં ખુલ્લું',
+    oneLevel: 'CCT (સંપૂર્ણ પ્રકરણ ટેસ્ટ) · હંમેશાં ખુલ્લું',
     levelsSummary: (n, last) => `${n} લેવલ · લેવલ 1 અને ${last} હંમેશાં ખુલ્લા`,
     totalQuestions: 'કુલ પ્રશ્નો',
     attempts: 'પ્રયત્નો',
@@ -191,6 +205,10 @@ const STRINGS = {
     submit: '✓ સબમિટ',
     submitting: 'સબમિટ થાય છે...',
     confirmSubmit: n => `${n} પ્રશ્નોના જવાબ બાકી છે (તેના 0 ગુણ). છતાં સબમિટ કરવું છે?`,
+    submitAnyway: 'છતાં સબમિટ કરો',
+    goBack: 'પાછા જાઓ',
+    resumed: 'તમારી ટેસ્ટ પાછી આવી ગઈ છે — જ્યાંથી છોડી હતી ત્યાંથી આગળ વધો.',
+    submitFailed: 'સબમિટ થઈ શક્યું નહીં. તમારા જવાબ સુરક્ષિત છે, ઇન્ટરનેટ તપાસીને ફરી સબમિટ દબાવો',
     hintNav: 'પાછળ / આગળ',
     hintChoose: 'વિકલ્પ પસંદ કરો',
     hintClear: 'ભૂંસો',
@@ -249,6 +267,7 @@ const STRINGS = {
     mcDone: 'પૂરું',
     mcNoneReady: 'આજનું પૂરું થયું. કાલે પાછા આવો',
     mcSelectType: 'ભૂલનો પ્રકાર પસંદ કરો',
+    mcSelectSkipReason: 'છોડવાનું કારણ',
     mcPickerTitle: 'ફરી પ્રયત્ન માટે પ્રશ્નો પસંદ કરો',
     mcPickerStatus: 'ખોટા કે છોડેલા',
     mcPickerChapters: 'પ્રકરણ અને લેવલ',
@@ -264,7 +283,16 @@ const STRINGS = {
     mcSummary: 'તમારી ભૂલો',
     mcErrorType: 'ભૂલનો પ્રકાર',
     mcSaveFailed: 'સેવ ન થયું. ફરી પ્રયત્ન કરો.',
-    mcErrorTypes: { conceptual: 'સંકલ્પનાની ભૂલ', calculation: 'ગણતરીની ભૂલ', reading: 'વાંચવામાં ભૂલ', time: 'સમયનું આયોજન', guesswork: 'અનુમાન', silly: 'નાની ભૂલ', other: 'અન્ય' },
+    mcErrorTypes: {
+      conceptual: 'સંકલ્પનાની ભૂલ', calculation: 'ગણતરીની ભૂલ', reading: 'વાંચવામાં ભૂલ', time: 'સમયનું આયોજન', guesswork: 'અનુમાન', silly: 'નાની ભૂલ', other: 'અન્ય',
+      forgot: 'સંકલ્પના ભૂલી ગયો', never_read: 'આ સંકલ્પના ક્યારેય વાંચી નથી', not_understood: 'પ્રશ્ન સમજાયો નહીં', no_time: 'સમય મળ્યો નહીં',
+    },
+    mcGroupWrong: 'ખોટા જવાબ',
+    mcGroupSkipped: 'છોડેલા',
+    mcBookmark: 'બુકમાર્ક',
+    mcBookmarked: 'બુકમાર્ક કરેલા',
+    mcNoBookmarks: 'આ ટેસ્ટમાં હજી કોઈ પ્રશ્ન બુકમાર્ક કર્યો નથી. સાચવવા માટે પ્રશ્ન પરના તારા પર ટેપ કરો.',
+    mcEmptyBookmarks: 'હજી કોઈ બુકમાર્ક નથી. ટેસ્ટ રિવ્યૂમાં પ્રશ્ન પરના તારા પર ટેપ કરો, તે અહીં સચવાશે.',
     mcRetestTitle: 'ભૂલોનો ફરી પ્રયત્ન',
     mcRetestMarks: 'ગુણ નથી: આનાથી તમારો સ્કોર કે લેવલ બદલાતાં નથી',
     mcRetestConfirm: n => `${n} પ્રશ્નોના જવાબ બાકી છે. છતાં સબમિટ કરવું છે?`,
@@ -310,7 +338,7 @@ const GU_SECTIONS = {
 
 // Keyed by practice unit id (courseUnitId: Physics unit n is 100 + n,
 // Biology chapter n is 200 + n).
-// Physics follows Arun's 32-unit list; Biology the GSEB Gujarati medium books.
+// Physics follows Arun's 31-unit list (Communication System removed 2026-11-21); Biology the GSEB Gujarati medium books.
 const GU_PHYSICS_UNITS = [
   // Mechanics 1
   'ભૌતિકશાસ્ત્રમાં ગણિત', 'એકમો અને પરિમાણ', 'એક પરિમાણમાં ગતિ', 'દ્વિ-પરિમાણમાં ગતિ',
@@ -328,7 +356,7 @@ const GU_PHYSICS_UNITS = [
   // Modern Physics
   'દ્રવ્યની દ્વૈત પ્રકૃતિ', 'પરમાણુ ભૌતિકશાસ્ત્ર', 'ન્યુક્લિયર ભૌતિકશાસ્ત્ર',
   // Miscellaneous Physics
-  'વિદ્યુતચુંબકીય તરંગો', 'સેમિકન્ડક્ટર', 'સંદેશાવ્યવહાર પ્રણાલી', 'પ્રાયોગિક ભૌતિકશાસ્ત્ર',
+  'વિદ્યુતચુંબકીય તરંગો', 'સેમિકન્ડક્ટર', 'પ્રાયોગિક ભૌતિકશાસ્ત્ર',
 ]
 // Biology chapter names as Arun supplied them (GSEB Gujarati medium books).
 const GU_BIOLOGY_UNITS = [
@@ -356,20 +384,6 @@ const GU_LEVELS = {
   103: ['નિયમિત ગતિ (a = 0)', 'નિયમિત પ્રવેગી ગતિ (a = અચળ)', 'અનિયમિત પ્રવેગી ગતિ (a = ચલ)', 'સાપેક્ષ ગતિ', 'આલેખ'],
   104: ['અદિશ અને સદિશ', 'પ્રક્ષિપ્ત ગતિ', 'સમતલમાં ગતિ અને વર્તુળાકાર ગતિ', 'દ્વિ-પરિમાણમાં સાપેક્ષ ગતિ'],
   105: ['જડત્વ અને વેગમાન', 'લંબબળ અને તણાવ', 'આભાસી બળ અને વેગમાન સંરક્ષણ', 'ઘર્ષણ'],
-  117: ['વિદ્યુતભાર અને કુલંબનો નિયમ', 'વિદ્યુતક્ષેત્ર અને ડાયપોલ', 'વિદ્યુત ફ્લક્સ અને ગૉસનો નિયમ', 'વિદ્યુતસ્થિતિમાન અને સ્થિતિઊર્જા'],
-  118: ['વાહકો, કૅપેસિટર અને ડાઇઇલેક્ટ્રિક'],
-  119: ['વિદ્યુતપ્રવાહ, ડ્રિફ્ટ વેગ અને ઓહ્મનો નિયમ', 'અવરોધ, અવરોધકતા અને જોડાણો', 'કોષ, emf અને આંતરિક અવરોધ', 'કિર્ચોફના નિયમો અને વ્હીટસ્ટન બ્રિજ', 'પોટેન્શિયોમીટર અને મીટરબ્રિજ', 'વિદ્યુત પાવર અને ઉષ્મીય અસર'],
-  120: ['ચુંબકીય ડાયપોલ અને પૃથ્વીનું ચુંબકત્વ', 'ચુંબકીય દ્રવ્યો'],
-  121: ['બાયો-સાવર્ટ અને ઍમ્પિયરનો નિયમ', 'ગતિમાન વિદ્યુતભાર અને વાહક પર બળ', 'લૂપ પર ટૉર્ક અને ગૅલ્વેનોમીટર'],
-  122: ['ફેરેડે અને લેન્ઝના નિયમો', 'ગતિકીય emf અને ઘૂમરી પ્રવાહો', 'આત્મપ્રેરકત્વ અને અન્યોન્ય પ્રેરકત્વ'],
-  123: ['AC પરિપથો અને અનુનાદ', 'AC માં પાવર અને ટ્રાન્સફૉર્મર'],
-  124: ['પરાવર્તન અને ગોળીય અરીસા', 'વક્રીભવન, પૂર્ણ આંતરિક પરાવર્તન અને પ્રિઝમ', 'લેન્સ અને લેન્સમેકરનું સૂત્ર', 'પ્રકાશીય ઉપકરણો'],
-  125: ['વ્યતિકરણ (હાઇગેન્સ અને YDSE)', 'વિવર્તન અને ધ્રુવીભવન'],
-  127: ['રધરફર્ડ અને બોહર મૉડેલ', 'હાઇડ્રોજન વર્ણપટ'],
-  128: ['ન્યુક્લિયસ, દળક્ષતિ અને બંધનઊર્જા', 'રેડિયોઍક્ટિવિટી અને ન્યુક્લિયર પ્રક્રિયાઓ'],
-  129: ['વિદ્યુતચુંબકીય તરંગો અને ગુણધર્મો', 'વિદ્યુતચુંબકીય વર્ણપટ'],
-  // Biology (practice unit 200 + n)
-  201: ['સજીવ વિશ્વ'],
   // Chemistry (practice unit = chapter number)
   19: ['જૈવઅણુઓ'],
 }
@@ -402,6 +416,6 @@ export function levelName(unitId, levelId, medium) {
 
 // levelBadge() in the student's medium: "CCT" stays as is in both.
 export function levelBadgeT(unitId, levelId, medium) {
-  if (isChapterTestLevel(unitId, levelId)) return 'CCT'
+  if (isChapterTestLevel(unitId, levelId) || isOnlyLevel(unitId, levelId)) return 'CCT'
   return medium === 'gu' ? `લેવલ ${levelId ?? '—'}` : `Level ${levelId ?? '—'}`
 }

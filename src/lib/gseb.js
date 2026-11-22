@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import { resolveCorrectOptionValue, correctOptionKey } from './questionOptions'
+import { resolveCorrectOptionValue, correctOptionKey } from './questionOptions.js'
 
 // GSEB Std 12 Science board papers (Part A MCQs). Separate from the NEET
 // level-wise bank — see migration_gseb_papers.sql for why.

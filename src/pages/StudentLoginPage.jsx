@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
+import { startDoubtSession } from '../lib/doubtDesk'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
@@ -63,6 +64,8 @@ export default function StudentLoginPage() {
         if (error || !data) throw new Error('Roll number not found')
         if (data.password_hash !== form.password) throw new Error('Incorrect password')
         studentLogin(data, remember)
+        // Doubt Desk test accounts also get a server-side token (lib/doubtDesk.js).
+        if (data.doubt_desk) await startDoubtSession(data.roll_number, form.password, remember)
         navigate(data.is_first_login ? '/student/change-password' : '/student/dashboard', { replace: true })
       }
     } catch (err) {

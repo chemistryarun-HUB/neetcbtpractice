@@ -24,12 +24,15 @@ export const NEET_CHEMISTRY_SYLLABUS = [
   {
     section: 'Organic Chemistry',
     units: [
-      { id: 13, name: 'Purification and Characterisation of Organic Compounds' },
-      { id: 14, name: 'Some Basic Principles of Organic Chemistry' },
-      { id: 15, name: 'Hydrocarbons' },
-      { id: 16, name: 'Organic Compounds Containing Halogens' },
-      { id: 17, name: 'Organic Compounds Containing Oxygen' },
-      { id: 18, name: 'Organic Compounds Containing Nitrogen' },
+      // Renamed 2026-11-16 to the NCERT Class 12 chapter names. Each name moved one
+      // unit up from where it used to sit (Some Basic Principles was 14, now 13), so
+      // its 76 questions moved with it: unit text and Q ID NCU14… -> NCU13….
+      { id: 13, name: 'Some Basic Principles of Organic Chemistry' },
+      { id: 14, name: 'Hydrocarbons' },
+      { id: 15, name: 'Haloalkanes and Haloarenes' },
+      { id: 16, name: 'Alcohols, Phenols and Ethers' },
+      { id: 17, name: 'Aldehydes, Ketones and Carboxylic Acids' },
+      { id: 18, name: 'Amines' },
       { id: 19, name: 'Biomolecules' },
       { id: 20, name: 'Principles Related to Practical Chemistry' },
     ],
@@ -191,6 +194,15 @@ export const UNIT_LEVELS = {
     { id: 7, name: 'Multilevel Questions',                         topic: 'Miscellaneous' },
     { id: 8, name: 'Complete Chapter Test',                 topic: 'Complete Chapter Test' },
   ],
+  // Units 13-18: one level each, the Complete Chapter Test (2026-11-16). A single
+  // level is always unlocked and is badged CCT everywhere; more levels can be
+  // added later by putting them before this one, keeping the CCT last.
+  13: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  14: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  15: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  16: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  17: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
+  18: [{ id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' }],
   19: [
     { id: 1, name: 'Biomolecules', topic: 'Biomolecules — carbohydrates, proteins, vitamins, nucleic acids and hormones.' },
   ],
@@ -311,7 +323,7 @@ const physicsLevels = names => [
   { id: names.length + 1, name: 'Multilevel Questions', topic: 'Miscellaneous' },
   { id: names.length + 2, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
 ]
-// Keyed by Arun's 32-unit Physics list (lib/subjects.js). Electrostatics (17)
+// Keyed by Arun's 31-unit Physics list (lib/subjects.js). Electrostatics (17)
 // holds what NCERT splits across charges/fields and potential.
 export const PHYSICS_UNIT_LEVELS = {
   2: physicsLevels([
@@ -338,70 +350,21 @@ export const PHYSICS_UNIT_LEVELS = {
     ['Pseudo Force & Momentum Conservation', 'Non-inertial frame of reference, centripetal & centrifugal force, conical pendulum, conservation of linear momentum'],
     ['Friction', 'Contact force, banking of road, angle of friction & repose'],
   ]),
-  17: physicsLevels([
-    ["Electric Charge & Coulomb's Law", "Electric charge, conservation and quantisation of charge, Coulomb's law, force between multiple charges, superposition"],
-    ['Electric Field & Dipole', 'Electric field due to a point charge and a dipole, electric field lines, dipole in a uniform field, torque'],
-    ["Electric Flux & Gauss's Law", "Electric flux, Gauss's law and its applications: infinite wire, infinite plane sheet, thin spherical shell"],
-    ['Electric Potential & Potential Energy', 'Electric potential, potential difference, potential due to a point charge and a dipole, equipotential surfaces, potential energy'],
-  ]),
-  18: physicsLevels([
-    ['Conductors, Capacitors & Dielectrics', 'Conductors and insulators, dielectrics and polarisation, capacitors and capacitance, combinations, parallel plate capacitor, energy stored'],
-  ]),
-  19: physicsLevels([
-    ["Current, Drift Velocity & Ohm's Law", "Electric current, drift velocity, mobility, current density, Ohm's law"],
-    ['Resistance, Resistivity & Combinations', 'Resistance and resistivity, temperature dependence, series and parallel combinations'],
-    ['Cells, EMF & Internal Resistance', 'EMF, internal resistance, potential difference, cells in series and parallel'],
-    ["Kirchhoff's Laws & Wheatstone Bridge", "Kirchhoff's junction and loop rules, Wheatstone bridge"],
-    ['Potentiometer & Meter Bridge', 'Metre bridge, potentiometer and their uses'],
-    ['Electric Power & Heating', 'Electrical energy and power, heating effect of current'],
-  ]),
-  20: physicsLevels([
-    ["Magnetic Dipole & Earth's Magnetism", "Current loop as a magnetic dipole, bar magnet, magnetic field lines, Gauss's law for magnetism"],
-    ['Magnetic Materials', 'Para-, dia- and ferromagnetic substances, magnetisation, susceptibility, permeability'],
-  ]),
-  21: physicsLevels([
-    ["Biot-Savart & Ampere's Law", "Biot-Savart law, field of a circular loop, Ampere's circuital law, straight wire, solenoid"],
-    ['Force on Moving Charges & Conductors', 'Lorentz force, motion in a magnetic field, velocity selector, force between parallel currents'],
-    ['Torque on Loop & Galvanometer', 'Torque on a current loop, moving coil galvanometer, conversion to ammeter and voltmeter'],
-  ]),
-  22: physicsLevels([
-    ["Faraday's & Lenz's Laws", "Electromagnetic induction, magnetic flux, Faraday's law, Lenz's law"],
-    ['Motional EMF & Eddy Currents', 'Motional EMF, eddy currents, back EMF'],
-    ['Self & Mutual Inductance', 'Self inductance, mutual inductance, energy stored in an inductor'],
-  ]),
-  23: physicsLevels([
-    ['AC Circuits & Resonance', 'Alternating current and voltage, peak and rms values, reactance and impedance, LCR series circuit, resonance'],
-    ['Power in AC & Transformer', 'Power in AC circuits, power factor, wattless current, AC generator and transformer'],
-  ]),
-  24: physicsLevels([
-    ['Reflection & Spherical Mirrors', 'Reflection of light, spherical mirrors, mirror formula'],
-    ['Refraction, TIR & Prism', 'Refraction, total internal reflection and its applications, prism'],
-    ["Lenses & Lens Maker's Formula", "Refraction at spherical surfaces, lenses, thin lens formula, lens maker's formula, power, combination of lenses"],
-    ['Optical Instruments', 'Microscope and astronomical telescope'],
-  ]),
-  25: physicsLevels([
-    ['Interference (Huygens & YDSE)', "Wavefront and Huygens' principle, interference, Young's double slit experiment, coherent sources"],
-    ['Diffraction & Polarisation', 'Diffraction due to a single slit, polarisation, plane polarised light'],
-  ]),
-  27: physicsLevels([
-    ['Rutherford & Bohr Model', "Alpha-particle scattering, Rutherford's model, Bohr model, energy levels"],
-    ['Hydrogen Spectrum', 'Hydrogen spectrum and spectral series'],
-  ]),
-  28: physicsLevels([
-    ['Nucleus, Mass Defect & Binding Energy', 'Composition and size of the nucleus, isotopes, isobars, isotones, mass-energy relation, mass defect, binding energy'],
-    ['Radioactivity & Nuclear Reactions', 'Radioactivity, alpha, beta and gamma, nuclear fission and fusion'],
-  ]),
-  29: physicsLevels([
-    ['EM Waves & their Properties', 'Displacement current, electromagnetic waves and their characteristics, energy and momentum'],
-    ['EM Spectrum', 'Electromagnetic spectrum and uses of each region'],
-  ]),
+  // Every Physics unit that has no levels authored yet (1, 6-31) gets one
+  // practice pool shown as CCT, like Biology; Arun adds the real levels later
+  // (replace the entry with physicsLevels([...])). Units 17-31: CCT only (Arun, 2026-11-11/12).
+  ...Object.fromEntries([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
 }
 // Biology levels. Like the mechanism modules, a chapter can be one practice
 // pool: a single level, always unlocked, no chapter test.
 export const BIOLOGY_UNIT_LEVELS = {
-  1: [
-    { id: 1, name: 'The Living World', topic: 'The Living World — what is living, biodiversity, need for classification, taxonomy and systematics, binomial nomenclature, taxonomic categories and hierarchy.' },
-  ],
+  // Units 1-32 (every unit): one practice pool each, shown as CCT (single-level units are
+  // labelled CCT, see isChapterTestLevel). Arun asked for CCT only for now.
+  ...Object.fromEntries(Array.from({ length: 32 }, (_, i) => i + 1).map(n => [n, [
+    { id: 1, name: 'Complete Chapter Test', topic: 'Complete Chapter Test' },
+  ]])),
 }
 
 // Student practice keys a unit by one number across subjects: Chemistry n,
@@ -459,10 +422,20 @@ export function isChapterTestLevel(unitId, levelId, subject = 'Chemistry') {
   return defs.length > 1 && defs[defs.length - 1].id === Number(levelId)
 }
 
-// Short display label for a level — "CCT" for the Complete Chapter Test,
-// else "Level N" (optionally zero-padded to match a table's other numbers).
+// A unit with one level is one pool of the whole chapter, so it is labelled CCT
+// as well (Arun, 2026-11-07). Label only: isChapterTestLevel() stays false for
+// it, because the CCT logic — draw from every OTHER level, count the others'
+// questions — has nothing to work with in a one-level unit.
+export function isOnlyLevel(unitId, levelId, subject = 'Chemistry') {
+  const defs = levelDefsFor(subject, unitId)
+  return defs.length === 1 && defs[0].id === Number(levelId)
+}
+
+// Short display label for a level — "CCT" for the Complete Chapter Test and for
+// a unit's only level, else "Level N" (optionally zero-padded to match a table's
+// other numbers).
 export function levelBadge(unitId, levelId, { pad = false, subject = 'Chemistry' } = {}) {
-  if (isChapterTestLevel(unitId, levelId, subject)) return 'CCT'
+  if (isChapterTestLevel(unitId, levelId, subject) || isOnlyLevel(unitId, levelId, subject)) return 'CCT'
   if (levelId == null) return 'Level —'
   return `Level ${pad ? String(levelId).padStart(2, '0') : levelId}`
 }
