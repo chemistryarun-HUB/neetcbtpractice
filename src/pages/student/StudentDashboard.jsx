@@ -239,7 +239,7 @@ export default function StudentDashboard() {
                 >
                   <div className="level-num">
                     {levelBadgeT(unitKey, levelId, medium)}
-                    <InfoTooltip text={levelTopic || levelName} />
+                    <InfoTooltip text={levelTopic || levelName} align="left" />
                   </div>
                   <h4>{levelName}</h4>
                   <div className="level-stats">
