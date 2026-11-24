@@ -6,12 +6,14 @@ import MathText from '../shared/MathText'
 import MistakePicker from './MistakePicker'
 import MistakeRetest from './MistakeRetest'
 import MistakeStudy, { itemKind } from './MistakeStudy'
+import RetestResult, { sortByOutcome } from './RetestResult'
 import SubjectTabs, { TAB_SUBJECTS } from '../shared/SubjectTabs'
 import {
-  buildBookmarks, buildMistakeCopy, errorSummary, groupByChapter, groupByTest, groupName, loadMistakeData,
+  BUCKETS, buildBookmarks, buildMistakeCopy, buildRetestHistory, errorSummary, groupByChapter, groupByTest, groupName, loadMistakeData,
   saveMistakeEntry, setMistakesChecked, testDate, testMarks, testName,
 } from '../../lib/mistakeCopy'
 import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
+import { orderOptionsForReview } from '../../lib/optionShuffle'
 
 const FILTERS = [
   ['all', 'mcFilterAll', () => true],
@@ -25,6 +27,10 @@ const FILTERS = [
 // the PDF is made one chapter or test at a time.
 const MAX_PDF_QUESTIONS = 60
 
+const fmtDateTime = ts => new Date(ts).toLocaleString('en-IN', {
+  timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit',
+})
+
 // One line per question, however long its stem: opening it shows all of it.
 function MistakeRow({ item, medium, teacher, t, onOpen }) {
   const stem = String(item.q.question || '').replace(/\s+/g, ' ').trim()
@@ -35,7 +41,6 @@ function MistakeRow({ item, medium, teacher, t, onOpen }) {
       {teacher && <code className="mc-qid">{item.q.qid}</code>}
       <span className="mc-stem" lang={medium}>{stem ? <MathText text={stem} style={{ whiteSpace: 'nowrap' }} /> : <em>{t.mcImageQuestion}</em>}</span>
       {type && <span className="mc-chip mc-chip-type">{t.mcErrorTypes[type]}</span>}
-      {item.status === 'pending' && item.correctDays === 1 && <span className="mc-chip mc-chip-progress" title={t.mcOneCorrect}>1/2</span>}
       {item.repeat && item.status === 'pending' && <span className="mc-chip mc-chip-repeat" title={t.mcRepeat}>×{item.wrongCount}</span>}
       {item.entry?.checked_at && <span className="mc-chip mc-chip-cleared" title={t.mcChecked}>✔</span>}
       {item.entry?.bookmarked && <span className="mc-chip mc-chip-star" title={t.mcBookmarked}>★</span>}
@@ -51,7 +56,11 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
   const t = neetT(medium)
   const editable = !teacher
   const [data, setData] = useState(null)
-  const [tab, setTab] = useState('pending')
+  // 'questions' (one bucket or Cleared, picked in `tab`), 'results' or 'bookmarked'.
+  const [pane, setPane] = useState('questions')
+  // Which bucket (1-5) or 'cleared' the questions pane shows.
+  const [tab, setTab] = useState(1)
+  const [openRetest, setOpenRetest] = useState(null)
   const [view, setView] = useState('chapter')
   const [filter, setFilter] = useState('all')
   const [subject, setSubject] = useState('all')
@@ -79,6 +88,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
   const items = useMemo(() => (data ? buildMistakeCopy(data) : []), [data])
   const byId = useMemo(() => new Map(items.map(it => [it.q.id, it])), [items])
   // Starred questions, right ones included, so they are not part of `items`.
+  const retests = useMemo(() => (data ? buildRetestHistory(data) : []), [data])
   const bookmarkItems = useMemo(() => (data ? buildBookmarks(data) : []), [data])
   const bookmarkById = useMemo(() => new Map(bookmarkItems.map(it => [it.q.id, it])), [bookmarkItems])
   const bookmarkedIds = useMemo(() => new Set((data?.entries || []).filter(e => e.bookmarked).map(e => e.question_id)), [data])
@@ -87,11 +97,16 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
   const bookmarks = subject === 'all' ? bookmarkItems : bookmarkItems.filter(it => it.subject === subject)
   const pending = inSubject.filter(it => it.status === 'pending')
   const cleared = inSubject.filter(it => it.status === 'cleared')
-  const inTab = tab === 'pending' ? pending : tab === 'cleared' ? cleared : bookmarks
+  const inBucket = Object.fromEntries(BUCKETS.map(b => [b, pending.filter(it => it.bucket === b)]))
+  const isBucket = typeof tab === 'number'
+  const inTab = pane === 'bookmarked' ? bookmarks : pane === 'results' ? [] : isBucket ? inBucket[tab] : cleared
+  const retryTab = pane === 'questions' && isBucket
+  const subjectRetests = subject === 'all' ? retests
+    : retests.filter(r => r.rows.some(row => byId.get(row.q.id)?.subject === subject))
   const filterFn = FILTERS.find(f => f[0] === filter)[2]
   const visible = inTab.filter(filterFn)
   const groups = view === 'chapter' ? groupByChapter(visible) : groupByTest(visible)
-  const ready = pending.filter(it => it.canRetry)
+  const ready = isBucket ? inBucket[tab].filter(it => it.canRetry) : []
   const total = inSubject.length
   const summary = errorSummary(inSubject)
   const typedCount = summary.reduce((sum, s) => sum + s.count, 0)
@@ -134,9 +149,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     }
   }
 
-  function startRetest(list) {
+  function startRetest(list, pool) {
     setPicker(null)
-    setRetest(list)
+    setRetest(prev => ({ items: list, pool, run: (prev?.run || 0) + 1 }))
   }
 
   function closeRetest() {
@@ -146,12 +161,27 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   function pickTab(next) {
     setTab(next)
+    setPane('questions')
     setFilter('all')
   }
 
+  function pickPane(next) {
+    setPane(next)
+    setFilter('all')
+  }
+
+  // A row of the Results tab, shaped for RetestResult.
+  const retestRows = session => sortByOutcome(session.rows.map(r => ({
+    q: r.q, options: orderOptionsForReview(r.q, r.optionOrder), selected: r.selected, outcome: r.status,
+    bucket: r.bucket, hasType: true,
+  })))
+
   if (!data) return <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
 
-  if (retest) return <MistakeRetest studentId={student.id} items={retest} medium={medium} onClose={closeRetest} />
+  if (retest) {
+    return <MistakeRetest key={retest.run} studentId={student.id} items={retest.items} pool={retest.pool} medium={medium}
+      onClose={closeRetest} onNext={startRetest} />
+  }
 
   // Ids, not items, so a question stays in the walk-through after marking it
   // takes it out of the filter the walk-through was opened from.
@@ -161,7 +191,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     ? study.ids.map(id => (study.fromBookmarks ? bookmarkById : byId).get(id) ?? study.snap.get(id)).filter(Boolean)
     : []
   const openStudy = (list, startId) => setStudy({
-    ids: list.map(it => it.q.id), startId, fromBookmarks: tab === 'bookmarked', snap: new Map(list.map(it => [it.q.id, it])),
+    ids: list.map(it => it.q.id), startId, fromBookmarks: pane === 'bookmarked', snap: new Map(list.map(it => [it.q.id, it])),
   })
 
   function renderRows(list, walk) {
@@ -214,35 +244,74 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                 <div className="mc-hero-top">{t.mcMostCommon}: <strong>{t.mcErrorTypes[summary[0].type]}</strong> ({summary[0].pct}%)</div>
               )}
             </div>
-            {editable && pending.length > 0 && (
-              <div className="mc-hero-action">
-                <button className="btn btn-primary mc-hero-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetGroup: null })}>
-                  <RotateCcw size={17} /> {t.mcReattemptBtn}
-                </button>
-                {ready.length === 0 && <small>{t.mcNoneReady}</small>}
-              </div>
-            )}
           </section>
 
           <div className="mc-bar">
             <div className="mc-tabs" role="tablist">
-              <button role="tab" aria-selected={tab === 'pending'} className={tab === 'pending' ? 'active' : ''} onClick={() => pickTab('pending')}>
-                {t.mcPending} <span>{pending.length}</span>
+              <button role="tab" aria-selected={pane === 'questions'} className={pane === 'questions' ? 'active' : ''} onClick={() => pickPane('questions')}>
+                {t.mcBuckets}
               </button>
-              <button role="tab" aria-selected={tab === 'cleared'} className={tab === 'cleared' ? 'active' : ''} onClick={() => pickTab('cleared')}>
-                {t.mcCleared} <span>{cleared.length}</span>
+              <button role="tab" aria-selected={pane === 'results'} className={pane === 'results' ? 'active' : ''} onClick={() => pickPane('results')}>
+                {t.mcResults} <span>{subjectRetests.length}</span>
               </button>
-              <button role="tab" aria-selected={tab === 'bookmarked'} className={tab === 'bookmarked' ? 'active' : ''} onClick={() => pickTab('bookmarked')}>
+              <button role="tab" aria-selected={pane === 'bookmarked'} className={pane === 'bookmarked' ? 'active' : ''} onClick={() => pickPane('bookmarked')}>
                 ★ {t.mcBookmarked} <span>{bookmarks.length}</span>
               </button>
             </div>
-            <div className="mc-seg">
-              <button className={view === 'chapter' ? 'active' : ''} onClick={() => setView('chapter')}>{t.mcByChapter}</button>
-              <button className={view === 'test' ? 'active' : ''} onClick={() => setView('test')}>{t.mcByTest}</button>
-            </div>
+            {pane !== 'results' && (
+              <div className="mc-seg">
+                <button className={view === 'chapter' ? 'active' : ''} onClick={() => setView('chapter')}>{t.mcByChapter}</button>
+                <button className={view === 'test' ? 'active' : ''} onClick={() => setView('test')}>{t.mcByTest}</button>
+              </div>
+            )}
           </div>
 
-          {inTab.length > 0 && tab !== 'bookmarked' && (
+          {pane === 'questions' && (
+            <>
+              <div className="mc-buckets" role="tablist" aria-label={t.mcBuckets}>
+                {[...BUCKETS, 'cleared'].map(b => {
+                  const n = b === 'cleared' ? cleared.length : inBucket[b].length
+                  return (
+                    <button key={b} role="tab" aria-selected={tab === b} onClick={() => pickTab(b)}
+                      className={`mc-bucket mc-bucket-${b}${tab === b ? ' active' : ''}${n === 0 ? ' empty' : ''}`}>
+                      <span className="mc-bucket-name">{b === 'cleared' ? `✅ ${t.mcCleared}` : t.mcBucketName(b)}</span>
+                      <strong>{n}</strong>
+                      <small>{b === 'cleared' ? t.mcClearedHint : t.mcBucketHint(b)}</small>
+                    </button>
+                  )
+                })}
+              </div>
+              {editable && isBucket && (
+                <div className="mc-bucket-action">
+                  <button className="btn btn-primary mc-hero-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetGroup: null })}>
+                    <RotateCcw size={17} /> {t.mcReattemptBucket(t.mcBucketName(tab), ready.length)}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {pane === 'results' && (
+            subjectRetests.length === 0 ? <div className="mc-empty">{t.mcNoResults}</div> : (
+              <div className="mc-history">
+                {subjectRetests.map(r => (
+                  <button key={r.key} className="mc-history-row" onClick={() => setOpenRetest(r)}>
+                    <span className="mc-history-num">#{r.number}</span>
+                    <span className="mc-history-main">
+                      <strong>{t.mcRetestNumber(r.number)}{r.bucket ? ` · ${t.mcBucketName(r.bucket)}` : ''}</strong>
+                      <small>{fmtDateTime(r.at)} · {t.mcQuestionsCount(r.rows.length)}</small>
+                    </span>
+                    <span className="mc-history-score">
+                      <b className="ok">✓ {r.correct}</b><b className="bad">✗ {r.wrong}</b><b className="skip">– {r.skipped}</b>
+                    </span>
+                    <ChevronRight size={16} className="mc-row-chev" />
+                  </button>
+                ))}
+              </div>
+            )
+          )}
+
+          {inTab.length > 0 && pane === 'questions' && (
             <div className="mc-pills mc-filters">
               {FILTERS.map(([key, label, fn]) => {
                 const count = inTab.filter(fn).length
@@ -258,9 +327,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             </div>
           )}
 
-          {visible.length === 0 ? (
+          {pane === 'results' ? null : visible.length === 0 ? (
             <div className="mc-empty">
-              {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : tab === 'cleared' ? t.mcEmptyCleared : t.mcEmptyBookmarks}
+              {filter !== 'all' ? t.mcEmptyFilter : pane === 'bookmarked' ? t.mcEmptyBookmarks : tab === 'cleared' ? t.mcEmptyCleared : t.mcEmptyBucket(tab)}
             </div>
           ) : groups.map(group => {
             const isOpen = !!openGroups[group.key]
@@ -281,7 +350,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                         ? <strong>GSEB · {testName(group, medium, t)}</strong>
                         : <strong>{groupName(group, medium)}</strong>}
                       {view === 'chapter' ? (
-                        tab === 'pending' && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
+                        retryTab && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
                       ) : (
                         <small>
                           {group.source !== 'gseb' && `${levelBadgeT(group.unitId, attempt.level, medium)} · `}{t.mcAttempt(group.test.position)} · {testDate(attempt)} · {t.mcMarks(testMarks(attempt).score, testMarks(attempt).max)}
@@ -295,16 +364,16 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                   {isOpen && (
                     <div className="mc-unit-body">
                       <div className="mc-unit-actions">
-                        {editable && tab === 'pending' && retryable.length > 0 && (
+                        {editable && retryTab && retryable.length > 0 && (
                           <button className="btn btn-primary btn-sm mc-icon-btn"
-                            onClick={() => (view === 'chapter' ? setPicker({ presetGroup: group.key }) : startRetest(retryable))}>
+                            onClick={() => setPicker(view === 'chapter' ? { presetGroup: group.key } : { presetGroup: null, items: retryable })}>
                             <RotateCcw size={14} /> {view === 'chapter' ? t.mcReattemptChapter : t.mcReattemptTest}
                           </button>
                         )}
                         <button className="btn btn-ghost btn-sm mc-icon-btn" disabled={!!pdfProgress} onClick={() => downloadPdf(group.items)}>
                           <FileDown size={14} /> PDF
                         </button>
-                        {teacher && tab !== 'bookmarked' && unchecked.length > 0 && (
+                        {teacher && pane !== 'bookmarked' && unchecked.length > 0 && (
                           <button className="btn btn-ghost btn-sm mc-icon-btn" onClick={() => {
                             if (window.confirm(`Mark ${unchecked.length} question${unchecked.length === 1 ? '' : 's'} as checked?`)) check(unchecked, true)
                           }}>✔ Check all ({unchecked.length})</button>
@@ -328,8 +397,15 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
       )}
 
       {picker && (
-        <MistakePicker items={ready} medium={medium} presetGroup={picker.presetGroup} rightToday={pending.length - ready.length}
+        <MistakePicker items={picker.items || ready} medium={medium} presetGroup={picker.presetGroup}
+          rightToday={0}
           onStart={startRetest} onClose={() => setPicker(null)} />
+      )}
+
+      {openRetest && (
+        <RetestResult rows={retestRows(openRetest)} medium={medium} studentId={student.id} editable={false}
+          title={`${t.mcRetestNumber(openRetest.number)}${openRetest.bucket ? ` · ${t.mcBucketName(openRetest.bucket)}` : ''}`}
+          subtitle={fmtDateTime(openRetest.at)} onClose={() => setOpenRetest(null)} />
       )}
 
       {study && studyItems.length > 0 && (

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronRight, RotateCcw, X } from 'lucide-react'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
-import { ERROR_TYPES, SKIP_REASONS, groupByChapter, groupLabel } from '../../lib/mistakeCopy'
+import { ERROR_TYPES, RETEST_SIZES, SKIP_REASONS, groupByChapter, groupLabel, pickForRetest } from '../../lib/mistakeCopy'
 import { levelBadgeT, levelName, neetT } from '../../lib/neetI18n'
 
 const NOT_MARKED = 'none'
@@ -24,6 +24,8 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
   const t = neetT(medium)
   const [status, setStatus] = useState('both')
   const [errorType, setErrorType] = useState('all')
+  // 25 at a time, as everywhere else in the app; 50 or all only when asked for.
+  const [size, setSize] = useState(RETEST_SIZES[0])
   const [excluded, setExcluded] = useState(() => new Set(
     presetGroup == null ? [] : items.filter(it => it.groupKey !== presetGroup).map(itemLevelKey)
   ))
@@ -40,6 +42,11 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
   const passLevel = it => !excluded.has(itemLevelKey(it))
 
   const selected = items.filter(it => passStatus(it) && passType(it) && passLevel(it))
+  // A size bigger than what is selected gives the same as All, so it is greyed out.
+  const sizeOptions = [...RETEST_SIZES.map(n => [n, String(n)]), ['all', t.mcAll]]
+  const sizeUsable = n => n === 'all' || n === RETEST_SIZES[0] || selected.length > RETEST_SIZES[RETEST_SIZES.indexOf(n) - 1]
+  const effectiveSize = sizeUsable(size) ? size : RETEST_SIZES[0]
+  const startCount = effectiveSize === 'all' ? selected.length : Math.min(effectiveSize, selected.length)
 
   const forStatus = items.filter(it => passType(it) && passLevel(it))
   const statusCounts = {
@@ -92,6 +99,18 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
         </div>
 
         <div className="mcp-body">
+          <section>
+            <h4>{t.mcHowMany}</h4>
+            <div className="mcp-seg" role="radiogroup" aria-label={t.mcHowMany}>
+              {sizeOptions.map(([key, label]) => (
+                <button key={key} role="radio" aria-checked={effectiveSize === key} className={effectiveSize === key ? 'active' : ''}
+                  disabled={!sizeUsable(key)} onClick={() => setSize(key)}>
+                  {label}{key === 'all' && <strong>{selected.length}</strong>}
+                </button>
+              ))}
+            </div>
+          </section>
+
           <section>
             <h4>{t.mcPickerStatus}</h4>
             <div className="mcp-seg" role="radiogroup" aria-label={t.mcPickerStatus}>
@@ -159,8 +178,8 @@ export default function MistakePicker({ items, medium, presetGroup = null, right
 
         <div className="mcp-foot">
           {rightToday > 0 && <div className="mcp-note">{t.mcRightToday(rightToday)}</div>}
-          <button className="btn btn-primary mcp-start" disabled={selected.length === 0} onClick={() => onStart(selected)}>
-            <RotateCcw size={16} /> {selected.length ? t.mcStart(selected.length) : t.mcNoneSelected}
+          <button className="btn btn-primary mcp-start" disabled={selected.length === 0} onClick={() => onStart(pickForRetest(selected, effectiveSize), selected)}>
+            <RotateCcw size={16} /> {selected.length ? t.mcStart(startCount) : t.mcNoneSelected}
           </button>
         </div>
       </div>
