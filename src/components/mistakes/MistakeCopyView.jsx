@@ -274,7 +274,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                   return (
                     <button key={b} role="tab" aria-selected={tab === b} onClick={() => pickTab(b)}
                       className={`mc-bucket mc-bucket-${b}${tab === b ? ' active' : ''}${n === 0 ? ' empty' : ''}`}>
-                      <span className="mc-bucket-name">{b === 'cleared' ? `✅ ${t.mcDischarged}` : t.mcBucketName(b)}</span>
+                      <span className="mc-bucket-name">{b === 'cleared' ? `✅ ${t.mcCleared}` : t.mcBucketName(b)}</span>
                       <strong>{n}</strong>
                       <small>{b === 'cleared' ? t.mcClearedHint : t.mcBucketHint(b)}</small>
                     </button>
