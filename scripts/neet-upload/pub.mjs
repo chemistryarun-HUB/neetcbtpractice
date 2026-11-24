@@ -1,7 +1,7 @@
 // One-off: publish JEE Main/AIEEE 2002-2018 Physics drafts (Disha) for one unit (Arun approves each unit)
 import { createClient } from '@supabase/supabase-js'
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
-const UNITS = ['Unit 5 - Laws of Motion', 'Unit 3 - Motion In One Dimension']
+const UNITS = ['Unit 6 - Work Power Energy']
 const base = () => sb.from('questions').select('*', { count: 'exact', head: true }).eq('subject', 'Physics').in('unit', UNITS).like('source', 'Disha JEE Main %')
 const { count: before } = await base().eq('is_published', false)
 console.log('drafts before', before)
