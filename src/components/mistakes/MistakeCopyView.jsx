@@ -35,7 +35,8 @@ function MistakeRow({ item, medium, teacher, t, onOpen }) {
       {teacher && <code className="mc-qid">{item.q.qid}</code>}
       <span className="mc-stem" lang={medium}>{stem ? <MathText text={stem} style={{ whiteSpace: 'nowrap' }} /> : <em>{t.mcImageQuestion}</em>}</span>
       {type && <span className="mc-chip mc-chip-type">{t.mcErrorTypes[type]}</span>}
-      {item.status === 'pending' && item.correctDays === 1 && <span className="mc-chip mc-chip-progress" title={t.mcOneCorrect}>1/2</span>}
+      {item.status === 'rightOnce' && <span className="mc-chip mc-chip-progress" title={t.mcOneCorrect}>✓ 1/2</span>}
+      {item.status === 'pending' && item.lastTry?.status === 'wrong' && <span className="mc-chip mc-chip-again">{t.mcLastWrong}</span>}
       {item.repeat && item.status === 'pending' && <span className="mc-chip mc-chip-repeat" title={t.mcRepeat}>×{item.wrongCount}</span>}
       {item.entry?.checked_at && <span className="mc-chip mc-chip-cleared" title={t.mcChecked}>✔</span>}
       {item.entry?.bookmarked && <span className="mc-chip mc-chip-star" title={t.mcBookmarked}>★</span>}
@@ -86,12 +87,14 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
   const inSubject = subject === 'all' ? items : items.filter(it => it.subject === subject)
   const bookmarks = subject === 'all' ? bookmarkItems : bookmarkItems.filter(it => it.subject === subject)
   const pending = inSubject.filter(it => it.status === 'pending')
+  const rightOnce = inSubject.filter(it => it.status === 'rightOnce')
   const cleared = inSubject.filter(it => it.status === 'cleared')
-  const inTab = tab === 'pending' ? pending : tab === 'cleared' ? cleared : bookmarks
+  const inTab = tab === 'pending' ? pending : tab === 'rightOnce' ? rightOnce : tab === 'cleared' ? cleared : bookmarks
+  const retryTab = tab === 'pending' || tab === 'rightOnce'
   const filterFn = FILTERS.find(f => f[0] === filter)[2]
   const visible = inTab.filter(filterFn)
   const groups = view === 'chapter' ? groupByChapter(visible) : groupByTest(visible)
-  const ready = pending.filter(it => it.canRetry)
+  const ready = [...pending, ...rightOnce].filter(it => it.canRetry)
   const total = inSubject.length
   const summary = errorSummary(inSubject)
   const typedCount = summary.reduce((sum, s) => sum + s.count, 0)
@@ -134,9 +137,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
     }
   }
 
-  function startRetest(list) {
+  function startRetest(list, pool) {
     setPicker(null)
-    setRetest(list)
+    setRetest(prev => ({ items: list, pool, run: (prev?.run || 0) + 1 }))
   }
 
   function closeRetest() {
@@ -151,7 +154,10 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
   if (!data) return <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
 
-  if (retest) return <MistakeRetest studentId={student.id} items={retest} medium={medium} onClose={closeRetest} />
+  if (retest) {
+    return <MistakeRetest key={retest.run} studentId={student.id} items={retest.items} pool={retest.pool} medium={medium}
+      onClose={closeRetest} onNext={startRetest} />
+  }
 
   // Ids, not items, so a question stays in the walk-through after marking it
   // takes it out of the filter the walk-through was opened from.
@@ -214,7 +220,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                 <div className="mc-hero-top">{t.mcMostCommon}: <strong>{t.mcErrorTypes[summary[0].type]}</strong> ({summary[0].pct}%)</div>
               )}
             </div>
-            {editable && pending.length > 0 && (
+            {editable && pending.length + rightOnce.length > 0 && (
               <div className="mc-hero-action">
                 <button className="btn btn-primary mc-hero-btn" disabled={ready.length === 0} onClick={() => setPicker({ presetGroup: null })}>
                   <RotateCcw size={17} /> {t.mcReattemptBtn}
@@ -228,6 +234,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
             <div className="mc-tabs" role="tablist">
               <button role="tab" aria-selected={tab === 'pending'} className={tab === 'pending' ? 'active' : ''} onClick={() => pickTab('pending')}>
                 {t.mcPending} <span>{pending.length}</span>
+              </button>
+              <button role="tab" aria-selected={tab === 'rightOnce'} className={tab === 'rightOnce' ? 'active' : ''} onClick={() => pickTab('rightOnce')}>
+                {t.mcRightOnce} <span>{rightOnce.length}</span>
               </button>
               <button role="tab" aria-selected={tab === 'cleared'} className={tab === 'cleared' ? 'active' : ''} onClick={() => pickTab('cleared')}>
                 {t.mcCleared} <span>{cleared.length}</span>
@@ -260,7 +269,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
 
           {visible.length === 0 ? (
             <div className="mc-empty">
-              {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : tab === 'cleared' ? t.mcEmptyCleared : t.mcEmptyBookmarks}
+              {filter !== 'all' ? t.mcEmptyFilter : tab === 'pending' ? t.mcEmptyPending : tab === 'rightOnce' ? t.mcEmptyRightOnce : tab === 'cleared' ? t.mcEmptyCleared : t.mcEmptyBookmarks}
             </div>
           ) : groups.map(group => {
             const isOpen = !!openGroups[group.key]
@@ -281,7 +290,7 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                         ? <strong>GSEB · {testName(group, medium, t)}</strong>
                         : <strong>{groupName(group, medium)}</strong>}
                       {view === 'chapter' ? (
-                        tab === 'pending' && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
+                        retryTab && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
                       ) : (
                         <small>
                           {group.source !== 'gseb' && `${levelBadgeT(group.unitId, attempt.level, medium)} · `}{t.mcAttempt(group.test.position)} · {testDate(attempt)} · {t.mcMarks(testMarks(attempt).score, testMarks(attempt).max)}
@@ -295,9 +304,9 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                   {isOpen && (
                     <div className="mc-unit-body">
                       <div className="mc-unit-actions">
-                        {editable && tab === 'pending' && retryable.length > 0 && (
+                        {editable && retryTab && retryable.length > 0 && (
                           <button className="btn btn-primary btn-sm mc-icon-btn"
-                            onClick={() => (view === 'chapter' ? setPicker({ presetGroup: group.key }) : startRetest(retryable))}>
+                            onClick={() => setPicker(view === 'chapter' ? { presetGroup: group.key } : { presetGroup: null, items: retryable })}>
                             <RotateCcw size={14} /> {view === 'chapter' ? t.mcReattemptChapter : t.mcReattemptTest}
                           </button>
                         )}
@@ -328,7 +337,8 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
       )}
 
       {picker && (
-        <MistakePicker items={ready} medium={medium} presetGroup={picker.presetGroup} rightToday={pending.length - ready.length}
+        <MistakePicker items={picker.items || ready} medium={medium} presetGroup={picker.presetGroup}
+          rightToday={picker.items ? 0 : pending.length + rightOnce.length - ready.length}
           onStart={startRetest} onClose={() => setPicker(null)} />
       )}
 

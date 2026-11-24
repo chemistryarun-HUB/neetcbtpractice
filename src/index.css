@@ -812,7 +812,8 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-chip { flex-shrink: 0; display: inline-flex; align-items: center; border-radius: 9999px; padding: 0.08rem 0.45rem; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
 .mc-chip-cleared { background: #dcfce7; color: #15803d; }
 .mc-chip-repeat { background: #ffedd5; color: #c2410c; }
-.mc-chip-progress { background: #dbeafe; color: #1d4ed8; }
+.mc-chip-progress { background: #dcfce7; color: #15803d; }
+.mc-chip-again { background: #fee2e2; color: #b91c1c; }
 .mc-chip-type { background: var(--gray-100); color: var(--gray-600); }
 .mc-chip-star { background: #fffbeb; color: #d97706; }
 .mc-dot { flex-shrink: 0; display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
@@ -867,6 +868,21 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mc-result-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-top: 1px solid var(--gray-100); font-size: 0.8125rem; white-space: nowrap; }
 .mc-result-row:first-child { border-top: none; }
 .mc-result-note { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; color: var(--gray-500); }
+.mc-result-note.correct { color: #15803d; }
+.mc-result-note.wrong { color: #b91c1c; }
+.mc-result-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 0.5rem; border: none; background: none; padding: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.mc-result-open:hover .mc-stem { color: var(--primary-dark); text-decoration: underline; }
+.mc-result-mark { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 0.8rem; font-weight: 800; color: #fff; }
+.mc-result-mark.correct { background: #16a34a; }
+.mc-result-mark.wrong { background: #dc2626; }
+.mc-result-mark.skipped { background: #d97706; }
+.mc-result-num { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; color: var(--gray-500); min-width: 2rem; }
+.mc-result-row.correct { background: #f0fdf4; }
+.mc-result-row.wrong { background: #fef2f2; }
+.mc-result-review { display: flex; width: 100%; justify-content: center; min-height: 44px; margin-bottom: 1rem; font-weight: 800; }
+.mc-result-left { margin-top: 0.75rem; text-align: center; font-size: 0.8125rem; color: var(--gray-500); }
+.mc-explanation { margin-top: 1rem; padding: 0.75rem; background: var(--gray-50); border-radius: 8px; font-size: 0.9375rem; white-space: pre-wrap; }
+.mc-explanation img { display: block; max-width: 100%; margin-top: 0.5rem; }
 .mc-result-type { flex-shrink: 0; width: 170px; padding: 0.2rem 0.4rem; font-size: 0.78rem; }
 
 /* Question picker for a re-attempt: centred on a laptop, full screen on a phone. */
@@ -883,6 +899,7 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
 .mcp-seg button strong { font-size: 0.75rem; font-weight: 700; color: var(--gray-500); }
 .mcp-seg button.active { background: #fff; color: var(--primary-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 .mcp-seg button.active strong { color: var(--primary); }
+.mcp-seg button:disabled { opacity: 0.4; cursor: not-allowed; }
 .mcp-select { width: 100%; min-height: 44px; font-size: 0.9rem; }
 .mcp-tree { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
 .mcp-row { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.25rem 0.75rem; border-top: 1px solid var(--gray-100); cursor: pointer; }
@@ -912,8 +929,12 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .ms-date { margin-left: 0; }
   .mc-result-row .mc-qid { display: none; }
   .mc-result-row { flex-wrap: wrap; white-space: normal; }
-  .mc-result-row .mc-stem { flex-basis: calc(100% - 1.5rem); white-space: nowrap; }
-  .mc-result-note { margin-left: 1.05rem; }
+  .mc-result-open { flex-basis: 100%; }
+  .mc-result-note, .mc-result-type { margin-left: 1.9rem; }
+  .mc-bar { flex-wrap: wrap; }
+  .mc-seg { order: -1; }
+  .mc-tabs { width: 100%; gap: 0.9rem; overflow-x: auto; scrollbar-width: none; }
+  .mc-tabs button { font-size: 0.875rem; }
   .mcp-overlay { padding: 0; }
   .mcp-sheet { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; }
 }

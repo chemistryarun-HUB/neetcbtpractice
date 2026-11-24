@@ -75,7 +75,7 @@ export default function MistakeStudy({ items, startId, medium, editable, teacher
                 {kind === 'cleared' ? t.mcClearedOn(fmtDay(cur.clearedOn)) : kind === 'correct' ? t.mcResultCorrect : kind === 'wrong' ? t.mcWrongTimes(cur.wrongCount) : t.mcSkipped}
               </span>
               {cur.repeat && kind !== 'cleared' && <span className="mc-chip mc-chip-repeat">{t.mcRepeat}</span>}
-              {cur.status === 'pending' && cur.correctDays === 1 && <span className="mc-chip mc-chip-progress">{t.mcOneCorrect}</span>}
+              {cur.status === 'rightOnce' && <span className="mc-chip mc-chip-progress">{t.mcOneCorrect}</span>}
               <span className="ms-date">{fmtDay(cur.lastMistake.at)}</span>
               {teacher && <code className="mc-qid">{q.qid}</code>}
             </div>

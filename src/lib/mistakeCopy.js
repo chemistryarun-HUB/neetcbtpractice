@@ -32,7 +32,24 @@ export function typeKeysFor(skipped, current) {
 
 // Right on this many different days = Cleared. Getting it right straight after
 // asking the teacher only shows the answer is still fresh, so one day isn't proof.
+// Right on the first day already moves it out of Pending into "Right once", so a
+// re-attempt visibly empties Pending even before the second day.
 export const CLEAR_AFTER_DAYS = 2
+
+// How many questions one re-attempt holds by default, as everywhere else in the app.
+export const RETEST_SIZES = [25, 50]
+
+// The questions for a re-attempt of `size` (a number, or 'all'): repeat mistakes
+// first, the rest in random order, so 25 at a time works through the whole copy.
+export function pickForRetest(items, size) {
+  const shuffled = [...items]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  shuffled.sort((a, b) => Number(b.repeat) - Number(a.repeat))
+  return size === 'all' ? shuffled : shuffled.slice(0, size)
+}
 
 // One calendar for student, teacher and admin alike, whatever the device's clock says.
 const IST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' })
@@ -205,8 +222,11 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
     events.sort((a, b) => new Date(a.at) - new Date(b.at))
 
     let wrongCount = 0, skippedCount = 0, lastMistake = null, lastTest = null, keyChanged = false
-    let correctDays = new Set(), clearedOn = null
+    let correctDays = new Set(), clearedOn = null, lastTry = null
     for (const e of events) {
+      // How its latest try since it first went wrong went (re-attempt or test),
+      // for the ✓ / ✗ on its row.
+      if (lastMistake) lastTry = { status: e.status, at: e.at }
       if (e.status === 'correct') {
         if (!lastMistake) continue
         correctDays.add(istDay(e.at))
@@ -233,7 +253,9 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
     items.push({
       q,
       entry,
-      status: pending ? 'pending' : 'cleared',
+      // pending → rightOnce (right on one day) → cleared (right on 2 days)
+      status: !pending ? 'cleared' : correctDays.size > 0 ? 'rightOnce' : 'pending',
+      lastTry,
       ...placementOf(q, lastTest.attempt),
       test: lastTest,
       wrongCount,
