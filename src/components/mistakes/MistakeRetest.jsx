@@ -2,20 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, RotateCcw, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import QuestionView from '../shared/QuestionView'
-import MathText from '../shared/MathText'
+import RetestResult, { sortByOutcome } from './RetestResult'
 import TestLegend from '../shared/TestLegend'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { orderOptionsForAttempt, shuffleArray } from '../../lib/optionShuffle'
 import { liveStatusOf } from '../../lib/regrade'
-import { CLEAR_AFTER_DAYS, ERROR_TYPES, pickForRetest, saveMistakeEntry, saveRetries } from '../../lib/mistakeCopy'
+import { pickForRetest, saveRetries } from '../../lib/mistakeCopy'
 import { neetT } from '../../lib/neetI18n'
 
-const OUTCOME_ORDER = { wrong: 0, skipped: 1, correct: 2 }
-const TONE = {
-  wrong: { fg: '#b91c1c', bg: '#fee2e2', border: '#fca5a5', solid: '#dc2626' },
-  skipped: { fg: '#b45309', bg: '#fffbeb', border: '#fcd34d', solid: '#d97706' },
-  correct: { fg: '#15803d', bg: '#dcfce7', border: '#86efac', solid: '#16a34a' },
-}
 
 // A re-attempt of the Mistake Copy, on the same screen as a level test, however
 // many questions were picked. Its answers go to mistake_retries and nowhere else,
@@ -34,8 +28,6 @@ export default function MistakeRetest({ studentId, items, pool = items, medium, 
   const [elapsed, setElapsed] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [results, setResults] = useState(null)
-  const [types, setTypes] = useState({})
-  const [review, setReview] = useState(null)
   const contentRef = useRef(null)
   const paletteRef = useRef(null)
 
@@ -52,7 +44,7 @@ export default function MistakeRetest({ studentId, items, pool = items, medium, 
   useEffect(() => {
     if (contentRef.current) contentRef.current.scrollTop = 0
     paletteRef.current?.querySelector('[data-current="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })
-  }, [idx, results, review])
+  }, [idx])
 
   function clearCurrent() {
     setAnswers(a => {
@@ -65,14 +57,7 @@ export default function MistakeRetest({ studentId, items, pool = items, medium, 
   useEffect(() => {
     function onKey(e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return
-      if (results) {
-        if (review == null || e.target?.tagName === 'SELECT') return
-        if (e.key === 'ArrowRight') { e.preventDefault(); setReview(i => Math.min(i + 1, results.length - 1)) }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); setReview(i => Math.max(i - 1, 0)) }
-        else if (e.key === 'Escape') setReview(null)
-        return
-      }
-      if (submitting) return
+      if (results || submitting) return
       if (e.key === 'ArrowRight') { e.preventDefault(); setIdx(i => Math.min(i + 1, questions.length - 1)) }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); setIdx(i => Math.max(i - 1, 0)) }
       else if (e.key === 'Backspace') clearCurrent()
@@ -94,12 +79,14 @@ export default function MistakeRetest({ studentId, items, pool = items, medium, 
     if (unanswered > 0 && !window.confirm(t.mcRetestConfirm(unanswered))) return
     setSubmitting(true)
     try {
-      await saveRetries(studentId, questions.filter(x => answers[x.q.id]).map(x => ({
-        questionId: x.q.id, selected: answers[x.q.id], optionOrder: x.options.map(o => o.key),
+      // Blanks are saved too: a question left blank moves up a bucket like a wrong one.
+      await saveRetries(studentId, questions.map(x => ({
+        questionId: x.q.id, selected: answers[x.q.id] || '', optionOrder: x.options.map(o => o.key),
       })))
-      setResults(questions
-        .map(x => ({ ...x, outcome: liveStatusOf(x.q, answers[x.q.id]) }))
-        .sort((a, b) => OUTCOME_ORDER[a.outcome] - OUTCOME_ORDER[b.outcome]))
+      setResults(sortByOutcome(questions.map(x => ({
+        q: x.q, options: x.options, selected: answers[x.q.id] || null, outcome: liveStatusOf(x.q, answers[x.q.id]),
+        bucket: x.item.bucket, hasType: !!x.item.entry?.error_type,
+      }))))
     } catch {
       toast.error(t.mcSaveFailed)
     } finally {
@@ -107,139 +94,16 @@ export default function MistakeRetest({ studentId, items, pool = items, medium, 
     }
   }
 
-  async function chooseType(questionId, type) {
-    setTypes(prev => ({ ...prev, [questionId]: type }))
-    try {
-      await saveMistakeEntry(studentId, questionId, { error_type: type })
-    } catch {
-      toast.error(t.mcSaveFailed)
-    }
-  }
-
-  const outcomeLabel = r => (r.outcome === 'correct' ? t.mcResultCorrect : r.outcome === 'wrong' ? t.mcResultWrong : t.mcResultSkipped)
-  const note = r => {
-    if (r.outcome === 'wrong') return t.mcResultReset
-    if (r.outcome !== 'correct') return ''
-    return r.item.correctDays + 1 >= CLEAR_AFTER_DAYS ? t.mcResultCleared : t.mcResultOneDay
-  }
-  const typeSelect = (r, className) => (
-    <select className={`form-control ${className} et-select et-${types[r.q.id] || 'none'}`} aria-label={t.mcErrorType} value={types[r.q.id] || ''}
-      onChange={e => chooseType(r.q.id, e.target.value)}>
-      <option value="" disabled>{t.mcSelectType}</option>
-      {ERROR_TYPES.map(type => <option key={type} value={type}>{t.mcErrorTypes[type]}</option>)}
-    </select>
-  )
-
-  if (results && review != null) {
-    const r = results[review]
-    const tone = TONE[r.outcome]
-    return (
-      <div className="attempt-reviewer test-run" role="main" lang={medium}>
-        <div className="ar-header">
-          <button onClick={() => setReview(null)} title={t.mcClose} className="ar-close" aria-label={t.mcClose}><X size={18} /></button>
-          <div className="ar-title"><span>{t.mcResultTitle}</span></div>
-          <div className="ar-stats tp-progress"><span>{review + 1}<em>/{results.length}</em></span></div>
-        </div>
-        <div ref={contentRef} className="ar-content">
-          <div style={{ maxWidth: 860, margin: '0 auto' }}>
-            <div className="ar-card">
-              <div className="ms-meta">
-                <span className="mc-chip" style={{ background: tone.bg, color: tone.fg }}>{outcomeLabel(r)}</span>
-                {note(r) && <span className="mc-result-note">{note(r)}</span>}
-              </div>
-              <QuestionView q={r.q} mode="review" size="full" options={r.options} isChosen={opt => opt.key === answers[r.q.id]} />
-              {(r.q.explanation || r.q.explanation_image) && (
-                <div className="mc-explanation">
-                  <strong>{t.mcExplanation}:</strong> <MathText text={r.q.explanation || ''} />
-                  {r.q.explanation_image && <img src={r.q.explanation_image} alt={t.mcExplanation} />}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        {r.outcome === 'wrong' && !r.item.entry?.error_type && (
-          <div className="ms-typebar">
-            <span className="ms-type-label">{t.mcErrorType}</span>
-            {typeSelect(r, 'ms-type-select')}
-          </div>
-        )}
-        <div className="ar-footer">
-          <button className="btn btn-ghost btn-sm" onClick={() => setReview(i => Math.max(0, i - 1))} disabled={review === 0}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label={t.previous}>
-            <ChevronLeft size={16} /> <span className="ar-nav-label">{t.previous}</span>
-          </button>
-          <div ref={paletteRef} className="ar-palette">
-            {results.map((x, i) => {
-              const cur = i === review
-              const c = TONE[x.outcome]
-              return (
-                <button key={x.q.id} data-current={cur} onClick={() => setReview(i)} className="ar-chip"
-                  title={`Q${i + 1} · ${outcomeLabel(x)}`}
-                  style={{
-                    background: cur ? c.solid : c.bg, color: cur ? '#fff' : c.fg, borderColor: cur ? c.solid : c.border,
-                    boxShadow: cur ? `0 0 0 2px #fff, 0 0 0 4px ${c.solid}` : 'none',
-                  }}>
-                  {i + 1}
-                </button>
-              )
-            })}
-          </div>
-          <div className="ar-count">{review + 1} {t.of(results.length)}</div>
-          {review === results.length - 1 ? (
-            <button className="btn btn-primary btn-sm" onClick={() => setReview(null)} style={{ flexShrink: 0 }}>{t.mcDone}</button>
-          ) : (
-            <button className="btn btn-primary btn-sm" onClick={() => setReview(i => i + 1)}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }} aria-label={t.next}>
-              <span className="ar-nav-label">{t.next}</span> <ChevronRight size={16} />
-            </button>
-          )}
-        </div>
-      </div>
-    )
-  }
-
   if (results) {
-    const count = s => results.filter(r => r.outcome === s).length
     const done = new Set(results.map(r => r.q.id))
     const left = pool.filter(it => !done.has(it.q.id))
-    const nextSize = Math.min(left.length, items.length)
     return (
-      <div className="attempt-reviewer test-run" role="main" lang={medium}>
-        <div className="ar-header"><div className="ar-title"><span>{t.mcResultTitle}</span></div></div>
-        <div ref={contentRef} className="ar-content">
-          <div style={{ maxWidth: 860, margin: '0 auto' }}>
-            <div className="mc-result-tiles">
-              <div className="mc-result-tile correct"><strong>{count('correct')}</strong>{t.mcResultCorrect}</div>
-              <div className="mc-result-tile wrong"><strong>{count('wrong')}</strong>{t.mcResultWrong}</div>
-              <div className="mc-result-tile skipped"><strong>{count('skipped')}</strong>{t.mcResultSkipped}</div>
-            </div>
-            <button className="btn btn-primary mc-result-review" onClick={() => setReview(0)}>{t.mcReviewAnswers} →</button>
-            <div className="card">
-              {results.map((r, i) => (
-                <div key={r.q.id} className={`mc-result-row ${r.outcome}`}>
-                  <button className="mc-result-open" onClick={() => setReview(i)}>
-                    <span className={`mc-result-mark ${r.outcome}`}>{r.outcome === 'correct' ? '✓' : r.outcome === 'wrong' ? '✗' : '–'}</span>
-                    <span className="mc-result-num">Q{i + 1}</span>
-                    <span className="mc-stem">{r.q.question ? <MathText text={String(r.q.question).replace(/\s+/g, ' ')} style={{ whiteSpace: 'nowrap' }} /> : <em>{t.mcImageQuestion}</em>}</span>
-                  </button>
-                  {r.outcome === 'wrong' && !r.item.entry?.error_type
-                    ? typeSelect(r, 'mc-result-type')
-                    : <span className={`mc-result-note ${r.outcome}`}>{note(r)}</span>}
-                </div>
-              ))}
-            </div>
-            {left.length > 0 && <div className="mc-result-left">{t.mcReadyLeft(left.length)}</div>}
-          </div>
-        </div>
-        <div className="ar-footer" style={{ justifyContent: 'flex-end', gap: '0.5rem' }}>
-          <button className="btn btn-ghost btn-sm" onClick={onClose}>{t.mcBack}</button>
-          {left.length > 0 && onNext && (
-            <button className="btn btn-primary btn-sm" onClick={() => onNext(pickForRetest(left, items.length), left)}>
-              <RotateCcw size={14} /> {t.mcNextSet(nextSize)}
-            </button>
-          )}
-        </div>
-      </div>
+      <RetestResult rows={results} title={t.mcResultTitle} medium={medium} studentId={studentId} onClose={onClose}
+        footer={left.length > 0 && onNext && (
+          <button className="btn btn-primary btn-sm" onClick={() => onNext(pickForRetest(left, items.length), left)}>
+            <RotateCcw size={14} /> {t.mcNextSet(Math.min(left.length, items.length))}
+          </button>
+        )} />
     )
   }
 

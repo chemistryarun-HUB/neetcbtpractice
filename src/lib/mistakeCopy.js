@@ -30,12 +30,6 @@ export function typeKeysFor(skipped, current) {
   return current && !list.includes(current) ? [...list, current] : list
 }
 
-// Right on this many different days = Cleared. Getting it right straight after
-// asking the teacher only shows the answer is still fresh, so one day isn't proof.
-// Right on the first day already moves it out of Pending into "Right once", so a
-// re-attempt visibly empties Pending even before the second day.
-export const CLEAR_AFTER_DAYS = 2
-
 // How many questions one re-attempt holds by default, as everywhere else in the app.
 export const RETEST_SIZES = [25, 50]
 
@@ -197,40 +191,57 @@ function replayAttempts(attempts, questionById) {
   return history
 }
 
-export function buildMistakeCopy({ attempts = [], questions = [], entries = [], retries = [], today = istDay(new Date()) }) {
+// Buckets: every mistake from a test lands in bucket 1 (Main). A question
+// answered wrong or left blank in a re-attempt moves one bucket up, up to the
+// last one; answered right (in a re-attempt or a later test) it is Cleared.
+// Going wrong again in a test sends it back to Main.
+export const BUCKETS = [1, 2, 3, 4, 5]
+const LAST_BUCKET = BUCKETS[BUCKETS.length - 1]
+
+function replayCopy({ attempts = [], questions = [], entries = [], retries = [] }) {
   const questionById = new Map(questions.map(q => [q.id, q]))
   const entryByQuestion = new Map(entries.map(e => [e.question_id, e]))
   const history = replayAttempts(attempts, questionById)
+  // One re-attempt's answers are saved in one insert, so they share created_at.
+  const sessions = new Map()
   for (const retry of retries) {
     const q = questionById.get(retry.question_id)
     if (!q) continue
     if (!history.has(retry.question_id)) history.set(retry.question_id, [])
-    history.get(retry.question_id).push({
+    const event = {
       at: retry.created_at,
       status: liveStatusOf(q, retry.selected),
-      selected: retry.selected,
+      selected: retry.selected || null,
       optionOrder: retry.option_order,
       test: null,
-    })
+      q,
+      bucket: null,
+    }
+    history.get(retry.question_id).push(event)
+    if (!sessions.has(retry.created_at)) sessions.set(retry.created_at, [])
+    sessions.get(retry.created_at).push(event)
   }
 
   const items = []
   for (const [qid, events] of history) {
     const q = questionById.get(qid)
-    // A question taken out of service leaves the copy along with the bank.
-    if (q.is_active === false || q.is_published === false) continue
     events.sort((a, b) => new Date(a.at) - new Date(b.at))
 
     let wrongCount = 0, skippedCount = 0, lastMistake = null, lastTest = null, keyChanged = false
-    let correctDays = new Set(), clearedOn = null, lastTry = null
+    let bucket = 1, clearedOn = null, retryCount = 0
     for (const e of events) {
-      // How its latest try since it first went wrong went (re-attempt or test),
-      // for the ✓ / ✗ on its row.
-      if (lastMistake) lastTry = { status: e.status, at: e.at }
+      if (!e.test) {
+        // A re-attempt: only of a question in the copy and not yet cleared.
+        if (!lastMistake || clearedOn) continue
+        e.bucket = bucket
+        retryCount++
+        if (e.status === 'correct') { clearedOn = e.at; continue }
+        if (e.status === 'wrong') wrongCount++; else skippedCount++
+        bucket = Math.min(bucket + 1, LAST_BUCKET)
+        continue
+      }
       if (e.status === 'correct') {
-        if (!lastMistake) continue
-        correctDays.add(istDay(e.at))
-        if (!clearedOn && correctDays.size >= CLEAR_AFTER_DAYS) clearedOn = e.at
+        if (lastMistake && !clearedOn) clearedOn = e.at
         continue
       }
       if (e.status === 'skipped') {
@@ -238,24 +249,24 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
         if (lastMistake) continue
       } else {
         wrongCount++
-        correctDays = new Set()
+        bucket = 1
         clearedOn = null
       }
       lastMistake = e
-      if (e.test) lastTest = e.test
+      lastTest = e.test
       if (e.keyChanged) keyChanged = true
     }
     // Re-attempts only ever follow a test, so no test left means nothing to show.
     if (!lastMistake || !lastTest) continue
+    // A question taken out of service leaves the copy along with the bank.
+    if (q.is_active === false || q.is_published === false) continue
 
-    const entry = entryByQuestion.get(qid) || null
-    const pending = !clearedOn
     items.push({
       q,
-      entry,
-      // pending → rightOnce (right on one day) → cleared (right on 2 days)
-      status: !pending ? 'cleared' : correctDays.size > 0 ? 'rightOnce' : 'pending',
-      lastTry,
+      entry: entryByQuestion.get(qid) || null,
+      status: clearedOn ? 'cleared' : 'pending',
+      bucket,
+      retryCount,
       ...placementOf(q, lastTest.attempt),
       test: lastTest,
       wrongCount,
@@ -263,14 +274,34 @@ export function buildMistakeCopy({ attempts = [], questions = [], entries = [], 
       repeat: wrongCount >= 2,
       lastMistake,
       keyChanged,
-      correctDays: correctDays.size,
       clearedOn,
-      doneToday: correctDays.has(today),
-      // Right today already counts for today, so another go today can't help.
-      canRetry: pending && !correctDays.has(today),
+      canRetry: !clearedOn,
     })
   }
-  return items.sort((a, b) => new Date(b.lastMistake.at) - new Date(a.lastMistake.at))
+  items.sort((a, b) => new Date(b.lastMistake.at) - new Date(a.lastMistake.at))
+
+  // Each re-attempt, newest first, numbered in the order they were taken.
+  const retests = [...sessions.entries()]
+    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    .map(([at, rows], i) => {
+      const counted = rows.filter(r => r.bucket != null)
+      const byBucket = {}
+      for (const r of counted) byBucket[r.bucket] = (byBucket[r.bucket] || 0) + 1
+      const bucket = Number(Object.entries(byBucket).sort((x, y) => y[1] - x[1])[0]?.[0]) || null
+      const count = st => rows.filter(r => r.status === st).length
+      return { key: at, number: i + 1, at, bucket, rows, correct: count('correct'), wrong: count('wrong'), skipped: count('skipped') }
+    })
+    .reverse()
+  return { items, sessions: retests }
+}
+
+export function buildMistakeCopy(data) {
+  return replayCopy(data).items
+}
+
+// Every re-attempt the student has taken, newest first, for the Results tab.
+export function buildRetestHistory(data) {
+  return replayCopy(data).sessions
 }
 
 /**
@@ -389,7 +420,9 @@ export async function setMistakesChecked(studentId, questionIds, checkedBy) {
 export async function saveRetries(studentId, answers) {
   if (!answers.length) return []
   const { data, error } = await supabase.from('mistake_retries')
-    .insert(answers.map(a => ({ student_id: studentId, question_id: a.questionId, selected: a.selected, option_order: a.optionOrder })))
+    // A blank answer is saved as '' (the column is NOT NULL) so a skipped question
+    // still moves up a bucket.
+    .insert(answers.map(a => ({ student_id: studentId, question_id: a.questionId, selected: a.selected || '', option_order: a.optionOrder })))
     .select()
   if (error) throw error
   return data || []

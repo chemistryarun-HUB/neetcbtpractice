@@ -939,6 +939,45 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .mcp-sheet { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; }
 }
 
+/* Mistake Copy buckets: Main + Buckets 2-5 + Cleared, one tile each. */
+.mc-buckets { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
+.mc-bucket { --b: #2563eb; display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; min-width: 0; padding: 0.6rem 0.7rem 0.65rem; background: #fff; border: 1.5px solid var(--gray-200); border-top: 4px solid var(--b); border-radius: 10px; text-align: left; cursor: pointer; }
+.mc-bucket-2 { --b: #d97706; }
+.mc-bucket-3 { --b: #ea580c; }
+.mc-bucket-4 { --b: #dc2626; }
+.mc-bucket-5 { --b: #991b1b; }
+.mc-bucket-cleared { --b: #16a34a; }
+.mc-bucket-name { font-size: 0.8rem; font-weight: 800; color: var(--gray-700); white-space: nowrap; }
+.mc-bucket strong { font-size: 1.6rem; line-height: 1.15; color: var(--b); font-variant-numeric: tabular-nums; }
+.mc-bucket small { font-size: 0.68rem; line-height: 1.25; color: var(--gray-500); }
+.mc-bucket.empty strong { color: var(--gray-300); }
+.mc-bucket:hover { border-color: var(--b); }
+.mc-bucket.active { border-color: var(--b); background: color-mix(in srgb, var(--b) 8%, #fff); box-shadow: 0 0 0 2px color-mix(in srgb, var(--b) 35%, transparent); }
+.mc-bucket-action { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
+.mc-history { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; }
+.mc-history-row { width: 100%; display: flex; align-items: center; gap: 0.75rem; border: none; border-top: 1px solid var(--gray-100); background: #fff; padding: 0.7rem 0.875rem; text-align: left; cursor: pointer; }
+.mc-history-row:first-child { border-top: none; }
+.mc-history-row:hover { background: var(--primary-light); }
+.mc-history-num { flex-shrink: 0; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--primary-light); color: var(--primary-dark); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+.mc-history-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mc-history-main strong { font-size: 0.9rem; color: var(--gray-800); }
+.mc-history-main small { font-size: 0.75rem; color: var(--gray-500); }
+.mc-history-score { flex-shrink: 0; display: flex; gap: 0.35rem; }
+.mc-history-score b { border-radius: 9999px; padding: 0.12rem 0.5rem; font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+.mc-history-score .ok { background: #dcfce7; color: #15803d; }
+.mc-history-score .bad { background: #fee2e2; color: #b91c1c; }
+.mc-history-score .skip { background: #fffbeb; color: #b45309; }
+.mc-result-sub { text-align: center; font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.75rem; }
+.mc-skip-note { margin-top: 1rem; font-size: 0.8125rem; color: #b45309; background: #fffbeb; border: 1px dashed #fcd34d; border-radius: 8px; padding: 0.5rem 0.75rem; }
+@media (max-width: 640px) {
+  .mc-buckets { grid-template-columns: repeat(3, 1fr); }
+  .mc-bucket-action .mc-hero-btn { width: 100%; }
+  .mc-history-row { flex-wrap: wrap; row-gap: 0.4rem; }
+  .mc-history-main { flex: 1 1 calc(100% - 3.5rem); }
+  .mc-history-row .mc-row-chev { display: none; }
+  .mc-history-score { margin-left: 3.15rem; }
+}
+
 /* Mistake Copy PDF (lib/mistakePdf.jsx): laid out off screen at A4 size
    (794 x 1123 px) and captured page by page. */
 .mr { font-family: Arial, "Noto Sans Gujarati", sans-serif; font-size: 13px; line-height: 1.4; color: #000; background: #fff; }
