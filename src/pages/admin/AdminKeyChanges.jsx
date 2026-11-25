@@ -100,25 +100,26 @@ export default function AdminKeyChanges() {
     return out
   }, [pending, attempts, questionsById, progressByStudent, loading])
 
-  // A correction to a question nobody has answered yet needs no decision, and a
-  // bulk Excel re-upload can produce hundreds of those at once. Resolve them
-  // silently so the queue only ever shows changes that touch real students.
+  // A change that moves no student's grade needs no decision: a question nobody
+  // has answered, or a wording edit (LaTeX, typo) that keeps the same option
+  // correct. Bulk Excel re-uploads and LaTeX passes produce hundreds of those at
+  // once, so resolve them silently and keep the queue to real corrections.
   useEffect(() => {
     if (loading || !pending.length || !attempts.length) return
     const noop = pending.filter(c => impacts[c.id] && impacts[c.id].attemptPatches.length === 0)
     if (!noop.length) return
+    const note = 'No student grade changes (wording edit, or nobody had answered it)'
     let cancelled = false
     ;(async () => {
-      for (const c of noop) {
+      const ids = noop.map(c => c.id)
+      for (let i = 0; i < ids.length; i += 200) {
         await supabase.from('answer_key_changes')
-          .update({ status: 'dismissed', applied_at: new Date().toISOString(), note: 'No submitted attempt had answered this question' })
-          .eq('id', c.id)
+          .update({ status: 'dismissed', applied_at: new Date().toISOString(), note })
+          .in('id', ids.slice(i, i + 200))
       }
       if (cancelled) return
-      setChanges(prev => prev.map(c =>
-        noop.some(n => n.id === c.id)
-          ? { ...c, status: 'dismissed', note: 'No submitted attempt had answered this question' }
-          : c))
+      const done = new Set(ids)
+      setChanges(prev => prev.map(c => (done.has(c.id) ? { ...c, status: 'dismissed', note } : c)))
     })()
     return () => { cancelled = true }
   }, [impacts, loading])

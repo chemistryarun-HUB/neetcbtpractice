@@ -36,7 +36,21 @@ export function scorePct(score, totalQuestions) {
  * graded as — reclassifying it as skipped would quietly rewrite a score for a
  * reason that has nothing to do with the answer key.
  */
-export function recomputeAttempt(attempt, questionsById) {
+// An answer saved before the key-based fix holds the option's TEXT. Once that
+// option's wording is edited (a LaTeX pass, a typo fix) the old text matches
+// nothing, and grading it again would turn a right answer wrong for no reason.
+// Such an answer can't be re-graded, so it keeps its frozen grade.
+function answerStillReadable(question, selected) {
+  if (!selected || /^option[1-4]$/.test(selected)) return true
+  return optionEntries(question).some(e => e.text !== '' && e.text === selected)
+}
+
+/**
+ * `onlyQuestionIds` limits the re-grade to those questions: every other question
+ * in the attempt keeps its frozen grade, so reviewing one key change never
+ * re-grades the rest of the paper behind the admin's back.
+ */
+export function recomputeAttempt(attempt, questionsById, onlyQuestionIds = null) {
   const stored = attempt.answers || {}
   if (stored.responses === undefined) return null      // legacy format: always derived live, nothing frozen
   const responses = stored.responses || {}
@@ -51,8 +65,9 @@ export function recomputeAttempt(attempt, questionsById) {
   let hadMissingQuestion = false
   for (const qid of qids) {
     const q = questionsById[qid]
-    if (!q) {
-      hadMissingQuestion = true
+    const frozen = (onlyQuestionIds && !onlyQuestionIds.has(qid)) || (q && !answerStillReadable(q, responses[qid]))
+    if (!q || frozen) {
+      if (!q) hadMissingQuestion = true
       if (oldCorrect.has(qid)) correct.push(qid)
       else if (oldWrong.has(qid)) wrong.push(qid)
       else skipped.push(qid)
@@ -99,7 +114,7 @@ export function buildRegradePlan({ attempts, questionsById, progressByStudent, o
   const attemptPatches = []
   for (const a of attempts) {
     if (scope && !(a.question_ids || []).some(id => scope.has(id))) continue
-    const result = recomputeAttempt(a, questionsById)
+    const result = recomputeAttempt(a, questionsById, scope)
     if (result) attemptPatches.push(result)
   }
 
