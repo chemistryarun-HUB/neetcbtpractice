@@ -21,5 +21,5 @@ jobs:
           git config user.name 'chem-upload'
           git config user.email 'chem-upload@users.noreply.github.com'
           git add scripts/chem-upload/dump
-          git commit -m 'One-off: U9 source format result' || true
+          git commit -m 'One-off: U9 JEE source EG result' || true
           git push origin HEAD:claude/project-thread-mzbuc5
