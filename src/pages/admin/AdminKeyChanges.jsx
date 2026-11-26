@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { AlertTriangle, Check, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
-import { buildRegradePlan, applyRegradePlan, planNetMarks } from '../../lib/regrade'
+import { buildRegradePlan, applyRegradePlan, planNetMarks, isSameAnswerChange } from '../../lib/regrade'
 import { analyseAnswerKeys, ITEM_ANALYSIS_RULES } from '../../lib/itemAnalysis'
 import { levelBadge } from '../../lib/constants'
 import { unitIdOf } from '../../lib/topics'
@@ -100,29 +100,53 @@ export default function AdminKeyChanges() {
     return out
   }, [pending, attempts, questionsById, progressByStudent, loading])
 
-  // A change that moves no student's grade needs no decision: a question nobody
-  // has answered, or a wording edit (LaTeX, typo) that keeps the same option
-  // correct. Bulk Excel re-uploads and LaTeX passes produce hundreds of those at
-  // once, so resolve them silently and keep the queue to real corrections.
+  // A change that needs no decision is resolved silently, so the queue holds only
+  // real corrections:
+  //  - nobody's grade moves: a question nobody has answered, or a wording edit
+  //    (LaTeX, typo) that keeps the same option correct;
+  //  - the SAME answer is still correct, only at another option number: the
+  //    options were reordered (often with a LaTeX pass). Re-grading that would
+  //    read saved option1..option4 answers against the new order and turn right
+  //    answers wrong, so it must never be applied.
   useEffect(() => {
     if (loading || !pending.length || !attempts.length) return
-    const noop = pending.filter(c => impacts[c.id] && impacts[c.id].attemptPatches.length === 0)
-    if (!noop.length) return
-    const note = 'No student grade changes (wording edit, or nobody had answered it)'
+    const groups = [
+      ['No student grade changes (wording edit, or nobody had answered it)',
+        pending.filter(c => impacts[c.id] && impacts[c.id].attemptPatches.length === 0)],
+      ['Same answer, options only reordered or reformatted. No re-grade needed',
+        pending.filter(c => impacts[c.id]?.attemptPatches.length && isSameAnswerChange(c, questionsById[c.question_id]))],
+    ].filter(([, list]) => list.length)
+    if (!groups.length) return
     let cancelled = false
     ;(async () => {
-      const ids = noop.map(c => c.id)
-      for (let i = 0; i < ids.length; i += 200) {
-        await supabase.from('answer_key_changes')
-          .update({ status: 'dismissed', applied_at: new Date().toISOString(), note })
-          .in('id', ids.slice(i, i + 200))
+      const done = {}
+      for (const [note, list] of groups) {
+        const ids = list.map(c => c.id)
+        for (let i = 0; i < ids.length; i += 200) {
+          await supabase.from('answer_key_changes')
+            .update({ status: 'dismissed', applied_at: new Date().toISOString(), note })
+            .in('id', ids.slice(i, i + 200))
+        }
+        ids.forEach(id => { done[id] = note })
       }
       if (cancelled) return
-      const done = new Set(ids)
-      setChanges(prev => prev.map(c => (done.has(c.id) ? { ...c, status: 'dismissed', note } : c)))
+      setChanges(prev => prev.map(c => (done[c.id] ? { ...c, status: 'dismissed', note: done[c.id] } : c)))
     })()
     return () => { cancelled = true }
   }, [impacts, loading])
+
+  async function dismissOne(change) {
+    if (!window.confirm(`Dismiss ${change.qid}? No student's marks will change.`)) return
+    setApplyingId(change.id)
+    const note = 'Dismissed by admin. No re-grade'
+    const { error } = await supabase.from('answer_key_changes')
+      .update({ status: 'dismissed', applied_at: new Date().toISOString(), note })
+      .eq('id', change.id)
+    setApplyingId(null)
+    if (error) { toast.error(error.message); return }
+    setChanges(prev => prev.map(c => (c.id === change.id ? { ...c, status: 'dismissed', note } : c)))
+    toast.success(`${change.qid} dismissed`)
+  }
 
   async function applyOne(change) {
     const plan = impacts[change.id]
@@ -225,6 +249,10 @@ export default function AdminKeyChanges() {
                           <Stat label="Unlocks" value={`+${plan.unlocksGained.length}`} tone={plan.unlocksGained.length ? 'var(--green)' : undefined} />
                           <button className="btn btn-ghost btn-sm" onClick={() => setExpandedId(isOpen ? null : c.id)}>
                             {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />} Details
+                          </button>
+                          <button className="btn btn-outline btn-sm" disabled={applyingId === c.id} onClick={() => dismissOne(c)}
+                            title="Close this without changing any student's marks">
+                            Dismiss
                           </button>
                           <button className="btn btn-primary btn-sm" disabled={applyingId === c.id} onClick={() => applyOne(c)}>
                             {applyingId === c.id ? 'Applying…' : 'Apply re-grade'}
