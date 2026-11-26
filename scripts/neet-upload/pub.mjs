@@ -1,7 +1,7 @@
-// One-off: publish NCERT Exemplar Physics drafts for approved units (Arun approves each unit) (run: XII Units 22-25)
+// One-off: publish NCERT Exemplar Physics drafts for approved units (Arun approves each unit) (run: XI Units 5-10)
 import { createClient } from '@supabase/supabase-js'
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
-const UNITS = ['Unit 22 - Electromagnetic Induction','Unit 23 - Alternating Current','Unit 24 - Ray Optics','Unit 25 - Wave Optics']
+const UNITS = ['Unit 5 - Laws of Motion','Unit 6 - Work Power Energy','Unit 7 - Center of Mass Momentum and Collision','Unit 8 - Rotational Motion','Unit 9 - Gravitation','Unit 10 - Mechanical Properties of Solids']
 const base = () => sb.from('questions').select('*', { count: 'exact', head: true }).eq('subject', 'Physics').in('unit', UNITS).like('source', 'NCERT Exemplar %')
 const { count: before } = await base().eq('is_published', false)
 console.log('drafts before', before)
