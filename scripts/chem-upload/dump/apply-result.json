@@ -1,0 +1,2015 @@
+{
+ "updated": [
+  "NCU09001",
+  "NCU09002",
+  "NCU09003",
+  "NCU09004",
+  "NCU09005",
+  "NCU09006",
+  "NCU09007",
+  "NCU09008",
+  "NCU09009",
+  "NCU09010",
+  "NCU09011",
+  "NCU09012",
+  "NCU09013",
+  "NCU09014",
+  "NCU09015",
+  "NCU09016",
+  "NCU09017",
+  "NCU09018",
+  "NCU09019",
+  "NCU09020",
+  "NCU09021",
+  "NCU09022",
+  "NCU09023",
+  "NCU09024",
+  "NCU09025",
+  "NCU09026",
+  "NCU09027",
+  "NCU09028",
+  "NCU09029",
+  "NCU09030",
+  "NCU09031",
+  "NCU09032",
+  "NCU09033",
+  "NCU09034",
+  "NCU09035",
+  "NCU09036",
+  "NCU09037",
+  "NCU09038",
+  "NCU09039",
+  "NCU09040",
+  "NCU09041",
+  "NCU09042",
+  "NCU09043",
+  "NCU09044",
+  "NCU09045",
+  "NCU09046",
+  "NCU09047",
+  "NCU09048",
+  "NCU09049",
+  "NCU09050",
+  "NCU09051",
+  "NCU09052",
+  "NCU09053",
+  "NCU09054",
+  "NCU09055",
+  "NCU09056",
+  "NCU09057",
+  "NCU09058",
+  "NCU09059",
+  "NCU09060",
+  "NCU09061",
+  "NCU09062",
+  "NCU09063",
+  "NCU09064",
+  "NCU09065",
+  "NCU09066",
+  "NCU09067",
+  "NCU09068",
+  "NCU09069",
+  "NCU09070",
+  "NCU09071",
+  "NCU09072",
+  "NCU09073",
+  "NCU09074",
+  "NCU09075",
+  "NCU09076",
+  "NCU09077",
+  "NCU09078",
+  "NCU09079",
+  "NCU09080",
+  "NCU09081",
+  "NCU09082",
+  "NCU09083",
+  "NCU09084",
+  "NCU09085",
+  "NCU09086",
+  "NCU09087",
+  "NCU09088",
+  "NCU09089",
+  "NCU09090",
+  "NCU09091",
+  "NCU09092",
+  "NCU09093",
+  "NCU09094",
+  "NCU09095",
+  "NCU09096",
+  "NCU09097",
+  "NCU09098",
+  "NCU09099",
+  "NCU09100",
+  "NCU09101",
+  "NCU09102",
+  "NCU09103",
+  "NCU09104",
+  "NCU09105",
+  "NCU09106",
+  "NCU09107",
+  "NCU09108",
+  "NCU09109",
+  "NCU09110",
+  "NCU09111",
+  "NCU09112",
+  "NCU09113",
+  "NCU09114",
+  "NCU09115",
+  "NCU09116",
+  "NCU09117",
+  "NCU09118",
+  "NCU09119",
+  "NCU09120",
+  "NCU09121",
+  "NCU09122",
+  "NCU09123",
+  "NCU09124",
+  "NCU09125",
+  "NCU09126",
+  "NCU09127",
+  "NCU09128",
+  "NCU09129",
+  "NCU09130",
+  "NCU09131",
+  "NCU09132",
+  "NCU09133",
+  "NCU09134",
+  "NCU09135",
+  "NCU09136",
+  "NCU09137",
+  "NCU09138",
+  "NCU09139",
+  "NCU09140",
+  "NCU09141",
+  "NCU09142",
+  "NCU09143",
+  "NCU09144",
+  "NCU09145",
+  "NCU09146",
+  "NCU09147",
+  "NCU09148",
+  "NCU09149",
+  "NCU09150",
+  "NCU09151",
+  "NCU09152",
+  "NCU09153",
+  "NCU09154",
+  "NCU09155",
+  "NCU09156",
+  "NCU09157",
+  "NCU09158",
+  "NCU09159",
+  "NCU09160",
+  "NCU09161",
+  "NCU09162",
+  "NCU09163",
+  "NCU09164",
+  "NCU09165",
+  "NCU09166",
+  "NCU09167",
+  "NCU09168",
+  "NCU09169",
+  "NCU09170",
+  "NCU09171",
+  "NCU09172",
+  "NCU09173",
+  "NCU09174",
+  "NCU09175",
+  "NCU09176",
+  "NCU09177",
+  "NCU09178",
+  "NCU09179",
+  "NCU09180",
+  "NCU09181",
+  "NCU09182",
+  "NCU09183",
+  "NCU09184",
+  "NCU09185",
+  "NCU09186",
+  "NCU09187",
+  "NCU09188",
+  "NCU09189",
+  "NCU09190",
+  "NCU09191",
+  "NCU09192",
+  "NCU09193",
+  "NCU09194",
+  "NCU09195",
+  "NCU09196",
+  "NCU09197",
+  "NCU09198",
+  "NCU09199",
+  "NCU09200",
+  "NCU09201",
+  "NCU09202",
+  "NCU09203",
+  "NCU09204",
+  "NCU09205",
+  "NCU09206",
+  "NCU09207",
+  "NCU09208",
+  "NCU09209",
+  "NCU09210",
+  "NCU09211",
+  "NCU09212",
+  "NCU09213",
+  "NCU09214",
+  "NCU09215",
+  "NCU09216",
+  "NCU09217",
+  "NCU09218",
+  "NCU09219",
+  "NCU09220",
+  "NCU09221",
+  "NCU09222",
+  "NCU09223",
+  "NCU09224",
+  "NCU09225",
+  "NCU09226",
+  "NCU09227",
+  "NCU09228",
+  "NCU09229",
+  "NCU09230",
+  "NCU09231",
+  "NCU09232",
+  "NCU09233",
+  "NCU09234",
+  "NCU09235",
+  "NCU09236",
+  "NCU09237",
+  "NCU09238",
+  "NCU09239",
+  "NCU09240",
+  "NCU09241",
+  "NCU09242",
+  "NCU09243",
+  "NCU09244",
+  "NCU09245",
+  "NCU09246",
+  "NCU09247",
+  "NCU09248",
+  "NCU09249",
+  "NCU09250",
+  "NCU09251",
+  "NCU09252",
+  "NCU09253",
+  "NCU09254",
+  "NCU09255",
+  "NCU09256",
+  "NCU09257",
+  "NCU09258",
+  "NCU09259",
+  "NCU09260",
+  "NCU09261",
+  "NCU09262",
+  "NCU09263",
+  "NCU09264",
+  "NCU09265",
+  "NCU09266",
+  "NCU09267",
+  "NCU09268",
+  "NCU09269",
+  "NCU09270",
+  "NCU09271",
+  "NCU09272",
+  "NCU09273",
+  "NCU09274",
+  "NCU09275",
+  "NCU09276",
+  "NCU09277",
+  "NCU09278",
+  "NCU09279",
+  "NCU09280",
+  "NCU09281",
+  "NCU09282",
+  "NCU09283",
+  "NCU09284",
+  "NCU09285",
+  "NCU09286",
+  "NCU09287",
+  "NCU09288",
+  "NCU09289",
+  "NCU09290",
+  "NCU09291",
+  "NCU09292",
+  "NCU09293",
+  "NCU09294",
+  "NCU09295",
+  "NCU09296",
+  "NCU09297",
+  "NCU09298",
+  "NCU09299",
+  "NCU09300",
+  "NCU09301",
+  "NCU09302",
+  "NCU09303",
+  "NCU09304",
+  "NCU09305",
+  "NCU09306",
+  "NCU09307",
+  "NCU09308",
+  "NCU09309",
+  "NCU09310",
+  "NCU09311",
+  "NCU09312",
+  "NCU09313",
+  "NCU09314",
+  "NCU09315",
+  "NCU09316",
+  "NCU09317",
+  "NCU09318",
+  "NCU09319",
+  "NCU09320",
+  "NCU09321",
+  "NCU09322",
+  "NCU09323",
+  "NCU09324",
+  "NCU09325",
+  "NCU09326",
+  "NCU09327",
+  "NCU09328",
+  "NCU09329",
+  "NCU09330",
+  "NCU09331",
+  "NCU09332",
+  "NCU09333",
+  "NCU09334",
+  "NCU09335",
+  "NCU09336",
+  "NCU09337",
+  "NCU09338",
+  "NCU09339",
+  "NCU09340",
+  "NCU09341",
+  "NCU09342",
+  "NCU09343",
+  "NCU09344",
+  "NCU09345",
+  "NCU09346",
+  "NCU09347",
+  "NCU09348",
+  "NCU09349",
+  "NCU09350",
+  "NCU09351",
+  "NCU09352",
+  "NCU09353",
+  "NCU09354",
+  "NCU09356",
+  "NCU09357",
+  "NCU09358",
+  "NCU09359",
+  "NCU09360",
+  "NCU09361",
+  "NCU09362",
+  "NCU09363",
+  "NCU09364",
+  "NCU09365",
+  "NCU09366",
+  "NCU09367",
+  "NCU09368",
+  "NCU09369",
+  "NCU09370",
+  "NCU09371",
+  "NCU09372",
+  "NCU09373",
+  "NCU09374",
+  "NCU09375",
+  "NCU09376",
+  "NCU09377",
+  "NCU09378",
+  "NCU09379",
+  "NCU09380",
+  "NCU09381",
+  "NCU09382",
+  "NCU09383",
+  "NCU09384",
+  "NCU09385",
+  "NCU09386",
+  "NCU09387",
+  "NCU09388",
+  "NCU09389",
+  "NCU09390",
+  "NCU09391",
+  "NCU09392",
+  "NCU09393",
+  "NCU09394",
+  "NCU09395",
+  "NCU09396",
+  "NCU09397",
+  "NCU09398",
+  "NCU09399",
+  "NCU09400",
+  "NCU09401",
+  "NCU09402"
+ ],
+ "skipped": [],
+ "failed": [],
+ "bad": [],
+ "error": null,
+ "allSources": [
+  {
+   "qid": "NCU09166",
+   "source": "JEE(Main) EG Unit-09 Q.99"
+  },
+  {
+   "qid": "NCU09217",
+   "source": "NCERT Exercise Q3.40"
+  },
+  {
+   "qid": "NCU09143",
+   "source": "JEE(Main) EG Unit-10 Q.158"
+  },
+  {
+   "qid": "NCU09008",
+   "source": "AIIMS PYQ Q8"
+  },
+  {
+   "qid": "NCU09151",
+   "source": "JEE(Main) EG Unit-09 Q.90"
+  },
+  {
+   "qid": "NCU09150",
+   "source": "JEE(Main) EG Unit-09 Q.75"
+  },
+  {
+   "qid": "NCU09149",
+   "source": "JEE(Main) EG Other (s-Block Elements) Q.39"
+  },
+  {
+   "qid": "NCU09009",
+   "source": "AIIMS PYQ Q9"
+  },
+  {
+   "qid": "NCU09157",
+   "source": "JEE(Main) EG Unit-09 Q.92"
+  },
+  {
+   "qid": "NCU09153",
+   "source": "JEE(Main) EG Unit-09 Q.89"
+  },
+  {
+   "qid": "NCU09162",
+   "source": "JEE(Main) EG Unit-09 Q.94"
+  },
+  {
+   "qid": "NCU09163",
+   "source": "JEE(Main) EG Unit-09 Q.93"
+  },
+  {
+   "qid": "NCU09169",
+   "source": "JEE(Main) EG Unit-09 Q.105"
+  },
+  {
+   "qid": "NCU09170",
+   "source": "JEE(Main) EG Unit-09 Q.104"
+  },
+  {
+   "qid": "NCU09168",
+   "source": "JEE(Main) EG Unit-09 Q.106"
+  },
+  {
+   "qid": "NCU09010",
+   "source": "AIIMS PYQ Q10"
+  },
+  {
+   "qid": "NCU09173",
+   "source": "JEE(Main) EG Unit-09 Q.112"
+  },
+  {
+   "qid": "NCU09171",
+   "source": "JEE(Main) EG Unit-09 Q.115"
+  },
+  {
+   "qid": "NCU09172",
+   "source": "JEE(Main) EG Unit-09 Q.114"
+  },
+  {
+   "qid": "NCU09321",
+   "source": "JEE(Main) EG Unit-09 Q.27"
+  },
+  {
+   "qid": "NCU09175",
+   "source": "JEE(Main) EG Unit-09 Q.109"
+  },
+  {
+   "qid": "NCU09177",
+   "source": "JEE(Main) EG Unit-11 Q.140"
+  },
+  {
+   "qid": "NCU09180",
+   "source": "JEE(Main) EG Unit-09 Q.119"
+  },
+  {
+   "qid": "NCU09182",
+   "source": "JEE(Main) EG Unit-09 Q.118"
+  },
+  {
+   "qid": "NCU09183",
+   "source": "JEE(Main) EG Unit-09 Q.127"
+  },
+  {
+   "qid": "NCU09179",
+   "source": "JEE(Main) EG Unit-09 Q.121"
+  },
+  {
+   "qid": "NCU09184",
+   "source": "JEE(Main) EG Unit-02 Q.158"
+  },
+  {
+   "qid": "NCU09188",
+   "source": "JEE(Main) EG Unit-09 Q.134"
+  },
+  {
+   "qid": "NCU09189",
+   "source": "JEE(Main) EG Unit-09 Q.132"
+  },
+  {
+   "qid": "NCU09190",
+   "source": "JEE(Main) EG Unit-09 Q.131"
+  },
+  {
+   "qid": "NCU09191",
+   "source": "JEE(Main) EG Unit-11 Q.149"
+  },
+  {
+   "qid": "NCU09192",
+   "source": "JEE(Main) EG Unit-09 Q.137"
+  },
+  {
+   "qid": "NCU09002",
+   "source": "AIIMS PYQ Q2"
+  },
+  {
+   "qid": "NCU09003",
+   "source": "AIIMS PYQ Q3"
+  },
+  {
+   "qid": "NCU09004",
+   "source": "AIIMS PYQ Q4"
+  },
+  {
+   "qid": "NCU09001",
+   "source": "AIIMS PYQ Q1"
+  },
+  {
+   "qid": "NCU09006",
+   "source": "AIIMS PYQ Q6"
+  },
+  {
+   "qid": "NCU09230",
+   "source": "NCERT Exemplar Q12(b)"
+  },
+  {
+   "qid": "NCU09231",
+   "source": "NCERT Exemplar Q12(c)"
+  },
+  {
+   "qid": "NCU09007",
+   "source": "AIIMS PYQ Q7"
+  },
+  {
+   "qid": "NCU09017",
+   "source": "AIIMS PYQ Q17"
+  },
+  {
+   "qid": "NCU09242",
+   "source": "NCERT Exemplar Q21"
+  },
+  {
+   "qid": "NCU09209",
+   "source": "JEE(Main) EG Unit-02 Q.220"
+  },
+  {
+   "qid": "NCU09011",
+   "source": "AIIMS PYQ Q11"
+  },
+  {
+   "qid": "NCU09026",
+   "source": "AIIMS PYQ Q26"
+  },
+  {
+   "qid": "NCU09036",
+   "source": "AIPMT 2002 Q4"
+  },
+  {
+   "qid": "NCU09228",
+   "source": "NCERT Exemplar Q11"
+  },
+  {
+   "qid": "NCU09369",
+   "source": "JEE(Main) EG Unit-09 Q.49"
+  },
+  {
+   "qid": "NCU09211",
+   "source": "JEE(Main) EG Unit-02 Q.222"
+  },
+  {
+   "qid": "NCU09212",
+   "source": "JEE(Main) EG Unit-02 Q.18"
+  },
+  {
+   "qid": "NCU09213",
+   "source": "JEE(Main) EG Unit-09 Q.175"
+  },
+  {
+   "qid": "NCU09214",
+   "source": "JEE(Main) EG Unit-09 Q.176"
+  },
+  {
+   "qid": "NCU09215",
+   "source": "NCERT Exercise Q3.38"
+  },
+  {
+   "qid": "NCU09076",
+   "source": "AIPMT 1996 Q44"
+  },
+  {
+   "qid": "NCU09216",
+   "source": "NCERT Exercise Q3.39"
+  },
+  {
+   "qid": "NCU09048",
+   "source": "NEET 2018 Q16"
+  },
+  {
+   "qid": "NCU09012",
+   "source": "AIIMS PYQ Q12"
+  },
+  {
+   "qid": "NCU09013",
+   "source": "AIIMS PYQ Q13"
+  },
+  {
+   "qid": "NCU09014",
+   "source": "AIIMS PYQ Q14"
+  },
+  {
+   "qid": "NCU09015",
+   "source": "AIIMS PYQ Q15"
+  },
+  {
+   "qid": "NCU09016",
+   "source": "AIIMS PYQ Q16"
+  },
+  {
+   "qid": "NCU09018",
+   "source": "AIIMS PYQ Q18"
+  },
+  {
+   "qid": "NCU09019",
+   "source": "AIIMS PYQ Q19"
+  },
+  {
+   "qid": "NCU09020",
+   "source": "AIIMS PYQ Q20"
+  },
+  {
+   "qid": "NCU09021",
+   "source": "AIIMS PYQ Q21"
+  },
+  {
+   "qid": "NCU09022",
+   "source": "AIIMS PYQ Q22"
+  },
+  {
+   "qid": "NCU09023",
+   "source": "AIIMS PYQ Q23"
+  },
+  {
+   "qid": "NCU09024",
+   "source": "AIIMS PYQ Q24"
+  },
+  {
+   "qid": "NCU09025",
+   "source": "AIIMS PYQ Q25"
+  },
+  {
+   "qid": "NCU09029",
+   "source": "AIIMS PYQ Q29"
+  },
+  {
+   "qid": "NCU09037",
+   "source": "AIPMT 1996 Q5"
+  },
+  {
+   "qid": "NCU09034",
+   "source": "NEET Sept 2020 Q2"
+  },
+  {
+   "qid": "NCU09035",
+   "source": "NEET 2017/AIPMT 1989 Q3"
+  },
+  {
+   "qid": "NCU09038",
+   "source": "AIPMT 1995 Q6"
+  },
+  {
+   "qid": "NCU09031",
+   "source": "AIIMS PYQ Q31"
+  },
+  {
+   "qid": "NCU09032",
+   "source": "AIIMS PYQ Q32"
+  },
+  {
+   "qid": "NCU09033",
+   "source": "NEET 2022 Q1"
+  },
+  {
+   "qid": "NCU09042",
+   "source": "NEET Oct 2020 Q10"
+  },
+  {
+   "qid": "NCU09044",
+   "source": "Re-NEET 2024 Q12"
+  },
+  {
+   "qid": "NCU09043",
+   "source": "AIPMT 1993 Q11"
+  },
+  {
+   "qid": "NCU09046",
+   "source": "NEET 2020 Q14"
+  },
+  {
+   "qid": "NCU09049",
+   "source": "NEET 2016 Q17"
+  },
+  {
+   "qid": "NCU09045",
+   "source": "NEET 2023 Q13"
+  },
+  {
+   "qid": "NCU09047",
+   "source": "NEET National 2019 Q15"
+  },
+  {
+   "qid": "NCU09039",
+   "source": "AIPMT 1993 Q7"
+  },
+  {
+   "qid": "NCU09053",
+   "source": "NEET Karnataka 2013 Q21"
+  },
+  {
+   "qid": "NCU09055",
+   "source": "AIPMT Mains 2012 Q23"
+  },
+  {
+   "qid": "NCU09056",
+   "source": "AIPMT Mains 2011 Q24"
+  },
+  {
+   "qid": "NCU09057",
+   "source": "AIPMT Mains 2011 Q25"
+  },
+  {
+   "qid": "NCU09058",
+   "source": "AIPMT Screening 2010 Q26"
+  },
+  {
+   "qid": "NCU09059",
+   "source": "AIPMT Screening 2010/2005 Q27"
+  },
+  {
+   "qid": "NCU09050",
+   "source": "AIPMT Cancelled 2015 Q18"
+  },
+  {
+   "qid": "NCU09052",
+   "source": "AIPMT 2014 Q20"
+  },
+  {
+   "qid": "NCU09061",
+   "source": "AIPMT Mains 2010 Q29"
+  },
+  {
+   "qid": "NCU09062",
+   "source": "AIPMT Screening 2009 Q30"
+  },
+  {
+   "qid": "NCU09063",
+   "source": "AIPMT 2009 Q31"
+  },
+  {
+   "qid": "NCU09064",
+   "source": "AIPMT 2007 Q32"
+  },
+  {
+   "qid": "NCU09065",
+   "source": "AIPMT 2007 Q33"
+  },
+  {
+   "qid": "NCU09066",
+   "source": "AIPMT 2007 Q34"
+  },
+  {
+   "qid": "NCU09067",
+   "source": "AIPMT 2006 Q35"
+  },
+  {
+   "qid": "NCU09068",
+   "source": "AIPMT 2004 Q36"
+  },
+  {
+   "qid": "NCU09060",
+   "source": "AIPMT Mains 2010 Q28"
+  },
+  {
+   "qid": "NCU09070",
+   "source": "AIPMT 2002 Q38"
+  },
+  {
+   "qid": "NCU09069",
+   "source": "AIPMT 2003 Q37"
+  },
+  {
+   "qid": "NCU09073",
+   "source": "AIPMT 1998 Q41"
+  },
+  {
+   "qid": "NCU09074",
+   "source": "AIPMT 1997 Q42"
+  },
+  {
+   "qid": "NCU09075",
+   "source": "AIPMT 1996 Q43"
+  },
+  {
+   "qid": "NCU09072",
+   "source": "AIPMT 1999 Q40"
+  },
+  {
+   "qid": "NCU09080",
+   "source": "AIPMT 1993 Q48"
+  },
+  {
+   "qid": "NCU09081",
+   "source": "AIPMT 1993 Q49"
+  },
+  {
+   "qid": "NCU09082",
+   "source": "AIPMT 1993 Q50"
+  },
+  {
+   "qid": "NCU09083",
+   "source": "AIPMT 1992 Q51"
+  },
+  {
+   "qid": "NCU09084",
+   "source": "AIPMT 1989 Q52"
+  },
+  {
+   "qid": "NCU09086",
+   "source": "AIPMT 1989 Q54"
+  },
+  {
+   "qid": "NCU09089",
+   "source": "NEET 2026 Re-NEET Q3"
+  },
+  {
+   "qid": "NCU09077",
+   "source": "AIPMT 1994 Q45"
+  },
+  {
+   "qid": "NCU09093",
+   "source": "NEET 2025 Q7"
+  },
+  {
+   "qid": "NCU09098",
+   "source": "JEE(Main) EG Unit-02 Q.120"
+  },
+  {
+   "qid": "NCU09091",
+   "source": "NEET 2026 Cancelled Q5"
+  },
+  {
+   "qid": "NCU09092",
+   "source": "NEET 2025 Q6"
+  },
+  {
+   "qid": "NCU09101",
+   "source": "JEE(Main) EG Unit-10 Q.73"
+  },
+  {
+   "qid": "NCU09105",
+   "source": "JEE(Main) EG Unit-09 Q.102"
+  },
+  {
+   "qid": "NCU09106",
+   "source": "JEE(Main) EG Unit-09 Q.113"
+  },
+  {
+   "qid": "NCU09100",
+   "source": "JEE(Main) EG Unit-09 Q.81"
+  },
+  {
+   "qid": "NCU09097",
+   "source": "JEE(Main) EG Unit-02 Q.121"
+  },
+  {
+   "qid": "NCU09103",
+   "source": "JEE(Main) EG Unit-09 Q.98"
+  },
+  {
+   "qid": "NCU09108",
+   "source": "JEE(Main) EG Unit-11 Q.136"
+  },
+  {
+   "qid": "NCU09110",
+   "source": "JEE(Main) EG Unit-09 Q.128"
+  },
+  {
+   "qid": "NCU09111",
+   "source": "JEE(Main) EG Unit-09 Q.126"
+  },
+  {
+   "qid": "NCU09112",
+   "source": "JEE(Main) EG Unit-09 Q.130"
+  },
+  {
+   "qid": "NCU09109",
+   "source": "JEE(Main) EG Unit-11 Q.132"
+  },
+  {
+   "qid": "NCU09113",
+   "source": "JEE(Main) EG Unit-09 Q.142"
+  },
+  {
+   "qid": "NCU09114",
+   "source": "JEE(Main) EG Unit-09 Q.156"
+  },
+  {
+   "qid": "NCU09117",
+   "source": "JEE(Main) EG Unit-09 Q.177"
+  },
+  {
+   "qid": "NCU09115",
+   "source": "JEE(Main) EG Unit-09 Q.169"
+  },
+  {
+   "qid": "NCU09116",
+   "source": "JEE(Main) EG Unit-09 Q.174"
+  },
+  {
+   "qid": "NCU09118",
+   "source": "JEE(Main) EG Unit-09 Q.48"
+  },
+  {
+   "qid": "NCU09121",
+   "source": "JEE(Main) EG Unit-09 Q.45"
+  },
+  {
+   "qid": "NCU09123",
+   "source": "JEE(Main) EG Unit-09 Q.43"
+  },
+  {
+   "qid": "NCU09120",
+   "source": "JEE(Main) EG Unit-09 Q.47"
+  },
+  {
+   "qid": "NCU09128",
+   "source": "JEE(Main) EG Unit-09 Q.58"
+  },
+  {
+   "qid": "NCU09129",
+   "source": "JEE(Main) EG Unit-09 Q.57"
+  },
+  {
+   "qid": "NCU09127",
+   "source": "JEE(Main) EG Unit-09 Q.59"
+  },
+  {
+   "qid": "NCU09130",
+   "source": "JEE(Main) EG Unit-09 Q.56"
+  },
+  {
+   "qid": "NCU09102",
+   "source": "JEE(Main) EG Unit-09 Q.86"
+  },
+  {
+   "qid": "NCU09152",
+   "source": "JEE(Main) EG Unit-02 Q.135"
+  },
+  {
+   "qid": "NCU09041",
+   "source": "Re-NEET 2024 Q9"
+  },
+  {
+   "qid": "NCU09328",
+   "source": "JEE(Main) EG Unit-09 Q.38"
+  },
+  {
+   "qid": "NCU09144",
+   "source": "JEE(Main) EG Unit-09 Q.79"
+  },
+  {
+   "qid": "NCU09131",
+   "source": "JEE(Main) EG Unit-09 Q.54"
+  },
+  {
+   "qid": "NCU09164",
+   "source": "JEE(Main) EG Unit-09 Q.103"
+  },
+  {
+   "qid": "NCU09195",
+   "source": "JEE(Main) EG Unit-09 Q.141"
+  },
+  {
+   "qid": "NCU09158",
+   "source": "JEE(Main) EG Unit-09 Q.91"
+  },
+  {
+   "qid": "NCU09134",
+   "source": "JEE(Main) EG Unit-09 Q.65"
+  },
+  {
+   "qid": "NCU09137",
+   "source": "JEE(Main) EG Unit-02 Q.113"
+  },
+  {
+   "qid": "NCU09139",
+   "source": "JEE(Main) EG Other (s-Block Elements) Q.31"
+  },
+  {
+   "qid": "NCU09140",
+   "source": "JEE(Main) EG Unit-09 Q.71"
+  },
+  {
+   "qid": "NCU09138",
+   "source": "JEE(Main) EG Unit-09 Q.69"
+  },
+  {
+   "qid": "NCU09198",
+   "source": "JEE(Main) EG Unit-09 Q.152"
+  },
+  {
+   "qid": "NCU09199",
+   "source": "JEE(Main) EG Unit-09 Q.151"
+  },
+  {
+   "qid": "NCU09200",
+   "source": "JEE(Main) EG Unit-09 Q.157"
+  },
+  {
+   "qid": "NCU09202",
+   "source": "JEE(Main) EG Unit-09 Q.159"
+  },
+  {
+   "qid": "NCU09204",
+   "source": "JEE(Main) EG Unit-03 Q.225"
+  },
+  {
+   "qid": "NCU09206",
+   "source": "JEE(Main) EG Unit-02 Q.213"
+  },
+  {
+   "qid": "NCU09208",
+   "source": "JEE(Main) EG Unit-09 Q.168"
+  },
+  {
+   "qid": "NCU09196",
+   "source": "JEE(Main) EG Unit-09 Q.143"
+  },
+  {
+   "qid": "NCU09205",
+   "source": "JEE(Main) EG Unit-09 Q.163"
+  },
+  {
+   "qid": "NCU09197",
+   "source": "JEE(Main) EG Unit-09 Q.147"
+  },
+  {
+   "qid": "NCU09224",
+   "source": "NCERT Exemplar Q7"
+  },
+  {
+   "qid": "NCU09225",
+   "source": "NCERT Exemplar Q8"
+  },
+  {
+   "qid": "NCU09226",
+   "source": "NCERT Exemplar Q9"
+  },
+  {
+   "qid": "NCU09227",
+   "source": "NCERT Exemplar Q10"
+  },
+  {
+   "qid": "NCU09229",
+   "source": "NCERT Exemplar Q12(a)"
+  },
+  {
+   "qid": "NCU09232",
+   "source": "NCERT Exemplar Q12(d)"
+  },
+  {
+   "qid": "NCU09233",
+   "source": "NCERT Exemplar Q12(e)"
+  },
+  {
+   "qid": "NCU09236",
+   "source": "NCERT Exemplar Q15"
+  },
+  {
+   "qid": "NCU09237",
+   "source": "NCERT Exemplar Q16"
+  },
+  {
+   "qid": "NCU09238",
+   "source": "NCERT Exemplar Q17"
+  },
+  {
+   "qid": "NCU09239",
+   "source": "NCERT Exemplar Q18"
+  },
+  {
+   "qid": "NCU09240",
+   "source": "NCERT Exemplar Q19"
+  },
+  {
+   "qid": "NCU09241",
+   "source": "NCERT Exemplar Q20"
+  },
+  {
+   "qid": "NCU09243",
+   "source": "NCERT Exemplar Q22"
+  },
+  {
+   "qid": "NCU09254",
+   "source": "NCERT Exemplar Q26"
+  },
+  {
+   "qid": "NCU09245",
+   "source": "NCERT Exemplar Q30"
+  },
+  {
+   "qid": "NCU09246",
+   "source": "NCERT Exemplar Q43"
+  },
+  {
+   "qid": "NCU09249",
+   "source": "NCERT Exemplar Q46"
+  },
+  {
+   "qid": "NCU09250",
+   "source": "NCERT Exemplar Q47"
+  },
+  {
+   "qid": "NCU09251",
+   "source": "NCERT Exemplar Q48"
+  },
+  {
+   "qid": "NCU09253",
+   "source": "NCERT Exemplar Q25"
+  },
+  {
+   "qid": "NCU09256",
+   "source": "NCERT Exemplar Q28"
+  },
+  {
+   "qid": "NCU09257",
+   "source": "NCERT Exemplar Q29"
+  },
+  {
+   "qid": "NCU09259",
+   "source": "NCERT Exemplar Q32"
+  },
+  {
+   "qid": "NCU09261",
+   "source": "NCERT Exemplar Q34"
+  },
+  {
+   "qid": "NCU09263",
+   "source": "NCERT Exemplar Q36"
+  },
+  {
+   "qid": "NCU09264",
+   "source": "NCERT Exemplar Q37"
+  },
+  {
+   "qid": "NCU09266",
+   "source": "NCERT Exemplar Q39"
+  },
+  {
+   "qid": "NCU09267",
+   "source": "NCERT Exemplar Q40"
+  },
+  {
+   "qid": "NCU09268",
+   "source": "NCERT Exemplar Q41"
+  },
+  {
+   "qid": "NCU09269",
+   "source": "NCERT Exemplar Q42"
+  },
+  {
+   "qid": "NCU09270",
+   "source": "NCERT Exercise Q3.1"
+  },
+  {
+   "qid": "NCU09271",
+   "source": "NCERT Exercise Q3.2"
+  },
+  {
+   "qid": "NCU09272",
+   "source": "NCERT Exercise Q3.3"
+  },
+  {
+   "qid": "NCU09275",
+   "source": "NCERT Exercise Q3.6"
+  },
+  {
+   "qid": "NCU09279",
+   "source": "NCERT Exercise Q3.10"
+  },
+  {
+   "qid": "NCU09280",
+   "source": "NCERT Exercise Q3.11(i)"
+  },
+  {
+   "qid": "NCU09358",
+   "source": "JEE(Main) EG Unit-09 Q.4"
+  },
+  {
+   "qid": "NCU09337",
+   "source": "JEE(Main) EG Unit-09 Q.22"
+  },
+  {
+   "qid": "NCU09281",
+   "source": "NCERT Exercise Q3.11(ii)"
+  },
+  {
+   "qid": "NCU09282",
+   "source": "NCERT Exercise Q3.11(iii)"
+  },
+  {
+   "qid": "NCU09283",
+   "source": "NCERT Exercise Q3.11(iv)"
+  },
+  {
+   "qid": "NCU09071",
+   "source": "AIPMT 2001 Q39"
+  },
+  {
+   "qid": "NCU09359",
+   "source": "JEE(Main) EG Unit-09 Q.3"
+  },
+  {
+   "qid": "NCU09051",
+   "source": "AIPMT Latest July 2015 Q19"
+  },
+  {
+   "qid": "NCU09156",
+   "source": "JEE(Main) EG Unit-09 Q.83"
+  },
+  {
+   "qid": "NCU09087",
+   "source": "NEET 2026 Re-NEET Q1"
+  },
+  {
+   "qid": "NCU09079",
+   "source": "AIPMT 1993 Q47"
+  },
+  {
+   "qid": "NCU09287",
+   "source": "NCERT Exercise Q3.15"
+  },
+  {
+   "qid": "NCU09288",
+   "source": "NCERT Exercise Q3.16(i)"
+  },
+  {
+   "qid": "NCU09291",
+   "source": "NCERT Exercise Q3.18"
+  },
+  {
+   "qid": "NCU09292",
+   "source": "NCERT Exercise Q3.19"
+  },
+  {
+   "qid": "NCU09293",
+   "source": "NCERT Exercise Q3.20"
+  },
+  {
+   "qid": "NCU09294",
+   "source": "NCERT Exercise Q3.21"
+  },
+  {
+   "qid": "NCU09297",
+   "source": "NCERT Exercise Q3.24"
+  },
+  {
+   "qid": "NCU09298",
+   "source": "NCERT Exercise Q3.25"
+  },
+  {
+   "qid": "NCU09299",
+   "source": "NCERT Exercise Q3.26"
+  },
+  {
+   "qid": "NCU09300",
+   "source": "NCERT Exercise Q3.27(a)"
+  },
+  {
+   "qid": "NCU09301",
+   "source": "NCERT Exercise Q3.27(b)"
+  },
+  {
+   "qid": "NCU09302",
+   "source": "NCERT Exercise Q3.27(c)"
+  },
+  {
+   "qid": "NCU09303",
+   "source": "NCERT Exercise Q3.27(d)"
+  },
+  {
+   "qid": "NCU09305",
+   "source": "NCERT Exercise Q3.29"
+  },
+  {
+   "qid": "NCU09307",
+   "source": "NCERT Exercise Q3.31(a)"
+  },
+  {
+   "qid": "NCU09308",
+   "source": "NCERT Exercise Q3.31(b)"
+  },
+  {
+   "qid": "NCU09309",
+   "source": "NCERT Exercise Q3.31(c)"
+  },
+  {
+   "qid": "NCU09311",
+   "source": "NCERT Exercise Q3.31(e)"
+  },
+  {
+   "qid": "NCU09313",
+   "source": "NCERT Exercise Q3.32"
+  },
+  {
+   "qid": "NCU09314",
+   "source": "NCERT Exercise Q3.33"
+  },
+  {
+   "qid": "NCU09316",
+   "source": "NCERT Exercise Q3.35"
+  },
+  {
+   "qid": "NCU09317",
+   "source": "NCERT Exercise Q3.36"
+  },
+  {
+   "qid": "NCU09318",
+   "source": "NCERT Exercise Q3.37"
+  },
+  {
+   "qid": "NCU09330",
+   "source": "JEE(Main) EG Unit-09 Q.21"
+  },
+  {
+   "qid": "NCU09331",
+   "source": "JEE(Main) EG Unit-09 Q.24"
+  },
+  {
+   "qid": "NCU09332",
+   "source": "JEE(Main) EG Unit-10 Q.25"
+  },
+  {
+   "qid": "NCU09333",
+   "source": "JEE(Main) EG Unit-09 Q.18"
+  },
+  {
+   "qid": "NCU09335",
+   "source": "JEE(Main) EG Unit-10 Q.20"
+  },
+  {
+   "qid": "NCU09336",
+   "source": "JEE(Main) EG Unit-09 Q.23"
+  },
+  {
+   "qid": "NCU09334",
+   "source": "JEE(Main) EG Unit-09 Q.25"
+  },
+  {
+   "qid": "NCU09326",
+   "source": "JEE(Main) EG Unit-09 Q.36"
+  },
+  {
+   "qid": "NCU09327",
+   "source": "JEE(Main) EG Unit-09 Q.39"
+  },
+  {
+   "qid": "NCU09342",
+   "source": "JEE(Main) EG Unit-09 Q.14"
+  },
+  {
+   "qid": "NCU09344",
+   "source": "JEE(Main) EG Unit-09 Q.10"
+  },
+  {
+   "qid": "NCU09343",
+   "source": "JEE(Main) EG Unit-09 Q.8"
+  },
+  {
+   "qid": "NCU09339",
+   "source": "JEE(Main) EG Unit-10 Q.23"
+  },
+  {
+   "qid": "NCU09338",
+   "source": "JEE(Main) EG Unit-10 Q.26"
+  },
+  {
+   "qid": "NCU09340",
+   "source": "JEE(Main) EG Unit-09 Q.19"
+  },
+  {
+   "qid": "NCU09345",
+   "source": "JEE(Main) EG Unit-10 Q.12"
+  },
+  {
+   "qid": "NCU09350",
+   "source": "JEE(Main) EG Unit-09 Q.17"
+  },
+  {
+   "qid": "NCU09354",
+   "source": "JEE(Main) EG Unit-10 Q.9"
+  },
+  {
+   "qid": "NCU09356",
+   "source": "JEE(Main) EG Unit-09 Q.5"
+  },
+  {
+   "qid": "NCU09349",
+   "source": "JEE(Main) EG Unit-09 Q.12"
+  },
+  {
+   "qid": "NCU09351",
+   "source": "JEE(Main) EG Unit-09 Q.9"
+  },
+  {
+   "qid": "NCU09362",
+   "source": "JEE(Main) EG Unit-09 Q.1"
+  },
+  {
+   "qid": "NCU09357",
+   "source": "JEE(Main) EG Unit-10 Q.6"
+  },
+  {
+   "qid": "NCU09132",
+   "source": "JEE(Main) EG Unit-09 Q.53"
+  },
+  {
+   "qid": "NCU09088",
+   "source": "NEET 2026 Re-NEET Q2"
+  },
+  {
+   "qid": "NCU09235",
+   "source": "NCERT Exemplar Q14"
+  },
+  {
+   "qid": "NCU09376",
+   "source": "JEE(Main) EG Unit-09 Q.74"
+  },
+  {
+   "qid": "NCU09386",
+   "source": "JEE(Main) EG Unit-09 Q.133"
+  },
+  {
+   "qid": "NCU09274",
+   "source": "NCERT Exercise Q3.5"
+  },
+  {
+   "qid": "NCU09365",
+   "source": "JEE(Main) EG Unit-09 Q.29"
+  },
+  {
+   "qid": "NCU09387",
+   "source": "JEE(Main) EG Unit-09 Q.136"
+  },
+  {
+   "qid": "NCU09370",
+   "source": "JEE(Main) EG Unit-09 Q.50"
+  },
+  {
+   "qid": "NCU09380",
+   "source": "JEE(Main) EG Unit-09 Q.101"
+  },
+  {
+   "qid": "NCU09379",
+   "source": "JEE(Main) EG Unit-09 Q.85"
+  },
+  {
+   "qid": "NCU09389",
+   "source": "JEE(Main) EG Unit-09 Q.144"
+  },
+  {
+   "qid": "NCU09323",
+   "source": "JEE(Main) EG Unit-09 Q.30"
+  },
+  {
+   "qid": "NCU09324",
+   "source": "JEE(Main) EG Unit-09 Q.35"
+  },
+  {
+   "qid": "NCU09364",
+   "source": "JEE(Main) EG Unit-09 Q.20"
+  },
+  {
+   "qid": "NCU09366",
+   "source": "JEE(Main) EG Unit-09 Q.32"
+  },
+  {
+   "qid": "NCU09367",
+   "source": "JEE(Main) EG Unit-09 Q.34"
+  },
+  {
+   "qid": "NCU09368",
+   "source": "JEE(Main) EG Unit-09 Q.40"
+  },
+  {
+   "qid": "NCU09371",
+   "source": "JEE(Main) EG Unit-09 Q.60"
+  },
+  {
+   "qid": "NCU09372",
+   "source": "JEE(Main) EG Unit-09 Q.64"
+  },
+  {
+   "qid": "NCU09373",
+   "source": "JEE(Main) EG Unit-09 Q.66"
+  },
+  {
+   "qid": "NCU09374",
+   "source": "JEE(Main) EG Unit-09 Q.67"
+  },
+  {
+   "qid": "NCU09375",
+   "source": "JEE(Main) EG Unit-09 Q.73"
+  },
+  {
+   "qid": "NCU09385",
+   "source": "JEE(Main) EG Unit-09 Q.129"
+  },
+  {
+   "qid": "NCU09395",
+   "source": "JEE(Main) EG Unit-09 Q.155"
+  },
+  {
+   "qid": "NCU09119",
+   "source": "JEE(Main) EG Unit-09 Q.46"
+  },
+  {
+   "qid": "NCU09124",
+   "source": "JEE(Main) EG Unit-09 Q.42"
+  },
+  {
+   "qid": "NCU09136",
+   "source": "JEE(Main) EG Unit-09 Q.62"
+  },
+  {
+   "qid": "NCU09159",
+   "source": "JEE(Main) EG Other (s-Block Elements) Q.68"
+  },
+  {
+   "qid": "NCU09185",
+   "source": "JEE(Main) EG Unit-09 Q.125"
+  },
+  {
+   "qid": "NCU09201",
+   "source": "JEE(Main) EG Unit-09 Q.158"
+  },
+  {
+   "qid": "NCU09320",
+   "source": "JEE(Main) EG Unit-09 Q.26"
+  },
+  {
+   "qid": "NCU09360",
+   "source": "JEE(Main) EG Unit-10 Q.3"
+  },
+  {
+   "qid": "NCU09378",
+   "source": "JEE(Main) EG Unit-09 Q.84"
+  },
+  {
+   "qid": "NCU09388",
+   "source": "JEE(Main) EG Unit-09 Q.139"
+  },
+  {
+   "qid": "NCU09398",
+   "source": "JEE(Main) EG Unit-09 Q.170"
+  },
+  {
+   "qid": "NCU09381",
+   "source": "JEE(Main) EG Unit-09 Q.111"
+  },
+  {
+   "qid": "NCU09391",
+   "source": "JEE(Main) EG Unit-09 Q.146"
+  },
+  {
+   "qid": "NCU09401",
+   "source": "JEE(Main) EG Unit-09 Q.173"
+  },
+  {
+   "qid": "NCU09133",
+   "source": "JEE(Main) EG Unit-09 Q.68"
+  },
+  {
+   "qid": "NCU09147",
+   "source": "JEE(Main) EG Unit-09 Q.77"
+  },
+  {
+   "qid": "NCU09160",
+   "source": "JEE(Main) EG Unit-09 Q.96"
+  },
+  {
+   "qid": "NCU09165",
+   "source": "JEE(Main) EG Unit-09 Q.100"
+  },
+  {
+   "qid": "NCU09181",
+   "source": "JEE(Main) EG Unit-09 Q.117"
+  },
+  {
+   "qid": "NCU09193",
+   "source": "JEE(Main) EG Unit-09 Q.138"
+  },
+  {
+   "qid": "NCU09322",
+   "source": "JEE(Main) EG Unit-09 Q.31"
+  },
+  {
+   "qid": "NCU09382",
+   "source": "JEE(Main) EG Unit-09 Q.116"
+  },
+  {
+   "qid": "NCU09392",
+   "source": "JEE(Main) EG Unit-09 Q.149"
+  },
+  {
+   "qid": "NCU09402",
+   "source": "JEE(Main) EG Unit-09 Q.178"
+  },
+  {
+   "qid": "NCU09104",
+   "source": "JEE(Main) EG Unit-09 Q.97"
+  },
+  {
+   "qid": "NCU09122",
+   "source": "JEE(Main) EG Unit-09 Q.44"
+  },
+  {
+   "qid": "NCU09141",
+   "source": "JEE(Main) EG Unit-09 Q.70"
+  },
+  {
+   "qid": "NCU09148",
+   "source": "JEE(Main) EG Unit-09 Q.76"
+  },
+  {
+   "qid": "NCU09155",
+   "source": "JEE(Main) EG Unit-09 Q.87"
+  },
+  {
+   "qid": "NCU09161",
+   "source": "JEE(Main) EG Unit-09 Q.95"
+  },
+  {
+   "qid": "NCU09194",
+   "source": "JEE(Main) EG Unit-09 Q.140"
+  },
+  {
+   "qid": "NCU09325",
+   "source": "JEE(Main) EG Unit-09 Q.33"
+  },
+  {
+   "qid": "NCU09384",
+   "source": "JEE(Main) EG Unit-09 Q.123"
+  },
+  {
+   "qid": "NCU09394",
+   "source": "JEE(Main) EG Unit-09 Q.154"
+  },
+  {
+   "qid": "NCU09107",
+   "source": "JEE(Main) EG Unit-02 Q.148"
+  },
+  {
+   "qid": "NCU09126",
+   "source": "JEE(Main) EG Unit-09 Q.51"
+  },
+  {
+   "qid": "NCU09146",
+   "source": "JEE(Main) EG Unit-09 Q.78"
+  },
+  {
+   "qid": "NCU09174",
+   "source": "JEE(Main) EG Unit-09 Q.110"
+  },
+  {
+   "qid": "NCU09186",
+   "source": "JEE(Main) EG Unit-09 Q.124"
+  },
+  {
+   "qid": "NCU09210",
+   "source": "JEE(Main) EG Unit-09 Q.167"
+  },
+  {
+   "qid": "NCU09390",
+   "source": "JEE(Main) EG Unit-09 Q.145"
+  },
+  {
+   "qid": "NCU09400",
+   "source": "JEE(Main) EG Unit-09 Q.172"
+  },
+  {
+   "qid": "NCU09393",
+   "source": "JEE(Main) EG Unit-09 Q.150"
+  },
+  {
+   "qid": "NCU09095",
+   "source": "JEE(Main) EG Unit-09 Q.55"
+  },
+  {
+   "qid": "NCU09135",
+   "source": "JEE(Main) EG Unit-09 Q.63"
+  },
+  {
+   "qid": "NCU09142",
+   "source": "JEE(Main) EG Unit-09 Q.80"
+  },
+  {
+   "qid": "NCU09167",
+   "source": "JEE(Main) EG Unit-09 Q.107"
+  },
+  {
+   "qid": "NCU09178",
+   "source": "JEE(Main) EG Unit-09 Q.122"
+  },
+  {
+   "qid": "NCU09319",
+   "source": "JEE(Main) EG Unit-09 Q.28"
+  },
+  {
+   "qid": "NCU09348",
+   "source": "JEE(Main) EG Unit-09 Q.13"
+  },
+  {
+   "qid": "NCU09353",
+   "source": "JEE(Main) EG Unit-09 Q.7"
+  },
+  {
+   "qid": "NCU09396",
+   "source": "JEE(Main) EG Unit-09 Q.161"
+  },
+  {
+   "qid": "NCU09145",
+   "source": "JEE(Main) EG Unit-10 Q.155"
+  },
+  {
+   "qid": "NCU09329",
+   "source": "JEE(Main) EG Unit-09 Q.37"
+  },
+  {
+   "qid": "NCU09361",
+   "source": "JEE(Main) EG Unit-09 Q.2"
+  },
+  {
+   "qid": "NCU09346",
+   "source": "JEE(Main) EG Unit-09 Q.15"
+  },
+  {
+   "qid": "NCU09352",
+   "source": "JEE(Main) EG Unit-09 Q.11"
+  },
+  {
+   "qid": "NCU09028",
+   "source": "AIIMS PYQ Q28"
+  },
+  {
+   "qid": "NCU09078",
+   "source": "AIPMT 1993 Q46"
+  },
+  {
+   "qid": "NCU09218",
+   "source": "NCERT Exemplar Q1"
+  },
+  {
+   "qid": "NCU09223",
+   "source": "NCERT Exemplar Q6"
+  },
+  {
+   "qid": "NCU09234",
+   "source": "NCERT Exemplar Q13"
+  },
+  {
+   "qid": "NCU09244",
+   "source": "NCERT Exemplar Q23"
+  },
+  {
+   "qid": "NCU09248",
+   "source": "NCERT Exemplar Q45"
+  },
+  {
+   "qid": "NCU09276",
+   "source": "NCERT Exercise Q3.7"
+  },
+  {
+   "qid": "NCU09040",
+   "source": "AIPMT 1989 Q8"
+  },
+  {
+   "qid": "NCU09085",
+   "source": "AIPMT 1989 Q53"
+  },
+  {
+   "qid": "NCU09090",
+   "source": "NEET 2026 Cancelled Q4"
+  },
+  {
+   "qid": "NCU09096",
+   "source": "JEE(Main) EG Unit-02 Q.111"
+  },
+  {
+   "qid": "NCU09220",
+   "source": "NCERT Exemplar Q3"
+  },
+  {
+   "qid": "NCU09221",
+   "source": "NCERT Exemplar Q4"
+  },
+  {
+   "qid": "NCU09255",
+   "source": "NCERT Exemplar Q27"
+  },
+  {
+   "qid": "NCU09260",
+   "source": "NCERT Exemplar Q33"
+  },
+  {
+   "qid": "NCU09265",
+   "source": "NCERT Exemplar Q38"
+  },
+  {
+   "qid": "NCU09187",
+   "source": "JEE(Main) EG Unit-09 Q.135"
+  },
+  {
+   "qid": "NCU09222",
+   "source": "NCERT Exemplar Q5"
+  },
+  {
+   "qid": "NCU09247",
+   "source": "NCERT Exemplar Q44"
+  },
+  {
+   "qid": "NCU09262",
+   "source": "NCERT Exemplar Q35"
+  },
+  {
+   "qid": "NCU09277",
+   "source": "NCERT Exercise Q3.8"
+  },
+  {
+   "qid": "NCU09312",
+   "source": "NCERT Exercise Q3.31(f)"
+  },
+  {
+   "qid": "NCU09005",
+   "source": "AIIMS PYQ Q5"
+  },
+  {
+   "qid": "NCU09030",
+   "source": "AIIMS PYQ Q30"
+  },
+  {
+   "qid": "NCU09054",
+   "source": "AIPMT Screening 2012 Q22"
+  },
+  {
+   "qid": "NCU09094",
+   "source": "JEE(Main) EG Unit-09 Q.61"
+  },
+  {
+   "qid": "NCU09099",
+   "source": "JEE(Main) EG Unit-09 Q.72"
+  },
+  {
+   "qid": "NCU09154",
+   "source": "JEE(Main) EG Unit-09 Q.88"
+  },
+  {
+   "qid": "NCU09258",
+   "source": "NCERT Exemplar Q31"
+  },
+  {
+   "qid": "NCU09273",
+   "source": "NCERT Exercise Q3.4"
+  },
+  {
+   "qid": "NCU09278",
+   "source": "NCERT Exercise Q3.9"
+  },
+  {
+   "qid": "NCU09284",
+   "source": "NCERT Exercise Q3.12"
+  },
+  {
+   "qid": "NCU09289",
+   "source": "NCERT Exercise Q3.16(ii)"
+  },
+  {
+   "qid": "NCU09304",
+   "source": "NCERT Exercise Q3.28"
+  },
+  {
+   "qid": "NCU09219",
+   "source": "NCERT Exemplar Q2"
+  },
+  {
+   "qid": "NCU09285",
+   "source": "NCERT Exercise Q3.13"
+  },
+  {
+   "qid": "NCU09295",
+   "source": "NCERT Exercise Q3.22"
+  },
+  {
+   "qid": "NCU09310",
+   "source": "NCERT Exercise Q3.31(d)"
+  },
+  {
+   "qid": "NCU09315",
+   "source": "NCERT Exercise Q3.34"
+  },
+  {
+   "qid": "NCU09286",
+   "source": "NCERT Exercise Q3.14"
+  },
+  {
+   "qid": "NCU09306",
+   "source": "NCERT Exercise Q3.30"
+  },
+  {
+   "qid": "NCU09027",
+   "source": "AIIMS PYQ Q27"
+  },
+  {
+   "qid": "NCU09125",
+   "source": "JEE(Main) EG Unit-09 Q.41"
+  },
+  {
+   "qid": "NCU09203",
+   "source": "JEE(Main) EG Unit-09 Q.162"
+  },
+  {
+   "qid": "NCU09207",
+   "source": "JEE(Main) EG Unit-09 Q.165"
+  },
+  {
+   "qid": "NCU09290",
+   "source": "NCERT Exercise Q3.17"
+  },
+  {
+   "qid": "NCU09296",
+   "source": "NCERT Exercise Q3.23"
+  },
+  {
+   "qid": "NCU09341",
+   "source": "JEE(Main) EG Unit-09 Q.16"
+  },
+  {
+   "qid": "NCU09377",
+   "source": "JEE(Main) EG Unit-09 Q.82"
+  },
+  {
+   "qid": "NCU09397",
+   "source": "JEE(Main) EG Unit-09 Q.166"
+  },
+  {
+   "qid": "NCU09176",
+   "source": "JEE(Main) EG Unit-09 Q.108"
+  },
+  {
+   "qid": "NCU09252",
+   "source": "NCERT Exemplar Q24"
+  },
+  {
+   "qid": "NCU09347",
+   "source": "JEE(Main) EG Unit-10 Q.16"
+  },
+  {
+   "qid": "NCU09363",
+   "source": "JEE(Main) EG Unit-09 Q.6"
+  },
+  {
+   "qid": "NCU09383",
+   "source": "JEE(Main) EG Unit-09 Q.120"
+  },
+  {
+   "qid": "NCU09399",
+   "source": "JEE(Main) EG Unit-09 Q.171"
+  }
+ ]
+}

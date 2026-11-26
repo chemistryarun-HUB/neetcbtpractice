@@ -1,0 +1,2809 @@
+[
+ {
+  "qid": "NCU09001",
+  "source": "AIIMS PYQ Q.No. 1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09002",
+  "source": "AIIMS PYQ Q.No. 2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09003",
+  "source": "AIIMS PYQ Q.No. 3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09004",
+  "source": "AIIMS PYQ Q.No. 4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09005",
+  "source": "AIIMS PYQ Q.No. 5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09006",
+  "source": "AIIMS PYQ Q.No. 6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09007",
+  "source": "AIIMS PYQ Q.No. 7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09008",
+  "source": "AIIMS PYQ Q.No. 8",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09009",
+  "source": "AIIMS PYQ Q.No. 9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09010",
+  "source": "AIIMS PYQ Q.No. 10",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09011",
+  "source": "AIIMS PYQ Q.No. 11",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09012",
+  "source": "AIIMS PYQ Q.No. 12",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09013",
+  "source": "AIIMS PYQ Q.No. 13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09014",
+  "source": "AIIMS Unit-09 Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09015",
+  "source": "AIIMS PYQ Q.No. 15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09016",
+  "source": "AIIMS PYQ Q.No. 16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09017",
+  "source": "AIIMS PYQ Q.No. 17",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09018",
+  "source": "AIIMS PYQ Q.No. 18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09019",
+  "source": "AIIMS PYQ Q.No. 19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09020",
+  "source": "AIIMS PYQ Q.No. 20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09021",
+  "source": "AIIMS PYQ Q.No. 21",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09022",
+  "source": "AIIMS PYQ Q.No. 22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09023",
+  "source": "AIIMS Unit-09 Q.No. 2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09024",
+  "source": "AIIMS PYQ Q.No. 24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09025",
+  "source": "AIIMS PYQ Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09026",
+  "source": "AIIMS PYQ Q.No. 26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09027",
+  "source": "AIIMS Unit-09 Q.No. 24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09028",
+  "source": "AIIMS PYQ Q.No. 28",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09029",
+  "source": "AIIMS PYQ Q.No. 29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09030",
+  "source": "AIIMS PYQ Q.No. 30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09031",
+  "source": "AIIMS PYQ Q.No. 31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09032",
+  "source": "AIIMS PYQ Q.No. 32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09033",
+  "source": "NEET Unit-09 Q.No. 16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09034",
+  "source": "NEET Unit-09 Q.No. 19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09035",
+  "source": "NEET Unit-09 Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09036",
+  "source": "NEET PYQ Q.No. 4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09037",
+  "source": "NEET PYQ Q.No. 5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09038",
+  "source": "NEET Unit-09 Q.No. 52",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09039",
+  "source": "NEET Unit-09 Q.No. 56",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09040",
+  "source": "NEET Unit-09 Q.No. 67",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09041",
+  "source": "NEET PYQ Q.No. 9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09042",
+  "source": "NEET Unit-09 Q.No. 18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09043",
+  "source": "NEET Unit-09 Q.No. 62",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09044",
+  "source": "NEET Unit-09 Q.No. 7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09045",
+  "source": "NEET PYQ Q.No. 13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09046",
+  "source": "NEET Unit-09 Q.No. 20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09047",
+  "source": "NEET Unit-09 Q.No. 22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09048",
+  "source": "NEET Unit-09 Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09049",
+  "source": "NEET Unit-09 Q.No. 68",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09050",
+  "source": "NEET Unit-09 Q.No. 26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09051",
+  "source": "NEET PYQ Q.No. 19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09052",
+  "source": "NEET Unit-09 Q.No. 27",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09053",
+  "source": "NEET Unit-09 Q.No. 28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09054",
+  "source": "NEET Unit-09 Q.No. 29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09055",
+  "source": "NEET PYQ Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09056",
+  "source": "NEET Unit-09 Q.No. 30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09057",
+  "source": "NEET PYQ Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09058",
+  "source": "NEET Unit-09 Q.No. 33",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09059",
+  "source": "NEET Unit-09 Q.No. 34",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09060",
+  "source": "NEET Unit-09 Q.No. 31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09061",
+  "source": "NEET Unit-09 Q.No. 32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09062",
+  "source": "NEET PYQ Q.No. 30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09063",
+  "source": "NEET Unit-09 Q.No. 35",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09064",
+  "source": "NEET Unit-09 Q.No. 36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09065",
+  "source": "NEET Unit-09 Q.No. 38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09066",
+  "source": "NEET Unit-09 Q.No. 37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09067",
+  "source": "NEET PYQ Q.No. 35",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09068",
+  "source": "NEET Unit-09 Q.No. 41",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09069",
+  "source": "NEET Unit-09 Q.No. 42",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09070",
+  "source": "NEET Unit-09 Q.No. 43",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09071",
+  "source": "NEET Unit-09 Q.No. 44",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09072",
+  "source": "NEET Unit-09 Q.No. 46",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09073",
+  "source": "NEET Unit-09 Q.No. 48",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09074",
+  "source": "NEET Unit-09 Q.No. 49",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09075",
+  "source": "NEET Unit-09 Q.No. 50",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09076",
+  "source": "NEET Unit-09 Q.No. 51",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09077",
+  "source": "NEET Unit-09 Q.No. 53",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09078",
+  "source": "NEET Unit-09 Q.No. 57",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09079",
+  "source": "NEET Unit-09 Q.No. 58",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09080",
+  "source": "NEET Unit-09 Q.No. 59",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09081",
+  "source": "NEET Unit-09 Q.No. 55",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09082",
+  "source": "NEET Unit-09 Q.No. 60",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09083",
+  "source": "NEET Unit-09 Q.No. 63",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09084",
+  "source": "NEET Unit-09 Q.No. 65",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09085",
+  "source": "NEET Unit-09 Q.No. 66",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09086",
+  "source": "NEET Unit-09 Q.No. 64",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09087",
+  "source": "NEET Unit-09 Q.No. 2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09088",
+  "source": "NEET PYQ Q.No. 2",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09089",
+  "source": "NEET Unit-09 Q.No. 1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09090",
+  "source": "NEET Unit-09 Q.No. 4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09091",
+  "source": "NEET Unit-09 Q.No. 3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09092",
+  "source": "NEET Unit-09 Q.No. 6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09093",
+  "source": "NEET Unit-09 Q.No. 5",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09094",
+  "source": "JEE Main Unit-09 Q.No. 61",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09095",
+  "source": "JEE Main Unit-09 Q.No. 55",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09096",
+  "source": "JEE Main Unit-02 Q.No. 111",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09097",
+  "source": "JEE Main Unit-02 Q.No. 121",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09098",
+  "source": "JEE Main Unit-02 Q.No. 120",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09099",
+  "source": "JEE Main Unit-09 Q.No. 72",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09100",
+  "source": "JEE Main Unit-09 Q.No. 81",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09101",
+  "source": "JEE Main Unit-10 Q.No. 73",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09102",
+  "source": "JEE Main Unit-09 Q.No. 86",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09103",
+  "source": "JEE Main Unit-09 Q.No. 98",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09104",
+  "source": "JEE Main Unit-09 Q.No. 97",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09105",
+  "source": "JEE Main Unit-09 Q.No. 102",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09106",
+  "source": "JEE Main Unit-09 Q.No. 113",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09107",
+  "source": "JEE Main Unit-02 Q.No. 148",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09108",
+  "source": "JEE Main Unit-11 Q.No. 136",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09109",
+  "source": "JEE Main Unit-11 Q.No. 132",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09110",
+  "source": "JEE Main Unit-09 Q.No. 128",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09111",
+  "source": "JEE Main Unit-09 Q.No. 126",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09112",
+  "source": "JEE Main Unit-09 Q.No. 130",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09113",
+  "source": "JEE Main Unit-09 Q.No. 142",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09114",
+  "source": "JEE Main Unit-09 Q.No. 156",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09115",
+  "source": "JEE Main Unit-09 Q.No. 169",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09116",
+  "source": "JEE Main Unit-09 Q.No. 174",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09117",
+  "source": "JEE Main Unit-09 Q.No. 177",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09118",
+  "source": "JEE Main Unit-09 Q.No. 48",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09119",
+  "source": "JEE Main Unit-09 Q.No. 46",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09120",
+  "source": "JEE Main Unit-09 Q.No. 47",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09121",
+  "source": "JEE Main Unit-09 Q.No. 45",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09122",
+  "source": "JEE Main Unit-09 Q.No. 44",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09123",
+  "source": "JEE Main Unit-09 Q.No. 43",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09124",
+  "source": "JEE Main Unit-09 Q.No. 42",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09125",
+  "source": "JEE Main Unit-09 Q.No. 41",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09126",
+  "source": "JEE Main Unit-09 Q.No. 51",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09127",
+  "source": "JEE Main Unit-09 Q.No. 59",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09128",
+  "source": "JEE Main Unit-09 Q.No. 58",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09129",
+  "source": "JEE Main Unit-09 Q.No. 57",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09130",
+  "source": "JEE Main Unit-09 Q.No. 56",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09131",
+  "source": "JEE Main Unit-09 Q.No. 54",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09132",
+  "source": "JEE Main Unit-09 Q.No. 53",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09133",
+  "source": "JEE Main Unit-09 Q.No. 68",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09134",
+  "source": "JEE Main Unit-09 Q.No. 65",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09135",
+  "source": "JEE Main Unit-09 Q.No. 63",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09136",
+  "source": "JEE Main Unit-09 Q.No. 62",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09137",
+  "source": "JEE Main Unit-02 Q.No. 113",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09138",
+  "source": "JEE Main Unit-09 Q.No. 69",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09139",
+  "source": "JEE Main Other (s-Block Elements) Q.No. 31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09140",
+  "source": "JEE Main Unit-09 Q.No. 71",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09141",
+  "source": "JEE Main Unit-09 Q.No. 70",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09142",
+  "source": "JEE Main Unit-09 Q.No. 80",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09143",
+  "source": "JEE Main Unit-10 Q.No. 158",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09144",
+  "source": "JEE Main Unit-09 Q.No. 79",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09145",
+  "source": "JEE Main Unit-10 Q.No. 155",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09146",
+  "source": "JEE Main Unit-09 Q.No. 78",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09147",
+  "source": "JEE Main Unit-09 Q.No. 77",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09148",
+  "source": "JEE Main Unit-09 Q.No. 76",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09149",
+  "source": "JEE Main Other (s-Block Elements) Q.No. 39",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09150",
+  "source": "JEE Main Unit-09 Q.No. 75",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09151",
+  "source": "JEE Main Unit-09 Q.No. 90",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09152",
+  "source": "JEE Main Unit-02 Q.No. 135",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09153",
+  "source": "JEE Main Unit-09 Q.No. 89",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09154",
+  "source": "JEE Main Unit-09 Q.No. 88",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09155",
+  "source": "JEE Main Unit-09 Q.No. 87",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09156",
+  "source": "JEE Main Unit-09 Q.No. 83",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09157",
+  "source": "JEE Main Unit-09 Q.No. 92",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09158",
+  "source": "JEE Main Unit-09 Q.No. 91",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09159",
+  "source": "JEE Main Other (s-Block Elements) Q.No. 68",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09160",
+  "source": "JEE Main Unit-09 Q.No. 96",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09161",
+  "source": "JEE Main Unit-09 Q.No. 95",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09162",
+  "source": "JEE Main Unit-09 Q.No. 94",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09163",
+  "source": "JEE Main Unit-09 Q.No. 93",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09164",
+  "source": "JEE Main Unit-09 Q.No. 103",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09165",
+  "source": "JEE Main Unit-09 Q.No. 100",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09166",
+  "source": "JEE Main Unit-09 Q.No. 99",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09167",
+  "source": "JEE Main Unit-09 Q.No. 107",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09168",
+  "source": "JEE Main Unit-09 Q.No. 106",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09169",
+  "source": "JEE Main Unit-09 Q.No. 105",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09170",
+  "source": "JEE Main Unit-09 Q.No. 104",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09171",
+  "source": "JEE Main Unit-09 Q.No. 115",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09172",
+  "source": "JEE Main Unit-09 Q.No. 114",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09173",
+  "source": "JEE Main Unit-09 Q.No. 112",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09174",
+  "source": "JEE Main Unit-09 Q.No. 110",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09175",
+  "source": "JEE Main Unit-09 Q.No. 109",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09176",
+  "source": "JEE Main Unit-09 Q.No. 108",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09177",
+  "source": "JEE Main Unit-11 Q.No. 140",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09178",
+  "source": "JEE Main Unit-09 Q.No. 122",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09179",
+  "source": "JEE Main Unit-09 Q.No. 121",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09180",
+  "source": "JEE Main Unit-09 Q.No. 119",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09181",
+  "source": "JEE Main Unit-09 Q.No. 117",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09182",
+  "source": "JEE Main Unit-09 Q.No. 118",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09183",
+  "source": "JEE Main Unit-09 Q.No. 127",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09184",
+  "source": "JEE Main Unit-02 Q.No. 158",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09185",
+  "source": "JEE Main Unit-09 Q.No. 125",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09186",
+  "source": "JEE Main Unit-09 Q.No. 124",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09187",
+  "source": "JEE Main Unit-09 Q.No. 135",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09188",
+  "source": "JEE Main Unit-09 Q.No. 134",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09189",
+  "source": "JEE Main Unit-09 Q.No. 132",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09190",
+  "source": "JEE Main Unit-09 Q.No. 131",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09191",
+  "source": "JEE Main Unit-11 Q.No. 149",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09192",
+  "source": "JEE Main Unit-09 Q.No. 137",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09193",
+  "source": "JEE Main Unit-09 Q.No. 138",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09194",
+  "source": "JEE Main Unit-09 Q.No. 140",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09195",
+  "source": "JEE Main Unit-09 Q.No. 141",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09196",
+  "source": "JEE Main Unit-09 Q.No. 143",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09197",
+  "source": "JEE Main Unit-09 Q.No. 147",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09198",
+  "source": "JEE Main Unit-09 Q.No. 152",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09199",
+  "source": "JEE Main Unit-09 Q.No. 151",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09200",
+  "source": "JEE Main Unit-09 Q.No. 157",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09201",
+  "source": "JEE Main Unit-09 Q.No. 158",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09202",
+  "source": "JEE Main Unit-09 Q.No. 159",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09203",
+  "source": "JEE Main Unit-09 Q.No. 162",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09204",
+  "source": "JEE Main Unit-03 Q.No. 225",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09205",
+  "source": "JEE Main Unit-09 Q.No. 163",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09206",
+  "source": "JEE Main Unit-02 Q.No. 213",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09207",
+  "source": "JEE Main Unit-09 Q.No. 165",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09208",
+  "source": "JEE Main Unit-09 Q.No. 168",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09209",
+  "source": "JEE Main Unit-02 Q.No. 220",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09210",
+  "source": "JEE Main Unit-09 Q.No. 167",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09211",
+  "source": "JEE Main Unit-02 Q.No. 222",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09212",
+  "source": "JEE Main Unit-02 Q.No. 18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09213",
+  "source": "JEE Main Unit-09 Q.No. 175",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09214",
+  "source": "JEE Main Unit-09 Q.No. 176",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09215",
+  "source": "NCERT Exercise Q.No. 3.38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09216",
+  "source": "NCERT Exercise Q.No. 3.39",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09217",
+  "source": "NCERT Exercise Q.No. 3.40",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09218",
+  "source": "NCERT Exemplar Q.No. 1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09219",
+  "source": "NCERT Exemplar Q.No. 2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09220",
+  "source": "NCERT Exemplar Q.No. 3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09221",
+  "source": "NCERT Exemplar Q.No. 4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09222",
+  "source": "NCERT Exemplar Q.No. 5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09223",
+  "source": "NCERT Exemplar Q.No. 6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09224",
+  "source": "NCERT Exemplar Q.No. 7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09225",
+  "source": "NCERT Exemplar Q.No. 8",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09226",
+  "source": "NCERT Exemplar Q.No. 9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09227",
+  "source": "NCERT Exemplar Q.No. 10",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09228",
+  "source": "NCERT Exemplar Q.No. 11",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09229",
+  "source": "NCERT Exemplar Q.No. 12(a)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09230",
+  "source": "NCERT Exemplar Q.No. 12(b)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09231",
+  "source": "NCERT Exemplar Q.No. 12(c)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09232",
+  "source": "NCERT Exemplar Q.No. 12(d)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09233",
+  "source": "NCERT Exemplar Q.No. 12(e)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09234",
+  "source": "NCERT Exemplar Q.No. 13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09235",
+  "source": "NCERT Exemplar Q.No. 14",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09236",
+  "source": "NCERT Exemplar Q.No. 15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09237",
+  "source": "NCERT Exemplar Q.No. 16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09238",
+  "source": "NCERT Exemplar Q.No. 17",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09239",
+  "source": "NCERT Exemplar Q.No. 18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09240",
+  "source": "NCERT Exemplar Q.No. 19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09241",
+  "source": "NCERT Exemplar Q.No. 20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09242",
+  "source": "NCERT Exemplar Q.No. 21",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09243",
+  "source": "NCERT Exemplar Q.No. 22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09244",
+  "source": "NCERT Exemplar Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09245",
+  "source": "NCERT Exemplar Q.No. 30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09246",
+  "source": "NCERT Exemplar Q.No. 43",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09247",
+  "source": "NCERT Exemplar Q.No. 44",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09248",
+  "source": "NCERT Exemplar Q.No. 45",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09249",
+  "source": "NCERT Exemplar Q.No. 46",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09250",
+  "source": "NCERT Exemplar Q.No. 47",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09251",
+  "source": "NCERT Exemplar Q.No. 48",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09252",
+  "source": "NCERT Exemplar Q.No. 24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09253",
+  "source": "NCERT Exemplar Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09254",
+  "source": "NCERT Exemplar Q.No. 26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09255",
+  "source": "NCERT Exemplar Q.No. 27",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09256",
+  "source": "NCERT Exemplar Q.No. 28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09257",
+  "source": "NCERT Exemplar Q.No. 29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09258",
+  "source": "NCERT Exemplar Q.No. 31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09259",
+  "source": "NCERT Exemplar Q.No. 32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09260",
+  "source": "NCERT Exemplar Q.No. 33",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09261",
+  "source": "NCERT Exemplar Q.No. 34",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09262",
+  "source": "NCERT Exemplar Q.No. 35",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09263",
+  "source": "NCERT Exemplar Q.No. 36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09264",
+  "source": "NCERT Exemplar Q.No. 37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09265",
+  "source": "NCERT Exemplar Q.No. 38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09266",
+  "source": "NCERT Exemplar Q.No. 39",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09267",
+  "source": "NCERT Exemplar Q.No. 40",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09268",
+  "source": "NCERT Exemplar Q.No. 41",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09269",
+  "source": "NCERT Exemplar Q.No. 42",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09270",
+  "source": "NCERT Exercise Q.No. 3.1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09271",
+  "source": "NCERT Exercise Q.No. 3.2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09272",
+  "source": "NCERT Exercise Q.No. 3.3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09273",
+  "source": "NCERT Exercise Q.No. 3.4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09274",
+  "source": "NCERT Exercise Q.No. 3.5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09275",
+  "source": "NCERT Exercise Q.No. 3.6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09276",
+  "source": "NCERT Exercise Q.No. 3.7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09277",
+  "source": "NCERT Exercise Q.No. 3.8",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09278",
+  "source": "NCERT Exercise Q.No. 3.9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09279",
+  "source": "NCERT Exercise Q.No. 3.10",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09280",
+  "source": "NCERT Exercise Q.No. 3.11(i)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09281",
+  "source": "NCERT Exercise Q.No. 3.11(ii)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09282",
+  "source": "NCERT Exercise Q.No. 3.11(iii)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09283",
+  "source": "NCERT Exercise Q.No. 3.11(iv)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09284",
+  "source": "NCERT Exercise Q.No. 3.12",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09285",
+  "source": "NCERT Exercise Q.No. 3.13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09286",
+  "source": "NCERT Exercise Q.No. 3.14",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09287",
+  "source": "NCERT Exercise Q.No. 3.15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09288",
+  "source": "NCERT Exercise Q.No. 3.16(i)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09289",
+  "source": "NCERT Exercise Q.No. 3.16(ii)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09290",
+  "source": "NCERT Exercise Q.No. 3.17",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09291",
+  "source": "NCERT Exercise Q.No. 3.18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09292",
+  "source": "NCERT Exercise Q.No. 3.19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09293",
+  "source": "NCERT Exercise Q.No. 3.20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09294",
+  "source": "NCERT Exercise Q.No. 3.21",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09295",
+  "source": "NCERT Exercise Q.No. 3.22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09296",
+  "source": "NCERT Exercise Q.No. 3.23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09297",
+  "source": "NCERT Exercise Q.No. 3.24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09298",
+  "source": "NCERT Exercise Q.No. 3.25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09299",
+  "source": "NCERT Exercise Q.No. 3.26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09300",
+  "source": "NCERT Exercise Q.No. 3.27(a)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09301",
+  "source": "NCERT Exercise Q.No. 3.27(b)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09302",
+  "source": "NCERT Exercise Q.No. 3.27(c)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09303",
+  "source": "NCERT Exercise Q.No. 3.27(d)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09304",
+  "source": "NCERT Exercise Q.No. 3.28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09305",
+  "source": "NCERT Exercise Q.No. 3.29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09306",
+  "source": "NCERT Exercise Q.No. 3.30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09307",
+  "source": "NCERT Exercise Q.No. 3.31(a)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09308",
+  "source": "NCERT Exercise Q.No. 3.31(b)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09309",
+  "source": "NCERT Exercise Q.No. 3.31(c)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09310",
+  "source": "NCERT Exercise Q.No. 3.31(d)",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09311",
+  "source": "NCERT Exercise Q.No. 3.31(e)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09312",
+  "source": "NCERT Exercise Q.No. 3.31(f)",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09313",
+  "source": "NCERT Exercise Q.No. 3.32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09314",
+  "source": "NCERT Exercise Q.No. 3.33",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09315",
+  "source": "NCERT Exercise Q.No. 3.34",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09316",
+  "source": "NCERT Exercise Q.No. 3.35",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09317",
+  "source": "NCERT Exercise Q.No. 3.36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09318",
+  "source": "NCERT Exercise Q.No. 3.37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09319",
+  "source": "JEE Main Unit-09 Q.No. 28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09320",
+  "source": "JEE Main Unit-09 Q.No. 26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09321",
+  "source": "JEE Main Unit-09 Q.No. 27",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09322",
+  "source": "JEE Main Unit-09 Q.No. 31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09323",
+  "source": "JEE Main Unit-09 Q.No. 30",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09324",
+  "source": "JEE Main Unit-09 Q.No. 35",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09325",
+  "source": "JEE Main Unit-09 Q.No. 33",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09326",
+  "source": "JEE Main Unit-09 Q.No. 36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09327",
+  "source": "JEE Main Unit-09 Q.No. 39",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09328",
+  "source": "JEE Main Unit-09 Q.No. 38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09329",
+  "source": "JEE Main Unit-09 Q.No. 37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09330",
+  "source": "JEE Main Unit-09 Q.No. 21",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09331",
+  "source": "JEE Main Unit-09 Q.No. 24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09332",
+  "source": "JEE Main Unit-10 Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09333",
+  "source": "JEE Main Unit-09 Q.No. 18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09334",
+  "source": "JEE Main Unit-09 Q.No. 25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09335",
+  "source": "JEE Main Unit-10 Q.No. 20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09336",
+  "source": "JEE Main Unit-09 Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09337",
+  "source": "JEE Main Unit-09 Q.No. 22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09338",
+  "source": "JEE Main Unit-10 Q.No. 26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09339",
+  "source": "JEE Main Unit-10 Q.No. 23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09340",
+  "source": "JEE Main Unit-09 Q.No. 19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09341",
+  "source": "JEE Main Unit-09 Q.No. 16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09342",
+  "source": "JEE Main Unit-09 Q.No. 14",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09343",
+  "source": "JEE Main Unit-09 Q.No. 8",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09344",
+  "source": "JEE Main Unit-09 Q.No. 10",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09345",
+  "source": "JEE Main Unit-10 Q.No. 12",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09346",
+  "source": "JEE Main Unit-09 Q.No. 15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09347",
+  "source": "JEE Main Unit-10 Q.No. 16",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09348",
+  "source": "JEE Main Unit-09 Q.No. 13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09349",
+  "source": "JEE Main Unit-09 Q.No. 12",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09350",
+  "source": "JEE Main Unit-09 Q.No. 17",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09351",
+  "source": "JEE Main Unit-09 Q.No. 9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09352",
+  "source": "JEE Main Unit-09 Q.No. 11",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09353",
+  "source": "JEE Main Unit-09 Q.No. 7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09354",
+  "source": "JEE Main Unit-10 Q.No. 9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09356",
+  "source": "JEE Main Unit-09 Q.No. 5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09357",
+  "source": "JEE Main Unit-10 Q.No. 6",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09358",
+  "source": "JEE Main Unit-09 Q.No. 4",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09359",
+  "source": "JEE Main Unit-09 Q.No. 3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09360",
+  "source": "JEE Main Unit-10 Q.No. 3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09361",
+  "source": "JEE Main Unit-09 Q.No. 2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09362",
+  "source": "JEE Main Unit-09 Q.No. 1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU09363",
+  "source": "JEE Main Unit-09 Q.No. 6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09364",
+  "source": "JEE Main Unit-09 Q.No. 20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09365",
+  "source": "JEE Main Unit-09 Q.No. 29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09366",
+  "source": "JEE Main Unit-09 Q.No. 32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09367",
+  "source": "JEE Main Unit-09 Q.No. 34",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09368",
+  "source": "JEE Main Unit-09 Q.No. 40",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09369",
+  "source": "JEE Main Unit-09 Q.No. 49",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09370",
+  "source": "JEE Main Unit-09 Q.No. 50",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09371",
+  "source": "JEE Main Unit-09 Q.No. 60",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09372",
+  "source": "JEE Main Unit-09 Q.No. 64",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09373",
+  "source": "JEE Main Unit-09 Q.No. 66",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09374",
+  "source": "JEE Main Unit-09 Q.No. 67",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09375",
+  "source": "JEE Main Unit-09 Q.No. 73",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09376",
+  "source": "JEE Main Unit-09 Q.No. 74",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09377",
+  "source": "JEE Main Unit-09 Q.No. 82",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09378",
+  "source": "JEE Main Unit-09 Q.No. 84",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09379",
+  "source": "JEE Main Unit-09 Q.No. 85",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09380",
+  "source": "JEE Main Unit-09 Q.No. 101",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09381",
+  "source": "JEE Main Unit-09 Q.No. 111",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09382",
+  "source": "JEE Main Unit-09 Q.No. 116",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09383",
+  "source": "JEE Main Unit-09 Q.No. 120",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09384",
+  "source": "JEE Main Unit-09 Q.No. 123",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09385",
+  "source": "JEE Main Unit-09 Q.No. 129",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09386",
+  "source": "JEE Main Unit-09 Q.No. 133",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09387",
+  "source": "JEE Main Unit-09 Q.No. 136",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09388",
+  "source": "JEE Main Unit-09 Q.No. 139",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09389",
+  "source": "JEE Main Unit-09 Q.No. 144",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09390",
+  "source": "JEE Main Unit-09 Q.No. 145",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09391",
+  "source": "JEE Main Unit-09 Q.No. 146",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09392",
+  "source": "JEE Main Unit-09 Q.No. 149",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09393",
+  "source": "JEE Main Unit-09 Q.No. 150",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09394",
+  "source": "JEE Main Unit-09 Q.No. 154",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09395",
+  "source": "JEE Main Unit-09 Q.No. 155",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09396",
+  "source": "JEE Main Unit-09 Q.No. 161",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09397",
+  "source": "JEE Main Unit-09 Q.No. 166",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09398",
+  "source": "JEE Main Unit-09 Q.No. 170",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09399",
+  "source": "JEE Main Unit-09 Q.No. 171",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09400",
+  "source": "JEE Main Unit-09 Q.No. 172",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09401",
+  "source": "JEE Main Unit-09 Q.No. 173",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU09402",
+  "source": "JEE Main Unit-09 Q.No. 178",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ }
+]
