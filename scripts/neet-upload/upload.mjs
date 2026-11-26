@@ -1,4 +1,4 @@
-// One-off: insert NCERT Exemplar Physics drafts (XI Ch-10,11,12,14,15), unit-wise; qids continue each unit's sequence.
+// One-off: insert NCERT Exemplar Physics drafts (XI Ch-13, XII Ch-1..5), unit-wise; qids continue each unit's sequence.
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 const sb = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
