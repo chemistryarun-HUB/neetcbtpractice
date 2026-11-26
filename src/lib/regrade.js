@@ -219,3 +219,49 @@ export async function applyRegradePlan(supabase, plan, { attempts, note = null }
 
   return { attemptsWritten, usedWritten, unlocksWritten }
 }
+
+// Formatting-blind comparison of two option texts: LaTeX vs Unicode, spacing,
+// \ce{}, $…$ and case all ignored. Used to tell a real key change from an
+// option REORDER (or LaTeX pass) that left the same answer correct.
+const TEX_SYMBOLS = {
+  Delta: 'δ', delta: 'δ', alpha: 'α', beta: 'β', gamma: 'γ', pi: 'π', mu: 'μ', lambda: 'λ', theta: 'θ',
+  sigma: 'σ', omega: 'ω', nu: 'ν', epsilon: 'ε', varepsilon: 'ε', rho: 'ρ', tau: 'τ', phi: 'φ', psi: 'ψ', eta: 'η',
+  circ: '°', degree: '°', times: '×', cdot: '·', to: '→', rightarrow: '→', longrightarrow: '→', leftarrow: '←',
+  rightleftharpoons: '⇌', leftrightarrow: '↔', le: '≤', leq: '≤', ge: '≥', geq: '≥', pm: '±', infty: '∞',
+  propto: '∝', sqrt: '√', approx: '≈', ne: '≠', neq: '≠', lt: '<', gt: '>',
+  ln: 'ln', log: 'log', sin: 'sin', cos: 'cos', tan: 'tan', exp: 'exp',
+}
+const UNICODE_DIGITS = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9',
+  '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
+  '⁺': '+', '⁻': '-', '−': '-', '–': '-', '—': '-', '₊': '+', '₋': '-' }
+
+export function normalizeOptionText(s) {
+  return String(s ?? '')
+    .replace(/\\(?:d|t)?frac/g, '')
+    .replace(/\\[,;:! ]/g, '')
+    .replace(/\\([A-Za-z]+)/g, (m, name) => TEX_SYMBOLS[name] ?? '')
+    .replace(/->/g, '→').replace(/<=>/g, '⇌')
+    .replace(/./gu, ch => UNICODE_DIGITS[ch] ?? ch)
+    .replace(/[⟶⇾➝]/g, '→')
+    .toLowerCase()
+    .replace(/assertion/g, 'a').replace(/reason/g, 'r').replace(/is(ation|ed|e)\b/g, 'iz$1')
+    .replace(/[\s$^_{}~\\()/,:;'"]/g, '')
+    .replace(/\.(?!\d)/g, '')                           // full stops, not decimal points
+    .replace(/([a-z])-(?=[a-z])/g, '$1')                 // Statement-I, lone-pair; keeps minus signs
+}
+
+/**
+ * True when a logged key change kept the SAME answer: the option text that was
+ * correct before is, formatting aside, the one correct now. That happens when
+ * options are reordered (often together with a LaTeX pass). Re-grading such a
+ * change is wrong: answers saved as option1..option4 would be read against the
+ * new order and right answers would turn wrong.
+ */
+export function isSameAnswerChange(change, question) {
+  if (!question || !change?.old_correct_option || /^option[1-4]$/.test(change.old_correct_option)) return false
+  const key = correctOptionKey(question)
+  const now = optionEntries(question).find(e => e.key === key)?.text
+  if (!now) return false
+  const a = normalizeOptionText(change.old_correct_option)
+  return a !== '' && a === normalizeOptionText(now)
+}
