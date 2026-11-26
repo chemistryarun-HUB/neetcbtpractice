@@ -1,0 +1,1049 @@
+{
+ "insert": [
+  {
+   "qid": "NCU09403",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 4,
+   "topic": "Miscellaneous",
+   "question": "Match List-I (Atom/Molecule) with List-II (Property).\nChoose the correct answer from the options given below:",
+   "option1": "A-III, B-I, C-IV, D-II",
+   "option2": "A-I, B-IV, C-III, D-II",
+   "option3": "A-II, B-IV, C-I, D-III",
+   "option4": "A-III, B-IV, C-I, D-II",
+   "correct_option": "A-III, B-IV, C-I, D-II",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2024",
+   "source": "NEET EG Unit-09 Q.8",
+   "question_type": "Match the Column",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en",
+   "mtc_label_a": "upper",
+   "mtc_label_b": "roman_upper",
+   "col_a1": "Nitrogen atom",
+   "col_a2": "Fluorine molecule",
+   "col_a3": "Oxygen molecule",
+   "col_a4": "Xenon atom",
+   "col_b1": "Paramagnetic",
+   "col_b2": "Most reactive element in group 18",
+   "col_b3": "Element with highest ionisation enthalpy in group 15",
+   "col_b4": "Strongest oxidising agent"
+  },
+  {
+   "qid": "NCU09404",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "Arrange the following elements in increasing order of first ionization enthalpy: Li, Be, B, C, N",
+   "option1": "Li < Be < B < C < N",
+   "option2": "Li < B < Be < C < N",
+   "option3": "Li < Be < C < B < N",
+   "option4": "Li < Be < N < B < C",
+   "correct_option": "Li < B < Be < C < N",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2024",
+   "source": "NEET EG Unit-09 Q.10",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09405",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "Arrange the following elements in increasing order of electronegativity:\nN, O, F, C, Si\nChoose the correct answer from the options given below:",
+   "option1": "Si < C < N < O < F",
+   "option2": "Si < C < O < N < F",
+   "option3": "O < F < N < C < Si",
+   "option4": "F < O < N < C < Si",
+   "correct_option": "Si < C < N < O < F",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2024",
+   "source": "NEET EG Unit-09 Q.11",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09406",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 3,
+   "topic": "Periodic Trends - Chemical",
+   "question": "Which of the following is correctly matched?",
+   "option1": "Basic oxides ⇒ $\\ce{In2O3}$, $\\ce{K2O}$, $\\ce{SnO2}$",
+   "option2": "Neutral oxides ⇒ CO, $\\ce{NO2}$, $\\ce{N2O}$",
+   "option3": "Acidic oxides ⇒ $\\ce{Mn2O7}$, $\\ce{SO2}$, $\\ce{TeO3}$",
+   "option4": "Amphoteric oxides ⇒ BeO, $\\ce{Ga2O3}$, GeO",
+   "correct_option": "Acidic oxides ⇒ $\\ce{Mn2O7}$, $\\ce{SO2}$, $\\ce{TeO3}$",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2023",
+   "source": "NEET EG Unit-09 Q.12",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09407",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 3,
+   "topic": "Periodic Trends - Chemical",
+   "question": "The correct sequence given below containing neutral, acidic, basic and amphoteric oxide each, respectively, is",
+   "option1": "NO, ZnO, $\\ce{CO2}$, CaO",
+   "option2": "ZnO, NO, CaO, $\\ce{CO2}$",
+   "option3": "NO, $\\ce{CO2}$, ZnO, CaO",
+   "option4": "NO, $\\ce{CO2}$, CaO, ZnO",
+   "correct_option": "NO, $\\ce{CO2}$, CaO, ZnO",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2023",
+   "source": "NEET EG Unit-09 Q.13",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09408",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "The correct order of first ionization enthalpy for the given four elements is:",
+   "option1": "C < F < N < O",
+   "option2": "C < N < F < O",
+   "option3": "C < N < O < F",
+   "option4": "C < O < N < F",
+   "correct_option": "C < O < N < F",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2022",
+   "source": "NEET EG Unit-09 Q.14",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09409",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "If first ionization enthalpies of elements X and Y are 419 kJ mol$^{-1}$ and 590 kJ mol$^{-1}$, respectively and second ionization enthalpies of X and Y are 3069 kJ mol$^{-1}$ and 1145 kJ mol$^{-1}$, respectively. Then correct statement is:",
+   "option1": "Both X and Y are alkaline earth metals",
+   "option2": "X is an alkali metal and Y is an alkaline earth metal",
+   "option3": "X is an alkaline earth metal and Y is an alkali metal",
+   "option4": "Both X and Y are alkali metals",
+   "correct_option": "X is an alkali metal and Y is an alkaline earth metal",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2022",
+   "source": "NEET EG Unit-09 Q.15",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09410",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "Gadolinium has a low value of third ionisation enthalpy because of",
+   "option1": "small size",
+   "option2": "high exchange enthalpy",
+   "option3": "high electronegativity",
+   "option4": "high basic character",
+   "correct_option": "high exchange enthalpy",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2022",
+   "source": "NEET EG Unit-09 Q.17",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09411",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 3,
+   "topic": "Periodic Trends - Chemical",
+   "question": "Match the oxide given in List-I with its property given in List-II.\nWhich of the following options has all correct pairs?",
+   "option1": "(i)-(b), (ii)-(d), (iii)-(a), (iv)-(c)",
+   "option2": "(i)-(b), (ii)-(a), (iii)-(d), (iv)-(c)",
+   "option3": "(i)-(c), (ii)-(b), (iii)-(a), (iv)-(d)",
+   "option4": "(i)-(a), (ii)-(d), (iii)-(b), (iv)-(c)",
+   "correct_option": "(i)-(b), (ii)-(d), (iii)-(a), (iv)-(c)",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2019",
+   "source": "NEET EG Unit-09 Q.21",
+   "question_type": "Match the Column",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en",
+   "mtc_label_a": "roman_lower",
+   "mtc_label_b": "lower",
+   "col_a1": "$\\ce{Na2O}$",
+   "col_a2": "$\\ce{Al2O3}$",
+   "col_a3": "$\\ce{N2O}$",
+   "col_a4": "$\\ce{Cl2O7}$",
+   "col_b1": "Neutral",
+   "col_b2": "Basic",
+   "col_b3": "Acidic",
+   "col_b4": "Amphoteric"
+  },
+  {
+   "qid": "NCU09412",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "The correct order of atomic radii in group 13 elements is",
+   "option1": "B < Al < In < Ga < Tl",
+   "option2": "B < Al < Ga < In < Tl",
+   "option3": "B < Ga < Al < Tl < In",
+   "option4": "B < Ga < Al < In < Tl",
+   "correct_option": "B < Ga < Al < In < Tl",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2018",
+   "source": "NEET EG Unit-09 Q.24",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09413",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 4,
+   "topic": "Miscellaneous",
+   "question": "Which one of the following orders is not in accordance with the property stated against it?",
+   "option1": "$\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Bond dissociation energy",
+   "option2": "$\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Oxidising power",
+   "option3": "HI > HBr > HCl > HF : Acidic property in water",
+   "option4": "$\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Electronegativity",
+   "correct_option": "$\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Bond dissociation energy",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 2006",
+   "source": "NEET EG Unit-09 Q.39",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09414",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "Which one of the following arrangements represents the correct order of electron gain enthalpy (with negative sign) of the given atomic species?",
+   "option1": "S < O < Cl < F",
+   "option2": "Cl < F < S < O",
+   "option3": "F < Cl < O < S",
+   "option4": "O < S < F < Cl",
+   "correct_option": "O < S < F < Cl",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 2005",
+   "source": "NEET EG Unit-09 Q.40",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09415",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 4,
+   "topic": "Miscellaneous",
+   "question": "Which statement is wrong?",
+   "option1": "Bond energy of $\\ce{F2}$ > $\\ce{Cl2}$",
+   "option2": "Electronegativity of F > Cl",
+   "option3": "F is more oxidising than Cl",
+   "option4": "Electron affinity of Cl > F",
+   "correct_option": "Bond energy of $\\ce{F2}$ > $\\ce{Cl2}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 2000",
+   "source": "NEET EG Unit-09 Q.45",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09416",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 3,
+   "topic": "Periodic Trends - Chemical",
+   "question": "Which of the following is most acidic?",
+   "option1": "$\\ce{N2O5}$",
+   "option2": "$\\ce{P2O5}$",
+   "option3": "$\\ce{As2O5}$",
+   "option4": "$\\ce{Sb2O5}$",
+   "correct_option": "$\\ce{N2O5}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIPMT 1999",
+   "source": "NEET EG Unit-09 Q.47",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09417",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 4,
+   "topic": "Miscellaneous",
+   "question": "One would expect proton to have very large",
+   "option1": "charge",
+   "option2": "ionization potential",
+   "option3": "hydration energy",
+   "option4": "radius",
+   "correct_option": "hydration energy",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 1993",
+   "source": "NEET EG Unit-09 Q.54",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09418",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 2,
+   "topic": "Periodic Trends - Physical",
+   "question": "Which of the following has largest size?",
+   "option1": "Na",
+   "option2": "$\\ce{Na+}$",
+   "option3": "$\\ce{Na-}$",
+   "option4": "Can't be predicted",
+   "correct_option": "$\\ce{Na-}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIPMT 1993",
+   "source": "NEET EG Unit-09 Q.61",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU09419",
+   "subject": "Chemistry",
+   "unit": "Unit 9 - Classification of Elements and Periodicity in Properties",
+   "level": 4,
+   "topic": "Miscellaneous",
+   "question": "Which of the following arrangements does not give the correct picture of the trends indicated against it?\nA. $\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Bond dissociation energy\nB. $\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Electronegativity\nC. $\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Oxidizing power\nD. $\\ce{F2}$ > $\\ce{Cl2}$ > $\\ce{Br2}$ > $\\ce{I2}$ : Electron gain enthalpy\nChoose the correct answer from the options given below:",
+   "option1": "B and C only",
+   "option2": "A only",
+   "option3": "A, C and D only",
+   "option4": "A and D only",
+   "correct_option": "A and D only",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 2008",
+   "source": "NEET EG Unit-09 Q.69",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  }
+ ],
+ "payload": {
+  "NCU09033": {
+   "question": "The IUPAC name of an element with atomic number 119 is",
+   "source": "NEET EG Unit-09 Q.16",
+   "option1": "ununennium",
+   "option2": "unnilennium",
+   "option3": "unununnium",
+   "option4": "ununoctium",
+   "correct_option": "ununennium"
+  },
+  "NCU09034": {
+   "question": "Identify the incorrect match. (List-I: Name; List-II: IUPAC official name)",
+   "source": "NEET EG Unit-09 Q.19",
+   "option1": "(B), (ii)",
+   "option2": "(C), (iii)",
+   "option3": "(D), (iv)",
+   "option4": "(A), (i)",
+   "correct_option": "(D), (iv)",
+   "mtc_label_a": "upper",
+   "col_a4": "Unununnium"
+  },
+  "NCU09035": {
+   "source": "NEET EG Unit-09 Q.25",
+   "option1": "Halogen family, $\\mathrm{[Rn]\\,5f^{14} 6d^{10} 7s^2 7p^5}$",
+   "option2": "Carbon family, $\\mathrm{[Rn]\\,5f^{14} 6d^{10} 7s^2 7p^2}$",
+   "option3": "Oxygen family, $\\mathrm{[Rn]\\,5f^{14} 6d^{10} 7s^2 7p^4}$",
+   "option4": "Nitrogen family, $\\mathrm{[Rn]\\,5f^{14} 6d^{10} 7s^2 7p^6}$",
+   "correct_option": "Carbon family, $\\mathrm{[Rn]\\,5f^{14} 6d^{10} 7s^2 7p^2}$"
+  },
+  "NCU09038": {
+   "question": "The electronic configuration of an element is $\\mathrm{1s^2 2s^2 2p^6 3s^2 3p^3}$. What is the atomic number of the element, which is just below the above element in the periodic table?",
+   "source": "NEET EG Unit-09 Q.52"
+  },
+  "NCU09039": {
+   "question": "If the atomic number of an element is 33, it will be placed in the periodic table in the",
+   "source": "NEET EG Unit-09 Q.56",
+   "option3": "fifth group",
+   "option4": "seventh group",
+   "correct_option": "fifth group"
+  },
+  "NCU09040": {
+   "question": "The electronic configurations of four elements are given below. Which element does not belong to the same family as others?",
+   "source": "NEET EG Unit-09 Q.67",
+   "option1": "$\\mathrm{[Xe]\\,4f^{14} 5d^{10} 6s^2}$",
+   "option2": "$\\mathrm{[Kr]\\,4d^{10} 5s^2}$",
+   "option3": "$\\mathrm{[Ne]\\,3s^2 3p^5}$",
+   "option4": "$\\mathrm{[Ar]\\,3d^{10} 4s^2}$",
+   "correct_option": "$\\mathrm{[Ne]\\,3s^2 3p^5}$"
+  },
+  "NCU09041": {
+   "source": "NEET EG Unit-09 Q.9",
+   "option1": "A-I, B-II, C-IV, D-III",
+   "option2": "A-I, B-IV, C-III, D-II",
+   "option3": "A-I, B-IV, C-II, D-III",
+   "option4": "A-IV, B-I, C-II, D-III",
+   "correct_option": "A-I, B-IV, C-II, D-III",
+   "mtc_label_a": "upper",
+   "mtc_label_b": "roman_upper"
+  },
+  "NCU09042": {
+   "question": "Match the element in List-I with that in List-II.\nIdentify the correct match:",
+   "source": "NEET EG Unit-09 Q.18"
+  },
+  "NCU09043": {
+   "source": "NEET EG Unit-09 Q.62",
+   "option1": "Ga, In, Tl"
+  },
+  "NCU09044": {
+   "question": "The correct decreasing order of atomic radii (pm) of Li, Be, B and C is",
+   "source": "NEET EG Unit-09 Q.7"
+  },
+  "NCU09046": {
+   "question": "Match List-I (Oxide) with List-II (Nature).\nWhich of the following is the correct option?",
+   "source": "NEET EG Unit-09 Q.20",
+   "option1": "A-(ii), B-(i), C-(iv), D-(iii)",
+   "option2": "A-(iii), B-(iv), C-(i), D-(ii)",
+   "option3": "A-(iv), B-(iii), C-(ii), D-(i)",
+   "option4": "A-(i), B-(ii), C-(iii), D-(iv)",
+   "correct_option": "A-(ii), B-(i), C-(iv), D-(iii)",
+   "mtc_label_a": "upper",
+   "col_a3": "$\\ce{Al2O3}$",
+   "col_a4": "$\\ce{Cl2O7}$"
+  },
+  "NCU09047": {
+   "question": "For the second period elements the correct increasing order of first ionization enthalpy is:",
+   "source": "NEET EG Unit-09 Q.22"
+  },
+  "NCU09048": {
+   "source": "NEET EG Unit-09 Q.23"
+  },
+  "NCU09049": {
+   "option4": "$\\ce{Al^3+}$ < $\\ce{Mg^2+}$ < $\\ce{Na+}$ < $\\ce{F-}$ (increasing ionic size)",
+   "source": "NEET EG Unit-09 Q.68"
+  },
+  "NCU09050": {
+   "question": "The species Ar, $\\ce{K+}$ and $\\ce{Ca^2+}$ contain the same number of electrons. In which order do their radii increase?",
+   "source": "NEET EG Unit-09 Q.26",
+   "option1": "Ar < $\\ce{K+}$ < $\\ce{Ca^2+}$",
+   "option2": "$\\ce{Ca^2+}$ < Ar < $\\ce{K+}$",
+   "option3": "$\\ce{Ca^2+}$ < $\\ce{K+}$ < Ar",
+   "option4": "$\\ce{K+}$ < Ar < $\\ce{Ca^2+}$",
+   "correct_option": "$\\ce{Ca^2+}$ < $\\ce{K+}$ < Ar"
+  },
+  "NCU09052": {
+   "source": "NEET EG Unit-09 Q.27",
+   "option1": "$\\ce{H-}$ > $\\ce{H^.}$ > $\\ce{H+}$",
+   "option2": "$\\ce{Na+}$ > $\\ce{F-}$ > $\\ce{O^2-}$",
+   "option3": "$\\ce{F-}$ > $\\ce{O^2-}$ > $\\ce{Na+}$",
+   "option4": "$\\ce{Al^3+}$ > $\\ce{Mg^2+}$ > $\\ce{N^3-}$",
+   "correct_option": "$\\ce{H-}$ > $\\ce{H^.}$ > $\\ce{H+}$"
+  },
+  "NCU09053": {
+   "question": "Which one of the following arrangements represents the correct order of least negative to most negative electron gain enthalpy for C, Ca, Al, F and O?",
+   "source": "NEET EG Unit-09 Q.28"
+  },
+  "NCU09054": {
+   "source": "NEET EG Unit-09 Q.29",
+   "option4": "Atomic radius of the elements decreases as one moves across from left to right in the 2$^{\\text{nd}}$ period of the periodic table."
+  },
+  "NCU09056": {
+   "question": "What is the value of electron gain enthalpy of $\\ce{Na+}$ if $\\mathrm{IE_1}$ of Na = 5.1 eV?",
+   "source": "NEET EG Unit-09 Q.30",
+   "option1": "−5.1 eV",
+   "option2": "−10.2 eV",
+   "correct_option": "−5.1 eV"
+  },
+  "NCU09058": {
+   "question": "The correct order of the decreasing ionic radii among the following isoelectronic species is",
+   "source": "NEET EG Unit-09 Q.33",
+   "option1": "$\\ce{Ca^2+}$ > $\\ce{K+}$ > $\\ce{S^2-}$ > $\\ce{Cl-}$",
+   "option2": "$\\ce{Cl-}$ > $\\ce{S^2-}$ > $\\ce{Ca^2+}$ > $\\ce{K+}$",
+   "option3": "$\\ce{S^2-}$ > $\\ce{Cl-}$ > $\\ce{K+}$ > $\\ce{Ca^2+}$",
+   "option4": "$\\ce{K+}$ > $\\ce{Ca^2+}$ > $\\ce{Cl-}$ > $\\ce{S^2-}$",
+   "correct_option": "$\\ce{S^2-}$ > $\\ce{Cl-}$ > $\\ce{K+}$ > $\\ce{Ca^2+}$"
+  },
+  "NCU09059": {
+   "source": "NEET EG Unit-09 Q.34"
+  },
+  "NCU09060": {
+   "question": "Among the elements Ca, Mg, P and Cl, the order of increasing atomic radii is",
+   "source": "NEET EG Unit-09 Q.31"
+  },
+  "NCU09061": {
+   "question": "Among the following which one has the highest cation to anion size ratio?",
+   "source": "NEET EG Unit-09 Q.32"
+  },
+  "NCU09063": {
+   "source": "NEET EG Unit-09 Q.35",
+   "option1": "$\\mathrm{[Ne]\\,3s^2 3p^2}$",
+   "option2": "$\\mathrm{[Ar]\\,3d^{10} 4s^2 4p^3}$",
+   "option3": "$\\mathrm{[Ne]\\,3s^2 3p^1}$",
+   "option4": "$\\mathrm{[Ne]\\,3s^2 3p^3}$",
+   "correct_option": "$\\mathrm{[Ne]\\,3s^2 3p^3}$"
+  },
+  "NCU09064": {
+   "question": "Identify the correct order of the size of the following:",
+   "source": "NEET EG Unit-09 Q.36",
+   "option1": "$\\ce{Ca^2+}$ < $\\ce{K+}$ < Ar < $\\ce{Cl-}$ < $\\ce{S^2-}$",
+   "option2": "Ar < $\\ce{Ca^2+}$ < $\\ce{K+}$ < $\\ce{Cl-}$ < $\\ce{S^2-}$",
+   "option3": "$\\ce{Ca^2+}$ < Ar < $\\ce{K+}$ < $\\ce{Cl-}$ < $\\ce{S^2-}$",
+   "option4": "$\\ce{Ca^2+}$ < $\\ce{K+}$ < Ar < $\\ce{S^2-}$ < $\\ce{Cl-}$",
+   "correct_option": "$\\ce{Ca^2+}$ < $\\ce{K+}$ < Ar < $\\ce{Cl-}$ < $\\ce{S^2-}$"
+  },
+  "NCU09065": {
+   "source": "NEET EG Unit-09 Q.38",
+   "option1": "$\\ce{NH2-}$",
+   "option2": "$\\ce{F-}$",
+   "option3": "$\\ce{I-}$",
+   "option4": "$\\ce{HS-}$",
+   "correct_option": "$\\ce{NH2-}$"
+  },
+  "NCU09066": {
+   "question": "With which of the following electronic configuration an atom has the lowest ionisation enthalpy?",
+   "source": "NEET EG Unit-09 Q.37",
+   "option1": "$\\mathrm{1s^2 2s^2 2p^3}$",
+   "option2": "$\\mathrm{1s^2 2s^2 2p^6 3s^1}$",
+   "option3": "$\\mathrm{1s^2 2s^2 2p^6}$",
+   "option4": "$\\mathrm{1s^2 2s^2 2p^5}$",
+   "correct_option": "$\\mathrm{1s^2 2s^2 2p^6 3s^1}$"
+  },
+  "NCU09068": {
+   "question": "Ionic radii are",
+   "source": "NEET EG Unit-09 Q.41",
+   "option1": "inversely proportional to effective nuclear charge",
+   "option2": "inversely proportional to square of effective nuclear charge",
+   "option3": "directly proportional to effective nuclear charge",
+   "option4": "directly proportional to square of effective nuclear charge",
+   "correct_option": "inversely proportional to effective nuclear charge"
+  },
+  "NCU09069": {
+   "question": "The ions $\\ce{O^2-}$, $\\ce{F-}$, $\\ce{Na+}$, $\\ce{Mg^2+}$ and $\\ce{Al^3+}$ are isoelectronic. Their ionic radii show",
+   "source": "NEET EG Unit-09 Q.42",
+   "option1": "a significant increase from $\\ce{O^2-}$ to $\\ce{Al^3+}$",
+   "option2": "a significant decrease from $\\ce{O^2-}$ to $\\ce{Al^3+}$",
+   "option3": "an increase from $\\ce{O^2-}$ to $\\ce{F-}$ and then decrease from $\\ce{Na+}$ to $\\ce{Al^3+}$",
+   "option4": "a decrease from $\\ce{O^2-}$ to $\\ce{F-}$ and then increase from $\\ce{Na+}$ to $\\ce{Al^3+}$",
+   "correct_option": "a significant decrease from $\\ce{O^2-}$ to $\\ce{Al^3+}$"
+  },
+  "NCU09070": {
+   "source": "NEET EG Unit-09 Q.43",
+   "option1": "$\\ce{NH3}$ < $\\ce{PH3}$ < $\\ce{AsH3}$ : acidic",
+   "option2": "Li < Be < B < C : first ionisation potential",
+   "option3": "$\\ce{Al2O3}$ < MgO < $\\ce{Na2O}$ < $\\ce{K2O}$ : basic",
+   "option4": "$\\ce{Li+}$ < $\\ce{Na+}$ < $\\ce{K+}$ < $\\ce{Cs+}$ : ionic radius",
+   "correct_option": "Li < Be < B < C : first ionisation potential"
+  },
+  "NCU09071": {
+   "question": "Correct order of first ionization potential among following elements Be, B, C, N, O is",
+   "source": "NEET EG Unit-09 Q.44"
+  },
+  "NCU09072": {
+   "question": "Which of the following elements has maximum electron affinity?",
+   "source": "NEET EG Unit-09 Q.46"
+  },
+  "NCU09073": {
+   "question": "The first ionization potential (in eV) of Be and B, respectively are",
+   "source": "NEET EG Unit-09 Q.48"
+  },
+  "NCU09074": {
+   "source": "NEET EG Unit-09 Q.49",
+   "option1": "$\\ce{I+}$ > $\\ce{I-}$ > I",
+   "option2": "$\\ce{I-}$ > I > $\\ce{I+}$",
+   "option3": "I > $\\ce{I-}$ > $\\ce{I+}$",
+   "option4": "I > $\\ce{I+}$ > $\\ce{I-}$",
+   "correct_option": "$\\ce{I-}$ > I > $\\ce{I+}$"
+  },
+  "NCU09075": {
+   "question": "Which of the following ion is the largest in size?",
+   "source": "NEET EG Unit-09 Q.50",
+   "option1": "$\\ce{K+}$",
+   "option2": "$\\ce{Ca^2+}$",
+   "option3": "$\\ce{Cl-}$",
+   "option4": "$\\ce{S^2-}$",
+   "correct_option": "$\\ce{S^2-}$"
+  },
+  "NCU09076": {
+   "source": "NEET EG Unit-09 Q.51",
+   "option1": "$\\ce{Al^3+}$",
+   "option2": "$\\ce{F-}$",
+   "option3": "$\\ce{Na+}$",
+   "option4": "$\\ce{Mg^2+}$",
+   "correct_option": "$\\ce{Al^3+}$"
+  },
+  "NCU09077": {
+   "question": "Among the following oxides, the one which is most basic is",
+   "source": "NEET EG Unit-09 Q.53",
+   "option3": "$\\ce{Al2O3}$",
+   "option4": "$\\ce{N2O5}$"
+  },
+  "NCU09078": {
+   "question": "In the periodic table from left to right in a period, the atomic volume",
+   "source": "NEET EG Unit-09 Q.57"
+  },
+  "NCU09079": {
+   "question": "Which electronic configuration of an element has abnormally high difference between second and third ionization energy?",
+   "source": "NEET EG Unit-09 Q.58",
+   "option1": "$\\mathrm{1s^2 2s^2 2p^6 3s^1}$",
+   "option2": "$\\mathrm{1s^2 2s^2 2p^6 3s^1 3p^1}$",
+   "option3": "$\\mathrm{1s^2 2s^2 2p^6 3s^2 3p^2}$",
+   "option4": "$\\mathrm{1s^2 2s^2 2p^6 3s^2}$",
+   "correct_option": "$\\mathrm{1s^2 2s^2 2p^6 3s^2}$"
+  },
+  "NCU09080": {
+   "question": "One of the characteristic properties of non-metals is that they",
+   "source": "NEET EG Unit-09 Q.59",
+   "option4": "are electronegative",
+   "correct_option": "are electronegative"
+  },
+  "NCU09081": {
+   "question": "$\\ce{Na+}$, $\\ce{Mg^2+}$, $\\ce{Al^3+}$ and $\\ce{Si^4+}$ are isoelectronic. The order of their ionic size is",
+   "source": "NEET EG Unit-09 Q.55",
+   "option1": "$\\ce{Na+}$ > $\\ce{Mg^2+}$ < $\\ce{Al^3+}$ < $\\ce{Si^4+}$",
+   "option2": "$\\ce{Na+}$ < $\\ce{Mg^2+}$ > $\\ce{Al^3+}$ > $\\ce{Si^4+}$",
+   "option3": "$\\ce{Na+}$ > $\\ce{Mg^2+}$ > $\\ce{Al^3+}$ > $\\ce{Si^4+}$",
+   "option4": "$\\ce{Na+}$ < $\\ce{Mg^2+}$ > $\\ce{Al^3+}$ < $\\ce{Si^4+}$",
+   "correct_option": "$\\ce{Na+}$ > $\\ce{Mg^2+}$ > $\\ce{Al^3+}$ > $\\ce{Si^4+}$"
+  },
+  "NCU09082": {
+   "source": "NEET EG Unit-09 Q.60",
+   "option3": "$\\ce{MgCl2}$",
+   "option4": "$\\ce{CaF2}$",
+   "correct_option": "$\\ce{MgCl2}$"
+  },
+  "NCU09083": {
+   "source": "NEET EG Unit-09 Q.63"
+  },
+  "NCU09084": {
+   "question": "In the periodic table, with the increase in atomic number, the metallic character of an element",
+   "source": "NEET EG Unit-09 Q.65",
+   "option1": "decreases in a period and increases in a group",
+   "option2": "increases in a period and decreases in a group",
+   "option3": "increases both in a period and the group",
+   "option4": "decreases in a period and the group",
+   "correct_option": "decreases in a period and increases in a group"
+  },
+  "NCU09085": {
+   "source": "NEET EG Unit-09 Q.66"
+  },
+  "NCU09086": {
+   "question": "Pauling's electronegativity values for elements are useful in predicting",
+   "source": "NEET EG Unit-09 Q.64",
+   "option4": "dipole moments"
+  },
+  "NCU09087": {
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): The first ionization enthalpy of O is lower than that of N and F.\nReason (R): The loss of an electron from O leads to stable half-filled $p$ orbital.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "source": "NEET EG Unit-09 Q.2",
+   "option1": "(A) is not correct but (R) is correct",
+   "option2": "Both (A) and (R) are correct and (R) is the correct explanation of (A)",
+   "option3": "Both (A) and (R) are correct and (R) is NOT the correct explanation of (A)",
+   "option4": "(A) is correct but (R) is not correct",
+   "correct_option": "Both (A) and (R) are correct and (R) is the correct explanation of (A)",
+   "question_type": "Assertion Reason"
+  },
+  "NCU09089": {
+   "source": "NEET EG Unit-09 Q.1"
+  },
+  "NCU09090": {
+   "question": "Identify the incorrect statement from the following:",
+   "source": "NEET EG Unit-09 Q.4",
+   "option1": "The largest and the smallest species among Mg, $\\ce{Mg^2+}$, Al and $\\ce{Al^3+}$ are Al and $\\ce{Mg^2+}$ respectively.",
+   "option4": "The oxidation state and covalency of Al in $\\ce{[AlCl(H2O)5]^2+}$ are 3 and 6, respectively.",
+   "correct_option": "The largest and the smallest species among Mg, $\\ce{Mg^2+}$, Al and $\\ce{Al^3+}$ are Al and $\\ce{Mg^2+}$ respectively."
+  },
+  "NCU09091": {
+   "question": "The correct order of increasing metallic character of Na, Be, P, Mg and Si is",
+   "source": "NEET EG Unit-09 Q.3"
+  },
+  "NCU09092": {
+   "question": "Which among the following electronic configurations belong to main group elements?\nA. $\\mathrm{[Ne]\\,3s^1}$\nB. $\\mathrm{[Ar]\\,3d^3 4s^2}$\nC. $\\mathrm{[Kr]\\,4d^{10} 5s^2 5p^5}$\nD. $\\mathrm{[Ar]\\,3d^{10} 4s^1}$\nE. $\\mathrm{[Rn]\\,5f^0 6d^2 7s^2}$\nChoose the correct answer from the options given below:",
+   "source": "NEET EG Unit-09 Q.6"
+  }
+ },
+ "old": {
+  "NCU09033": {
+   "question": "The IUPAC name of an element with atomic number 119 is:",
+   "source": "NEET 2022 Q1",
+   "option1": "Ununennium",
+   "option2": "Unnilennium",
+   "option3": "Unununnium",
+   "option4": "Ununoctium",
+   "correct_option": "Ununennium"
+  },
+  "NCU09034": {
+   "question": "Match the name (Column I) with its IUPAC official name (Column II) and identify the incorrect match.",
+   "source": "NEET Sept 2020 Q2",
+   "option1": "(b) - (ii)",
+   "option2": "(c) - (iii)",
+   "option3": "(d) - (iv)",
+   "option4": "(a) - (i)",
+   "correct_option": "(d) - (iv)",
+   "mtc_label_a": "lower",
+   "col_a4": "Ununnunium"
+  },
+  "NCU09035": {
+   "source": "NEET 2017/AIPMT 1989 Q3",
+   "option1": "Halogen family, [Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵",
+   "option2": "Carbon family, [Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²",
+   "option3": "Oxygen family, [Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴",
+   "option4": "Nitrogen family, [Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³",
+   "correct_option": "Carbon family, [Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²"
+  },
+  "NCU09038": {
+   "question": "The electronic configuration of an element is 1s² 2s² 2p⁶ 3s² 3p³. What is the atomic number of the element, which is just below the above element in the periodic table?",
+   "source": "AIPMT 1995 Q6"
+  },
+  "NCU09039": {
+   "question": "If the atomic number of an element is 33, it will be placed in the periodic table in the:",
+   "source": "AIPMT 1993 Q7",
+   "option3": "fifteenth group",
+   "option4": "seventh group.",
+   "correct_option": "fifteenth group"
+  },
+  "NCU09040": {
+   "question": "The electronic configuration of four elements are given below. Which elements does not belong to the same family as other?",
+   "source": "AIPMT 1989 Q8",
+   "option1": "[Xe] 4f¹⁴ 5d¹⁰ 6s²",
+   "option2": "[Kr] 4d¹⁰ 5s²",
+   "option3": "[Ne] 3s² 3p⁵",
+   "option4": "[Ar] 3d¹⁰ 4s²",
+   "correct_option": "[Ne] 3s² 3p⁵"
+  },
+  "NCU09041": {
+   "source": "Re-NEET 2024 Q9",
+   "option1": "(a)-(i), (b)-(ii), (c)-(iv), (d)-(iii)",
+   "option2": "(a)-(i), (b)-(iv), (c)-(iii), (d)-(ii)",
+   "option3": "(a)-(i), (b)-(iv), (c)-(ii), (d)-(iii)",
+   "option4": "(a)-(iv), (b)-(i), (c)-(ii), (d)-(iii)",
+   "correct_option": "(a)-(i), (b)-(iv), (c)-(ii), (d)-(iii)",
+   "mtc_label_a": "lower",
+   "mtc_label_b": "roman_lower"
+  },
+  "NCU09042": {
+   "question": "Match the element in Column I with that of Column II.\nIdentify the correct match.",
+   "source": "NEET Oct 2020 Q10"
+  },
+  "NCU09043": {
+   "source": "AIPMT 1993 Q11",
+   "option1": "Ga, Ni, Tl"
+  },
+  "NCU09044": {
+   "question": "The correct decreasing order of atomic radii (pm) of Li, Be, B and C is:",
+   "source": "Re-NEET 2024 Q12"
+  },
+  "NCU09046": {
+   "question": "Match the following oxides (Column I) with their nature (Column II).\nWhich of the following is correct option?",
+   "source": "NEET 2020 Q14",
+   "option1": "(a)-(ii), (b)-(i), (c)-(iv), (d)-(iii)",
+   "option2": "(a)-(iii), (b)-(iv), (c)-(i), (d)-(ii)",
+   "option3": "(a)-(iv), (b)-(iii), (c)-(ii), (d)-(i)",
+   "option4": "(a)-(i), (b)-(ii), (c)-(iii), (d)-(iv)",
+   "correct_option": "(a)-(ii), (b)-(i), (c)-(iv), (d)-(iii)",
+   "mtc_label_a": "lower",
+   "col_a3": "Al₂O₃",
+   "col_a4": "Cl₂O₇"
+  },
+  "NCU09047": {
+   "question": "For the second period elements, the correct increasing order of first ionisation enthalpy is:",
+   "source": "NEET National 2019 Q15"
+  },
+  "NCU09048": {
+   "source": "NEET 2018 Q16"
+  },
+  "NCU09049": {
+   "option4": "Al³⁺ < Mg²⁺ < Na⁺ < F⁻ (increasing ionic size)",
+   "source": "NEET 2016 Q17"
+  },
+  "NCU09050": {
+   "question": "The species Ar, K⁺ and Ca²⁺ contain the same number of electrons. In which order do their radii increase?",
+   "source": "AIPMT Cancelled 2015 Q18",
+   "option1": "Ar < K⁺ < Ca²⁺",
+   "option2": "Ca²⁺ < Ar < K⁺",
+   "option3": "Ca²⁺ < K⁺ < Ar",
+   "option4": "K⁺ < Ar < Ca²⁺",
+   "correct_option": "Ca²⁺ < K⁺ < Ar"
+  },
+  "NCU09052": {
+   "source": "AIPMT 2014 Q20",
+   "option1": "H⁻ > H > H⁺",
+   "option2": "Na⁺ > F⁻ > O²⁻",
+   "option3": "F⁻ > O²⁻ > Na⁺",
+   "option4": "Al³⁺ > Mg²⁺ > N³⁻",
+   "correct_option": "H⁻ > H > H⁺"
+  },
+  "NCU09053": {
+   "question": "Which one of the following arrangements represents the correct order of least negative to most negative electron gain enthalpy for Ca, Al, C, O and F?",
+   "source": "NEET Karnataka 2013 Q21"
+  },
+  "NCU09054": {
+   "source": "AIPMT Screening 2012 Q22",
+   "option4": "Atomic radius of the elements decreases as one moves across from left to right in the 2nd period of the periodic table."
+  },
+  "NCU09056": {
+   "question": "What is the value of electron gain enthalpy of Na⁺ if IE₁ of Na = 5.1 eV?",
+   "source": "AIPMT Mains 2011 Q24",
+   "option1": "-5.1 eV",
+   "option2": "-10.2 eV",
+   "correct_option": "-5.1 eV"
+  },
+  "NCU09058": {
+   "question": "The correct order of the decreasing ionic radii among the following isoelectronic species is:",
+   "source": "AIPMT Screening 2010 Q26",
+   "option1": "Ca²⁺ > K⁺ > S²⁻ > Cl⁻",
+   "option2": "Cl⁻ > S²⁻ > Ca²⁺ > K⁺",
+   "option3": "S²⁻ > Cl⁻ > K⁺ > Ca²⁺",
+   "option4": "K⁺ > Ca²⁺ > Cl⁻ > S²⁻",
+   "correct_option": "S²⁻ > Cl⁻ > K⁺ > Ca²⁺"
+  },
+  "NCU09059": {
+   "source": "AIPMT Screening 2010/2005 Q27"
+  },
+  "NCU09060": {
+   "question": "Among the elements Ca, Mg, P and Cl, the order of increasing atomic radii is:",
+   "source": "AIPMT Mains 2010 Q28"
+  },
+  "NCU09061": {
+   "question": "Among the following which one has highest cation to anion size ratio?",
+   "source": "AIPMT Mains 2010 Q29"
+  },
+  "NCU09063": {
+   "source": "AIPMT 2009 Q31",
+   "option1": "[Ne] 3s² 3p²",
+   "option2": "[Ar] 3d¹⁰ 4s² 4p³",
+   "option3": "[Ne] 3s² 3p¹",
+   "option4": "[Ne] 3s² 3p³",
+   "correct_option": "[Ne] 3s² 3p³"
+  },
+  "NCU09064": {
+   "question": "Identify the correct order of the size of the following.",
+   "source": "AIPMT 2007 Q32",
+   "option1": "Ca²⁺ < K⁺ < Ar < Cl⁻ < S²⁻",
+   "option2": "Ar < Ca²⁺ < K⁺ < Cl⁻ < S²⁻",
+   "option3": "Ca²⁺ < Ar < K⁺ < Cl⁻ < S²⁻",
+   "option4": "Ca²⁺ < K⁺ < Ar < S²⁻ < Cl⁻",
+   "correct_option": "Ca²⁺ < K⁺ < Ar < Cl⁻ < S²⁻"
+  },
+  "NCU09065": {
+   "source": "AIPMT 2007 Q33",
+   "option1": "NH₂⁻",
+   "option2": "F⁻",
+   "option3": "I⁻",
+   "option4": "HS⁻",
+   "correct_option": "NH₂⁻"
+  },
+  "NCU09066": {
+   "question": "Which of the following electronic configuration of an atom has the lowest ionisation enthalpy?",
+   "source": "AIPMT 2007 Q34",
+   "option1": "1s² 2s² 2p³",
+   "option2": "1s² 2s² 2p⁶ 3s¹",
+   "option3": "1s² 2s² 2p⁶",
+   "option4": "1s² 2s² 2p⁵",
+   "correct_option": "1s² 2s² 2p⁶ 3s¹"
+  },
+  "NCU09068": {
+   "question": "Ionic radii are:",
+   "source": "AIPMT 2004 Q36",
+   "option1": "inversely proportional to effective nuclear charge.",
+   "option2": "inversely proportional to square of effective nuclear charge.",
+   "option3": "directly proportional to effective nuclear charge.",
+   "option4": "directly proportional to square of effective nuclear charge.",
+   "correct_option": "inversely proportional to effective nuclear charge."
+  },
+  "NCU09069": {
+   "question": "The ions O²⁻, F⁻, Na⁺, Mg²⁺ and Al³⁺ are isoelectronic. Their ionic radii show:",
+   "source": "AIPMT 2003 Q37",
+   "option1": "a significant increase from O²⁻ to Al³⁺",
+   "option2": "a significant decrease from O²⁻ to Al³⁺",
+   "option3": "an increase from O²⁻ to F⁻ and then decrease from Na⁺ to Al³⁺",
+   "option4": "a decrease from O²⁻ to F⁻ and then increase from Na⁺ to Al³⁺",
+   "correct_option": "a significant decrease from O²⁻ to Al³⁺"
+  },
+  "NCU09070": {
+   "source": "AIPMT 2002 Q38",
+   "option1": "NH₃ < PH₃ < AsH₃ - Acidic",
+   "option2": "Li < Be < B < C - First ionisation potential",
+   "option3": "Al₂O₃ < MgO < Na₂O < K₂O - Basic",
+   "option4": "Li⁺ < Na⁺ < K⁺ < Cs⁺ - Ionic radius",
+   "correct_option": "Li < Be < B < C - First ionisation potential"
+  },
+  "NCU09071": {
+   "question": "Correct order of 1st ionisation potential among the following elements of Be, B, C, N, O is:",
+   "source": "AIPMT 2001 Q39"
+  },
+  "NCU09072": {
+   "question": "Which of the following elements has the maximum electron affinity?",
+   "source": "AIPMT 1999 Q40"
+  },
+  "NCU09073": {
+   "question": "The first ionisation potentials (eV) of Be and B respectively are:",
+   "source": "AIPMT 1998 Q41"
+  },
+  "NCU09074": {
+   "source": "AIPMT 1997 Q42",
+   "option1": "I⁺ > I⁻ > I",
+   "option2": "I⁻ > I > I⁺",
+   "option3": "I > I⁻ > I⁺",
+   "option4": "I > I⁺ > I⁻",
+   "correct_option": "I⁻ > I > I⁺"
+  },
+  "NCU09075": {
+   "question": "Which of the following ions is the largest in size?",
+   "source": "AIPMT 1996 Q43",
+   "option1": "K⁺",
+   "option2": "Ca²⁺",
+   "option3": "Cl⁻",
+   "option4": "S²⁻",
+   "correct_option": "S²⁻"
+  },
+  "NCU09076": {
+   "source": "AIPMT 1996 Q44",
+   "option1": "Al³⁺",
+   "option2": "F⁻",
+   "option3": "Na⁺",
+   "option4": "Mg²⁺",
+   "correct_option": "Al³⁺"
+  },
+  "NCU09077": {
+   "question": "Among the following oxides, the one which is most basic is:",
+   "source": "AIPMT 1994 Q45",
+   "option3": "Al₂O₃",
+   "option4": "N₂O₅"
+  },
+  "NCU09078": {
+   "question": "In the periodic table from left to right in a period, the atomic volume:",
+   "source": "AIPMT 1993 Q46"
+  },
+  "NCU09079": {
+   "question": "Which electronic configuration of an element has abnormally high difference between second and third ionisation energy?",
+   "source": "AIPMT 1993 Q47",
+   "option1": "1s², 2s², 2p⁶, 3s¹",
+   "option2": "1s², 2s², 2p⁶, 3s¹, 3p¹",
+   "option3": "1s², 2s², 2p⁶, 3s², 3p¹",
+   "option4": "1s², 2s², 2p⁶, 3s²",
+   "correct_option": "1s², 2s², 2p⁶, 3s²"
+  },
+  "NCU09080": {
+   "question": "One of the characteristic properties of non-metals is that they:",
+   "source": "AIPMT 1993 Q48",
+   "option4": "are electronegative.",
+   "correct_option": "are electronegative."
+  },
+  "NCU09081": {
+   "question": "Na⁺, Mg²⁺, Al³⁺ and Si⁴⁺ are isoelectronic. The order of their ionic size is:",
+   "source": "AIPMT 1993 Q49",
+   "option1": "Na⁺ > Mg²⁺ < Al³⁺ < Si⁴⁺",
+   "option2": "Na⁺ < Mg²⁺ > Al³⁺ > Si⁴⁺",
+   "option3": "Na⁺ > Mg²⁺ > Al³⁺ > Si⁴⁺",
+   "option4": "Na⁺ > Mg²⁺ > Al³⁺ < Si⁴⁺",
+   "correct_option": "Na⁺ > Mg²⁺ > Al³⁺ > Si⁴⁺"
+  },
+  "NCU09082": {
+   "source": "AIPMT 1993 Q50",
+   "option3": "MgCl₂",
+   "option4": "CaF₂",
+   "correct_option": "MgCl₂"
+  },
+  "NCU09083": {
+   "source": "AIPMT 1992 Q51"
+  },
+  "NCU09084": {
+   "question": "In the periodic table, with the increase in atomic number, the metallic character of an element:",
+   "source": "AIPMT 1989 Q52",
+   "option1": "decreases in a period and increases in a group.",
+   "option2": "increases in a period and decreases in a group.",
+   "option3": "increases both in a period and the group.",
+   "option4": "decreases in a period and the group.",
+   "correct_option": "decreases in a period and increases in a group."
+  },
+  "NCU09085": {
+   "source": "AIPMT 1989 Q53"
+  },
+  "NCU09086": {
+   "question": "Pauling's electronegativity values for elements are useful in predicting:",
+   "source": "AIPMT 1989 Q54",
+   "option4": "dipole moments."
+  },
+  "NCU09087": {
+   "question": "Given below are two statements : One is labelled as Assertion A and the other is labelled as Reason R.\r\nAssertion A : The first ionization enthalpy of O is lower than that of N and F.\r\nReason R : The loss of an electron from O leads to stable half-filled p orbital.\r\nIn light of the above statements, choose the most appropriate answer from the options given below:",
+   "source": "NEET 2026 Re-NEET Q1",
+   "option1": "A is not correct but R is correct.",
+   "option2": "Both A and R are correct and R is the correct explanation of A.",
+   "option3": "Both A and R are correct and R is NOT the correct explanation of A.",
+   "option4": "A is correct but R is not correct.",
+   "correct_option": "Both A and R are correct and R is the correct explanation of A.",
+   "question_type": "Single Choice MCQ"
+  },
+  "NCU09089": {
+   "source": "NEET 2026 Re-NEET Q3"
+  },
+  "NCU09090": {
+   "question": "Identify the incorrect statement from the following :",
+   "source": "NEET 2026 Cancelled Q4",
+   "option1": "The largest and the smallest species among Mg, Mg²⁺, Al and Al³⁺ are Al and Mg²⁺, respectively.",
+   "option4": "The oxidation state and covalency of Al in [AlCl(H₂O)₅]²⁺ are 3 and 6 respectively.",
+   "correct_option": "The largest and the smallest species among Mg, Mg²⁺, Al and Al³⁺ are Al and Mg²⁺, respectively."
+  },
+  "NCU09091": {
+   "question": "The correct order of increasing metallic character of Na, Be, P, Mg and Si is :",
+   "source": "NEET 2026 Cancelled Q5"
+  },
+  "NCU09092": {
+   "question": "Which among the following electronic configurations belong to main group elements?\r\nA. [Ne] 3s¹\r\nB. [Ar] 3d³ 4s²\r\nC. [Kr] 4d¹⁰ 5s² 5p⁵\r\nD. [Ar] 3d¹⁰ 4s¹\r\nE. [Rn] 5f⁰ 6d² 7s²\r\nChoose the correct answer from the option given below:",
+   "source": "NEET 2025 Q6"
+  }
+ },
+ "img": {},
+ "expect": {
+  "NCU09": "NCU09402"
+ }
+}
