@@ -1,0 +1,406 @@
+{
+ "before": [
+  {
+   "qid": "NCU09204",
+   "option4": "decreasing electronegativity",
+   "correct_option": "decreasing electronegativity",
+   "content_locked": false
+  }
+ ],
+ "updErr": null,
+ "after": [
+  {
+   "qid": "NCU09204",
+   "option4": "decreasing electronegativity.",
+   "correct_option": "decreasing electronegativity."
+  }
+ ],
+ "pending": [
+  {
+   "id": "220decb6-ac5b-4d21-a26d-956ad36eb5c6",
+   "question_id": "06e0b7ec-84ff-41bb-ae86-227536a4b0f6",
+   "qid": "NCU09204",
+   "old_correct_option": "decreasing lone pair-bond pair repulsion",
+   "new_correct_option": "decreasing electronegativity",
+   "changed_at": "2026-11-26T12:12:18.790048+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "692ea525-d024-41fb-b665-622e1f4027b8",
+   "question_id": "848e0902-4192-4a73-b1c4-2f2ae1dd3351",
+   "qid": "NCU09340",
+   "old_correct_option": "r(Mg) < r(Al)",
+   "new_correct_option": "$r_{\\mathrm{Mg}} < r_{\\mathrm{Al}}$",
+   "changed_at": "2026-11-26T12:12:04.51995+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "4f461959-1b58-4b61-973b-05d38e012ec5",
+   "question_id": "ab22bcf7-a09a-417e-9a18-44b3628ae8b7",
+   "qid": "NCU09337",
+   "old_correct_option": "B and C only",
+   "new_correct_option": "B and C Only",
+   "changed_at": "2026-11-26T12:12:04.007373+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "bad74ac8-a6d1-4295-835d-b611e030f9a2",
+   "question_id": "58ee2b0e-08ca-4389-87a5-0254fa62ef9a",
+   "qid": "NCU09321",
+   "old_correct_option": "1012 kJ mol⁻¹",
+   "new_correct_option": "1012 kJ mol$^{-1}$",
+   "changed_at": "2026-11-26T12:11:58.486298+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "17f46c7b-3841-479d-9b2c-eb8ec0219bda",
+   "question_id": "72623e08-dc80-4eb0-b8c0-0824c5a402ac",
+   "qid": "NCU09320",
+   "old_correct_option": "A₂O₃",
+   "new_correct_option": "$\\ce{A2O3}$",
+   "changed_at": "2026-11-26T12:11:58.029379+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "7a359776-3207-4f0f-a519-2146e79689cc",
+   "question_id": "b6da614d-f6c6-4421-9cbe-4df9dff61227",
+   "qid": "NCU09210",
+   "old_correct_option": "O²⁻",
+   "new_correct_option": "$\\ce{O^2-}$",
+   "changed_at": "2026-11-26T12:11:56.245062+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "97b9506f-4007-42eb-8ff2-19279b83d2db",
+   "question_id": "6e9f6a23-9c94-478b-b86e-395e8d8ceaf3",
+   "qid": "NCU09208",
+   "old_correct_option": "O⁻ ion will tend to resist the addition of another electron",
+   "new_correct_option": "$\\ce{O-}$ ion will tend to resist the addition of another electron",
+   "changed_at": "2026-11-26T12:11:55.797657+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "3c450aaa-b523-4f2b-8593-99cd4e8b36bb",
+   "question_id": "0cad8db9-771c-4366-a7ee-07c7f4db9701",
+   "qid": "NCU09207",
+   "old_correct_option": "B < C < N < O - increasing first ionisation enthalpy",
+   "new_correct_option": "B < C < N < O: Increasing first ionization enthalpy",
+   "changed_at": "2026-11-26T12:11:55.324848+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "cb636f2e-93c8-40de-aa86-c666f7558be7",
+   "question_id": "016ac368-7082-45a0-889d-3ceb2adc819a",
+   "qid": "NCU09202",
+   "old_correct_option": "O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺",
+   "new_correct_option": "$\\ce{O^2-} > \\ce{F-} > \\ce{Na+} > \\ce{Mg^2+} > \\ce{Al^3+}$",
+   "changed_at": "2026-11-26T12:11:53.978206+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "4d14f273-580d-4254-a5ee-9191345f7bf2",
+   "question_id": "fc4ff164-2de6-4611-ac59-d2d8edfacc5e",
+   "qid": "NCU09201",
+   "old_correct_option": "Al₂O₃ < MgO < Na₂O < K₂O",
+   "new_correct_option": "$\\ce{Al2O3}$ < MgO < $\\ce{Na2O}$ < $\\ce{K2O}$",
+   "changed_at": "2026-11-26T12:11:53.521655+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "9e152fc7-80c2-40b8-8d01-3cf166d73d43",
+   "question_id": "fa78c6af-9a69-4d4e-bb44-8c320274e2e3",
+   "qid": "NCU09200",
+   "old_correct_option": "Ca²⁺, K⁺, Cl⁻, S²⁻",
+   "new_correct_option": "$\\ce{Ca^2+}$, $\\ce{K+}$, $\\ce{Cl-}$, $\\ce{S^2-}$",
+   "changed_at": "2026-11-26T12:11:53.076879+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "02ac4c74-b5d0-458e-a8c6-61ed03f970fe",
+   "question_id": "a9f07784-b7a3-41b6-b9f1-c19011bbef88",
+   "qid": "NCU09198",
+   "old_correct_option": "- 5.1 eV",
+   "new_correct_option": "−5.1 eV",
+   "changed_at": "2026-11-26T12:11:52.159029+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "cf09d9f0-180f-4090-9ef6-38c8083c3be3",
+   "question_id": "df39b69e-63cc-4dff-8842-b77ae89b05d0",
+   "qid": "NCU09195",
+   "old_correct_option": "Elements of group 16 have lower ionization enthalpy values compared to those of group 15 in the corresponding periods.",
+   "new_correct_option": "Elements of Group 16 have lower ionization enthalpy values compared to those of Group 15 in the corresponding periods.",
+   "changed_at": "2026-11-26T12:11:50.825186+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "d0e29e2d-5cb9-4a5d-8387-c05acf6c38c3",
+   "question_id": "6a99e56d-42a1-4aea-9733-1fec67a58fcd",
+   "qid": "NCU09192",
+   "old_correct_option": "Mg²⁺ < Na⁺ < F⁻ < O²⁻",
+   "new_correct_option": "$\\ce{Mg^2+} < \\ce{Na+} < \\ce{F-} < \\ce{O^2-}$",
+   "changed_at": "2026-11-26T12:11:49.511216+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "e85ddb46-dd42-4d97-92cc-b4ed0982b2b8",
+   "question_id": "2451e4bb-e060-42fa-a034-e746ef74e0cd",
+   "qid": "NCU09181",
+   "old_correct_option": "I, II and III",
+   "new_correct_option": "(I), (II) and (III)",
+   "changed_at": "2026-11-26T12:11:45.448752+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "b631b71a-a453-4fb7-a7f4-1e28a9b81cf0",
+   "question_id": "63349e81-f5fd-4c91-91bf-d74ccd7b09ca",
+   "qid": "NCU09176",
+   "old_correct_option": "Al³⁺ < Mg²⁺ < Na⁺ < F⁻ < O²⁻ < N³⁻",
+   "new_correct_option": "$\\ce{Al^3+} < \\ce{Mg^2+} < \\ce{Na+} < \\ce{F-} < \\ce{O^2-} < \\ce{N^3-}$",
+   "changed_at": "2026-11-26T12:11:43.627547+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "b12a8d69-4845-49a8-b522-74efbe346688",
+   "question_id": "b8e1a3ea-e4c4-4a4c-b83e-16a8219b064c",
+   "qid": "NCU09175",
+   "old_correct_option": "H(g) + e⁻ ⟶ H⁻(g)",
+   "new_correct_option": "$\\ce{H(g) + e- -> H-(g)}$",
+   "changed_at": "2026-11-26T12:11:43.088101+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "21bf5d31-5c99-41f0-9162-f1efc3a41fee",
+   "question_id": "ae0e87e4-f229-4310-b924-71ebf4afce68",
+   "qid": "NCU09174",
+   "old_correct_option": "O²⁻ > F⁻ > Na⁺ > Mg²⁺",
+   "new_correct_option": "$\\ce{O^2-} > \\ce{F-} > \\ce{Na+} > \\ce{Mg^2+}$",
+   "changed_at": "2026-11-26T12:11:42.637523+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "7c3c2fc7-8a95-4bb3-a9f3-51c75ebee3bf",
+   "question_id": "6fb5f9e5-4f46-4500-b9d9-9fb1a1148027",
+   "qid": "NCU09170",
+   "old_correct_option": "B₂O₃, SiO₂",
+   "new_correct_option": "$\\ce{B2O3}$, $\\ce{SiO2}$",
+   "changed_at": "2026-11-26T12:11:40.861771+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "c400589c-7329-46a3-b13b-d1c0c6e6d6b1",
+   "question_id": "ac3b5c8b-81c9-4f5b-89e0-b7771dc1ac0a",
+   "qid": "NCU09166",
+   "old_correct_option": "argon, chlorine and sodium.",
+   "new_correct_option": "argon, chlorine and sodium",
+   "changed_at": "2026-11-26T12:11:38.989283+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "089edf79-c414-4023-9511-200e40f4808b",
+   "question_id": "a097ad59-85eb-4442-b5d0-715d1e9b9801",
+   "qid": "NCU09160",
+   "old_correct_option": "Al³⁺ < Mg²⁺ < Na⁺ < K⁺",
+   "new_correct_option": "$\\ce{Al^3+} < \\ce{Mg^2+} < \\ce{Na+} < \\ce{K+}$",
+   "changed_at": "2026-11-26T12:11:36.205806+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "44792203-ab32-427d-87de-8848a8d336e3",
+   "question_id": "ec44a84a-d264-4e37-8fde-d7f98887ead4",
+   "qid": "NCU09158",
+   "old_correct_option": "Assertion is true but reason is false.",
+   "new_correct_option": "(A) is true but (R) is false",
+   "changed_at": "2026-11-26T12:11:35.734132+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "4cc78a5a-24f8-491e-a9c2-6b37c4ef2dd0",
+   "question_id": "a0860b64-7420-4da7-8deb-fe8cc32ac909",
+   "qid": "NCU09140",
+   "old_correct_option": "Ca²⁺ < K⁺ < Cl⁻ < S²⁻",
+   "new_correct_option": "$\\ce{Ca^2+} < \\ce{K+} < \\ce{Cl-} < \\ce{S^2-}$",
+   "changed_at": "2026-11-26T12:11:28.562014+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "5d31000b-f3e1-48e4-815c-8e9c17f307eb",
+   "question_id": "917a48b9-120b-4bd5-8232-1650d015c80c",
+   "qid": "NCU09136",
+   "old_correct_option": "A, C and D only",
+   "new_correct_option": "A, C and D Only",
+   "changed_at": "2026-11-26T12:11:27.639458+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "7fe3b148-e10b-4149-a249-468547e6d148",
+   "question_id": "cbbf641a-46e3-48be-bd41-cb18ea3e1006",
+   "qid": "NCU09131",
+   "old_correct_option": "(A) > (D) > (B) > (C)",
+   "new_correct_option": "A > D > B > C",
+   "changed_at": "2026-11-26T12:11:25.761891+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "feb2b396-1a63-4afa-912c-152922c65a7a",
+   "question_id": "70945980-f2af-4d25-bb1b-590a6c50af13",
+   "qid": "NCU09130",
+   "old_correct_option": "Both (A) and (R) are true but (R) is not the correct explanation of (A).",
+   "new_correct_option": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "changed_at": "2026-11-26T12:11:25.345656+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "56d51516-28e4-43e5-9ae3-76e2752243a1",
+   "question_id": "10279b09-8d20-4963-be97-3154007cd604",
+   "qid": "NCU09129",
+   "old_correct_option": "Statement I is false but Statement II is true.",
+   "new_correct_option": "Statement I is false but Statement II is true",
+   "changed_at": "2026-11-26T12:11:24.496754+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "b4fe13f9-662c-40d1-a6a1-67d0ac1c134d",
+   "question_id": "7e5ab817-54a1-4fed-8ee9-d78158e865ac",
+   "qid": "NCU09127",
+   "old_correct_option": "A is false but R is true.",
+   "new_correct_option": "(A) is false but (R) is true",
+   "changed_at": "2026-11-26T12:11:23.240773+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "38472d0e-0367-4271-bf2e-2f00b4e5382e",
+   "question_id": "90d8d41c-e721-47f9-ab3d-e0d2f4d17b41",
+   "qid": "NCU09123",
+   "old_correct_option": "D and E only",
+   "new_correct_option": "A, B and C only",
+   "changed_at": "2026-11-26T12:11:21.56511+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "527bb7bf-6439-459b-8b82-855562abfaff",
+   "question_id": "7c9978ec-670d-4018-ac5d-d525cade75a7",
+   "qid": "NCU09122",
+   "old_correct_option": "Statement-I is correct but Statement-II is false.",
+   "new_correct_option": "Statement I is correct but Statement II is false",
+   "changed_at": "2026-11-26T12:11:20.742804+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "11f3da47-6775-4617-9421-3e089e7529ea",
+   "question_id": "b8e1b086-e1c6-4b06-9434-6ba93b5184d2",
+   "qid": "NCU09112",
+   "old_correct_option": "alkaline earth metal",
+   "new_correct_option": "Alkaline earth metal",
+   "changed_at": "2026-11-26T12:11:14.659597+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "ed40bb7a-a165-42f7-9e65-7cde8720be4c",
+   "question_id": "965798f1-8ba2-4fcc-be87-5c05a8e76a86",
+   "qid": "NCU09110",
+   "old_correct_option": "uue.",
+   "new_correct_option": "Uue",
+   "changed_at": "2026-11-26T12:11:13.379943+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "7b24c33d-8918-4f4e-bcd1-3616a44c82ca",
+   "question_id": "039fdd52-6c70-4911-8143-ae289b2d8371",
+   "qid": "NCU09105",
+   "old_correct_option": "X is a metalloid, Y is a non-metal and Z is a metal",
+   "new_correct_option": "X is a metalloid, Y is a non-metal and Z is a metal.",
+   "changed_at": "2026-11-26T12:11:12.131435+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "9c97a0d4-135d-49ac-9093-1cac0c0a69bc",
+   "question_id": "481e851b-cf97-4ad9-8d3d-2aa8732a4c8a",
+   "qid": "NCU09104",
+   "old_correct_option": "At the time, he proposed Periodic Table of elements, structure of atom was known.",
+   "new_correct_option": "At the time, he proposed Periodic Table of elements structure of atom was known.",
+   "changed_at": "2026-11-26T12:11:11.667803+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  },
+  {
+   "id": "cce3dd25-c3ec-4ff9-87eb-75f4163cc83d",
+   "question_id": "e8b7d01b-3cf4-4d24-8785-d3ef819eb6dc",
+   "qid": "NCU09095",
+   "old_correct_option": "Statement I is false but Statement II is true.",
+   "new_correct_option": "Statement I is false but Statement II is true",
+   "changed_at": "2026-11-26T12:11:08.921995+00:00",
+   "status": "pending",
+   "applied_at": null,
+   "note": null
+  }
+ ],
+ "chErr": null
+}
