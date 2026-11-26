@@ -1,0 +1,13 @@
+{
+ "abort": true,
+ "preErr": null,
+ "pre": {
+  "NCU09": "NCU09362"
+ },
+ "bad0": [
+  [
+   "NCU09",
+   "NCU09361"
+  ]
+ ]
+}
