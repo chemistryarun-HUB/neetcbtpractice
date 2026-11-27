@@ -70,7 +70,7 @@ function PaperForm({ onSaved, onCancel }) {
     try {
       const { questions, short } = await drawQuestions(sources.map(srcOf), form.medium)
       short.forEach(s => toast.error(`${sourceLabel(s.src)}: only ${s.got} of ${s.wanted} questions in the bank`, { duration: 6000 }))
-      setPicked(bySubject(questions))
+      setPicked(bySubject(questions, sources.map(srcOf)))
     } catch (err) { toast.error(err.message) } finally { setBusy(false) }
   }
 
@@ -257,9 +257,9 @@ export default function OnlinePapersAdmin() {
     setPdfBusy(`${p.id}${withKey}`)
     try {
       const { downloadPracticePaperPdf } = await import('../../lib/gsebPaperPdf')
-      const questions = p.mode === 'same'
+      const questions = bySubject(p.mode === 'same'
         ? await fetchQuestionsByIds(p.question_ids)
-        : bySubject((await drawQuestions(p.sources, p.medium)).questions)
+        : (await drawQuestions(p.sources, p.medium)).questions, p.sources)
       await downloadPracticePaperPdf({
         title: p.title, minutes: p.duration_min, questions, withKey,
         sub: p.mode === 'random' ? 'Sample set (each student gets different questions)' : audience(p),

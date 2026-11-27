@@ -1095,3 +1095,17 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .op-src { grid-template-columns: 1fr 1fr; }
   .op-src-unit { grid-column: 1 / -1; }
 }
+
+/* Online paper: subject tabs above the question (jump to any subject) */
+.op-subject-tabs { display: flex; gap: 0.5rem; padding: 0.5rem 1rem; background: #fff; border-bottom: 1px solid var(--gray-200); overflow-x: auto; flex-shrink: 0; }
+.op-subject-tab { display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; padding: 0.45rem 0.9rem; border: 1px solid var(--gray-300); border-radius: 8px; background: #fff; color: var(--gray-700); cursor: pointer; white-space: nowrap; font: inherit; }
+.op-subject-tab span { font-weight: 700; font-size: 0.9rem; }
+.op-subject-tab small { font-size: 0.72rem; color: var(--gray-500); }
+.op-subject-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.op-subject-tab.active small { color: rgba(255,255,255,0.85); }
+@media (max-width: 600px) {
+  .op-subject-tabs { padding: 0.4rem 0.5rem; gap: 0.35rem; }
+  .op-subject-tab { flex: 1 1 0; min-width: 0; padding: 0.35rem 0.5rem; }
+  .op-subject-tab span { font-size: 0.8rem; }
+  .op-subject-tab small { font-size: 0.66rem; }
+}
