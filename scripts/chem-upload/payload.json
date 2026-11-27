@@ -1,0 +1,2157 @@
+{
+ "insert": [
+  {
+   "qid": "NCU04416",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "Consider the reaction\n$\\ce{2H2S(g) + 3O2(g) -> 2H2O(l) + 2SO2(g)}$\nThe magnitude of enthalpy change for the reaction in kJ mol$^{-1}$ is ____. (Nearest integer)\nGiven: $\\Delta_f H^{\\circ}(\\ce{H2S})$ = −20.1 kJ mol$^{-1}$, $\\Delta_f H^{\\circ}(\\ce{H2O})$ = −286.0 kJ mol$^{-1}$, $\\Delta_f H^{\\circ}(\\ce{SO2})$ = −297.0 kJ mol$^{-1}$",
+   "option1": "1126",
+   "option2": "1166",
+   "option3": "563",
+   "option4": "1086",
+   "correct_option": "1126",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.1",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04417",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Consider the reaction $\\ce{X <=> Y}$ at 300 K. If $\\Delta H^{\\circ}$ and K are 28.40 kJ mol$^{-1}$ and $1.8\\times 10^{-7}$ at the same temperature, then the magnitude of $\\Delta S^{\\circ}$ for the reaction in J K$^{-1}$ mol$^{-1}$ is ____. (Nearest integer) (Given: R = 8.3 J K$^{-1}$ mol$^{-1}$, ln 10 = 2.3, log 3 = 0.48, log 2 = 0.30)",
+   "option1": "129",
+   "option2": "34",
+   "option3": "95",
+   "option4": "63",
+   "correct_option": "34",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.2",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04418",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "If 3.365 g of ethanol (l) is burnt completely in a bomb calorimeter at 298.15 K, the heat produced is 99.472 kJ. The $|\\Delta_f H^{\\circ}|$ of ethanol at 298.15 K is ____ $\\times 10^{2}$ kJ mol$^{-1}$. (Nearest integer)\nGiven: Standard enthalpy of combustion of graphite = −393.5 kJ mol$^{-1}$\nStandard enthalpy of formation of water (l) = −285.8 kJ mol$^{-1}$\nMolar mass in g mol$^{-1}$ of C, H, O are 12, 1 and 16 respectively",
+   "option1": "14",
+   "option2": "2",
+   "option3": "3",
+   "option4": "4",
+   "correct_option": "3",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.3",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04419",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "At the transition temperature T, $\\ce{A <=> B}$ and $\\Delta G^{\\circ}$ = 105 − 35 log T where A and B are two states of substance X. The transition temperature in °C when pressure is 1 atm is ____. (Nearest integer)",
+   "option1": "1000",
+   "option2": "273",
+   "option3": "1273",
+   "option4": "727",
+   "correct_option": "727",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.4",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04420",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "For a certain reaction at 300 K, K = 10, then $\\Delta G^{\\circ}$ for the same reaction is −____ $\\times 10^{-1}$ kJ mol$^{-1}$. (Given R = 8.314 J K$^{-1}$ mol$^{-1}$)",
+   "option1": "25",
+   "option2": "57",
+   "option3": "6",
+   "option4": "24",
+   "correct_option": "57",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "JEE(Main) EG Unit-04 Q.28",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04421",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Consider the following reaction at 298 K: $\\frac{3}{2}\\ce{O2(g) <=> O3(g)}$; $K_P = 2.47 \\times 10^{-29}$. $\\Delta_r G^{\\ominus}$ for the reaction is ____ kJ. (Given R = 8.314 J K$^{-1}$ mol$^{-1}$)",
+   "option1": "71",
+   "option2": "326",
+   "option3": "163",
+   "option4": "−163",
+   "correct_option": "163",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2024",
+   "source": "JEE(Main) EG Unit-04 Q.30",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04422",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Consider the graph of Gibbs free energy G vs Extent of reaction. The number of statement/s from the following which are true with respect to points (a), (b) and (c) is ____\n(Graph: G falls steeply from point (a) near the start, reaches its minimum at point (b), and rises slightly to point (c) after the minimum.)\nA. Reaction is spontaneous at (a) and (b)\nB. Reaction is at equilibrium at point (b) and non-spontaneous at point (c)\nC. Reaction is spontaneous at (a) and non-spontaneous at (c)\nD. Reaction is non-spontaneous at (a) and (b)",
+   "option1": "1",
+   "option2": "3",
+   "option3": "4",
+   "option4": "2",
+   "correct_option": "2",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2023",
+   "source": "JEE(Main) EG Unit-04 Q.45",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04423",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 2,
+   "topic": "Thermodynamic Processes & Enthalpy",
+   "question": "1.0 mol of monoatomic ideal gas is expanded from state 1 to state 2 as shown in the figure. The magnitude of the work done for the expansion of gas from state 1 to state 2 at 300 K is ____ J. (Nearest integer)\n(Given: R = 8.3 J K$^{-1}$ mol$^{-1}$, ln10 = 2.3, log2 = 0.30)\n(Figure: P (bar) vs V (L); State 1 at P = 6.0 bar, V = 22.7 L; the gas expands along a curve (isotherm) to State 2 at P = 3.0 bar.)",
+   "option1": "1718",
+   "option2": "2490",
+   "option3": "1245",
+   "option4": "3436",
+   "correct_option": "1718",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "JEE(Main) EG Unit-04 Q.65",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04424",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "The Born-Haber cycle for KCl is evaluated with the following data:\n$\\Delta_f H^{\\ominus}$ for KCl = −436.7 kJ mol$^{-1}$;\n$\\Delta_{sub} H^{\\ominus}$ for K = 89.2 kJ mol$^{-1}$;\n$\\Delta_{ionization} H^{\\ominus}$ for K = 419.0 kJ mol$^{-1}$;\n$\\Delta_{electron\\ gain} H^{\\ominus}$ for $\\ce{Cl(g)}$ = −348.6 kJ mol$^{-1}$;\n$\\Delta_{bond} H^{\\ominus}$ for $\\ce{Cl2}$ = 243.0 kJ mol$^{-1}$\nThe magnitude of lattice enthalpy of KCl in kJ mol$^{-1}$ is ____ (Nearest integer)",
+   "option1": "839",
+   "option2": "596",
+   "option3": "718",
+   "option4": "1197",
+   "correct_option": "718",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "JEE(Main) EG Unit-04 Q.79",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04425",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "An average person needs about 10000 kJ energy per day. The amount of glucose (molar mass = 180.0 g mol$^{-1}$) needed to meet this energy requirement is ____ g.\n(Use: $\\Delta_C H$(glucose) = −2700 kJ mol$^{-1}$)",
+   "option1": "370",
+   "option2": "667",
+   "option3": "1800",
+   "option4": "3.7",
+   "correct_option": "667",
+   "difficulty_level": "Easy",
+   "question_tag": "JEE(Main) 2021",
+   "source": "JEE(Main) EG Unit-04 Q.86",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04426",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "The ionization enthalpy of $\\ce{Na+}$ formation from $\\ce{Na(g)}$ is 495.8 kJ mol$^{-1}$, while the electron gain enthalpy of Br is −325.0 kJ mol$^{-1}$. Given the lattice enthalpy of NaBr is −728.4 kJ mol$^{-1}$. The energy for the formation of NaBr ionic solid is (−) ____ $\\times 10^{-1}$ kJ mol$^{-1}$.",
+   "option1": "8992",
+   "option2": "5576",
+   "option3": "1708",
+   "option4": "4012",
+   "correct_option": "5576",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "JEE(Main) EG Unit-04 Q.94",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04427",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Assuming ideal behaviour, the magnitude of log K for the following reaction at 25 °C is x $\\times 10^{-1}$. The value of x is ____. (Integer answer)\n$\\ce{3HC#CH(g) <=> C6H6(l)}$\n[Given: $\\Delta_f G^{\\circ}(\\ce{HC#CH})$ = −2.04 $\\times 10^{5}$ J mol$^{-1}$; $\\Delta_f G^{\\circ}(\\ce{C6H6})$ = −1.24 $\\times 10^{5}$ J mol$^{-1}$; R = 8.314 J K$^{-1}$ mol$^{-1}$]",
+   "option1": "141",
+   "option2": "357",
+   "option3": "855",
+   "option4": "1070",
+   "correct_option": "855",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2021",
+   "source": "JEE(Main) EG Unit-04 Q.95",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04428",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 2,
+   "topic": "Thermodynamic Processes & Enthalpy",
+   "question": "Match List-I with List-II. Given $V_1$ and $V_2$ are initial and final volumes respectively.\nChoose the correct answer from the options given below:",
+   "option1": "A-II, B-III, C-I, D-IV",
+   "option2": "A-II, B-I, C-IV, D-III",
+   "option3": "A-II, B-I, C-III, D-IV",
+   "option4": "A-I, B-II, C-III, D-IV",
+   "correct_option": "A-II, B-I, C-III, D-IV",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.103",
+   "question_type": "Match the Column",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en",
+   "mtc_label_a": "upper",
+   "mtc_label_b": "roman_upper",
+   "col_a1": "Reversible expansion",
+   "col_a2": "Free expansion",
+   "col_a3": "Irreversible Compression",
+   "col_a4": "Cyclic reversible",
+   "col_b1": "q = 0",
+   "col_b2": "$q = nRT \\ln \\frac{V_2}{V_1}$",
+   "col_b3": "$w = -p_{ext}(V_1 - V_2)$",
+   "col_b4": "$\\frac{q_{rev}}{T} = 0$"
+  },
+  {
+   "qid": "NCU04429",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 2,
+   "topic": "Thermodynamic Processes & Enthalpy",
+   "question": "Arrange the following isothermal processes in order of the magnitude of the work (p – V) involved between states 1 and 2.\nA. Expansion in single stage $w_A$\nB. Expansion in multi stages $w_B$\nC. Compression in single stage $w_C$\nD. Compression in multi stages $w_D$\nChoose the correct option.",
+   "option1": "$|w_B| > |w_A| > |w_C| > |w_D|$",
+   "option2": "$|w_C| > |w_D| > |w_A| > |w_B|$",
+   "option3": "$|w_C| > |w_D| > |w_B| > |w_A|$",
+   "option4": "$|w_B| > |w_A| > |w_D| > |w_C|$",
+   "correct_option": "$|w_C| > |w_D| > |w_B| > |w_A|$",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.104",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04430",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Consider the following data for the reaction\n$\\ce{X2(g) + Y2(g) <=> 2XY(g)}$\nat 600 K. The $\\Delta_r G^{\\ominus}$ (in kJ mol$^{-1}$) for the reaction is:\nXY(g): $\\Delta_f H^{\\ominus}_{600 K}$ = 42 kJ mol$^{-1}$, $S^{\\ominus}_{600 K}$ = 200 J mol$^{-1}$ K$^{-1}$\n$\\ce{X2(g)}$: $\\Delta_f H^{\\ominus}_{600 K}$ = 8 kJ mol$^{-1}$, $S^{\\ominus}_{600 K}$ = 140 J mol$^{-1}$ K$^{-1}$\n$\\ce{Y2(g)}$: $\\Delta_f H^{\\ominus}_{600 K}$ = 80 kJ mol$^{-1}$, $S^{\\ominus}_{600 K}$ = 250 J mol$^{-1}$ K$^{-1}$",
+   "option1": "−21000",
+   "option2": "−10",
+   "option3": "−1000",
+   "option4": "−9.012",
+   "correct_option": "−10",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.105",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04431",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 3,
+   "topic": "Heat Capacity & Calorimetry",
+   "question": "The correct order of molar heat capacities measured at 298 K and 1 bar is:",
+   "option1": "Copper(s) > Bromine(l) > Helium(g)",
+   "option2": "Bromine(l) > Copper(s) > Helium(g)",
+   "option3": "Helium(g) > Bromine(l) > Copper(s)",
+   "option4": "Helium(g) > Bromine(l) = Copper(s)",
+   "correct_option": "Bromine(l) > Copper(s) > Helium(g)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.106",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04432",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 3,
+   "topic": "Heat Capacity & Calorimetry",
+   "question": "Given below are two statements:\nStatement I: For an ideal gas, heat capacity at constant volume is always greater than the heat capacity at constant pressure.\nStatement II: In a constant volume process, no work is produced and all the heat withdrawn goes into the chaotic motion and is reflected by a temperature increase of the ideal gas.\nIn the light of the above statements, choose the correct answer from the options given below",
+   "option1": "Both Statement I and Statement II are true",
+   "option2": "Both Statement I and Statement II are false",
+   "option3": "Statement I is true but Statement II is false",
+   "option4": "Statement I is false but Statement II is true",
+   "correct_option": "Statement I is false but Statement II is true",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.107",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04433",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 1,
+   "topic": "First law of thermodynamics",
+   "question": "Gas 'A' undergoes change from state 'X' to state 'Y'. In this process, the heat absorbed and work done by the gas is 10 J and 18 J respectively. Now gas is brought back to state 'X' by another process during which 6 J of heat is evolved. In the reverse process of 'Y' to 'X',",
+   "option1": "18 J of the work is done by the gas 'A'.",
+   "option2": "2 J of the work is done by the gas 'A'.",
+   "option3": "12 J of the work is done on the gas 'A' by the surrounding.",
+   "option4": "14 J of the work is done on the gas 'A' by the surrounding.",
+   "correct_option": "14 J of the work is done on the gas 'A' by the surrounding.",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.108",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04434",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "Consider the following data.\n(i) $\\ce{2Al(s) + 6HCl(aq) -> Al2Cl6(aq) + 3H2(g)}$ + 1200 kJ/mol\n(ii) $\\ce{H2(g) + Cl2(g) -> 2HCl(g)}$ + 164 kJ/mol\n(iii) $\\ce{HCl(g) + aq -> HCl(aq)}$ + 83 kJ/mol\n(iv) $\\ce{Al2Cl6(s) + aq -> Al2Cl6(aq)}$ + 663 kJ/mol\nThe enthalpy of formation of anhydrous solid $\\ce{Al2Cl6}$ is:",
+   "option1": "−648 kJ mol$^{-1}$",
+   "option2": "−1350 kJ mol$^{-1}$",
+   "option3": "−2002 kJ mol$^{-1}$",
+   "option4": "−1527 kJ mol$^{-1}$",
+   "correct_option": "−1527 kJ mol$^{-1}$",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.109",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04435",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "For the reaction, $\\ce{N2O4 <=> 2NO2}$, graph is plotted as shown below. Identify correct statements.\nA. Standard free energy change for the reaction is −5.40 kJ mol$^{-1}$.\nB. As $\\Delta G^{\\ominus}$ in graph is positive, $\\ce{N2O4}$ will not dissociate into $\\ce{NO2}$ at all.\nC. Reverse reaction will go to completion.\nD. When 1 mole of $\\ce{N2O4}$ changes into equilibrium mixture, value of $\\Delta G^{\\ominus}$ = −0.84 kJ mol$^{-1}$\nE. When 2 mole of $\\ce{NO2}$ changes into equilibrium mixture, $\\Delta G^{\\ominus}$ for equilibrium mixture is −6.24 kJ mol$^{-1}$.\nChoose the correct answer from the options given below:",
+   "option1": "C and E only",
+   "option2": "D and E only",
+   "option3": "A and D only",
+   "option4": "B and C only",
+   "correct_option": "D and E only",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2026",
+   "source": "JEE(Main) EG Unit-04 Q.118",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04436",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Which of the following is the plot of Gibb's free energy (G) vs temperature (T), at constant pressure, for a pure substance?",
+   "option1": "",
+   "option2": "",
+   "option3": "",
+   "option4": "",
+   "correct_option": "option1",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "JEE(Main) EG Unit-04 Q.146",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04437",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): The reduction of a metal oxide is easier if the metal formed is in liquid state than solid state.\nReason (R): The value of $\\Delta G^{\\ominus}$ becomes more on negative side as entropy is higher in liquid state than solid state.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both A and R are correct and R is the correct explanation of A",
+   "option2": "Both A and R are correct but R is NOT the correct explanation of A",
+   "option3": "A is correct but R is not correct",
+   "option4": "A is not correct but R is correct",
+   "correct_option": "Both A and R are correct and R is the correct explanation of A",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2022",
+   "source": "JEE(Main) EG Unit-04 Q.147",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04438",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "$\\Delta G^{\\circ}$ vs T plot for the formation of MgO, involving reaction $\\ce{2Mg + O2 -> 2MgO}$, will look like:",
+   "option1": "",
+   "option2": "",
+   "option3": "",
+   "option4": "",
+   "correct_option": "option1",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2022",
+   "source": "JEE(Main) EG Unit-04 Q.149",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04439",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 3,
+   "topic": "Heat Capacity & Calorimetry",
+   "question": "For one mole of an ideal gas, which of these statements must be true?\n(a) U and H each depends only on temperature\n(b) Compressibility factor z is not equal to 1\n(c) $C_{P,m} - C_{V,m} = R$\n(d) $dU = C_V dT$ for any process",
+   "option1": "(a), (c) and (d)",
+   "option2": "(a) and (c)",
+   "option3": "(c) and (d)",
+   "option4": "(b), (c) and (d)",
+   "correct_option": "(a), (c) and (d)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2020",
+   "source": "JEE(Main) EG Unit-04 Q.157",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04440",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "For the equilibrium,\n$\\ce{2H2O <=> H3O+ + OH-}$, the value of $\\Delta G^{\\circ}$ at 298 K is approximately:",
+   "option1": "−80 kJ mol$^{-1}$",
+   "option2": "100 kJ mol$^{-1}$",
+   "option3": "−100 kJ mol$^{-1}$",
+   "option4": "80 kJ mol$^{-1}$",
+   "correct_option": "80 kJ mol$^{-1}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2019",
+   "source": "JEE(Main) EG Unit-04 Q.172",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04441",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "For the chemical reaction $\\ce{X <=> Y}$, the standard reaction Gibbs energy depends on temperature T (in K) as $\\Delta_r G^{\\circ}$ (in kJ mol$^{-1}$) = $120 - \\frac{3}{8}T$.\nThe major component of the reaction mixture at T is:",
+   "option1": "Y if T = 300 K",
+   "option2": "Y if T = 280 K",
+   "option3": "X if T = 350 K",
+   "option4": "X if T = 315 K",
+   "correct_option": "X if T = 315 K",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2019",
+   "source": "JEE(Main) EG Unit-04 Q.175",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04442",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "At 320 K, a gas $\\ce{A2}$ is 20% dissociated to A(g). The standard free energy change at 320 K and 1 atm in J mol$^{-1}$ is approximately: (R = 8.314 J K$^{-1}$ mol$^{-1}$; ln 2 = 0.693; ln 3 = 1.098)",
+   "option1": "4763",
+   "option2": "2068",
+   "option3": "1844",
+   "option4": "4281",
+   "correct_option": "4763",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2018",
+   "source": "JEE(Main) EG Unit-04 Q.182",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04443",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "The plot shows the variation of −ln $K_p$ versus temperature for the two reactions.\n$\\ce{M(s) + 1/2O2(g) -> MO(s)}$ and\n$\\ce{C(s) + 1/2O2(g) -> CO(s)}$\nIdentify the correct statement:",
+   "option1": "At T > 1200 K, carbon will reduce MO(s) to M(s).",
+   "option2": "At T < 1200 K, the reaction $\\ce{MO(s) + C(s) -> M(s) + CO(g)}$ is spontaneous.",
+   "option3": "At T < 1200 K, oxidation of carbon is unfavourable",
+   "option4": "Oxidation of carbon is favourable at all temperatures.",
+   "correct_option": "At T < 1200 K, the reaction $\\ce{MO(s) + C(s) -> M(s) + CO(g)}$ is spontaneous.",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2016",
+   "source": "JEE(Main) EG Unit-04 Q.199",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04444",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "The entropy ($S^{\\circ}$) of the following substances are:\n$\\ce{CH4(g)}$: 186.2 J K$^{-1}$ mol$^{-1}$\n$\\ce{O2(g)}$: 205.0 J K$^{-1}$ mol$^{-1}$\n$\\ce{CO2(g)}$: 213.6 J K$^{-1}$ mol$^{-1}$\n$\\ce{H2O(l)}$: 69.9 J K$^{-1}$ mol$^{-1}$\nThe entropy change ($\\Delta S^{\\circ}$) for the reaction $\\ce{CH4(g) + 2O2(g) -> CO2(g) + 2H2O(l)}$ is:",
+   "option1": "−312.5 J K$^{-1}$ mol$^{-1}$",
+   "option2": "−242.8 J K$^{-1}$ mol$^{-1}$",
+   "option3": "−108.1 J K$^{-1}$ mol$^{-1}$",
+   "option4": "−37.6 J K$^{-1}$ mol$^{-1}$",
+   "correct_option": "−242.8 J K$^{-1}$ mol$^{-1}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2014",
+   "source": "JEE(Main) EG Unit-04 Q.203",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04445",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "The standard enthalpy of formation ($\\Delta_f H^{\\circ}_{298}$) for methane, $\\ce{CH4}$ is −74.9 kJ mol$^{-1}$. In order to calculate the average energy given out in the formation of a C–H bond from this it is necessary to know which one of the following?",
+   "option1": "the dissociation energy of the hydrogen molecule, $\\ce{H2}$.",
+   "option2": "the first four ionisation energies of carbon.",
+   "option3": "the dissociation energy of $\\ce{H2}$ and enthalpy of sublimation of carbon (graphite).",
+   "option4": "the first four ionisation energies of carbon and electron affinity of hydrogen.",
+   "correct_option": "the dissociation energy of $\\ce{H2}$ and enthalpy of sublimation of carbon (graphite).",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2014",
+   "source": "JEE(Main) EG Unit-04 Q.204",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04446",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "Given that: (i) $\\Delta_f H^{\\circ}$ of $\\ce{N2O}$ is 82 kJ mol$^{-1}$ (ii) Bond energies of N≡N, N=N, O=O and N=O are 946, 418, 498 and 607 kJ mol$^{-1}$ respectively. The resonance energy of $\\ce{N2O}$ is:",
+   "option1": "−88 kJ",
+   "option2": "−66 kJ",
+   "option3": "−62 kJ",
+   "option4": "−44 kJ",
+   "correct_option": "−88 kJ",
+   "difficulty_level": "Hard",
+   "question_tag": "JEE(Main) 2013",
+   "source": "JEE(Main) EG Unit-04 Q.208",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04447",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 2,
+   "topic": "Thermodynamic Processes & Enthalpy",
+   "question": "Which of the following statements/relationships is not correct in thermodynamic changes?",
+   "option1": "$\\Delta U = 0$ (isothermal reversible expansion of a gas)",
+   "option2": "$w = -nRT \\ln \\frac{V_2}{V_1}$ (isothermal reversible expansion of an ideal gas)",
+   "option3": "$w = nRT \\ln \\frac{V_2}{V_1}$ (isothermal reversible expansion of an ideal gas)",
+   "option4": "For a system of constant volume heat involved directly changes to internal energy.",
+   "correct_option": "$w = nRT \\ln \\frac{V_2}{V_1}$ (isothermal reversible expansion of an ideal gas)",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2013",
+   "source": "JEE(Main) EG Unit-04 Q.209",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04448",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "Given Reaction Energy Change (in kJ):\n$\\ce{Li(s) -> Li(g)}$: 161\n$\\ce{Li(g) -> Li+(g)}$: 520\n$\\ce{1/2F2(g) -> F(g)}$: 77\n$\\ce{F(g) + e- -> F-(g)}$: (Electron gain enthalpy)\n$\\ce{Li+(g) + F-(g) -> LiF(s)}$: −1047\n$\\ce{Li(s) + 1/2F2(g) -> LiF(s)}$: −617\nBased on data provided, the value of electron gain enthalpy of fluorine would be:",
+   "option1": "−300 kJ mol$^{-1}$",
+   "option2": "−350 kJ mol$^{-1}$",
+   "option3": "−328 kJ mol$^{-1}$",
+   "option4": "−228 kJ mol$^{-1}$",
+   "correct_option": "−328 kJ mol$^{-1}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JEE(Main) 2013",
+   "source": "JEE(Main) EG Unit-04 Q.210",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04449",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "One mole of an ideal gas is expanded isothermally and reversibly to half of its initial pressure. $\\Delta S$ for the process in J K$^{-1}$ mol$^{-1}$ is [ln 2 = 0.693 and R = 8.314 J/(mol K)]",
+   "option1": "6.76",
+   "option2": "5.76",
+   "option3": "10.76",
+   "option4": "8.03",
+   "correct_option": "5.76",
+   "difficulty_level": "Easy",
+   "question_tag": "AIEEE 2012",
+   "source": "JEE(Main) EG Unit-04 Q.213",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04450",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "The enthalpy of neutralisation of $\\ce{NH4OH}$ with HCl is −51.46 kJ mol$^{-1}$ and the enthalpy of neutralisation of NaOH with HCl is −55.90 kJ mol$^{-1}$. The enthalpy of ionisation of $\\ce{NH4OH}$ is",
+   "option1": "−107.36 kJ mol$^{-1}$",
+   "option2": "−4.44 kJ mol$^{-1}$",
+   "option3": "+107.36 kJ mol$^{-1}$",
+   "option4": "+4.44 kJ mol$^{-1}$",
+   "correct_option": "+4.44 kJ mol$^{-1}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIEEE 2012",
+   "source": "JEE(Main) EG Unit-04 Q.214",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04451",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 2,
+   "topic": "Thermodynamic Processes & Enthalpy",
+   "question": "The difference between the reaction enthalpy change ($\\Delta_r H$) and reaction internal energy change ($\\Delta_r U$) for the reaction:\n$\\ce{2C6H6(l) + 15O2(g) -> 12CO2(g) + 6H2O(l)}$\nat 300 K is (R = 8.314 J mol$^{-1}$ K$^{-1}$)",
+   "option1": "0 J mol$^{-1}$",
+   "option2": "2490 J mol$^{-1}$",
+   "option3": "−2490 J mol$^{-1}$",
+   "option4": "−7482 J mol$^{-1}$",
+   "correct_option": "−7482 J mol$^{-1}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIEEE 2012",
+   "source": "JEE(Main) EG Unit-04 Q.215",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04452",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "The correct relationship between free energy change in a reaction and the corresponding equilibrium constant $K_c$ is:",
+   "option1": "$-\\Delta G = RT \\ln K_c$",
+   "option2": "$\\Delta G^{\\circ} = RT \\ln K_c$",
+   "option3": "$-\\Delta G^{\\circ} = RT \\ln K_c$",
+   "option4": "$\\Delta G = RT \\ln K_c$",
+   "correct_option": "$-\\Delta G^{\\circ} = RT \\ln K_c$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIEEE 2003",
+   "source": "JEE(Main) EG Unit-04 Q.238",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04453",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 3,
+   "topic": "Heat Capacity & Calorimetry",
+   "question": "The heat required to raise the temperature of body by 1 K is called:",
+   "option1": "specific heat",
+   "option2": "thermal capacity",
+   "option3": "water equivalent",
+   "option4": "none of these",
+   "correct_option": "thermal capacity",
+   "difficulty_level": "Easy",
+   "question_tag": "AIEEE 2002",
+   "source": "JEE(Main) EG Unit-04 Q.243",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  }
+ ],
+ "payload": {
+  "NCU04098": {
+   "source": "JEE(Main) EG Unit-04 Q.143"
+  },
+  "NCU04099": {
+   "source": "JEE(Main) EG Unit-04 Q.165"
+  },
+  "NCU04100": {
+   "source": "JEE(Main) EG Unit-04 Q.171"
+  },
+  "NCU04101": {
+   "source": "JEE(Main) EG Unit-04 Q.169"
+  },
+  "NCU04102": {
+   "source": "JEE(Main) EG Unit-04 Q.58"
+  },
+  "NCU04103": {
+   "source": "JEE(Main) EG Unit-04 Q.78"
+  },
+  "NCU04104": {
+   "source": "JEE(Main) EG Unit-04 Q.80"
+  },
+  "NCU04105": {
+   "source": "JEE(Main) EG Unit-04 Q.92"
+  },
+  "NCU04106": {
+   "source": "JEE(Main) EG Unit-04 Q.140"
+  },
+  "NCU04107": {
+   "source": "JEE(Main) EG Unit-04 Q.141"
+  },
+  "NCU04108": {
+   "source": "JEE(Main) EG Unit-04 Q.144"
+  },
+  "NCU04110": {
+   "source": "JEE(Main) EG Unit-04 Q.152"
+  },
+  "NCU04111": {
+   "source": "JEE(Main) EG Unit-04 Q.151"
+  },
+  "NCU04112": {
+   "source": "JEE(Main) EG Unit-04 Q.156"
+  },
+  "NCU04113": {
+   "source": "JEE(Main) EG Unit-04 Q.155"
+  },
+  "NCU04114": {
+   "source": "JEE(Main) EG Unit-04 Q.159"
+  },
+  "NCU04115": {
+   "source": "JEE(Main) EG Unit-04 Q.167"
+  },
+  "NCU04116": {
+   "source": "JEE(Main) EG Unit-04 Q.168"
+  },
+  "NCU04117": {
+   "source": "JEE(Main) EG Unit-04 Q.166"
+  },
+  "NCU04118": {
+   "source": "JEE(Main) EG Unit-04 Q.164"
+  },
+  "NCU04119": {
+   "source": "JEE(Main) EG Unit-04 Q.162"
+  },
+  "NCU04120": {
+   "source": "JEE(Main) EG Unit-04 Q.160"
+  },
+  "NCU04121": {
+   "source": "JEE(Main) EG Unit-04 Q.161"
+  },
+  "NCU04122": {
+   "source": "JEE(Main) EG Unit-04 Q.181"
+  },
+  "NCU04124": {
+   "source": "JEE(Main) EG Unit-04 Q.170"
+  },
+  "NCU04125": {
+   "source": "JEE(Main) EG Unit-04 Q.185"
+  },
+  "NCU04126": {
+   "source": "JEE(Main) EG Unit-04 Q.189"
+  },
+  "NCU04127": {
+   "source": "JEE(Main) EG Unit-04 Q.188"
+  },
+  "NCU04128": {
+   "source": "JEE(Main) EG Unit-04 Q.194"
+  },
+  "NCU04129": {
+   "source": "JEE(Main) EG Unit-04 Q.195"
+  },
+  "NCU04130": {
+   "source": "JEE(Main) EG Unit-04 Q.192"
+  },
+  "NCU04131": {
+   "source": "JEE(Main) EG Unit-04 Q.193"
+  },
+  "NCU04132": {
+   "source": "JEE(Main) EG Unit-04 Q.191"
+  },
+  "NCU04133": {
+   "source": "JEE(Main) EG Unit-04 Q.200"
+  },
+  "NCU04134": {
+   "source": "JEE(Main) EG Unit-04 Q.196"
+  },
+  "NCU04135": {
+   "source": "JEE(Main) EG Unit-04 Q.201"
+  },
+  "NCU04136": {
+   "source": "JEE(Main) EG Unit-04 Q.207"
+  },
+  "NCU04137": {
+   "source": "JEE(Main) EG Unit-04 Q.212"
+  },
+  "NCU04138": {
+   "source": "JEE(Main) EG Unit-04 Q.211"
+  },
+  "NCU04140": {
+   "source": "JEE(Main) EG Unit-04 Q.222",
+   "question_tag": "AIEEE 2008"
+  },
+  "NCU04141": {
+   "source": "JEE(Main) EG Unit-04 Q.226",
+   "question_tag": "AIEEE 2007"
+  },
+  "NCU04142": {
+   "source": "JEE(Main) EG Unit-04 Q.230",
+   "question_tag": "AIEEE 2006"
+  },
+  "NCU04143": {
+   "source": "JEE(Main) EG Unit-04 Q.229",
+   "question_tag": "AIEEE 2006"
+  },
+  "NCU04144": {
+   "source": "JEE(Main) EG Unit-04 Q.227",
+   "question_tag": "AIEEE 2006"
+  },
+  "NCU04145": {
+   "source": "JEE(Main) EG Unit-04 Q.228",
+   "question_tag": "AIEEE 2006"
+  },
+  "NCU04146": {
+   "source": "JEE(Main) EG Unit-04 Q.232",
+   "question_tag": "AIEEE 2005"
+  },
+  "NCU04147": {
+   "source": "JEE(Main) EG Unit-04 Q.231",
+   "question_tag": "AIEEE 2005"
+  },
+  "NCU04148": {
+   "source": "JEE(Main) EG Unit-04 Q.233",
+   "question_tag": "AIEEE 2004"
+  },
+  "NCU04149": {
+   "source": "JEE(Main) EG Unit-04 Q.235",
+   "question_tag": "AIEEE 2003"
+  },
+  "NCU04150": {
+   "source": "JEE(Main) EG Unit-04 Q.239",
+   "question_tag": "AIEEE 2003"
+  },
+  "NCU04151": {
+   "source": "JEE(Main) EG Unit-04 Q.236",
+   "question_tag": "AIEEE 2003"
+  },
+  "NCU04152": {
+   "source": "JEE(Main) EG Unit-04 Q.27"
+  },
+  "NCU04153": {
+   "source": "JEE(Main) EG Unit-04 Q.26"
+  },
+  "NCU04154": {
+   "source": "JEE(Main) EG Unit-04 Q.25"
+  },
+  "NCU04156": {
+   "source": "JEE(Main) EG Unit-04 Q.23"
+  },
+  "NCU04158": {
+   "source": "JEE(Main) EG Unit-04 Q.20"
+  },
+  "NCU04159": {
+   "source": "JEE(Main) EG Unit-04 Q.19"
+  },
+  "NCU04160": {
+   "source": "JEE(Main) EG Unit-04 Q.18"
+  },
+  "NCU04161": {
+   "source": "JEE(Main) EG Unit-04 Q.35"
+  },
+  "NCU04162": {
+   "source": "JEE(Main) EG Unit-04 Q.33"
+  },
+  "NCU04164": {
+   "source": "JEE(Main) EG Unit-04 Q.31"
+  },
+  "NCU04165": {
+   "source": "JEE(Main) EG Unit-04 Q.29"
+  },
+  "NCU04166": {
+   "source": "JEE(Main) EG Unit-04 Q.44"
+  },
+  "NCU04167": {
+   "source": "JEE(Main) EG Unit-04 Q.43"
+  },
+  "NCU04168": {
+   "source": "JEE(Main) EG Unit-04 Q.41"
+  },
+  "NCU04169": {
+   "source": "JEE(Main) EG Unit-04 Q.40"
+  },
+  "NCU04170": {
+   "source": "JEE(Main) EG Unit-04 Q.39"
+  },
+  "NCU04171": {
+   "source": "JEE(Main) EG Unit-04 Q.38"
+  },
+  "NCU04172": {
+   "source": "JEE(Main) EG Unit-04 Q.37"
+  },
+  "NCU04173": {
+   "source": "JEE(Main) EG Unit-04 Q.48"
+  },
+  "NCU04174": {
+   "source": "JEE(Main) EG Unit-04 Q.47"
+  },
+  "NCU04176": {
+   "source": "JEE(Main) EG Unit-04 Q.54"
+  },
+  "NCU04177": {
+   "source": "JEE(Main) EG Unit-04 Q.53"
+  },
+  "NCU04178": {
+   "source": "JEE(Main) EG Unit-04 Q.52"
+  },
+  "NCU04179": {
+   "source": "JEE(Main) EG Unit-04 Q.51"
+  },
+  "NCU04180": {
+   "source": "JEE(Main) EG Unit-04 Q.50"
+  },
+  "NCU04181": {
+   "source": "JEE(Main) EG Unit-04 Q.49"
+  },
+  "NCU04182": {
+   "source": "JEE(Main) EG Unit-04 Q.64"
+  },
+  "NCU04183": {
+   "source": "JEE(Main) EG Unit-04 Q.63"
+  },
+  "NCU04184": {
+   "source": "JEE(Main) EG Unit-04 Q.62"
+  },
+  "NCU04185": {
+   "source": "JEE(Main) EG Unit-04 Q.61"
+  },
+  "NCU04186": {
+   "source": "JEE(Main) EG Unit-04 Q.60"
+  },
+  "NCU04187": {
+   "source": "JEE(Main) EG Unit-04 Q.59"
+  },
+  "NCU04188": {
+   "source": "JEE(Main) EG Unit-04 Q.57"
+  },
+  "NCU04189": {
+   "source": "JEE(Main) EG Unit-04 Q.72",
+   "question": "For complete combustion of methanol, $\\ce{CH3OH(l) + 3/2 O2(g) -> CO2(g) + 2H2O(l)}$, the amount of heat produced as measured in bomb calorimeter is $726 \\, \\mathrm{kJ\\,mol^{-1}}$ at $27^\\circ\\mathrm{C}$. The enthalpy of combustion for the reaction is -x $\\mathrm{kJ\\,mol^{-1}}$, where x is ______ (Nearest integer). (Given $R = 8.3 \\, \\mathrm{J\\,K^{-1}\\,mol^{-1}}$)"
+  },
+  "NCU04190": {
+   "source": "JEE(Main) EG Unit-04 Q.71"
+  },
+  "NCU04191": {
+   "source": "JEE(Main) EG Unit-04 Q.70"
+  },
+  "NCU04192": {
+   "source": "JEE(Main) EG Unit-04 Q.69"
+  },
+  "NCU04193": {
+   "source": "JEE(Main) EG Unit-04 Q.68"
+  },
+  "NCU04194": {
+   "source": "JEE(Main) EG Unit-04 Q.67"
+  },
+  "NCU04195": {
+   "source": "JEE(Main) EG Unit-04 Q.66"
+  },
+  "NCU04197": {
+   "source": "JEE(Main) EG Unit-04 Q.77"
+  },
+  "NCU04199": {
+   "source": "JEE(Main) EG Unit-04 Q.84"
+  },
+  "NCU04200": {
+   "source": "JEE(Main) EG Unit-04 Q.83"
+  },
+  "NCU04201": {
+   "source": "JEE(Main) EG Unit-04 Q.82"
+  },
+  "NCU04202": {
+   "source": "JEE(Main) EG Unit-04 Q.81"
+  },
+  "NCU04203": {
+   "source": "JEE(Main) EG Unit-04 Q.89"
+  },
+  "NCU04204": {
+   "source": "JEE(Main) EG Unit-04 Q.88"
+  },
+  "NCU04205": {
+   "source": "JEE(Main) EG Unit-04 Q.87"
+  },
+  "NCU04206": {
+   "source": "JEE(Main) EG Unit-04 Q.93"
+  },
+  "NCU04207": {
+   "source": "JEE(Main) EG Unit-04 Q.90"
+  },
+  "NCU04208": {
+   "source": "JEE(Main) EG Unit-04 Q.98"
+  },
+  "NCU04209": {
+   "source": "JEE(Main) EG Unit-04 Q.97"
+  },
+  "NCU04210": {
+   "source": "JEE(Main) EG Unit-04 Q.101"
+  },
+  "NCU04211": {
+   "source": "JEE(Main) EG Unit-04 Q.100"
+  },
+  "NCU04212": {
+   "source": "JEE(Main) EG Unit-04 Q.99"
+  },
+  "NCU04213": {
+   "source": "JEE(Main) EG Unit-04 Q.142"
+  },
+  "NCU04214": {
+   "source": "JEE(Main) EG Unit-04 Q.145"
+  },
+  "NCU04215": {
+   "source": "JEE(Main) EG Unit-04 Q.148"
+  },
+  "NCU04216": {
+   "source": "JEE(Main) EG Unit-04 Q.150"
+  },
+  "NCU04217": {
+   "source": "JEE(Main) EG Unit-04 Q.154"
+  },
+  "NCU04218": {
+   "source": "JEE(Main) EG Unit-04 Q.153"
+  },
+  "NCU04219": {
+   "source": "JEE(Main) EG Unit-04 Q.158"
+  },
+  "NCU04220": {
+   "source": "JEE(Main) EG Unit-04 Q.163"
+  },
+  "NCU04222": {
+   "source": "JEE(Main) EG Unit-04 Q.180"
+  },
+  "NCU04223": {
+   "source": "JEE(Main) EG Unit-04 Q.179"
+  },
+  "NCU04224": {
+   "source": "JEE(Main) EG Unit-04 Q.177"
+  },
+  "NCU04225": {
+   "source": "JEE(Main) EG Unit-04 Q.176"
+  },
+  "NCU04226": {
+   "source": "JEE(Main) EG Unit-04 Q.174"
+  },
+  "NCU04227": {
+   "source": "JEE(Main) EG Unit-04 Q.173"
+  },
+  "NCU04229": {
+   "source": "JEE(Main) EG Unit-04 Q.184"
+  },
+  "NCU04230": {
+   "source": "JEE(Main) EG Unit-04 Q.187"
+  },
+  "NCU04231": {
+   "source": "JEE(Main) EG Unit-04 Q.186"
+  },
+  "NCU04232": {
+   "source": "JEE(Main) EG Unit-04 Q.183"
+  },
+  "NCU04233": {
+   "source": "JEE(Main) EG Unit-04 Q.190"
+  },
+  "NCU04234": {
+   "source": "JEE(Main) EG Unit-04 Q.198"
+  },
+  "NCU04235": {
+   "source": "JEE(Main) EG Unit-04 Q.197"
+  },
+  "NCU04236": {
+   "source": "JEE(Main) EG Unit-04 Q.202"
+  },
+  "NCU04237": {
+   "source": "JEE(Main) EG Unit-04 Q.205"
+  },
+  "NCU04239": {
+   "source": "JEE(Main) EG Unit-04 Q.216",
+   "question_tag": "AIEEE 2012"
+  },
+  "NCU04240": {
+   "source": "JEE(Main) EG Unit-04 Q.218",
+   "question_tag": "AIEEE 2011"
+  },
+  "NCU04241": {
+   "source": "JEE(Main) EG Unit-04 Q.220",
+   "question_tag": "AIEEE 2010"
+  },
+  "NCU04242": {
+   "source": "JEE(Main) EG Unit-04 Q.221",
+   "question_tag": "AIEEE 2009"
+  },
+  "NCU04244": {
+   "source": "JEE(Main) EG Unit-04 Q.223",
+   "question_tag": "AIEEE 2008"
+  },
+  "NCU04245": {
+   "source": "JEE(Main) EG Unit-04 Q.225",
+   "question_tag": "AIEEE 2007"
+  },
+  "NCU04246": {
+   "source": "JEE(Main) EG Unit-04 Q.224",
+   "question_tag": "AIEEE 2007"
+  },
+  "NCU04248": {
+   "source": "JEE(Main) EG Unit-04 Q.237",
+   "question_tag": "AIEEE 2003"
+  },
+  "NCU04249": {
+   "source": "JEE(Main) EG Unit-04 Q.241",
+   "question_tag": "AIEEE 2002"
+  },
+  "NCU04250": {
+   "source": "JEE(Main) EG Unit-04 Q.240",
+   "question_tag": "AIEEE 2002"
+  },
+  "NCU04251": {
+   "source": "JEE(Main) EG Unit-04 Q.242",
+   "question_tag": "AIEEE 2002"
+  },
+  "NCU04252": {
+   "source": "JEE(Main) EG Unit-04 Q.22"
+  },
+  "NCU04253": {
+   "source": "JEE(Main) EG Unit-04 Q.17"
+  },
+  "NCU04254": {
+   "source": "JEE(Main) EG Unit-04 Q.34"
+  },
+  "NCU04255": {
+   "source": "JEE(Main) EG Unit-04 Q.46"
+  },
+  "NCU04256": {
+   "source": "JEE(Main) EG Unit-04 Q.42"
+  },
+  "NCU04257": {
+   "source": "JEE(Main) EG Unit-04 Q.36"
+  },
+  "NCU04258": {
+   "source": "JEE(Main) EG Unit-04 Q.56"
+  },
+  "NCU04259": {
+   "source": "JEE(Main) EG Unit-04 Q.73"
+  },
+  "NCU04260": {
+   "source": "JEE(Main) EG Unit-04 Q.74"
+  },
+  "NCU04263": {
+   "source": "JEE(Main) EG Unit-04 Q.85"
+  },
+  "NCU04265": {
+   "source": "JEE(Main) EG Unit-04 Q.91"
+  },
+  "NCU04266": {
+   "source": "JEE(Main) EG Unit-04 Q.96"
+  },
+  "NCU04267": {
+   "source": "JEE(Main) EG Unit-04 Q.102"
+  },
+  "NCU04268": {
+   "source": "JEE(Main) EG Unit-04 Q.131"
+  },
+  "NCU04269": {
+   "source": "JEE(Main) EG Unit-04 Q.130"
+  },
+  "NCU04271": {
+   "source": "JEE(Main) EG Unit-04 Q.12"
+  },
+  "NCU04274": {
+   "source": "JEE(Main) EG Unit-04 Q.135"
+  },
+  "NCU04277": {
+   "source": "JEE(Main) EG Unit-04 Q.133"
+  },
+  "NCU04280": {
+   "source": "JEE(Main) EG Unit-04 Q.136"
+  },
+  "NCU04286": {
+   "source": "JEE(Main) EG Unit-04 Q.119"
+  },
+  "NCU04287": {
+   "source": "JEE(Main) EG Unit-04 Q.127"
+  },
+  "NCU04289": {
+   "source": "JEE(Main) EG Unit-04 Q.123"
+  },
+  "NCU04290": {
+   "source": "JEE(Main) EG Unit-04 Q.124"
+  },
+  "NCU04291": {
+   "source": "JEE(Main) EG Unit-04 Q.10"
+  },
+  "NCU04293": {
+   "source": "JEE(Main) EG Unit-04 Q.9"
+  },
+  "NCU04294": {
+   "source": "JEE(Main) EG Unit-04 Q.122"
+  },
+  "NCU04295": {
+   "source": "JEE(Main) EG Unit-04 Q.121"
+  },
+  "NCU04296": {
+   "source": "JEE(Main) EG Unit-04 Q.120"
+  },
+  "NCU04298": {
+   "source": "JEE(Main) EG Unit-04 Q.129"
+  },
+  "NCU04300": {
+   "source": "JEE(Main) EG Unit-04 Q.116"
+  },
+  "NCU04301": {
+   "source": "JEE(Main) EG Unit-04 Q.114"
+  },
+  "NCU04302": {
+   "source": "JEE(Main) EG Unit-04 Q.110"
+  },
+  "NCU04303": {
+   "source": "JEE(Main) EG Unit-04 Q.112"
+  },
+  "NCU04304": {
+   "source": "JEE(Main) EG Unit-04 Q.5"
+  },
+  "NCU04305": {
+   "source": "JEE(Main) EG Unit-04 Q.115"
+  },
+  "NCU04307": {
+   "source": "JEE(Main) EG Unit-04 Q.6"
+  },
+  "NCU04308": {
+   "source": "JEE(Main) EG Unit-04 Q.111"
+  },
+  "NCU04309": {
+   "source": "JEE(Main) EG Unit-04 Q.113"
+  },
+  "NCU04123": {
+   "source": "JEE(Main) EG Unit-04 Q.178"
+  },
+  "NCU04139": {
+   "source": "JEE(Main) EG Unit-04 Q.206",
+   "question_tag": "JEE(Main) 2014"
+  },
+  "NCU04155": {
+   "source": "JEE(Main) EG Unit-04 Q.24"
+  },
+  "NCU04163": {
+   "source": "JEE(Main) EG Unit-04 Q.32"
+  },
+  "NCU04238": {
+   "source": "JEE(Main) EG Unit-04 Q.217",
+   "question_tag": "AIEEE 2012"
+  },
+  "NCU04261": {
+   "source": "JEE(Main) EG Unit-04 Q.76"
+  },
+  "NCU04273": {
+   "source": "JEE(Main) EG Unit-04 Q.11"
+  },
+  "NCU04275": {
+   "source": "JEE(Main) EG Unit-04 Q.13"
+  },
+  "NCU04276": {
+   "source": "JEE(Main) EG Unit-04 Q.134"
+  },
+  "NCU04279": {
+   "source": "JEE(Main) EG Unit-04 Q.15"
+  },
+  "NCU04282": {
+   "source": "JEE(Main) EG Unit-04 Q.139"
+  },
+  "NCU04283": {
+   "source": "JEE(Main) EG Unit-04 Q.138"
+  },
+  "NCU04284": {
+   "source": "JEE(Main) EG Unit-04 Q.16"
+  },
+  "NCU04285": {
+   "source": "JEE(Main) EG Unit-04 Q.126"
+  },
+  "NCU04288": {
+   "source": "JEE(Main) EG Unit-04 Q.8"
+  },
+  "NCU04292": {
+   "source": "JEE(Main) EG Unit-04 Q.125"
+  },
+  "NCU04297": {
+   "source": "JEE(Main) EG Unit-04 Q.7"
+  },
+  "NCU04299": {
+   "source": "JEE(Main) EG Unit-04 Q.128",
+   "question": "Which of the following graphs correctly represents the variation of thermodynamic properties of Haber's process?",
+   "option1": "",
+   "option2": "",
+   "option3": "",
+   "option4": "",
+   "correct_option": "option1"
+  },
+  "NCU04306": {
+   "source": "JEE(Main) EG Unit-04 Q.117",
+   "question": "Which of the following graphs between pressure 'p' versus volume 'V' represents the maximum work done?",
+   "option1": "",
+   "option2": "",
+   "option3": "",
+   "option4": "",
+   "correct_option": "option1"
+  },
+  "NCU04198": {
+   "source": "JEE(Main) EG Unit-04 Q.75"
+  },
+  "NCU04157": {
+   "source": "JEE(Main) EG Unit-04 Q.21"
+  },
+  "NCU04175": {
+   "source": "JEE(Main) EG Unit-04 Q.55"
+  },
+  "NCU04278": {
+   "source": "JEE(Main) EG Unit-04 Q.137"
+  },
+  "NCU04281": {
+   "source": "JEE(Main) EG Unit-04 Q.14"
+  },
+  "NCU04272": {
+   "source": "JEE(Main) EG Unit-04 Q.132"
+  },
+  "NCU04243": {
+   "question_tag": "AIEEE 2009"
+  },
+  "NCU04247": {
+   "question_tag": "AIEEE 2005"
+  }
+ },
+ "old": {
+  "NCU04098": {
+   "source": "JEE(Main) Q.No. 1"
+  },
+  "NCU04099": {
+   "source": "JEE(Main) Q.No. 2"
+  },
+  "NCU04100": {
+   "source": "JEE(Main) Q.No. 3"
+  },
+  "NCU04101": {
+   "source": "JEE(Main) Q.No. 4"
+  },
+  "NCU04102": {
+   "source": "JEE(Main) Q.No. 5"
+  },
+  "NCU04103": {
+   "source": "JEE(Main) Q.No. 6"
+  },
+  "NCU04104": {
+   "source": "JEE(Main) Q.No. 7"
+  },
+  "NCU04105": {
+   "source": "JEE(Main) Q.No. 8"
+  },
+  "NCU04106": {
+   "source": "JEE(Main) Q.No. 9"
+  },
+  "NCU04107": {
+   "source": "JEE(Main) Q.No. 10"
+  },
+  "NCU04108": {
+   "source": "JEE(Main) Q.No. 11"
+  },
+  "NCU04110": {
+   "source": "JEE(Main) Q.No. 13"
+  },
+  "NCU04111": {
+   "source": "JEE(Main) Q.No. 14"
+  },
+  "NCU04112": {
+   "source": "JEE(Main) Q.No. 15"
+  },
+  "NCU04113": {
+   "source": "JEE(Main) Q.No. 16"
+  },
+  "NCU04114": {
+   "source": "JEE(Main) Q.No. 17"
+  },
+  "NCU04115": {
+   "source": "JEE(Main) Q.No. 18"
+  },
+  "NCU04116": {
+   "source": "JEE(Main) Q.No. 19"
+  },
+  "NCU04117": {
+   "source": "JEE(Main) Q.No. 20"
+  },
+  "NCU04118": {
+   "source": "JEE(Main) Q.No. 21"
+  },
+  "NCU04119": {
+   "source": "JEE(Main) Q.No. 22"
+  },
+  "NCU04120": {
+   "source": "JEE(Main) Q.No. 23"
+  },
+  "NCU04121": {
+   "source": "JEE(Main) Q.No. 24"
+  },
+  "NCU04122": {
+   "source": "JEE(Main) Q.No. 25"
+  },
+  "NCU04124": {
+   "source": "JEE(Main) Q.No. 27"
+  },
+  "NCU04125": {
+   "source": "JEE(Main) Q.No. 28"
+  },
+  "NCU04126": {
+   "source": "JEE(Main) Q.No. 29"
+  },
+  "NCU04127": {
+   "source": "JEE(Main) Q.No. 30"
+  },
+  "NCU04128": {
+   "source": "JEE(Main) Q.No. 31"
+  },
+  "NCU04129": {
+   "source": "JEE(Main) Q.No. 32"
+  },
+  "NCU04130": {
+   "source": "JEE(Main) Q.No. 33"
+  },
+  "NCU04131": {
+   "source": "JEE(Main) Q.No. 34"
+  },
+  "NCU04132": {
+   "source": "JEE(Main) Q.No. 35"
+  },
+  "NCU04133": {
+   "source": "JEE(Main) Q.No. 36"
+  },
+  "NCU04134": {
+   "source": "JEE(Main) Q.No. 37"
+  },
+  "NCU04135": {
+   "source": "JEE(Main) Q.No. 38"
+  },
+  "NCU04136": {
+   "source": "JEE(Main) Q.No. 39"
+  },
+  "NCU04137": {
+   "source": "JEE(Main) Q.No. 40"
+  },
+  "NCU04138": {
+   "source": "JEE(Main) Q.No. 41"
+  },
+  "NCU04140": {
+   "source": "JEE(Main) Q.No. 43",
+   "question_tag": "JEE(Main) 2008"
+  },
+  "NCU04141": {
+   "source": "JEE(Main) Q.No. 44",
+   "question_tag": "JEE(Main) 2007"
+  },
+  "NCU04142": {
+   "source": "JEE(Main) Q.No. 45",
+   "question_tag": "JEE(Main) 2006"
+  },
+  "NCU04143": {
+   "source": "JEE(Main) Q.No. 46",
+   "question_tag": "JEE(Main) 2006"
+  },
+  "NCU04144": {
+   "source": "JEE(Main) Q.No. 47",
+   "question_tag": "JEE(Main) 2006"
+  },
+  "NCU04145": {
+   "source": "JEE(Main) Q.No. 48",
+   "question_tag": "JEE(Main) 2006"
+  },
+  "NCU04146": {
+   "source": "JEE(Main) Q.No. 49",
+   "question_tag": "JEE(Main) 2005"
+  },
+  "NCU04147": {
+   "source": "JEE(Main) Q.No. 50",
+   "question_tag": "JEE(Main) 2005"
+  },
+  "NCU04148": {
+   "source": "JEE(Main) Q.No. 51",
+   "question_tag": "JEE(Main) 2004"
+  },
+  "NCU04149": {
+   "source": "JEE(Main) Q.No. 52",
+   "question_tag": "JEE(Main) 2003"
+  },
+  "NCU04150": {
+   "source": "JEE(Main) Q.No. 53",
+   "question_tag": "JEE(Main) 2003"
+  },
+  "NCU04151": {
+   "source": "JEE(Main) Q.No. 54",
+   "question_tag": "JEE(Main) 2003"
+  },
+  "NCU04152": {
+   "source": "JEE(Main) Q.No. 55"
+  },
+  "NCU04153": {
+   "source": "JEE(Main) Q.No. 56"
+  },
+  "NCU04154": {
+   "source": "JEE(Main) Q.No. 57"
+  },
+  "NCU04156": {
+   "source": "JEE(Main) Q.No. 59"
+  },
+  "NCU04158": {
+   "source": "JEE(Main) Q.No. 61"
+  },
+  "NCU04159": {
+   "source": "JEE(Main) Q.No. 62"
+  },
+  "NCU04160": {
+   "source": "JEE(Main) Q.No. 63"
+  },
+  "NCU04161": {
+   "source": "JEE(Main) Q.No. 64"
+  },
+  "NCU04162": {
+   "source": "JEE(Main) Q.No. 65"
+  },
+  "NCU04164": {
+   "source": "JEE(Main) Q.No. 67"
+  },
+  "NCU04165": {
+   "source": "JEE(Main) Q.No. 68"
+  },
+  "NCU04166": {
+   "source": "JEE(Main) Q.No. 69"
+  },
+  "NCU04167": {
+   "source": "JEE(Main) Q.No. 70"
+  },
+  "NCU04168": {
+   "source": "JEE(Main) Q.No. 71"
+  },
+  "NCU04169": {
+   "source": "JEE(Main) Q.No. 72"
+  },
+  "NCU04170": {
+   "source": "JEE(Main) Q.No. 73"
+  },
+  "NCU04171": {
+   "source": "JEE(Main) Q.No. 74"
+  },
+  "NCU04172": {
+   "source": "JEE(Main) Q.No. 75"
+  },
+  "NCU04173": {
+   "source": "JEE(Main) Q.No. 76"
+  },
+  "NCU04174": {
+   "source": "JEE(Main) Q.No. 77"
+  },
+  "NCU04176": {
+   "source": "JEE(Main) Q.No. 79"
+  },
+  "NCU04177": {
+   "source": "JEE(Main) Q.No. 80"
+  },
+  "NCU04178": {
+   "source": "JEE(Main) Q.No. 81"
+  },
+  "NCU04179": {
+   "source": "JEE(Main) Q.No. 82"
+  },
+  "NCU04180": {
+   "source": "JEE(Main) Q.No. 83"
+  },
+  "NCU04181": {
+   "source": "JEE(Main) Q.No. 84"
+  },
+  "NCU04182": {
+   "source": "JEE(Main) Q.No. 85"
+  },
+  "NCU04183": {
+   "source": "JEE(Main) Q.No. 86"
+  },
+  "NCU04184": {
+   "source": "JEE(Main) Q.No. 87"
+  },
+  "NCU04185": {
+   "source": "JEE(Main) Q.No. 88"
+  },
+  "NCU04186": {
+   "source": "JEE(Main) Q.No. 89"
+  },
+  "NCU04187": {
+   "source": "JEE(Main) Q.No. 90"
+  },
+  "NCU04188": {
+   "source": "JEE(Main) Q.No. 91"
+  },
+  "NCU04189": {
+   "source": "JEE(Main) Q.No. 92",
+   "question": "For complete combustion of methanol, $\\ce{CH3OH(l) + 3/2 O2(g) -> CO2(g) + H2O(l)}$, the amount of heat produced as measured in bomb calorimeter is $726 \\, \\mathrm{kJ\\,mol^{-1}}$ at $27^\\circ\\mathrm{C}$. The enthalpy of combustion for the reaction is -x $\\mathrm{kJ\\,mol^{-1}}$, where x is ______ (Nearest integer). (Given $R = 8.3 \\, \\mathrm{J\\,K^{-1}\\,mol^{-1}}$)"
+  },
+  "NCU04190": {
+   "source": "JEE(Main) Q.No. 93"
+  },
+  "NCU04191": {
+   "source": "JEE(Main) Q.No. 94"
+  },
+  "NCU04192": {
+   "source": "JEE(Main) Q.No. 95"
+  },
+  "NCU04193": {
+   "source": "JEE(Main) Q.No. 96"
+  },
+  "NCU04194": {
+   "source": "JEE(Main) Q.No. 97"
+  },
+  "NCU04195": {
+   "source": "JEE(Main) Q.No. 98"
+  },
+  "NCU04197": {
+   "source": "JEE(Main) Q.No. 100"
+  },
+  "NCU04199": {
+   "source": "JEE(Main) Q.No. 102"
+  },
+  "NCU04200": {
+   "source": "JEE(Main) Q.No. 103"
+  },
+  "NCU04201": {
+   "source": "JEE(Main) Q.No. 104"
+  },
+  "NCU04202": {
+   "source": "JEE(Main) Q.No. 105"
+  },
+  "NCU04203": {
+   "source": "JEE(Main) Q.No. 106"
+  },
+  "NCU04204": {
+   "source": "JEE(Main) Q.No. 107"
+  },
+  "NCU04205": {
+   "source": "JEE(Main) Q.No. 108"
+  },
+  "NCU04206": {
+   "source": "JEE(Main) Q.No. 109"
+  },
+  "NCU04207": {
+   "source": "JEE(Main) Q.No. 110"
+  },
+  "NCU04208": {
+   "source": "JEE(Main) Q.No. 111"
+  },
+  "NCU04209": {
+   "source": "JEE(Main) Q.No. 112"
+  },
+  "NCU04210": {
+   "source": "JEE(Main) Q.No. 113"
+  },
+  "NCU04211": {
+   "source": "JEE(Main) Q.No. 114"
+  },
+  "NCU04212": {
+   "source": "JEE(Main) Q.No. 115"
+  },
+  "NCU04213": {
+   "source": "JEE(Main) Q.No. 116"
+  },
+  "NCU04214": {
+   "source": "JEE(Main) Q.No. 117"
+  },
+  "NCU04215": {
+   "source": "JEE(Main) Q.No. 118"
+  },
+  "NCU04216": {
+   "source": "JEE(Main) Q.No. 119"
+  },
+  "NCU04217": {
+   "source": "JEE(Main) Q.No. 120"
+  },
+  "NCU04218": {
+   "source": "JEE(Main) Q.No. 121"
+  },
+  "NCU04219": {
+   "source": "JEE(Main) Q.No. 122"
+  },
+  "NCU04220": {
+   "source": "JEE(Main) Q.No. 123"
+  },
+  "NCU04222": {
+   "source": "JEE(Main) Q.No. 125"
+  },
+  "NCU04223": {
+   "source": "JEE(Main) Q.No. 126"
+  },
+  "NCU04224": {
+   "source": "JEE(Main) Q.No. 127"
+  },
+  "NCU04225": {
+   "source": "JEE(Main) Q.No. 128"
+  },
+  "NCU04226": {
+   "source": "JEE(Main) Q.No. 129"
+  },
+  "NCU04227": {
+   "source": "JEE(Main) Q.No. 130"
+  },
+  "NCU04229": {
+   "source": "JEE(Main) Q.No. 132"
+  },
+  "NCU04230": {
+   "source": "JEE(Main) Q.No. 133"
+  },
+  "NCU04231": {
+   "source": "JEE(Main) Q.No. 134"
+  },
+  "NCU04232": {
+   "source": "JEE(Main) Q.No. 135"
+  },
+  "NCU04233": {
+   "source": "JEE(Main) Q.No. 136"
+  },
+  "NCU04234": {
+   "source": "JEE(Main) Q.No. 137"
+  },
+  "NCU04235": {
+   "source": "JEE(Main) Q.No. 138"
+  },
+  "NCU04236": {
+   "source": "JEE(Main) Q.No. 139"
+  },
+  "NCU04237": {
+   "source": "JEE(Main) Q.No. 140"
+  },
+  "NCU04239": {
+   "source": "JEE(Main) Q.No. 142",
+   "question_tag": "JEE(Main) 2012"
+  },
+  "NCU04240": {
+   "source": "JEE(Main) Q.No. 143",
+   "question_tag": "JEE(Main) 2011"
+  },
+  "NCU04241": {
+   "source": "JEE(Main) Q.No. 144",
+   "question_tag": "JEE(Main) 2010"
+  },
+  "NCU04242": {
+   "source": "JEE(Main) Q.No. 145",
+   "question_tag": "JEE(Main) 2009"
+  },
+  "NCU04244": {
+   "source": "JEE(Main) Q.No. 147",
+   "question_tag": "JEE(Main) 2008"
+  },
+  "NCU04245": {
+   "source": "JEE(Main) Q.No. 148",
+   "question_tag": "JEE(Main) 2007"
+  },
+  "NCU04246": {
+   "source": "JEE(Main) Q.No. 149",
+   "question_tag": "JEE(Main) 2007"
+  },
+  "NCU04248": {
+   "source": "JEE(Main) Q.No. 151",
+   "question_tag": "JEE(Main) 2003"
+  },
+  "NCU04249": {
+   "source": "JEE(Main) Q.No. 152",
+   "question_tag": "JEE(Main) 2002"
+  },
+  "NCU04250": {
+   "source": "JEE(Main) Q.No. 153",
+   "question_tag": "JEE(Main) 2002"
+  },
+  "NCU04251": {
+   "source": "JEE(Main) Q.No. 154",
+   "question_tag": "JEE(Main) 2002"
+  },
+  "NCU04252": {
+   "source": "JEE(Main) Q.No. 155"
+  },
+  "NCU04253": {
+   "source": "JEE(Main) Q.No. 156"
+  },
+  "NCU04254": {
+   "source": "JEE(Main) Q.No. 157"
+  },
+  "NCU04255": {
+   "source": "JEE(Main) Q.No. 158"
+  },
+  "NCU04256": {
+   "source": "JEE(Main) Q.No. 159"
+  },
+  "NCU04257": {
+   "source": "JEE(Main) Q.No. 160"
+  },
+  "NCU04258": {
+   "source": "JEE(Main) Q.No. 161"
+  },
+  "NCU04259": {
+   "source": "JEE(Main) Q.No. 162"
+  },
+  "NCU04260": {
+   "source": "JEE(Main) Q.No. 163"
+  },
+  "NCU04263": {
+   "source": "JEE(Main) Q.No. 166"
+  },
+  "NCU04265": {
+   "source": "JEE(Main) Q.No. 168"
+  },
+  "NCU04266": {
+   "source": "JEE(Main) Q.No. 169"
+  },
+  "NCU04267": {
+   "source": "JEE(Main) Q.No. 170"
+  },
+  "NCU04268": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04269": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04271": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04274": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04277": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04280": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04286": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04287": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04289": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04290": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04291": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04293": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04294": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04295": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04296": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04298": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04300": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04301": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04302": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04303": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04304": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04305": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04307": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04308": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04309": {
+   "source": "JEE(Main) 2026"
+  },
+  "NCU04123": {
+   "source": "JEE(Main) Q.No. 26"
+  },
+  "NCU04139": {
+   "source": "JEE(Main) Q.No. 42",
+   "question_tag": "JEE(Main) 2010"
+  },
+  "NCU04155": {
+   "source": "JEE(Main) Q.No. 58"
+  },
+  "NCU04163": {
+   "source": "JEE(Main) Q.No. 66"
+  },
+  "NCU04238": {
+   "source": "JEE(Main) Q.No. 141",
+   "question_tag": "JEE(Main) 2012"
+  },
+  "NCU04261": {
+   "source": "JEE(Main) Q.No. 164"
+  },
+  "NCU04273": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04275": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04276": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04279": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04282": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04283": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04284": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04285": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04288": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04292": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04297": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04299": {
+   "source": "JEE(Main) 2025",
+   "question": "[Image] Which of the following graphs correctly represents the variation of thermodynamic properties (-ΔH°R/T, -ΔG°R/T, ΔH°R, ΔS°R) with temperature (T/K) for the exothermic Haber's process (N₂ + 3H₂ ⇌ 2NH₃, ΔH° negative, ΔS° negative)? Four candidate plots (graphs 1-4) are given in the source image, differing in which curves are plotted as raw values (ΔH°R, ΔS°R) versus temperature-scaled values (-ΔH°R/T, -ΔG°R/T or divided further by T) and in their relative ordering/curvature. Refer to the source image for the exact curve shapes.",
+   "option1": "Graph (1) as shown in source image",
+   "option2": "Graph (2) as shown in source image",
+   "option3": "Graph (3) as shown in source image",
+   "option4": "Graph (4) as shown in source image",
+   "correct_option": "Graph (1) as shown in source image"
+  },
+  "NCU04306": {
+   "source": "JEE(Main) 2026",
+   "question": "[Image] Which of the following graphs between pressure 'p' versus volume 'V' represents the maximum work done? Four P-V plots (all between V = 22.4 L and V = 44.8 L, P between 1.0 and 2.0 bar) are given in the source image: Graph (1) is a smooth curved expansion from (22.4, 2.0) to (44.8, 1.0); Graph (2) is a cyclic (loop) process over the same range; Graph (3) is an isochoric process at constant V = 22.4 L (vertical line, no volume change); Graph (4) is another cyclic (loop) process. Refer to the source image for the exact curve shapes.",
+   "option1": "Graph (1) — the curved expansion from V = 22.4 L to 44.8 L",
+   "option2": "Graph (2) — the cyclic (loop) process",
+   "option3": "Graph (3) — the isochoric (constant volume) process",
+   "option4": "Graph (4) — the other cyclic (loop) process",
+   "correct_option": "Graph (1) — the curved expansion from V = 22.4 L to 44.8 L"
+  },
+  "NCU04198": {
+   "source": "JEE(Main) Q.No. 101"
+  },
+  "NCU04157": {
+   "source": "JEE(Main) Q.No. 60"
+  },
+  "NCU04175": {
+   "source": "JEE(Main) Q.No. 78"
+  },
+  "NCU04278": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04281": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04272": {
+   "source": "JEE(Main) 2025"
+  },
+  "NCU04243": {
+   "question_tag": "JEE(Main) 2009"
+  },
+  "NCU04247": {
+   "question_tag": "JEE(Main) 2005"
+  }
+ },
+ "img": {
+  "NCU04299": {
+   "option1_image": "q128_o1.png",
+   "option2_image": "q128_o2.png",
+   "option3_image": "q128_o3.png",
+   "option4_image": "q128_o4.png"
+  },
+  "NCU04306": {
+   "option1_image": "q117_o1.png",
+   "option2_image": "q117_o2.png",
+   "option3_image": "q117_o3.png",
+   "option4_image": "q117_o4.png"
+  },
+  "NCU04435": {
+   "question_image": "q118_q.png"
+  },
+  "NCU04436": {
+   "option1_image": "q146_o1.png",
+   "option2_image": "q146_o2.png",
+   "option3_image": "q146_o3.png",
+   "option4_image": "q146_o4.png"
+  },
+  "NCU04438": {
+   "option1_image": "q149_o1.png",
+   "option2_image": "q149_o2.png",
+   "option3_image": "q149_o3.png",
+   "option4_image": "q149_o4.png"
+  },
+  "NCU04443": {
+   "question_image": "q199_q.png"
+  }
+ },
+ "expect": {
+  "NCU04": "NCU04415"
+ }
+}
