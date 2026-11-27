@@ -1,0 +1,539 @@
+{
+ "insert": [],
+ "payload": {
+  "NCU03379": {
+   "source": "NTA Abhyas Unit-03 Q.1",
+   "question": "Number of sigma bonds in $\\ce{P4O10}$ is"
+  },
+  "NCU03380": {
+   "source": "NTA Abhyas Unit-03 Q.2",
+   "question": "The geometry of $\\ce{XeOF4}$ by VSEPR theory is:"
+  },
+  "NCU03381": {
+   "source": "NTA Abhyas Unit-03 Q.3",
+   "question": "Hybridisation of the given (underlined) carbon atom is affected when:",
+   "option1": "$\\ce{CH3COOH}$ is decarboxylated (the $\\ce{CH3}$ carbon)",
+   "option2": "$\\ce{CH3CH2OH}$ is dehydrated (the $\\ce{CH2}$ carbon)",
+   "option3": "$\\ce{CH3CH3}$ is chlorinated (one of the carbons)",
+   "option4": "$\\ce{C6H6}$ is nitrated (a ring carbon)",
+   "correct_option": "$\\ce{CH3CH2OH}$ is dehydrated (the $\\ce{CH2}$ carbon)"
+  },
+  "NCU03382": {
+   "source": "NTA Abhyas Unit-03 Q.4",
+   "option1": "$\\ce{XeO4^2-}$",
+   "option2": "$\\ce{XeF2}$",
+   "option3": "$\\ce{XeO6^4-}$",
+   "option4": "$\\ce{O3}$",
+   "correct_option": "$\\ce{XeF2}$"
+  },
+  "NCU03383": {
+   "source": "NTA Abhyas Unit-03 Q.5",
+   "question": "Species like $\\ce{SbCl6-}$, $\\ce{SnCl6^2-}$, $\\ce{XeF5+}$ and $\\ce{IO6^5-}$ have hybridization $\\mathrm{sp^3d^{x-1}}$. The value of \"x\" is"
+  },
+  "NCU03384": {
+   "source": "NTA Abhyas Unit-03 Q.6"
+  },
+  "NCU03385": {
+   "source": "NTA Abhyas Unit-03 Q.7"
+  },
+  "NCU03386": {
+   "source": "NTA Abhyas Unit-03 Q.8",
+   "question": "The polarity of (i) $\\ce{(CH3)2P(CF3)3}$ and (ii) $\\ce{(CH3)3P(CF3)2}$ respectively are?"
+  },
+  "NCU03387": {
+   "source": "NTA Abhyas Unit-03 Q.9",
+   "question": "How many of the following species have $\\mathrm{sp^2}$ hybrid atoms? Diamond, Graphite, $\\ce{C60}$, $\\ce{(SiH3)3N}$, $\\ce{AlCl3}$, $\\ce{Al2(CH3)6}$, SiC, $\\ce{H3BO3}$, layered BN, borazine."
+  },
+  "NCU03388": {
+   "source": "NTA Abhyas Unit-03 Q.10",
+   "option1": "$\\ce{CH3Cl}$",
+   "option2": "$\\ce{CH2Cl2}$",
+   "option3": "$\\ce{CHCl3}$",
+   "option4": "$\\ce{CCl4}$",
+   "correct_option": "$\\ce{CH3Cl}$"
+  },
+  "NCU03389": {
+   "source": "NTA Abhyas Unit-03 Q.11",
+   "question": "The structure of $\\ce{B3N3H6}$ is as follows:\nHow many derivative structures of $\\ce{B3N3H4X2}$ can be derived from the basic structure, by the replacement of two hydrogen atoms?"
+  },
+  "NCU03390": {
+   "source": "NTA Abhyas Unit-03 Q.12",
+   "question": "The sum of number of sigma and pi bonds formed between two carbon atoms in $\\ce{CaC2}$ are:"
+  },
+  "NCU03391": {
+   "source": "NTA Abhyas Unit-03 Q.13",
+   "question": "In $\\ce{XeF2}$, $\\ce{XeF4}$, $\\ce{XeF6}$ the number of lone pairs on Xe are respectively"
+  },
+  "NCU03392": {
+   "source": "NTA Abhyas Unit-03 Q.14"
+  },
+  "NCU03393": {
+   "source": "NTA Abhyas Unit-03 Q.15",
+   "question": "The sum of $p\\pi$–$d\\pi$ bonds in the gases obtained by strong heating of ferrous sulphate is:"
+  },
+  "NCU03394": {
+   "source": "NTA Abhyas Unit-03 Q.16",
+   "question": "Select which type of overlapping is responsible for $\\pi$-character in Si–N bond of $\\ce{H3SiNCO}$",
+   "option1": "$3p\\pi \\rightarrow 2p\\pi$",
+   "option2": "$2p\\pi \\rightarrow 2p\\pi$",
+   "option3": "$3d\\pi \\leftarrow 2p\\pi$",
+   "option4": "$3d\\pi \\leftarrow 2d\\pi$",
+   "correct_option": "$3d\\pi \\leftarrow 2p\\pi$"
+  },
+  "NCU03395": {
+   "source": "NTA Abhyas Unit-03 Q.17",
+   "option1": "$\\ce{C2}$ < NO < $\\ce{He2+}$ < $\\ce{O2-}$",
+   "option2": "NO < $\\ce{C2}$ < $\\ce{O2-}$ < $\\ce{He2+}$",
+   "option3": "$\\ce{He2+}$ < $\\ce{O2-}$ < NO < $\\ce{C2}$",
+   "option4": "$\\ce{He2+}$ < $\\ce{O2-}$ < $\\ce{C2}$ < NO",
+   "correct_option": "$\\ce{He2+}$ < $\\ce{O2-}$ < $\\ce{C2}$ < NO"
+  },
+  "NCU03396": {
+   "source": "NTA Abhyas Unit-03 Q.18",
+   "question": "What is the ratio of number of nodal planes present in $\\pi^{*} 2p$ and $\\sigma^{*} 1s$ molecular orbitals?"
+  },
+  "NCU03397": {
+   "source": "NTA Abhyas Unit-03 Q.19",
+   "question": "Arginine is a nonessential amino acid which is present in human body. How many nitrogen atoms are present in $\\mathrm{sp^2}$ hybrid state in arginine?"
+  },
+  "NCU03398": {
+   "source": "NTA Abhyas Unit-03 Q.20"
+  },
+  "NCU03399": {
+   "source": "NTA Abhyas Unit-03 Q.21",
+   "option1": "$\\ce{SO3}$, $\\ce{ClF3}$",
+   "option2": "$\\ce{BF3}$, $\\ce{PCl3}$",
+   "option3": "$\\ce{XeF2}$, $\\ce{CO2}$",
+   "option4": "$\\ce{XeF4}$, $\\ce{SF4}$",
+   "correct_option": "$\\ce{XeF2}$, $\\ce{CO2}$"
+  },
+  "NCU03400": {
+   "source": "NTA Abhyas Unit-03 Q.22",
+   "question": "The set in which all the species are planar is:",
+   "option1": "$\\ce{I3-}$, $\\ce{CO2}$, $\\ce{XeF4}$, $\\ce{I2Cl6}$",
+   "option2": "$\\ce{CO2}$, $\\ce{SF4}$, $\\ce{ClF3}$, $\\ce{BrF5}$",
+   "option3": "$\\ce{XeF4}$, $\\ce{H2O}$, $\\ce{XeO4}$, $\\ce{PF3}$",
+   "option4": "$\\ce{ICl2+}$, $\\ce{ICl2-}$, $\\ce{CO2}$, $\\ce{XeO3}$",
+   "correct_option": "$\\ce{I3-}$, $\\ce{CO2}$, $\\ce{XeF4}$, $\\ce{I2Cl6}$"
+  },
+  "NCU03401": {
+   "source": "NTA Abhyas Unit-03 Q.23",
+   "option1": "$\\ce{ClF3}$ > $\\ce{PF3}$ > $\\ce{NF3}$ > $\\ce{BF3}$",
+   "option2": "$\\ce{BF3}$ > $\\ce{PF3}$ > $\\ce{NF3}$ > $\\ce{ClF3}$",
+   "option3": "$\\ce{BF3}$ > $\\ce{ClF3}$ > $\\ce{PF3}$ > $\\ce{NF3}$",
+   "option4": "$\\ce{BF3}$ > $\\ce{NF3}$ > $\\ce{PF3}$ > $\\ce{ClF3}$",
+   "correct_option": "$\\ce{BF3}$ > $\\ce{NF3}$ > $\\ce{PF3}$ > $\\ce{ClF3}$"
+  },
+  "NCU03402": {
+   "source": "NTA Abhyas Unit-03 Q.24",
+   "question": "The dipole moment of HBr is $1.6\\times 10^{-30}$ C m and inter-atomic spacing is 1 Å. The % ionic character of HBr is"
+  },
+  "NCU03403": {
+   "source": "NTA Abhyas Unit-03 Q.25",
+   "question": "Which of the following is not isostructural with $\\ce{SiCl4}$?",
+   "option1": "$\\ce{SO4^2-}$",
+   "option2": "$\\ce{PO4^3-}$",
+   "option3": "$\\ce{NH4+}$",
+   "option4": "$\\ce{SCl4}$",
+   "correct_option": "$\\ce{SCl4}$"
+  },
+  "NCU03404": {
+   "source": "NTA Abhyas Unit-03 Q.26",
+   "question": "In compound $\\ce{O2SC(NH2)2}$, the geometry around S and N are respectively -"
+  },
+  "NCU03405": {
+   "source": "NTA Abhyas Unit-03 Q.27",
+   "question": "The number of paramagnetic species among the following is: $\\ce{O2}$, CO, $\\ce{N2}$, $\\ce{C2}$, $\\ce{CsO2}$, $\\ce{BaO2}$, $\\ce{CO2}$"
+  },
+  "NCU03406": {
+   "source": "NTA Abhyas Unit-03 Q.28",
+   "question": "The $p\\pi$–$p\\pi$ bond is present in",
+   "option1": "$\\ce{XeO3}$",
+   "option2": "$\\ce{SO4^2-}$",
+   "option3": "$\\ce{SO2}$",
+   "correct_option": "$\\ce{SO2}$"
+  },
+  "NCU03407": {
+   "source": "NTA Abhyas Unit-03 Q.29",
+   "option1": "$\\ce{IF7}$",
+   "option2": "$\\ce{XeF6}$",
+   "option3": "$\\ce{XeF4}$",
+   "option4": "$\\ce{XeF2}$",
+   "correct_option": "$\\ce{IF7}$"
+  },
+  "NCU03408": {
+   "source": "NTA Abhyas Unit-03 Q.30",
+   "question": "The dipole moments of $\\ce{CCl4}$, $\\ce{CHCl3}$ and $\\ce{CH4}$ are in the order",
+   "option1": "$\\ce{CH4}$ < $\\ce{CCl4}$ < $\\ce{CHCl3}$",
+   "option2": "$\\ce{CHCl3}$ < $\\ce{CH4}$ = $\\ce{CCl4}$",
+   "option3": "$\\ce{CH4}$ = $\\ce{CCl4}$ < $\\ce{CHCl3}$",
+   "option4": "$\\ce{CCl4}$ < $\\ce{CH4}$ < $\\ce{CHCl3}$",
+   "correct_option": "$\\ce{CH4}$ = $\\ce{CCl4}$ < $\\ce{CHCl3}$"
+  },
+  "NCU03409": {
+   "source": "NTA Abhyas Unit-03 Q.31"
+  },
+  "NCU03410": {
+   "source": "NTA Abhyas Unit-03 Q.32",
+   "question": "The number and type of bonds between two carbon atoms in $\\ce{CaC2}$ are:"
+  },
+  "NCU03411": {
+   "source": "NTA Abhyas Unit-03 Q.33"
+  },
+  "NCU03412": {
+   "source": "NTA Abhyas Unit-03 Q.34",
+   "question": "Which of the following is the correct prediction about observed B–F bond length in $\\ce{BF3}$ molecule?",
+   "option1": "B–F bond length in $\\ce{BF3}$ is found to be less than theoretical value because the electronegativity values of B (2.04) and F (4.0) suggest the bond length to be ionic and hence, the attraction between oppositely charged ions must decrease the bond length.",
+   "option2": "$\\ce{BF3}$ and $\\ce{[BF4]-}$ have equal B–F bond length.",
+   "option3": "The decrease in the B–F bond length in $\\ce{BF3}$ is due to delocalised $p\\pi$–$p\\pi$ bonding between vacant 2p orbital of B and filled 2p orbital of F",
+   "correct_option": "The decrease in the B–F bond length in $\\ce{BF3}$ is due to delocalised $p\\pi$–$p\\pi$ bonding between vacant 2p orbital of B and filled 2p orbital of F"
+  },
+  "NCU03413": {
+   "source": "NTA Abhyas Unit-03 Q.35",
+   "question": "Number of molecules among the following having non-zero dipole moment is: $\\ce{O3}$, $\\ce{SO3}$, $\\ce{SF4}$, $\\ce{SF6}$, $\\ce{H2S}$, $\\ce{CS2}$, $\\ce{SO2}$, $\\ce{H2O}$ and $\\ce{H2O2}$"
+  },
+  "NCU03414": {
+   "source": "NTA Abhyas Unit-03 Q.36",
+   "option1": "$\\ce{[Ni(CO)4]}$",
+   "option2": "$\\ce{[MnCl4]^2-}$",
+   "option3": "$\\ce{[CuCl4]^2-}$",
+   "option4": "$\\ce{[Cu(NH3)4]^2+}$",
+   "correct_option": "$\\ce{[Cu(NH3)4]^2+}$"
+  },
+  "NCU03415": {
+   "source": "NTA Abhyas Unit-03 Q.37",
+   "question": "The dipole moments of $\\ce{AX3}$, $\\ce{BX3}$ and $\\ce{CX3}$ are 1.5 D, 0.5 D and 0 D respectively. The possible shapes of the molecules may be (consider C has no lone pair) (A, B and C are more electronegative than X)"
+  },
+  "NCU03417": {
+   "source": "NTA Abhyas Unit-03 Q.39",
+   "question": "The Bond dissociation energy of B–F in $\\ce{BF3}$ is 646 kJ mol$^{-1}$ whereas that of C–F in $\\ce{CF4}$ is 515 kJ mol$^{-1}$. The correct reason for higher B–F bond dissociation energy as compared to that of C–F is",
+   "option2": "Stronger $\\sigma$ bond between B and F in $\\ce{BF3}$ as compared to that between C and F in $\\ce{CF4}$",
+   "option3": "Lower degree of $p\\pi$–$p\\pi$ interaction between B and F in $\\ce{BF3}$ than that between C and F in $\\ce{CF4}$",
+   "option4": "Significant $p\\pi$–$p\\pi$ interaction between B and F in $\\ce{BF3}$ whereas there is no possibility of such interaction between C and F in $\\ce{CF4}$",
+   "correct_option": "Significant $p\\pi$–$p\\pi$ interaction between B and F in $\\ce{BF3}$ whereas there is no possibility of such interaction between C and F in $\\ce{CF4}$"
+  },
+  "NCU03418": {
+   "source": "NTA Abhyas Unit-03 Q.40",
+   "option1": "$\\ce{SiF6^2-}$",
+   "option2": "$\\ce{BF6^3-}$",
+   "option3": "$\\ce{SF6}$",
+   "option4": "$\\ce{AlF6^3-}$",
+   "correct_option": "$\\ce{BF6^3-}$"
+  },
+  "NCU03419": {
+   "source": "NTA Abhyas Unit-03 Q.41"
+  },
+  "NCU03420": {
+   "source": "NTA Abhyas Unit-03 Q.42",
+   "question": "Among the following how many of the molecules are linear. $\\ce{CO2}$, $\\ce{NO2-}$, $\\ce{SO2}$, $\\ce{N3-}$, $\\ce{C2H2}$, $\\ce{I3-}$, $\\ce{XeF2}$, $\\ce{CS2}$"
+  },
+  "NCU03421": {
+   "source": "NTA Abhyas Unit-03 Q.43",
+   "question": "Total number of molecules with pyramidal shape are: $\\ce{NH3}$, $\\ce{ClF3}$, $\\ce{SO3}$, $\\ce{PCl3}$, $\\ce{XeO3}$, $\\ce{BCl3}$, $\\ce{ClO3-}$, $\\ce{SO3^2-}$"
+  },
+  "NCU03422": {
+   "source": "NTA Abhyas Unit-03 Q.44",
+   "question": "Which of the following molecules have zero dipole moment?\n(I) gauche conformation of 1,2-dibromoethane\n(II) anti conformation of 1,2-dibromoethane\n(III) trans-1,4-dibromocyclohexane\n(IV) cis-1,4-dibromocyclohexane\n(V) tetrabromomethane\n(VI) 1,1-dibromocyclohexane"
+  },
+  "NCU03423": {
+   "source": "NTA Abhyas Unit-03 Q.45",
+   "question": "Arrange the following molecules from most to least polar. $\\ce{CH4}$ (I), $\\ce{CF2Cl2}$ (II), $\\ce{CF2H2}$ (III), $\\ce{CCl4}$ (IV), $\\ce{CH2Cl2}$ (V)"
+  },
+  "NCU03425": {
+   "source": "NTA Abhyas Unit-03 Q.47",
+   "option1": "LUMO level for $\\ce{C2}$ molecule is $\\sigma 2p_x$ orbital.",
+   "option2": "In $\\ce{C2}$ molecule both the bonds are $\\pi$ bonds",
+   "option3": "In $\\ce{C2^2-}$ ion there is one $\\sigma$ and two $\\pi$ bonds",
+   "option4": "$\\ce{C2}$ is paramagnetic but $\\ce{C2^2-}$ is diamagnetic.",
+   "correct_option": "$\\ce{C2}$ is paramagnetic but $\\ce{C2^2-}$ is diamagnetic."
+  },
+  "NCU03426": {
+   "source": "NTA Abhyas Unit-03 Q.48"
+  },
+  "NCU03427": {
+   "source": "NTA Abhyas Unit-03 Q.49",
+   "question": "The experimental value of the dipole moment of HCl is 1.03 D. The length of the H–Cl bond is 1.275 Å. The percentage of ionic character in HCl is: [Given: 1 D = $10^{-18}$ esu cm]"
+  },
+  "NCU03428": {
+   "source": "NTA Abhyas Unit-03 Q.50",
+   "question": "After understanding the assertion and reason, choose the correct option.\nAssertion (A): In the bonding molecular orbital (MO) of $\\ce{H2}$, electron density is increased between the nuclei.\nReason (R): The bonding MO is $\\psi_A + \\psi_B$, which shows destructive interference of the combining electron waves.",
+   "question_type": "Assertion Reason"
+  },
+  "NCU03429": {
+   "source": "NTA Abhyas Unit-03 Q.51"
+  },
+  "NCU03431": {
+   "source": "NTA Abhyas Unit-03 Q.53"
+  }
+ },
+ "old": {
+  "NCU03379": {
+   "source": "NTA Abhyas Q1",
+   "question": "Number of sigma bonds in P₄O₁₀ is"
+  },
+  "NCU03380": {
+   "source": "NTA Abhyas Q2",
+   "question": "The geometry of XeOF₄ by VSEPR theory is:"
+  },
+  "NCU03381": {
+   "source": "NTA Abhyas Q3",
+   "question": "Hybridisation of the underlined atom is affected when:",
+   "option1": "C̲H₃COOH is decarboxylated",
+   "option2": "CH₃C̲H₂OH is dehydrated",
+   "option3": "CH₃C̲H₃ is chlorinated",
+   "option4": "C̲₆H₆ is nitrated",
+   "correct_option": "CH₃C̲H₂OH is dehydrated"
+  },
+  "NCU03382": {
+   "source": "NTA Abhyas Q4",
+   "option1": "XeO₄²⁻",
+   "option2": "XeF₂",
+   "option3": "XeO₆⁴⁻",
+   "option4": "O₃",
+   "correct_option": "XeF₂"
+  },
+  "NCU03383": {
+   "source": "NTA Abhyas Q5",
+   "question": "Species like SbCl₆⁻, SnCl₆²⁻, XeF₅⁺ and IO₆⁵⁻ has hybridization as sp³d^(x−1). The value of \"x\" is"
+  },
+  "NCU03384": {
+   "source": "NTA Abhyas Q6"
+  },
+  "NCU03385": {
+   "source": "NTA Abhyas Q7"
+  },
+  "NCU03386": {
+   "source": "NTA Abhyas Q8",
+   "question": "The polarity of (i) (CH₃)₂P(CF₃)₃ and (ii) (CH₃)₃P(CF₃)₂ respectively are?"
+  },
+  "NCU03387": {
+   "source": "NTA Abhyas Q9",
+   "question": "How many of the following species have sp² hybrid atoms? Diamond, Graphite, C₆₀, (SiH₃)₃N, AlCl₃, Al₂(CH₃)₆, SiC, H₃BO₃, layered BN, borazine."
+  },
+  "NCU03388": {
+   "source": "NTA Abhyas Q10",
+   "option1": "CH₃Cl",
+   "option2": "CH₂Cl₂",
+   "option3": "CHCl₃",
+   "option4": "CCl₄",
+   "correct_option": "CH₃Cl"
+  },
+  "NCU03389": {
+   "source": "NTA Abhyas Q11",
+   "question": "The structure of B₃N₃H₆ is as follows: How many derivative structures of B₃N₃H₄X₂ can be derived from the basic structure, by the replacement of two hydrogen atoms?"
+  },
+  "NCU03390": {
+   "source": "NTA Abhyas Q12",
+   "question": "The sum of number of sigma and pi bonds formed between two carbon atoms in CaC₂ are:"
+  },
+  "NCU03391": {
+   "source": "NTA Abhyas Q13",
+   "question": "In XeF₂, XeF₄, XeF₆ the number of lone pairs on Xe are respectively"
+  },
+  "NCU03392": {
+   "source": "NTA Abhyas Q14"
+  },
+  "NCU03393": {
+   "source": "NTA Abhyas Q15",
+   "question": "The sum of pπ − dπ bonds in the gases obtained by strong heating of ferrous sulphate is:"
+  },
+  "NCU03394": {
+   "source": "NTA Abhyas Q16",
+   "question": "Select which type of overlapping is responsible for π-character in Si–N bond of H₃SiNCO",
+   "option1": "3pπ → 2pπ",
+   "option2": "2pπ → 2pπ",
+   "option3": "3dπ ← 2pπ",
+   "option4": "3dπ ← 2dπ",
+   "correct_option": "3dπ ← 2pπ"
+  },
+  "NCU03395": {
+   "source": "NTA Abhyas Q17",
+   "option1": "C₂ < NO < He₂⁺ < O₂⁻",
+   "option2": "NO < C₂ < O₂⁻ < He₂⁺",
+   "option3": "He₂⁺ < O₂⁻ < NO < C₂",
+   "option4": "He₂⁺ < O₂⁻ < C₂ < NO",
+   "correct_option": "He₂⁺ < O₂⁻ < C₂ < NO"
+  },
+  "NCU03396": {
+   "source": "NTA Abhyas Q18",
+   "question": "What is the ratio of number of nodal planes present in π*2p and σ*1s molecular orbitals?"
+  },
+  "NCU03397": {
+   "source": "NTA Abhyas Q19",
+   "question": "Arginine is nonessential amino acid which is present is human body. How many Nitrogen atoms are present in sp² hybrid state in Arginine."
+  },
+  "NCU03398": {
+   "source": "NTA Abhyas Q20"
+  },
+  "NCU03399": {
+   "source": "NTA Abhyas Q21",
+   "option1": "SO₃, ClF₃",
+   "option2": "BF₃, PCl₃",
+   "option3": "XeF₂, CO₂",
+   "option4": "XeF₄, SF₄",
+   "correct_option": "XeF₂, CO₂"
+  },
+  "NCU03400": {
+   "source": "NTA Abhyas Q22",
+   "question": "The set which was all the species planar is: -",
+   "option1": "I₃⁻, CO₂, XeF₄, I₂Cl₆",
+   "option2": "CO₂, SF₄, ClF₃, BrF₅",
+   "option3": "XeF₄, H₂O, XeO₄, PF₃",
+   "option4": "ICl₂⁺, ICl₂⁻, CO₂, XeO₃",
+   "correct_option": "I₃⁻, CO₂, XeF₄, I₂Cl₆"
+  },
+  "NCU03401": {
+   "source": "NTA Abhyas Q23",
+   "option1": "ClF₃ > PF₃ > NF₃ > BF₃",
+   "option2": "BF₃ > PF₃ > NF₃ > ClF₃",
+   "option3": "BF₃ > ClF₃ > PF₃ > NF₃",
+   "option4": "BF₃ > NF₃ > PF₃ > ClF₃",
+   "correct_option": "BF₃ > NF₃ > PF₃ > ClF₃"
+  },
+  "NCU03402": {
+   "source": "NTA Abhyas Q24",
+   "question": "The dipole moment of HBr is 1.6 × 10⁻³⁰ Coulomb-metre and inter-atomic spacing is 1 Å. The % ionic character of HBr is"
+  },
+  "NCU03403": {
+   "source": "NTA Abhyas Q25",
+   "question": "Which of the following is not isostructural with SiCl₄?",
+   "option1": "SO₄²⁻",
+   "option2": "PO₄³⁻",
+   "option3": "NH₄⁺",
+   "option4": "SCl₄",
+   "correct_option": "SCl₄"
+  },
+  "NCU03404": {
+   "source": "NTA Abhyas Q26",
+   "question": "In compound O₂SC(NH₂)₂, the geometry around S and N are respectively -"
+  },
+  "NCU03405": {
+   "source": "NTA Abhyas Q27",
+   "question": "The number of paramagnetic species among the following is: O₂, CO, N₂, C₂, CsO₂, BaO₂, CO₂"
+  },
+  "NCU03406": {
+   "source": "NTA Abhyas Q28",
+   "question": "The pπ − pπ bond is present in",
+   "option1": "XeO₃",
+   "option2": "SO₄²⁻",
+   "option3": "SO₂",
+   "correct_option": "SO₂"
+  },
+  "NCU03407": {
+   "source": "NTA Abhyas Q29",
+   "option1": "IF₇",
+   "option2": "XeF₆",
+   "option3": "XeF₄",
+   "option4": "XeF₂",
+   "correct_option": "IF₇"
+  },
+  "NCU03408": {
+   "source": "NTA Abhyas Q30",
+   "question": "The dipole moments of CCl₄, CHCl₃ and CH₄ are in the order",
+   "option1": "CH₄ < CCl₄ < CHCl₃",
+   "option2": "CHCl₃ < CH₄ = CCl₄",
+   "option3": "CH₄ = CCl₄ < CHCl₃",
+   "option4": "CCl₄ < CH₄ < CHCl₃",
+   "correct_option": "CH₄ = CCl₄ < CHCl₃"
+  },
+  "NCU03409": {
+   "source": "NTA Abhyas Q31"
+  },
+  "NCU03410": {
+   "source": "NTA Abhyas Q32",
+   "question": "The number and type of bonds between two carbon atoms in CaC₂ are:"
+  },
+  "NCU03411": {
+   "source": "NTA Abhyas Q33"
+  },
+  "NCU03412": {
+   "source": "NTA Abhyas Q34",
+   "question": "Which of the following is the correct prediction about observed B–F bond length in BF₃ molecule?",
+   "option1": "B–F bond length in BF₃ is found to be less than theoretical value because the electronegativity values of B (2.04) and F (4.0) suggest the bond length to be ionic and hence, the attraction between oppositely charged ions must decrease the bond length.",
+   "option2": "BF₃ and [BF₄]⁻ have equal B–F bond length.",
+   "option3": "The decrease in the B–F bond length in BF₃ is due to delocalised pπ–pπ bonding between vacant 2p orbital of B and filled 2p orbital of F",
+   "correct_option": "The decrease in the B–F bond length in BF₃ is due to delocalised pπ–pπ bonding between vacant 2p orbital of B and filled 2p orbital of F"
+  },
+  "NCU03413": {
+   "source": "NTA Abhyas Q35",
+   "question": "Number of molecules among the following having non-zero dipole moment is: O₃, SO₃, SF₄, SF₆, H₂S, CS₂, SO₂, H₂O and H₂O₂"
+  },
+  "NCU03414": {
+   "source": "NTA Abhyas Q36",
+   "option1": "[Ni(CO)₄]",
+   "option2": "[MnCl₄]²⁻",
+   "option3": "[CuCl₄]²⁻",
+   "option4": "[Cu(NH₃)₄]²⁺",
+   "correct_option": "[Cu(NH₃)₄]²⁺"
+  },
+  "NCU03415": {
+   "source": "NTA Abhyas Q37",
+   "question": "The dipole moment of AX₃, BX₃ and CX₃ are 1.5 D, 0.5 D and 0 D respectively. The possible shapes of molecules may be (consider C has no Lone pair) (A, B and C are more electronegative than X)"
+  },
+  "NCU03417": {
+   "source": "NTA Abhyas Q39",
+   "question": "The Bond dissociation energy of B–F in BF₃ is 646 kJ mol⁻¹ whereas that of C–F in CF₄ is 515 kJ mol⁻¹. The correct reason for higher B–F bond dissociation energy as compared to that of C–F is",
+   "option2": "Stronger σ bond between B and F in BF₃ as Compared to that between C and F in CF₄",
+   "option3": "Lower degree of pπ-pπ interaction between B and F in BF₃ than that between C and F in CF₄",
+   "option4": "Significant pπ-pπ interaction between B and F in BF₃ whereas there is no possibility of such interaction between C and F in CF₄",
+   "correct_option": "Significant pπ-pπ interaction between B and F in BF₃ whereas there is no possibility of such interaction between C and F in CF₄"
+  },
+  "NCU03418": {
+   "source": "NTA Abhyas Q40",
+   "option1": "SiF₆²⁻",
+   "option2": "BF₆³⁻",
+   "option3": "SF₆",
+   "option4": "AlF₆³⁻",
+   "correct_option": "BF₆³⁻"
+  },
+  "NCU03419": {
+   "source": "NTA Abhyas Q41"
+  },
+  "NCU03420": {
+   "source": "NTA Abhyas Q42",
+   "question": "Among the following how many of the molecules are linear. CO₂, NO₂⁻, SO₂, N₃⁻, C₂H₂, I₃⁻, XeF₂, CS₂"
+  },
+  "NCU03421": {
+   "source": "NTA Abhyas Q43",
+   "question": "Total number of molecules with pyramidal shape are: NH₃, ClF₃, SO₃, PCl₃, XeO₃, BCl₃, ClO₃⁻, SO₃²⁻"
+  },
+  "NCU03422": {
+   "source": "NTA Abhyas Q44",
+   "question": "Which of the following molecules have zero dipole moment? (I) gauche conformation of 1,2-dibromoethane. (II) anti conformation of 1,2-dibromoethane. (III) trans-1,4-dibromocyclohexane (IV) cis-1,4-dibromocylohexane (V) tetrabromomethane. (VI) 1,1-dibromocyclohexane"
+  },
+  "NCU03423": {
+   "source": "NTA Abhyas Q45",
+   "question": "Arrange the following molecules from most to least polar. CH₄ (I), CF₂Cl₂ (II), CF₂H₂ (III), CCl₄ (IV), CH₂Cl₂ (V)"
+  },
+  "NCU03425": {
+   "source": "NTA Abhyas Q47",
+   "option1": "LUMO level for C₂ molecule is σ2pₓ orbital.",
+   "option2": "In C₂ molecules both the bonds π are bonds",
+   "option3": "In C₂²⁻ ion there is one σ and two π bonds",
+   "option4": "C₂ is paramagnetic but C₂²⁻ is diamagnetic.",
+   "correct_option": "C₂ is paramagnetic but C₂²⁻ is diamagnetic."
+  },
+  "NCU03426": {
+   "source": "NTA Abhyas Q48"
+  },
+  "NCU03427": {
+   "source": "NTA Abhyas Q49",
+   "question": "The experimental value of the dipole moment of HCl is 1.03 D. The length of the H–Cl bond is 1.275 Å. The percentage of ionic character in HCl is: [Given: 1D = 10⁻¹⁸ esu cm]"
+  },
+  "NCU03428": {
+   "source": "NTA Abhyas Q50",
+   "question": "After understanding the assertion and reason, choose the correct option. Assertion: In the bonding molecular orbital (MO) of H₂, electron density is increased between the nuclei. Reason: The bonding MO is ψ_A + ψ_B, which shows destructive interference of the combining electron waves.",
+   "question_type": "Single Choice MCQ"
+  },
+  "NCU03429": {
+   "source": "NTA Abhyas Q51"
+  },
+  "NCU03431": {
+   "source": "NTA Abhyas Q53"
+  }
+ },
+ "img": {},
+ "expect": {
+  "NCU03": "NCU03806"
+ }
+}
