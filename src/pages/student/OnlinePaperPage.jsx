@@ -7,7 +7,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { neetT } from '../../lib/neetI18n'
 import { orderOptionsForAttempt, orderOptionsForReview } from '../../lib/optionShuffle'
 import {
-  drawQuestions, fetchQuestionsByIds, gradePaper, maxMarks, paperIsFor, paperQuestionCount, shuffle,
+  drawQuestions, fetchQuestionsByIds, gradePaper, maxMarks, paperIsFor, paperQuestionCount,
+  shuffleWithinSubjects, subjectSections,
 } from '../../lib/onlinePapers'
 import QuestionView from '../../components/shared/QuestionView'
 import TestLegend from '../../components/shared/TestLegend'
@@ -85,7 +86,9 @@ export default function OnlinePaperPage() {
         ? await fetchQuestionsByIds(paper.question_ids || [])
         : (await drawQuestions(paper.sources || [], paper.medium)).questions
       if (!picked.length) throw new Error('This paper has no questions yet.')
-      const ordered = shuffle(picked).map(q => ({ ...q, shuffledOptions: orderOptionsForAttempt(q) }))
+      // Subject blocks stay in the order the paper was made; only the questions
+      // inside each subject are shuffled, so numbering runs on across subjects.
+      const ordered = shuffleWithinSubjects(picked, paper.sources).map(q => ({ ...q, shuffledOptions: orderOptionsForAttempt(q) }))
       const { data, error } = await supabase.from('online_paper_attempts').insert({
         paper_id: paper.id, student_id: user.id,
         question_ids: ordered.map(q => q.id),
@@ -222,6 +225,8 @@ export default function OnlinePaperPage() {
   }
 
   const current = questions[idx]
+  const sections = subjectSections(questions)
+  const section = sections.find(sec => idx >= sec.start && idx <= sec.end) || sections[0]
   const answered = Object.keys(answers).length
   const unanswered = questions.length - answered
   const isLast = idx === questions.length - 1
@@ -232,6 +237,23 @@ export default function OnlinePaperPage() {
         <div className="ar-stats tp-progress"><span><small>{t.answered}</small> {answered}<em>/{questions.length}</em></span></div>
         <div className={`stopwatch tp-timer${left <= 300 ? ' op-low' : ''}`}><Clock size={14} /> {clock(Math.max(0, left || 0))}</div>
       </div>
+
+      {sections.length > 1 && (
+        <div className="op-subject-tabs" role="tablist" aria-label="Subjects">
+          {sections.map(sec => {
+            const qs = questions.slice(sec.start, sec.end + 1)
+            const done = qs.filter(q => answers[q.id]).length
+            const active = sec === section
+            return (
+              <button key={sec.subject} role="tab" aria-selected={active} className={`op-subject-tab${active ? ' active' : ''}`}
+                onClick={() => setIdx(sec.start)}>
+                <span>{sec.subject}</span>
+                <small>Q {sec.start + 1}–{sec.end + 1} · {done}/{qs.length}</small>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       <div ref={contentRef} className="ar-content">
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
@@ -250,6 +272,7 @@ export default function OnlinePaperPage() {
         </button>
         <div ref={paletteRef} className="ar-palette">
           {questions.map((qq, i) => {
+            if (section && (i < section.start || i > section.end)) return null
             const cur = i === idx, done = !!answers[qq.id]
             return (
               <button key={qq.id} data-current={cur} onClick={() => setIdx(i)} className="ar-chip"

@@ -84,10 +84,43 @@ export async function fetchQuestionsByIds(ids) {
   return ids.map(id => byId.get(id)).filter(Boolean)
 }
 
-// Subject order of a NEET paper; within a subject the questions keep their order.
-const SUBJECT_ORDER = ['Physics', 'Chemistry', 'Biology']
-export function bySubject(questions) {
-  return [...questions].sort((a, b) => SUBJECT_ORDER.indexOf(a.subject) - SUBJECT_ORDER.indexOf(b.subject))
+// Subjects appear in the order the admin added them to the paper's sources
+// (e.g. Chemistry, Physics, Biology). Subjects not in the sources go last.
+export function subjectOrder(sources) {
+  const out = []
+  for (const s of sources || []) {
+    const subject = s.subject || fromCourseUnitId(s.unit_id).subject
+    if (subject && !out.includes(subject)) out.push(subject)
+  }
+  return out
+}
+
+/** Sorts questions into subject blocks; within a subject they keep their order. */
+export function bySubject(questions, sources) {
+  const order = subjectOrder(sources)
+  const rank = subj => { const i = order.indexOf(subj); return i < 0 ? order.length : i }
+  return [...questions].sort((a, b) => rank(a.subject) - rank(b.subject))
+}
+
+/** A student's order: subject blocks in the paper's order, questions shuffled inside each block. */
+export function shuffleWithinSubjects(questions, sources) {
+  const blocks = new Map()
+  for (const q of bySubject(questions, sources)) {
+    if (!blocks.has(q.subject)) blocks.set(q.subject, [])
+    blocks.get(q.subject).push(q)
+  }
+  return [...blocks.values()].flatMap(shuffle)
+}
+
+/** [{ subject, start, end }] index ranges of each subject block in an ordered list. */
+export function subjectSections(questions) {
+  const out = []
+  questions.forEach((q, i) => {
+    const last = out[out.length - 1]
+    if (last && last.subject === q.subject) last.end = i
+    else out.push({ subject: q.subject, start: i, end: i })
+  })
+  return out
 }
 
 /** Is this paper meant for this student? */
