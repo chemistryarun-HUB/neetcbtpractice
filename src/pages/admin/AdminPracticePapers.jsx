@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { Plus, ChevronDown, ChevronUp, Pencil, Upload, RefreshCw } from 'lucide-react'
 import Topbar from '../../components/shared/Topbar'
 import AnswerGrid from '../../components/shared/AnswerGrid'
+import OnlinePapersAdmin from '../../components/papers/OnlinePapersAdmin'
 import { SUBJECTS, SUBJECT_LABELS, subjectRanges, totalQuestions, scorePaper } from '../../lib/practicePapers'
 
 const Q_HEADER_KEYS = ['q no', 'q.no', 'qno', 'question no', 'question number', 'q']
@@ -138,6 +139,7 @@ const BLANK_FORM = {
 // creates only that faculty member's own papers.
 export default function AdminPracticePapers({ nav = NAV, facultyId = null }) {
   const [papers, setPapers] = useState([])
+  const [kind, setKind] = useState('online')
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
   const [form, setForm] = useState(BLANK_FORM)
@@ -383,8 +385,18 @@ export default function AdminPracticePapers({ nav = NAV, facultyId = null }) {
     <div className="dashboard">
       <Topbar links={nav} />
       <div className="page-content">
+        {!facultyId && (
+          <>
+            <div className="page-header"><h2>Practice Papers</h2></div>
+            <div className="tabs">
+              <button className={`tab-btn ${kind === 'online' ? 'active' : ''}`} onClick={() => setKind('online')}>Online papers</button>
+              <button className={`tab-btn ${kind === 'omr' ? 'active' : ''}`} onClick={() => setKind('omr')}>OMR papers (answer key)</button>
+            </div>
+          </>
+        )}
+        {kind === 'online' && !facultyId ? <OnlinePapersAdmin /> : (<>
         <div className="page-header">
-          <h2>Practice Papers</h2>
+          {facultyId ? <h2>Practice Papers</h2> : <span />}
           <button className="btn btn-primary btn-sm" onClick={() => setShowAddForm(s => !s)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
             <Plus size={15} /> Add Paper
           </button>
@@ -537,6 +549,7 @@ export default function AdminPracticePapers({ nav = NAV, facultyId = null }) {
             })}
           </div>
         )}
+        </>)}
       </div>
     </div>
   )

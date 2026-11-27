@@ -40,6 +40,7 @@ import ChangePassword from './pages/student/ChangePassword'
 import StudentPerformance from './pages/student/StudentPerformance'
 import StudentMistakes from './pages/student/StudentMistakes'
 import StudentPracticePapers from './pages/student/StudentPracticePapers'
+import OnlinePaperPage from './pages/student/OnlinePaperPage'
 import StudentGsebPapers from './pages/student/StudentGsebPapers'
 import GsebTestPage from './pages/student/GsebTestPage'
 import GsebResultPage from './pages/student/GsebResultPage'
@@ -115,6 +116,7 @@ function AppRoutes() {
       <Route path="/student/performance" element={<ProtectedRoute allowedRoles={['student']}><StudentPerformance /></ProtectedRoute>} />
       <Route path="/student/mistakes" element={<ProtectedRoute allowedRoles={['student']}><StudentMistakes /></ProtectedRoute>} />
       <Route path="/student/practice-papers" element={<ProtectedRoute allowedRoles={['student']}><StudentPracticePapers /></ProtectedRoute>} />
+      <Route path="/student/paper/:paperId" element={<ProtectedRoute allowedRoles={['student']}><OnlinePaperPage /></ProtectedRoute>} />
       <Route path="/student/gseb" element={<ProtectedRoute allowedRoles={['student']}><StudentGsebPapers /></ProtectedRoute>} />
       <Route path="/student/gseb/test/:paperId" element={<ProtectedRoute allowedRoles={['student']}><GsebTestPage /></ProtectedRoute>} />
       <Route path="/student/gseb/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><GsebResultPage /></ProtectedRoute>} />
