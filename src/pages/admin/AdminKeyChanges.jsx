@@ -1,9 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { AlertTriangle, Check, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react'
+import { AlertTriangle, Check, RefreshCw, ChevronDown, ChevronUp, Eye } from 'lucide-react'
+import QuestionView from '../../components/shared/QuestionView'
+import MathText from '../../components/shared/MathText'
+import { optionEntries } from '../../lib/questionOptions'
 import Topbar from '../../components/shared/Topbar'
-import { buildRegradePlan, applyRegradePlan, planNetMarks, isSameAnswerChange } from '../../lib/regrade'
+import { buildRegradePlan, applyRegradePlan, planNetMarks, isSameAnswerChange, normalizeOptionText } from '../../lib/regrade'
 import { analyseAnswerKeys, ITEM_ANALYSIS_RULES } from '../../lib/itemAnalysis'
 import { levelBadge } from '../../lib/constants'
 import { unitIdOf } from '../../lib/topics'
@@ -44,6 +47,83 @@ function Stat({ label, value, tone }) {
   )
 }
 
+// The question behind a key change, read in place so the admin can decide
+// Apply or Dismiss without leaving the page: the full question (fetched on
+// open, with images and match tables), the old and the new key, and how many
+// students picked each option.
+function KeyChangeQuestion({ change, attempts }) {
+  const [q, setQ] = useState(null)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    supabase.from('questions').select('*').eq('id', change.question_id).single()
+      .then(({ data, error: err }) => {
+        if (cancelled) return
+        if (err) setError(err.message)
+        else setQ(data)
+      })
+    return () => { cancelled = true }
+  }, [change.question_id])
+
+  if (error) return <div style={{ color: 'var(--red)', fontSize: '0.8125rem' }}>{error}</div>
+  if (!q) return <div style={{ color: 'var(--gray-500)', fontSize: '0.8125rem' }}>Loading question…</div>
+
+  const entries = optionEntries(q)
+  const slotOf = value => {
+    if (!value) return null
+    const m = /^option([1-4])$/.exec(value)
+    if (m) return Number(m[1])
+    const exact = entries.findIndex(e => e.text !== '' && e.text === value)
+    if (exact >= 0) return exact + 1
+    const norm = normalizeOptionText(value)
+    const loose = entries.findIndex(e => e.text !== '' && normalizeOptionText(e.text) === norm)
+    return loose >= 0 ? loose + 1 : null
+  }
+  const oldSlot = slotOf(change.old_correct_option)
+  const newSlot = slotOf(q.correct_option)
+
+  const picks = { 1: 0, 2: 0, 3: 0, 4: 0, blank: 0, other: 0 }
+  for (const a of attempts) {
+    if (!(a.question_ids || []).includes(q.id)) continue
+    const stored = a.answers || {}
+    const responses = stored.responses !== undefined ? (stored.responses || {}) : stored
+    const v = responses[q.id]
+    if (!v) { picks.blank++; continue }
+    const slot = slotOf(v)
+    if (slot) picks[slot]++
+    else picks.other++
+  }
+
+  const keyBox = (label, slot, text, tone) => (
+    <div style={{ flex: '1 1 240px', padding: '0.5rem 0.7rem', borderRadius: 6, background: tone.bg, border: `1px solid ${tone.border}` }}>
+      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', color: tone.fg }}>
+        {label}{slot ? ` — option ${slot}` : ''}
+      </div>
+      <div style={{ fontSize: '0.875rem', marginTop: '0.15rem' }}>{text ? <MathText text={text} /> : '—'}</div>
+    </div>
+  )
+
+  return (
+    <div>
+      <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginBottom: '0.6rem' }}>
+        {[q.unit, q.question_tag, q.source].filter(Boolean).join(' · ')}
+      </div>
+      <QuestionView q={q} mode="admin" size="compact" />
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.9rem' }}>
+        {keyBox('Old key', oldSlot, change.old_correct_option, { bg: '#fef2f2', border: '#fca5a5', fg: '#b91c1c' })}
+        {keyBox('New key (now live)', newSlot, newSlot ? entries[newSlot - 1].text : q.correct_option, { bg: '#f0fdf4', border: '#86efac', fg: '#15803d' })}
+      </div>
+      <div style={{ marginTop: '0.6rem', fontSize: '0.8125rem', color: 'var(--gray-600)' }}>
+        <strong>Students picked:</strong>{' '}
+        {[1, 2, 3, 4].map(n => `Option ${n}: ${picks[n]}`).join(' · ')}
+        {picks.blank ? ` · Blank: ${picks.blank}` : ''}
+        {picks.other ? ` · Old wording (can't match): ${picks.other}` : ''}
+      </div>
+    </div>
+  )
+}
+
 export default function AdminKeyChanges() {
   const [tab, setTab] = useState('changes')
   const [loading, setLoading] = useState(true)
@@ -54,6 +134,7 @@ export default function AdminKeyChanges() {
   const [progressByStudent, setProgressByStudent] = useState({})
   const [nameOf, setNameOf] = useState({})
   const [expandedId, setExpandedId] = useState(null)
+  const [viewId, setViewId] = useState(null)
   const [applyingId, setApplyingId] = useState(null)
 
   const questionsById = useMemo(() => Object.fromEntries(questions.map(q => [q.id, q])), [questions])
@@ -229,6 +310,7 @@ export default function AdminKeyChanges() {
                   if (!plan) return null
                   const net = planNetMarks(plan)
                   const isOpen = expandedId === c.id
+                  const isViewing = viewId === c.id
                   return (
                     <div key={c.id} className="card">
                       <div style={{ padding: '0.875rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
@@ -247,6 +329,10 @@ export default function AdminKeyChanges() {
                           <Stat label="Attempts" value={plan.attemptPatches.length} />
                           <Stat label="Net marks" value={`${net >= 0 ? '+' : ''}${net}`} tone={net >= 0 ? 'var(--green)' : 'var(--red)'} />
                           <Stat label="Unlocks" value={`+${plan.unlocksGained.length}`} tone={plan.unlocksGained.length ? 'var(--green)' : undefined} />
+                          <button className={`btn btn-sm ${isViewing ? 'btn-primary' : 'btn-outline'}`} onClick={() => setViewId(isViewing ? null : c.id)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <Eye size={14} /> {isViewing ? 'Hide question' : 'View question'}
+                          </button>
                           <button className="btn btn-ghost btn-sm" onClick={() => setExpandedId(isOpen ? null : c.id)}>
                             {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />} Details
                           </button>
@@ -259,6 +345,12 @@ export default function AdminKeyChanges() {
                           </button>
                         </div>
                       </div>
+
+                      {isViewing && (
+                        <div style={{ padding: '0.875rem 1.25rem', borderTop: '1px solid var(--gray-100)' }}>
+                          <KeyChangeQuestion change={c} attempts={attempts} />
+                        </div>
+                      )}
 
                       {isOpen && (
                         <div style={{ padding: '0.875rem 1.25rem', borderTop: '1px solid var(--gray-100)', background: 'var(--gray-50)' }}>
