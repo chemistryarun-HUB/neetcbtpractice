@@ -19,6 +19,8 @@ import { supabase } from './supabase'
 import { GSEB_SUBJECT_LABELS, paperExam, partBRules, ruleLabel, chapterName, minutesFor } from './gseb'
 import { byYearThenNumber } from './gsebBank'
 import { optionEntries, correctOptionKey } from './questionOptions'
+import { hasStructuredMtc } from './mtc'
+import MatchTable from '../components/shared/MatchTable'
 
 // A4 at 96 px per inch; all sizes below are CSS px.
 const PAGE = { w: 794, h: 1123, margin: 40, foot: 30, gap: 30 }
@@ -97,6 +99,7 @@ function Mcq({ q, no, tag }) {
       <div className="pp-body">
         <MathText text={q.question} />
         {q.question_image && <img src={q.question_image} alt="" className="pp-img" />}
+        {hasStructuredMtc(q) && <MatchTable q={q} />}
         <div className={`pp-opts n${optionCols(opts)}`}>
           {opts.map((o, i) => (
             <div key={o.key} className="pp-opt">
@@ -468,4 +471,28 @@ export async function downloadGsebChapterPdf({ subject, chapter, includeDrafts, 
 export async function downloadGsebCustomPdf({ subject, title, minutes, paper, showYear = true, withKey = false, onProgress }) {
   const doc = await sheetPdf(customSheet({ subject, title, minutes, mcq: paper.mcq, subjective: paper.subjective, showYear }), { withKey, onProgress })
   doc.save([`GSEB-${GSEB_SUBJECT_LABELS[subject]}`, clean(title) || 'Test', withKey && 'with-Key'].filter(Boolean).join('-') + '.pdf')
+}
+
+/**
+ * A NEET practice paper (online paper) as a PDF: one head, then a section per
+ * subject (Physics, Chemistry, Biology), numbered straight through.
+ */
+export async function downloadPracticePaperPdf({ title, sub, minutes, questions, withKey = false, onProgress }) {
+  const subjects = [...new Set(questions.map(q => q.subject))]
+  let n = 0
+  const sheet = {
+    footer: `NEETCBT · ${title}`,
+    keySub: title,
+    parts: [{
+      head: { board: 'NEETCBT · Practice Paper', title: String(title || 'Practice Paper').toUpperCase(), sub,
+        time: hours(minutes || 60), marks: questions.length * 4,
+        note: `${questions.length} questions. +4 for a correct answer, −1 for a wrong one, 0 if left blank.` },
+      groups: subjects.map(subject => ({
+        mcq: true, title: subjects.length > 1 ? subject.toUpperCase() : null,
+        items: questions.filter(q => q.subject === subject).map(q => ({ q, no: ++n })),
+      })),
+    }],
+  }
+  const doc = await sheetPdf(sheet, { withKey, onProgress })
+  doc.save([clean(title) || 'Practice-Paper', withKey && 'with-Key'].filter(Boolean).join('-') + '.pdf')
 }

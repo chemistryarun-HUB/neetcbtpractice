@@ -19,8 +19,8 @@ export const sortByOutcome = rows => [...rows].sort((a, b) => OUTCOME_ORDER[a.ou
 
 // Where a question went after this answer: Cleared, or the next bucket up.
 export function outcomeNote(t, outcome, bucket) {
+  if (!bucket) return ''   // a test result, not a re-attempt: no bucket to move between
   if (outcome === 'correct') return t.mcResultCleared
-  if (!bucket) return ''
   return bucket >= LAST_BUCKET ? t.mcStaysIn(t.mcBucketName(LAST_BUCKET)) : t.mcMovedTo(t.mcBucketName(bucket + 1))
 }
 
@@ -32,7 +32,7 @@ export function outcomeNote(t, outcome, bucket) {
  *
  * rows: [{ q, options, selected, outcome, bucket, hasType }]
  */
-export default function RetestResult({ rows, title, subtitle, medium, studentId, editable = true, onClose, footer = null }) {
+export default function RetestResult({ rows, title, subtitle, medium, studentId, editable = true, onClose, footer = null, backLabel = null }) {
   useBodyScrollLock()
   const t = neetT(medium)
   const [review, setReview] = useState(null)
@@ -177,7 +177,7 @@ export default function RetestResult({ rows, title, subtitle, medium, studentId,
         </div>
       </div>
       <div className="ar-footer" style={{ justifyContent: 'flex-end', gap: '0.5rem' }}>
-        <button className="btn btn-ghost btn-sm" onClick={onClose}>{t.mcBack}</button>
+        <button className="btn btn-ghost btn-sm" onClick={onClose}>{backLabel || t.mcBack}</button>
         {footer}
       </div>
     </div>

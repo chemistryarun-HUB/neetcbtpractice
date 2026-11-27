@@ -94,6 +94,17 @@ export async function loadMistakeData(studentId) {
   const questions = await fetchQuestions([...new Set(attempts.flatMap(a => a.question_ids || []))])
   const gsebAttempts = await fetchAll(() => supabase.from('gseb_attempts').select('*').eq('student_id', studentId).eq('submitted', true))
   const gsebQuestions = await fetchQuestions([...new Set(gsebAttempts.flatMap(a => a.question_ids || []))], 'gseb_questions', GSEB_QUESTION_SELECT)
+  // Online practice papers (migration_online_papers.sql). Before that setup has
+  // run the table is missing, and the copy simply has none.
+  const paperAttempts = await fetchAll(() => supabase.from('online_paper_attempts').select('*').eq('student_id', studentId).eq('submitted', true))
+    .catch(err => { if (isTableMissing(err)) return []; throw err })
+  let paperTitles = {}
+  if (paperAttempts.length) {
+    const { data: papers } = await supabase.from('online_papers').select('id, title').in('id', [...new Set(paperAttempts.map(a => a.paper_id))])
+    paperTitles = Object.fromEntries((papers || []).map(p => [p.id, p.title]))
+  }
+  const knownIds = new Set(questions.map(q => q.id))
+  const paperQuestions = await fetchQuestions([...new Set(paperAttempts.flatMap(a => a.question_ids || []))].filter(id => !knownIds.has(id)))
 
   // The copy can still be read before the migration has run; only saving needs it.
   let setupMissing = false
@@ -107,8 +118,12 @@ export async function loadMistakeData(studentId) {
     optional(() => supabase.from('mistake_retries').select('*').eq('student_id', studentId)),
   ])
   return {
-    attempts: [...attempts, ...gsebAttempts.map(a => ({ ...a, kind: 'gseb' }))],
-    questions: [...questions, ...gsebQuestions.map(gsebReviewQuestion)],
+    attempts: [
+      ...attempts,
+      ...gsebAttempts.map(a => ({ ...a, kind: 'gseb' })),
+      ...paperAttempts.map(a => ({ ...a, kind: 'paper', title: paperTitles[a.paper_id] || 'Practice paper' })),
+    ],
+    questions: [...questions, ...paperQuestions, ...gsebQuestions.map(gsebReviewQuestion)],
     entries, retries, setupMissing,
   }
 }
@@ -149,6 +164,7 @@ export function groupLabel(group, medium, t) {
 export function testName(group, medium, t) {
   const { attempt } = group.test
   if (group.source === 'gseb') return group.paper ? paperTitle(group.paper) : attempt.title || 'GSEB test'
+  if (attempt.kind === 'paper') return `${attempt.title} · ${t.mcPracticePaper}`
   return `${t.unit(group.groupNumber)} · ${groupName(group, medium)} · ${levelBadgeT(group.unitId, attempt.level, medium)} · ${t.mcAttempt(group.test.position)}`
 }
 
@@ -167,7 +183,8 @@ function replayAttempts(attempts, questionById) {
   const ordered = [...attempts].sort((a, b) => new Date(attemptTime(a)) - new Date(attemptTime(b)))
   const positions = {}
   for (const attempt of ordered) {
-    const slot = attempt.kind === 'gseb' ? `g-${attempt.paper_id || attempt.title}` : `${attempt.unit_id}-${attempt.level}`
+    const slot = attempt.kind === 'gseb' ? `g-${attempt.paper_id || attempt.title}`
+      : attempt.kind === 'paper' ? `p-${attempt.paper_id}` : `${attempt.unit_id}-${attempt.level}`
     positions[slot] = (positions[slot] || 0) + 1
     const test = { attempt, position: positions[slot] }
 
@@ -227,7 +244,7 @@ function replayCopy({ attempts = [], questions = [], entries = [], retries = [] 
     const q = questionById.get(qid)
     events.sort((a, b) => new Date(a.at) - new Date(b.at))
 
-    let wrongCount = 0, skippedCount = 0, lastMistake = null, lastTest = null, keyChanged = false
+    let wrongCount = 0, skippedCount = 0, lastMistake = null, lastTest = null, keyChanged = false, fromPaper = false
     let bucket = 1, clearedOn = null, retryCount = 0
     for (const e of events) {
       if (!e.test) {
@@ -254,6 +271,7 @@ function replayCopy({ attempts = [], questions = [], entries = [], retries = [] 
       }
       lastMistake = e
       lastTest = e.test
+      if (e.test.attempt.kind === 'paper') fromPaper = true
       if (e.keyChanged) keyChanged = true
     }
     // Re-attempts only ever follow a test, so no test left means nothing to show.
@@ -272,6 +290,7 @@ function replayCopy({ attempts = [], questions = [], entries = [], retries = [] 
       wrongCount,
       skippedCount,
       repeat: wrongCount >= 2,
+      fromPaper,
       lastMistake,
       keyChanged,
       clearedOn,
@@ -367,7 +386,7 @@ export function groupByTest(items) {
   const tests = new Map()
   for (const it of items) {
     const id = it.test.attempt.id
-    if (!tests.has(id)) tests.set(id, { key: `t${id}`, test: it.test, ...groupFields(it), paper: it.test.attempt.paper_id ? it.q.paper : null, items: [] })
+    if (!tests.has(id)) tests.set(id, { key: `t${id}`, test: it.test, ...groupFields(it), paper: it.test.attempt.kind === 'gseb' && it.test.attempt.paper_id ? it.q.paper : null, items: [] })
     tests.get(id).items.push(it)
   }
   return [...tests.values()].sort((a, b) => new Date(attemptTime(b.test.attempt)) - new Date(attemptTime(a.test.attempt)))

@@ -20,6 +20,7 @@ const FILTERS = [
   ['wrong', 'mcFilterWrong', it => it.wrongCount > 0],
   ['skipped', 'mcFilterSkipped', it => it.wrongCount === 0],
   ['repeat', 'mcFilterRepeat', it => it.repeat],
+  ['paper', 'mcFilterPaper', it => it.fromPaper],
   ['gseb', 'mcFilterGseb', it => it.source === 'gseb'],
 ]
 
@@ -348,12 +349,14 @@ export default function MistakeCopyView({ student, medium = 'en', teacher = null
                     <span className="mc-unit-title">
                       {view === 'test' && group.source === 'gseb'
                         ? <strong>GSEB · {testName(group, medium, t)}</strong>
+                        : view === 'test' && attempt?.kind === 'paper'
+                        ? <strong>{attempt.title}</strong>
                         : <strong>{groupName(group, medium)}</strong>}
                       {view === 'chapter' ? (
                         retryTab && <small>{[wrong > 0 && t.mcWrongCount(wrong), group.items.length - wrong > 0 && t.mcSkippedCount(group.items.length - wrong)].filter(Boolean).join(' · ')}</small>
                       ) : (
                         <small>
-                          {group.source !== 'gseb' && `${levelBadgeT(group.unitId, attempt.level, medium)} · `}{t.mcAttempt(group.test.position)} · {testDate(attempt)} · {t.mcMarks(testMarks(attempt).score, testMarks(attempt).max)}
+                          {attempt.kind === 'paper' ? `${t.mcPracticePaper} · ` : group.source !== 'gseb' && `${levelBadgeT(group.unitId, attempt.level, medium)} · `}{attempt.kind !== 'paper' && `${t.mcAttempt(group.test.position)} · `}{testDate(attempt)} · {t.mcMarks(testMarks(attempt).score, testMarks(attempt).max)}
                         </small>
                       )}
                     </span>

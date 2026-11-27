@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { LogOut, ArrowLeft, CheckCircle2, PlayCircle } from 'lucide-react'
+import { LogOut, ArrowLeft, CheckCircle2, PlayCircle, Clock } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import AnswerGrid from '../../components/shared/AnswerGrid'
 import InfoTooltip from '../../components/shared/InfoTooltip'
 import { SUBJECTS, SUBJECT_LABELS, SUBJECT_COLORS, subjectRanges, totalQuestions, scorePaper } from '../../lib/practicePapers'
+import { paperIsFor, paperQuestionCount, maxMarks } from '../../lib/onlinePapers'
 
 // The syllabus preview shown inside the "i" popover on a paper's card — all
 // four subjects at a glance, so a student can judge whether a paper is worth
@@ -35,7 +36,26 @@ export default function StudentPracticePapers() {
   const [submitting, setSubmitting] = useState(false)
   const [resultFilter, setResultFilter] = useState(null) // null | 'correct' | 'wrong' | 'skipped'
 
-  useEffect(() => { load() }, [])
+  const navigate = useNavigate()
+  const [online, setOnline] = useState([])        // online papers meant for this student
+  const [onlineAttempts, setOnlineAttempts] = useState({})
+
+  useEffect(() => { load(); loadOnline() }, [])
+
+  // Online papers: published, matching this student's medium / class / year.
+  // Before the setup SQL has run the tables don't exist; the page then just
+  // shows the OMR papers as before.
+  async function loadOnline() {
+    const [{ data: me }, { data: list }, { data: atts }] = await Promise.all([
+      supabase.from('students').select('medium, class, neet_year').eq('id', user.id).maybeSingle(),
+      supabase.from('online_papers').select('*').eq('is_published', true).order('created_at', { ascending: false }),
+      supabase.from('online_paper_attempts').select('paper_id, submitted, score, question_ids').eq('student_id', user.id),
+    ])
+    const student = { ...user, ...(me || {}) }
+    const byPaper = Object.fromEntries((atts || []).map(a => [a.paper_id, a]))
+    setOnline((list || []).filter(p => paperIsFor(p, student) || byPaper[p.id]))
+    setOnlineAttempts(byPaper)
+  }
 
   async function load() {
     setLoading(true)
@@ -204,10 +224,34 @@ export default function StudentPracticePapers() {
           <Link to="/student/dashboard" className="btn btn-ghost btn-sm">Back to Syllabus</Link>
         </div>
 
+        {online.length > 0 && (
+          <div className="op-student-list">
+            {online.map(p => {
+              const a = onlineAttempts[p.id]
+              const n = a?.question_ids?.length || paperQuestionCount(p)
+              return (
+                <button key={p.id} className="card perf-clickable-card op-student-card" onClick={() => navigate(`/student/paper/${p.id}`)}>
+                  <div className="op-student-top">
+                    <strong>{p.title}</strong>
+                    <span className="op-student-meta"><Clock size={13} /> {p.duration_min} min · {n} Qs · {maxMarks(n)} marks</span>
+                  </div>
+                  {a?.submitted ? (
+                    <div className="op-status done"><CheckCircle2 size={16} /> Scored {a.score} / {maxMarks(n)}, tap to review answers</div>
+                  ) : a ? (
+                    <div className="op-status going"><PlayCircle size={16} /> Started, tap to continue (the timer is running)</div>
+                  ) : (
+                    <div className="op-status new"><PlayCircle size={16} /> New paper, tap to start</div>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {loading ? (
           <div style={{ padding: '2rem', textAlign: 'center' }}>Loading…</div>
         ) : papers.length === 0 ? (
-          <div className="empty-state">No practice papers available yet — check back soon.</div>
+          online.length ? null : <div className="empty-state">No practice papers available yet — check back soon.</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {papers.map(paper => {
