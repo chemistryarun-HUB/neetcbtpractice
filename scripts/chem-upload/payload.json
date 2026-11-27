@@ -1,0 +1,682 @@
+{
+ "insert": [
+  {
+   "qid": "NCU04454",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "The equilibrium concentrations of the species in the reaction $\\ce{A + B <=> C + D}$ are 2, 3, 10 and 6 mol L$^{-1}$, respectively at 300 K. $\\Delta G^{0}$ for the reaction is (R = 2 cal/mol K)",
+   "option1": "−137.26 cal",
+   "option2": "−1381.80 cal",
+   "option3": "−13.73 cal",
+   "option4": "1372.60 cal",
+   "correct_option": "−1381.80 cal",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2023",
+   "source": "NEET EG Unit-04 Q.15",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04455",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 1,
+   "topic": "First law of thermodynamics",
+   "question": "A vessel contains 3.2 g of dioxygen gas at STP (273.15 K and 1 atm pressure). The gas is now transferred to another vessel at constant temperature, where pressure becomes one third of the original pressure. The volume of new vessel in L is: (Given: molar volume at STP is 22.4 L)",
+   "option1": "67.2",
+   "option2": "6.72",
+   "option3": "2.24",
+   "option4": "22.4",
+   "correct_option": "6.72",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2022",
+   "source": "NEET EG Unit-04 Q.18",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04456",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 5,
+   "topic": "Entropy & Free Energy",
+   "question": "Hydrolysis of sucrose is given by the following reaction.\nSucrose + $\\ce{H2O <=>}$ Glucose + Fructose\nIf the equilibrium constant ($K_c$) is $2 \\times 10^{13}$ at 300 K, the value of $\\Delta_r G^{\\ominus}$ at the same temperature will be:",
+   "option1": "8.314 J mol$^{-1}$ K$^{-1}$ × 300 K × ln($2 \\times 10^{13}$)",
+   "option2": "8.314 J mol$^{-1}$ K$^{-1}$ × 300 K × ln($3 \\times 10^{13}$)",
+   "option3": "−8.314 J mol$^{-1}$ K$^{-1}$ × 300 K × ln($4 \\times 10^{13}$)",
+   "option4": "−8.314 J mol$^{-1}$ K$^{-1}$ × 300 K × ln($2 \\times 10^{13}$)",
+   "correct_option": "−8.314 J mol$^{-1}$ K$^{-1}$ × 300 K × ln($2 \\times 10^{13}$)",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2020",
+   "source": "NEET EG Unit-04 Q.24",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU04457",
+   "subject": "Chemistry",
+   "unit": "Unit 4 - Chemical Thermodynamics",
+   "level": 4,
+   "topic": "Thermochemistry / Hess's Law",
+   "question": "The enthalpy of combustion of $\\ce{H2}$, cyclohexene ($\\ce{C6H10}$) and cyclohexane ($\\ce{C6H12}$) are −241, −3800 and −3920 kJ per mol respectively. Heat of hydrogenation of cyclohexene is",
+   "option1": "−121 kJ per mol",
+   "option2": "+121 kJ per mol",
+   "option3": "+484 kJ per mol",
+   "option4": "−484 kJ per mol",
+   "correct_option": "−121 kJ per mol",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 2006",
+   "source": "NEET EG Unit-04 Q.63",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  }
+ ],
+ "payload": {
+  "NCU04311": {
+   "source": "NEET EG Unit-04 Q.57"
+  },
+  "NCU04312": {
+   "source": "NEET EG Unit-04 Q.78"
+  },
+  "NCU04313": {
+   "source": "NEET EG Unit-04 Q.92"
+  },
+  "NCU04314": {
+   "source": "NEET EG Unit-04 Q.8"
+  },
+  "NCU04315": {
+   "source": "NEET EG Unit-04 Q.9"
+  },
+  "NCU04316": {
+   "source": "NEET EG Unit-04 Q.12"
+  },
+  "NCU04317": {
+   "source": "NEET EG Unit-04 Q.13"
+  },
+  "NCU04318": {
+   "source": "NEET EG Unit-04 Q.16"
+  },
+  "NCU04319": {
+   "source": "NEET EG Unit-04 Q.19"
+  },
+  "NCU04320": {
+   "source": "NEET EG Unit-04 Q.20"
+  },
+  "NCU04321": {
+   "source": "NEET EG Unit-04 Q.26"
+  },
+  "NCU04322": {
+   "source": "NEET EG Unit-04 Q.30"
+  },
+  "NCU04323": {
+   "source": "NEET EG Unit-04 Q.27"
+  },
+  "NCU04324": {
+   "source": "NEET EG Unit-04 Q.28"
+  },
+  "NCU04325": {
+   "source": "NEET EG Unit-04 Q.33"
+  },
+  "NCU04326": {
+   "source": "NEET EG Unit-04 Q.43"
+  },
+  "NCU04328": {
+   "source": "NEET EG Unit-04 Q.47"
+  },
+  "NCU04329": {
+   "source": "NEET EG Unit-04 Q.49"
+  },
+  "NCU04330": {
+   "source": "NEET EG Unit-04 Q.61"
+  },
+  "NCU04331": {
+   "source": "NEET EG Unit-04 Q.70"
+  },
+  "NCU04332": {
+   "source": "NEET EG Unit-04 Q.71"
+  },
+  "NCU04333": {
+   "source": "NEET EG Unit-04 Q.76"
+  },
+  "NCU04334": {
+   "source": "NEET EG Unit-04 Q.82"
+  },
+  "NCU04335": {
+   "source": "NEET EG Unit-04 Q.86"
+  },
+  "NCU04336": {
+   "source": "NEET EG Unit-04 Q.87"
+  },
+  "NCU04337": {
+   "source": "NEET EG Unit-04 Q.90"
+  },
+  "NCU04338": {
+   "source": "NEET EG Unit-04 Q.95"
+  },
+  "NCU04339": {
+   "source": "NEET EG Unit-04 Q.99"
+  },
+  "NCU04340": {
+   "source": "NEET EG Unit-04 Q.10"
+  },
+  "NCU04341": {
+   "source": "NEET EG Unit-04 Q.39"
+  },
+  "NCU04342": {
+   "source": "NEET EG Unit-04 Q.46"
+  },
+  "NCU04343": {
+   "source": "NEET EG Unit-04 Q.44"
+  },
+  "NCU04344": {
+   "source": "NEET EG Unit-04 Q.51"
+  },
+  "NCU04345": {
+   "source": "NEET EG Unit-04 Q.58"
+  },
+  "NCU04346": {
+   "source": "NEET EG Unit-04 Q.74"
+  },
+  "NCU04347": {
+   "source": "NEET EG Unit-04 Q.75"
+  },
+  "NCU04348": {
+   "source": "NEET EG Unit-04 Q.79"
+  },
+  "NCU04349": {
+   "source": "NEET EG Unit-04 Q.81"
+  },
+  "NCU04350": {
+   "source": "NEET EG Unit-04 Q.83",
+   "correct_option": "$x < y$"
+  },
+  "NCU04351": {
+   "source": "NEET EG Unit-04 Q.88"
+  },
+  "NCU04352": {
+   "source": "NEET EG Unit-04 Q.91"
+  },
+  "NCU04353": {
+   "source": "NEET EG Unit-04 Q.93"
+  },
+  "NCU04355": {
+   "source": "NEET EG Unit-04 Q.22"
+  },
+  "NCU04356": {
+   "source": "NEET EG Unit-04 Q.31"
+  },
+  "NCU04357": {
+   "source": "NEET EG Unit-04 Q.35"
+  },
+  "NCU04358": {
+   "source": "NEET EG Unit-04 Q.38",
+   "option2": "317",
+   "correct_option": "317"
+  },
+  "NCU04359": {
+   "source": "NEET EG Unit-04 Q.54"
+  },
+  "NCU04360": {
+   "source": "NEET EG Unit-04 Q.55"
+  },
+  "NCU04361": {
+   "source": "NEET EG Unit-04 Q.59"
+  },
+  "NCU04362": {
+   "source": "NEET EG Unit-04 Q.66"
+  },
+  "NCU04363": {
+   "source": "NEET EG Unit-04 Q.67"
+  },
+  "NCU04365": {
+   "source": "NEET EG Unit-04 Q.21"
+  },
+  "NCU04366": {
+   "source": "NEET EG Unit-04 Q.23"
+  },
+  "NCU04367": {
+   "source": "NEET EG Unit-04 Q.25"
+  },
+  "NCU04368": {
+   "source": "NEET EG Unit-04 Q.29"
+  },
+  "NCU04369": {
+   "source": "NEET EG Unit-04 Q.32"
+  },
+  "NCU04371": {
+   "source": "NEET EG Unit-04 Q.100",
+   "option4": "$\\Delta H > 0$ and $\\Delta S > 0$"
+  },
+  "NCU04373": {
+   "source": "NEET EG Unit-04 Q.34"
+  },
+  "NCU04374": {
+   "source": "NEET EG Unit-04 Q.37"
+  },
+  "NCU04375": {
+   "source": "NEET EG Unit-04 Q.40"
+  },
+  "NCU04376": {
+   "source": "NEET EG Unit-04 Q.41"
+  },
+  "NCU04377": {
+   "source": "NEET EG Unit-04 Q.42"
+  },
+  "NCU04378": {
+   "source": "NEET EG Unit-04 Q.45"
+  },
+  "NCU04379": {
+   "source": "NEET EG Unit-04 Q.52"
+  },
+  "NCU04380": {
+   "source": "NEET EG Unit-04 Q.50"
+  },
+  "NCU04381": {
+   "source": "NEET EG Unit-04 Q.53"
+  },
+  "NCU04382": {
+   "source": "NEET EG Unit-04 Q.56"
+  },
+  "NCU04383": {
+   "source": "NEET EG Unit-04 Q.60"
+  },
+  "NCU04384": {
+   "source": "NEET EG Unit-04 Q.62",
+   "option2": "285.7 K",
+   "correct_option": "285.7 K"
+  },
+  "NCU04385": {
+   "source": "NEET EG Unit-04 Q.64"
+  },
+  "NCU04386": {
+   "source": "NEET EG Unit-04 Q.65"
+  },
+  "NCU04387": {
+   "source": "NEET EG Unit-04 Q.68"
+  },
+  "NCU04388": {
+   "source": "NEET EG Unit-04 Q.69"
+  },
+  "NCU04389": {
+   "source": "NEET EG Unit-04 Q.72",
+   "option4": "$11.14 \\times 10^{8} \\, \\mathrm{Pa}$",
+   "correct_option": "$11.14 \\times 10^{8} \\, \\mathrm{Pa}$"
+  },
+  "NCU04390": {
+   "source": "NEET EG Unit-04 Q.73"
+  },
+  "NCU04391": {
+   "source": "NEET EG Unit-04 Q.77"
+  },
+  "NCU04392": {
+   "source": "NEET EG Unit-04 Q.80"
+  },
+  "NCU04396": {
+   "source": "NEET EG Unit-04 Q.85"
+  },
+  "NCU04397": {
+   "source": "NEET EG Unit-04 Q.89"
+  },
+  "NCU04399": {
+   "source": "NEET EG Unit-04 Q.96"
+  },
+  "NCU04400": {
+   "source": "NEET EG Unit-04 Q.5"
+  },
+  "NCU04401": {
+   "source": "NEET EG Unit-04 Q.4"
+  },
+  "NCU04402": {
+   "source": "NEET EG Unit-04 Q.3"
+  },
+  "NCU04403": {
+   "source": "NEET EG Unit-04 Q.2"
+  },
+  "NCU04404": {
+   "source": "NEET EG Unit-04 Q.1"
+  },
+  "NCU04405": {
+   "source": "NEET EG Unit-04 Q.7"
+  },
+  "NCU04406": {
+   "source": "NEET EG Unit-04 Q.6"
+  },
+  "NCU04407": {
+   "source": "NEET EG Unit-04 Q.14"
+  },
+  "NCU04408": {
+   "source": "NEET EG Unit-04 Q.17"
+  },
+  "NCU04409": {
+   "source": "NEET EG Unit-04 Q.36"
+  },
+  "NCU04411": {
+   "source": "NEET EG Unit-04 Q.48"
+  },
+  "NCU04414": {
+   "source": "NEET EG Unit-04 Q.94"
+  },
+  "NCU04415": {
+   "source": "NEET EG Unit-04 Q.98"
+  },
+  "NCU04364": {
+   "source": "NEET EG Unit-04 Q.11"
+  },
+  "NCU04394": {
+   "source": "NEET EG Unit-04 Q.84"
+  }
+ },
+ "old": {
+  "NCU04311": {
+   "source": "NEET Q.No. 56"
+  },
+  "NCU04312": {
+   "source": "NEET Q.No. 79"
+  },
+  "NCU04313": {
+   "source": "NEET Q.No. 95"
+  },
+  "NCU04314": {
+   "source": "NEET Q.No. 8"
+  },
+  "NCU04315": {
+   "source": "NEET Q.No. 9"
+  },
+  "NCU04316": {
+   "source": "NEET Q.No. 12"
+  },
+  "NCU04317": {
+   "source": "NEET Q.No. 13"
+  },
+  "NCU04318": {
+   "source": "NEET Q.No. 14"
+  },
+  "NCU04319": {
+   "source": "NEET Q.No. 16"
+  },
+  "NCU04320": {
+   "source": "NEET Q.No. 19"
+  },
+  "NCU04321": {
+   "source": "NEET Q.No. 21"
+  },
+  "NCU04322": {
+   "source": "NEET Q.No. 23"
+  },
+  "NCU04323": {
+   "source": "NEET Q.No. 25"
+  },
+  "NCU04324": {
+   "source": "NEET Q.No. 26"
+  },
+  "NCU04325": {
+   "source": "NEET Q.No. 29"
+  },
+  "NCU04326": {
+   "source": "NEET Q.No. 41"
+  },
+  "NCU04328": {
+   "source": "NEET Q.No. 45"
+  },
+  "NCU04329": {
+   "source": "NEET Q.No. 50"
+  },
+  "NCU04330": {
+   "source": "NEET Q.No. 63"
+  },
+  "NCU04331": {
+   "source": "NEET Q.No. 71"
+  },
+  "NCU04332": {
+   "source": "NEET Q.No. 72"
+  },
+  "NCU04333": {
+   "source": "NEET Q.No. 77"
+  },
+  "NCU04334": {
+   "source": "NEET Q.No. 83"
+  },
+  "NCU04335": {
+   "source": "NEET Q.No. 89"
+  },
+  "NCU04336": {
+   "source": "NEET Q.No. 90"
+  },
+  "NCU04337": {
+   "source": "NEET Q.No. 93"
+  },
+  "NCU04338": {
+   "source": "NEET Q.No. 98"
+  },
+  "NCU04339": {
+   "source": "NEET Q.No. 101"
+  },
+  "NCU04340": {
+   "source": "NEET Q.No. 10"
+  },
+  "NCU04341": {
+   "source": "NEET Q.No. 38"
+  },
+  "NCU04342": {
+   "source": "NEET Q.No. 46"
+  },
+  "NCU04343": {
+   "source": "NEET Q.No. 44"
+  },
+  "NCU04344": {
+   "source": "NEET Q.No. 48"
+  },
+  "NCU04345": {
+   "source": "NEET Q.No. 60"
+  },
+  "NCU04346": {
+   "source": "NEET Q.No. 75"
+  },
+  "NCU04347": {
+   "source": "NEET Q.No. 76"
+  },
+  "NCU04348": {
+   "source": "NEET Q.No. 80"
+  },
+  "NCU04349": {
+   "source": "NEET Q.No. 82"
+  },
+  "NCU04350": {
+   "source": "NEET Q.No. 84",
+   "correct_option": "$x > y$"
+  },
+  "NCU04351": {
+   "source": "NEET Q.No. 91"
+  },
+  "NCU04352": {
+   "source": "NEET Q.No. 94"
+  },
+  "NCU04353": {
+   "source": "NEET Q.No. 96"
+  },
+  "NCU04355": {
+   "source": "NEET 2020"
+  },
+  "NCU04356": {
+   "source": "NEET Q.No. 27"
+  },
+  "NCU04357": {
+   "source": "NEET Q.No. 33"
+  },
+  "NCU04358": {
+   "source": "NEET Q.No. 37",
+   "option2": "316",
+   "correct_option": "316"
+  },
+  "NCU04359": {
+   "source": "NEET Q.No. 54"
+  },
+  "NCU04360": {
+   "source": "NEET Q.No. 58"
+  },
+  "NCU04361": {
+   "source": "NEET Q.No. 59"
+  },
+  "NCU04362": {
+   "source": "NEET Q.No. 67"
+  },
+  "NCU04363": {
+   "source": "NEET Q.No. 68"
+  },
+  "NCU04365": {
+   "source": "NEET Q.No. 20"
+  },
+  "NCU04366": {
+   "source": "NEET 2020"
+  },
+  "NCU04367": {
+   "source": "NEET Q.No. 22"
+  },
+  "NCU04368": {
+   "source": "NEET Q.No. 24"
+  },
+  "NCU04369": {
+   "source": "NEET Q.No. 28"
+  },
+  "NCU04371": {
+   "source": "NEET Q.No. 31",
+   "option4": "$\\Delta H < 0$ and $\\Delta S = 0$"
+  },
+  "NCU04373": {
+   "source": "NEET Q.No. 30"
+  },
+  "NCU04374": {
+   "source": "NEET Q.No. 34"
+  },
+  "NCU04375": {
+   "source": "NEET Q.No. 36"
+  },
+  "NCU04376": {
+   "source": "NEET Q.No. 43"
+  },
+  "NCU04377": {
+   "source": "NEET Q.No. 42"
+  },
+  "NCU04378": {
+   "source": "NEET Q.No. 47"
+  },
+  "NCU04379": {
+   "source": "NEET Q.No. 52"
+  },
+  "NCU04380": {
+   "source": "NEET Q.No. 49"
+  },
+  "NCU04381": {
+   "source": "NEET Q.No. 55"
+  },
+  "NCU04382": {
+   "source": "NEET Q.No. 57"
+  },
+  "NCU04383": {
+   "source": "NEET Q.No. 64"
+  },
+  "NCU04384": {
+   "source": "NEET Q.No. 62",
+   "option2": "285.5 K",
+   "correct_option": "285.5 K"
+  },
+  "NCU04385": {
+   "source": "NEET Q.No. 65"
+  },
+  "NCU04386": {
+   "source": "NEET Q.No. 66"
+  },
+  "NCU04387": {
+   "source": "NEET Q.No. 69"
+  },
+  "NCU04388": {
+   "source": "NEET Q.No. 70"
+  },
+  "NCU04389": {
+   "source": "NEET Q.No. 73",
+   "option4": "None of these",
+   "correct_option": "None of these"
+  },
+  "NCU04390": {
+   "source": "NEET Q.No. 74"
+  },
+  "NCU04391": {
+   "source": "NEET Q.No. 78"
+  },
+  "NCU04392": {
+   "source": "NEET Q.No. 81"
+  },
+  "NCU04396": {
+   "source": "NEET Q.No. 88"
+  },
+  "NCU04397": {
+   "source": "NEET Q.No. 92"
+  },
+  "NCU04399": {
+   "source": "NEET Q.No. 99"
+  },
+  "NCU04400": {
+   "source": "NEET Q.No. 1"
+  },
+  "NCU04401": {
+   "source": "NEET Q.No. 2"
+  },
+  "NCU04402": {
+   "source": "NEET Q.No. 3"
+  },
+  "NCU04403": {
+   "source": "NEET Q.No. 4"
+  },
+  "NCU04404": {
+   "source": "NEET Q.No. 5"
+  },
+  "NCU04405": {
+   "source": "NEET Q.No. 6"
+  },
+  "NCU04406": {
+   "source": "NEET Q.No. 7"
+  },
+  "NCU04407": {
+   "source": "NEET Q.No. 15"
+  },
+  "NCU04408": {
+   "source": "NEET Q.No. 17"
+  },
+  "NCU04409": {
+   "source": "NEET Q.No. 35"
+  },
+  "NCU04411": {
+   "source": "NEET Q.No. 51"
+  },
+  "NCU04414": {
+   "source": "NEET Q.No. 97"
+  },
+  "NCU04415": {
+   "source": "NEET Q.No. 100"
+  },
+  "NCU04364": {
+   "source": "NEET Q.No. 11"
+  },
+  "NCU04394": {
+   "source": "NEET Q.No. 87"
+  }
+ },
+ "img": {},
+ "expect": {
+  "NCU04": "NCU04453"
+ }
+}
