@@ -8,7 +8,7 @@ import { neetT } from '../../lib/neetI18n'
 import { orderOptionsForAttempt, orderOptionsForReview } from '../../lib/optionShuffle'
 import {
   drawQuestions, fetchQuestionsByIds, gradePaper, maxMarks, paperIsFor, paperQuestionCount,
-  shuffleWithinSubjects, subjectSections,
+  bySubject, shuffleWithinSubjects, subjectSections,
 } from '../../lib/onlinePapers'
 import QuestionView from '../../components/shared/QuestionView'
 import TestLegend from '../../components/shared/TestLegend'
@@ -68,7 +68,10 @@ export default function OnlinePaperPage() {
   }
 
   async function openAttempt(att, p) {
-    const qs = await fetchQuestionsByIds(att.question_ids || [])
+    // Always show subject blocks in the paper's order. Attempts started before
+    // subject-wise papers (fully mixed order) are regrouped here; inside a
+    // subject the student's own shuffled order is kept.
+    const qs = bySubject(await fetchQuestionsByIds(att.question_ids || []), p.sources)
     const order = att.answers?.option_order || {}
     setQuestions(qs.map(q => ({ ...q, shuffledOptions: orderOptionsForReview(q, order[q.id]) })))
     setAnswers(att.answers?.responses || {})
