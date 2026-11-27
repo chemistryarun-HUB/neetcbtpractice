@@ -1,0 +1,35 @@
+{
+ "inserted": [],
+ "updated": [
+  "NCU15396",
+  "NCU15398",
+  "NCU15399",
+  "NCU15400",
+  "NCU15558",
+  "NCU28076",
+  "NCU15559",
+  "NCU15560",
+  "NCU35029",
+  "NCU15562",
+  "NCU15563",
+  "NCU15565",
+  "NCU28079",
+  "NCU15569",
+  "NCU15584",
+  "NCU15585",
+  "NCU15586"
+ ],
+ "skipped": [
+  [
+   "NCU15543",
+   "drift:mtc_label_a,mtc_label_b"
+  ],
+  [
+   "NCU28068",
+   "drift:mtc_label_a,mtc_label_b"
+  ]
+ ],
+ "failed": [],
+ "bad": [],
+ "insertCheck": []
+}
