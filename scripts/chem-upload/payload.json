@@ -1,0 +1,1300 @@
+{
+ "insert": [
+  {
+   "qid": "NCU15314",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "In the following reaction sequence, X and Z respectively are:\n$\\ce{CH3CH2CH2-OH + PCl5 -> CH3CH2CH2Cl + X + HCl}$\n$\\ce{CH3CH2CH2Cl ->[alc. KOH][\\Delta] Y ->[HBr][(C6H5CO)2O2] Z}$",
+   "option1": "X = $\\ce{POCl3}$; Z = $\\ce{CH3-CH(Br)-CH3}$",
+   "option2": "X = $\\ce{POCl3}$; Z = $\\ce{CH3CH2CH2-Br}$",
+   "option3": "X = $\\ce{H3PO3}$; Z = $\\ce{CH3-CH(Br)-CH3}$",
+   "option4": "X = $\\ce{H3PO3}$; Z = $\\ce{CH3CH2CH2-Br}$",
+   "correct_option": "X = $\\ce{POCl3}$; Z = $\\ce{CH3CH2CH2-Br}$",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2026",
+   "source": "NEET EG Unit-15 Q.1",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15315",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The correct order for the rate of $\\alpha,\\beta$-dehydrohalogenation for the following compounds is\n(i) $\\ce{CH2=CH-CH2-CH2-I}$\n(ii) $\\ce{CH3-CH2-CH2-CH2-I}$\n(iii) $\\ce{CH3-CH2-CH(I)-CH3}$",
+   "option1": "(i) < (ii) < (iii)",
+   "option2": "(ii) < (i) < (iii)",
+   "option3": "(ii) < (iii) < (i)",
+   "option4": "(iii) < (ii) < (i)",
+   "correct_option": "(ii) < (iii) < (i)",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2023",
+   "source": "NEET EG Unit-15 Q.6",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15316",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The major product formed in the dehydrohalogenation reaction of 2-bromopentane is pent-2-ene. This product formation is based on",
+   "option1": "Hückel's rule",
+   "option2": "Hofmann rule",
+   "option3": "Hund's rule",
+   "option4": "Saytzeff's rule",
+   "correct_option": "Saytzeff's rule",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2021",
+   "source": "NEET EG Unit-15 Q.11",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15317",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following will NOT undergo $S_N1$ reaction with $\\ce{OH^-}$?",
+   "option1": "$\\ce{C6H5CH2Cl}$",
+   "option2": "$\\ce{C6H5CH2CH2Cl}$",
+   "option3": "$\\ce{CH2=CH-CH2Cl}$",
+   "option4": "$\\ce{(CH3)3CCl}$",
+   "correct_option": "$\\ce{C6H5CH2CH2Cl}$",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2020",
+   "source": "NEET EG Unit-15 Q.12",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15318",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following compounds undergoes nucleophilic substitution reaction most easily?",
+   "option1": "4-Chlorotoluene",
+   "option2": "Chlorobenzene",
+   "option3": "1-Chloro-4-nitrobenzene",
+   "option4": "4-Chloroanisole",
+   "correct_option": "1-Chloro-4-nitrobenzene",
+   "difficulty_level": "Easy",
+   "question_tag": "AIPMT 2011",
+   "source": "NEET EG Unit-15 Q.23",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15319",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "2-Bromopentane is heated with potassium ethoxide in ethanol. The major product obtained is",
+   "option1": "trans-pent-2-ene",
+   "option2": "2-ethoxypentane",
+   "option3": "pent-1-ene",
+   "option4": "cis-pent-2-ene",
+   "correct_option": "trans-pent-2-ene",
+   "difficulty_level": "Medium",
+   "question_tag": "AIPMT 1998",
+   "source": "NEET EG Unit-15 Q.38",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15320",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The following reaction (shown in the figure, with inversion of configuration) is described as",
+   "option1": "$S_E2$",
+   "option2": "$S_N1$",
+   "option3": "$S_N2$",
+   "option4": "$S_N0$",
+   "correct_option": "$S_N2$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIPMT 1997",
+   "source": "NEET EG Unit-15 Q.39",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15321",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The correct order of reactivity towards electrophilic substitution reaction is\n(A) Toluene ($\\ce{C6H5CH3}$)\n(B) Anisole ($\\ce{C6H5OCH3}$)\n(C) Chlorobenzene ($\\ce{C6H5Cl}$)\n(D) Benzaldehyde ($\\ce{C6H5CHO}$)",
+   "option1": "B > A > C > D",
+   "option2": "A > B > C > D",
+   "option3": "D > B > A > C",
+   "option4": "B > A > D > C",
+   "correct_option": "B > A > C > D",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2019",
+   "source": "AIIMS EG Unit-15 Q.2",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15322",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following represents Wurtz-Fittig reaction?",
+   "option1": "$\\ce{2C6H5I + 2Na -> C6H5C6H5 + 2NaI}$",
+   "option2": "$\\ce{2CH3CH2I + 2Na -> CH3CH2CH2CH3 + 2NaI}$",
+   "option3": "$\\ce{C6H5I + 2Na + CH3I -> C6H5CH3 + 2NaI}$",
+   "option4": "$\\ce{CH3Br + AgF -> CH3F + AgBr}$",
+   "correct_option": "$\\ce{C6H5I + 2Na + CH3I -> C6H5CH3 + 2NaI}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2018",
+   "source": "AIIMS EG Unit-15 Q.3",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15323",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "A bromoalkane 'X' reacts with magnesium in dry ether to form compound 'Y'. The reaction of 'Y' with methanal followed by hydrolysis yields an alcohol having molecular formula $\\ce{C4H10O}$. The compound 'X' is",
+   "option1": "bromomethane",
+   "option2": "bromoethane",
+   "option3": "1-bromobutane",
+   "option4": "1-bromopropane",
+   "correct_option": "1-bromopropane",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2018",
+   "source": "AIIMS EG Unit-15 Q.4",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15324",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): Presence of nitro group facilitates nucleophilic substitution reactions in aryl halides.\nReason (R): The intermediate carbocation is stable due to presence of nitro group.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "(A) is true but (R) is false",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2017",
+   "source": "AIIMS EG Unit-15 Q.6",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15325",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): Aryl halides undergo nucleophilic substitution with ease.\nReason (R): Hybridisation of C-atom attached to halide is $sp^3$.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "Both (A) and (R) are false",
+   "correct_option": "Both (A) and (R) are false",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2017",
+   "source": "AIIMS EG Unit-15 Q.7",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15326",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The order of reactivity of halides towards $S_N1$ mechanism is",
+   "option1": "benzyl > allyl > 1° > 2° > 3° > Me",
+   "option2": "Me > 1° > 2° > 3° > allyl > benzyl",
+   "option3": "3° > 2° > 1° > Me > allyl > benzyl",
+   "option4": "benzyl > allyl > 3° > 2° > 1° > Me",
+   "correct_option": "benzyl > allyl > 3° > 2° > 1° > Me",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2015",
+   "source": "AIIMS EG Unit-15 Q.8",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15327",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Arrange the given set of compounds in order of increasing boiling points.\nI. 1-chloropropane\nII. Isopropyl chloride\nIII. 1-chlorobutane",
+   "option1": "II < I < III",
+   "option2": "II < III < I",
+   "option3": "I < II < III",
+   "option4": "III < I < II",
+   "correct_option": "II < I < III",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2015",
+   "source": "AIIMS EG Unit-15 Q.9",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15328",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following is the best method for synthesis of 1-bromo-3-chlorobenzene?",
+   "option1": "$\\ce{C6H5Br ->[Cl2/AlCl3]}$",
+   "option2": "$\\ce{C6H5Br ->[SO3/H2SO4] ->[Cl2/AlCl3] ->[H2SO4, 60 ^\\circ C]}$",
+   "option3": "$\\ce{C6H5Cl ->[HNO3/H2SO4] ->[Zn/HCl] ->[HNO2, cold] ->[Cu2Br2]}$",
+   "option4": "$\\ce{C6H5NO2 ->[Cl2/AlCl3] ->[Zn/HCl] ->[HNO2, cold] ->[Cu2Br2]}$",
+   "correct_option": "$\\ce{C6H5NO2 ->[Cl2/AlCl3] ->[Zn/HCl] ->[HNO2, cold] ->[Cu2Br2]}$",
+   "difficulty_level": "Hard",
+   "question_tag": "AIIMS 2015",
+   "source": "AIIMS EG Unit-15 Q.10",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15329",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): In comparison to ethyl chloride, it is not easy to carry out nucleophilic substitution on vinyl chloride.\nReason (R): Vinyl group is electron donating.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "(A) is true but (R) is false",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2015",
+   "source": "AIIMS EG Unit-15 Q.11",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15330",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): Treatment of chloroethane with a saturated solution of AgCN gives ethyl isocyanide as the major product.\nReason (R): Cyanide ($\\ce{CN^-}$) is an ambident nucleophile.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2014",
+   "source": "AIIMS EG Unit-15 Q.12",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15331",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): Reaction of alcohols with $\\ce{SOCl2}$ is catalysed by the presence of a tertiary amine ($\\ce{R3N}$).\nReason (R): Tertiary amine promotes the reaction by reacting with the by-product HCl.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2014",
+   "source": "AIIMS EG Unit-15 Q.13",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15332",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "On commercial scale, phenol is obtained from chlorobenzene. The chlorobenzene needed for the purpose is prepared by Raschig's process. Which one of the following is Raschig's process?",
+   "option1": "$\\ce{C6H6 + HCl + 1/2O2 ->[CuCl2][500 K] C6H5Cl + H2O}$",
+   "option2": "$\\ce{C6H6 + Cl2 ->[anhy. AlCl3][310-320 K] C6H5Cl + HCl}$",
+   "option3": "$\\ce{C6H5N2+Cl- ->[CuCl/HCl] C6H5Cl + N2}$",
+   "option4": "$\\ce{C6H5N2+Cl- ->[Cu/HCl][\\Delta] C6H5Cl + N2}$",
+   "correct_option": "$\\ce{C6H6 + HCl + 1/2O2 ->[CuCl2][500 K] C6H5Cl + H2O}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2013",
+   "source": "AIIMS EG Unit-15 Q.14",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15333",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Freon used as refrigerant is",
+   "option1": "$\\ce{CCl2F2}$",
+   "option2": "$\\ce{CF2=CF2}$",
+   "option3": "$\\ce{CH2F2}$",
+   "option4": "$\\ce{CF4}$",
+   "correct_option": "$\\ce{CCl2F2}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2012",
+   "source": "AIIMS EG Unit-15 Q.16",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15334",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): p-Dichlorobenzene is less soluble in organic solvents than the corresponding o-isomer.\nReason (R): o-Dichlorobenzene is polar while p-dichlorobenzene is not.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "difficulty_level": "Hard",
+   "question_tag": "AIIMS 2011",
+   "source": "AIIMS EG Unit-15 Q.21",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15335",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "An alkyl chloride (A) on reaction with magnesium in dry ether followed by treatment with ethanol gave 2-methylbutane. The possible structure of 'A' is",
+   "option1": "$\\ce{(CH3)2C(Cl)CH2CH3}$",
+   "option2": "Both $\\ce{(CH3)2C(Cl)CH2CH3}$ and $\\ce{(CH3)2CHCH2CH2Cl}$",
+   "option3": "$\\ce{(CH3)2CHCH2CH2Cl}$",
+   "option4": "$\\ce{CH3CH2CH2CH2CH2Cl}$",
+   "correct_option": "Both $\\ce{(CH3)2C(Cl)CH2CH3}$ and $\\ce{(CH3)2CHCH2CH2Cl}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2010",
+   "source": "AIIMS EG Unit-15 Q.22",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15336",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): $S_N1$ reaction is basically a solvolysis reaction.\nReason (R): Polar protic solvents help the substrate to ionise and by the way get involved in $S_N1$ reaction.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2010",
+   "source": "AIIMS EG Unit-15 Q.23",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15337",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): In the E2 elimination, $\\beta$-H and leaving group should be antiperiplanar.\nReason (R): In the E2 elimination, base always abstracts unhindered $\\beta$-H.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "(A) is false but (R) is true",
+   "correct_option": "(A) is true but (R) is false",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2010",
+   "source": "AIIMS EG Unit-15 Q.24",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15338",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The increasing order of hydrolysis of the following compounds is\n(i) Bromobenzene ($\\ce{C6H5Br}$)\n(ii) 3-Bromocyclohex-1-ene\n(iii) Bromocyclohexane\n(iv) $\\ce{(CH3)3C-Br}$",
+   "option1": "(i) < (iii) < (ii) < (iv)",
+   "option2": "(i) < (iii) < (iv) < (ii)",
+   "option3": "(iv) < (ii) < (iii) < (i)",
+   "option4": "(i) < (iv) < (iii) < (ii)",
+   "correct_option": "(i) < (iii) < (iv) < (ii)",
+   "difficulty_level": "Hard",
+   "question_tag": "AIIMS 2009",
+   "source": "AIIMS EG Unit-15 Q.25",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15339",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following is a primary halide?",
+   "option1": "Isopropyl iodide",
+   "option2": "Neohexyl chloride",
+   "option3": "Secondary butyl iodide",
+   "option4": "Tertiary butyl bromide",
+   "correct_option": "Neohexyl chloride",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2008",
+   "source": "AIIMS EG Unit-15 Q.26",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15340",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The chemical formula of 'tear gas' is",
+   "option1": "$\\ce{COCl2}$",
+   "option2": "$\\ce{CO2}$",
+   "option3": "$\\ce{CCl3NO2}$",
+   "option4": "$\\ce{Cl2}$",
+   "correct_option": "$\\ce{CCl3NO2}$",
+   "difficulty_level": "Easy",
+   "question_tag": "AIIMS 2008",
+   "source": "AIIMS EG Unit-15 Q.27",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15341",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "What is the product obtained when chlorine reacts with ethyl alcohol in the presence of NaOH?",
+   "option1": "$\\ce{CHCl3}$",
+   "option2": "$\\ce{CH3Cl}$",
+   "option3": "$\\ce{C2H5Cl}$",
+   "option4": "$\\ce{CCl3CHO}$",
+   "correct_option": "$\\ce{CHCl3}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2007",
+   "source": "AIIMS EG Unit-15 Q.28",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15342",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The major product formed in the reaction $\\ce{CH3CH(Cl)CH2-CH2OH ->[aq. KOH]}$ is",
+   "option1": "$\\ce{CH3-CH(OH)-CH2-CH2OH}$",
+   "option2": "$\\ce{CH3CH=CH-CH2OH}$",
+   "option3": "$\\ce{CH2=CH-CH2-CH2OH}$",
+   "option4": "2-Methyloxetane (four-membered cyclic ether)",
+   "correct_option": "$\\ce{CH3-CH(OH)-CH2-CH2OH}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2006",
+   "source": "AIIMS EG Unit-15 Q.31",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15343",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Among the following, the strongest nucleophile is",
+   "option1": "$\\ce{C2H5SH}$",
+   "option2": "$\\ce{CH3COO^-}$",
+   "option3": "$\\ce{CH3NH2}$",
+   "option4": "$\\ce{NCCH2^-}$",
+   "correct_option": "$\\ce{NCCH2^-}$",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2005",
+   "source": "AIIMS EG Unit-15 Q.33",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15344",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): 2-Bromobutane on reaction with sodium ethoxide in ethanol gives 1-butene as a major product.\nReason (R): 1-Butene is more stable than 2-butene.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option2": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option3": "(A) is true but (R) is false",
+   "option4": "Both (A) and (R) are false",
+   "correct_option": "Both (A) and (R) are false",
+   "difficulty_level": "Medium",
+   "question_tag": "AIIMS 2004",
+   "source": "AIIMS EG Unit-15 Q.39",
+   "question_type": "Assertion Reason",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15345",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following is the weakest nucleophile for an $S_N2$ reaction?",
+   "option1": "$\\ce{CN^-}$",
+   "option2": "$\\ce{H2O}$",
+   "option3": "$\\ce{NH2^-}$",
+   "option4": "$\\ce{I^-}$",
+   "correct_option": "$\\ce{H2O}$",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2019",
+   "source": "JIPMER EG Unit-15 Q.1",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15346",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "$\\ce{CH#CH ->[Hg^{2+}/H^+][H2O] A ->[LiAlH4] B ->[P/Br2] C}$. The final product C is",
+   "option1": "$\\ce{CH3CH2OH}$",
+   "option2": "$\\ce{CH3-CH2-I}$",
+   "option3": "$\\ce{CH3CH2-Br}$",
+   "option4": "$\\ce{BrCH2-CH2-OH}$",
+   "correct_option": "$\\ce{CH3CH2-Br}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2019",
+   "source": "JIPMER EG Unit-15 Q.2",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15347",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following is not correct?",
+   "option1": "R−I > R−Br > R−Cl ($S_N2$)",
+   "option2": "$\\ce{CH2=CH-Cl < CH2=CH-CH2-Cl < PhCH2-Cl}$ ($S_N1$)",
+   "option3": "R−Cl < R−Br < R−I ($S_N1$)",
+   "option4": "$\\ce{PhCH2Br > PhCHBrCH3 > PhCBr(CH3)2}$ ($S_N1$)",
+   "correct_option": "$\\ce{PhCH2Br > PhCHBrCH3 > PhCBr(CH3)2}$ ($S_N1$)",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2019",
+   "source": "JIPMER EG Unit-15 Q.3",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15348",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "$\\ce{CH3-CH2-CH2-Br ->[alc. KOH]}$ Final product is",
+   "option1": "propanol",
+   "option2": "propene",
+   "option3": "cyclopropane",
+   "option4": "propane-1,2-diol",
+   "correct_option": "propene",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2019",
+   "source": "JIPMER EG Unit-15 Q.4",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15349",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "1-Bromo-2-methylcyclohexane is warmed with $\\ce{CH3OH}$ (solvolysis). The major product P is",
+   "option1": "1-Methoxy-2-methylcyclohexane",
+   "option2": "1,2-Dimethoxycyclohexane",
+   "option3": "1-Methoxy-1-methylcyclohexane",
+   "option4": "1,2-Dimethylcyclohexane",
+   "correct_option": "1-Methoxy-1-methylcyclohexane",
+   "difficulty_level": "Hard",
+   "question_tag": "JIPMER 2018",
+   "source": "JIPMER EG Unit-15 Q.5",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15350",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "When 2-bromo-3-methylbutane is treated with sodium ethoxide in ethanol, the major product is",
+   "option1": "2-methylbut-2-ene",
+   "option2": "3-methylbut-1-ene",
+   "option3": "2-methylbut-1-ene",
+   "option4": "sodium 2-methylbutoxide",
+   "correct_option": "2-methylbut-2-ene",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2016",
+   "source": "JIPMER EG Unit-15 Q.7",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15351",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Which of the following dichloro-dimethylcyclohexadiene structures (shown in the figure) has the highest melting point?",
+   "option1": "Only I",
+   "option2": "Only II",
+   "option3": "I and II",
+   "option4": "II and III",
+   "correct_option": "Only II",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2013",
+   "source": "JIPMER EG Unit-15 Q.8",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15352",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "On warming with silver powder, chloroform is converted into",
+   "option1": "acetylene",
+   "option2": "hexachloroethane",
+   "option3": "1,1,2,2-tetrachloroethane",
+   "option4": "ethylene",
+   "correct_option": "acetylene",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2012",
+   "source": "JIPMER EG Unit-15 Q.9",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15353",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "The compound which forms acetaldehyde when heated with dilute NaOH is",
+   "option1": "1,1,1-trichloroethane",
+   "option2": "1-chloroethane",
+   "option3": "1,1-dichloroethane",
+   "option4": "1,2-dichloroethane",
+   "correct_option": "1,1-dichloroethane",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2011",
+   "source": "JIPMER EG Unit-15 Q.10",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15354",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "Iodoform gives a precipitate with $\\ce{AgNO3}$ on heating but chloroform does not because",
+   "option1": "chloroform is covalent",
+   "option2": "iodoform is ionic",
+   "option3": "none of the above",
+   "option4": "C−I bond in iodoform is weak and C−Cl bond in chloroform is strong",
+   "correct_option": "C−I bond in iodoform is weak and C−Cl bond in chloroform is strong",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2009",
+   "source": "JIPMER EG Unit-15 Q.11",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15355",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "t-Butyl chloride preferably undergoes hydrolysis by",
+   "option1": "$S_N2$ mechanism",
+   "option2": "$S_N1$ mechanism",
+   "option3": "any of $S_N1$ and $S_N2$",
+   "option4": "none of these",
+   "correct_option": "$S_N1$ mechanism",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2009",
+   "source": "JIPMER EG Unit-15 Q.12",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15356",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "By which one of the following compounds can both $\\ce{CH4}$ and $\\ce{CH3-CH3}$ be prepared in one step?",
+   "option1": "$\\ce{CH3OH}$",
+   "option2": "$\\ce{CH3CH2I}$",
+   "option3": "$\\ce{CH3I}$",
+   "option4": "$\\ce{C2H5OH}$",
+   "correct_option": "$\\ce{CH3I}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2006",
+   "source": "JIPMER EG Unit-15 Q.15",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15357",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "$\\ce{CH3CHCl2}$, on hydrolysis, will give",
+   "option1": "$\\ce{CH3CHO}$",
+   "option2": "$\\ce{CH3COOH}$",
+   "option3": "$\\ce{CHCl3}$",
+   "option4": "$\\ce{CH3CH2OH}$",
+   "correct_option": "$\\ce{CH3CHO}$",
+   "difficulty_level": "Easy",
+   "question_tag": "JIPMER 2004",
+   "source": "JIPMER EG Unit-15 Q.16",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU15358",
+   "subject": "Chemistry",
+   "unit": "Unit 15 - Haloalkanes and Haloarenes",
+   "level": 1,
+   "topic": "Complete Chapter Test",
+   "question": "In the conversion $\\ce{C6H5CH2CH2Cl ->[A] C6H5CH2CH2D}$, the reagent A can be",
+   "option1": "$\\ce{NaBD4}$ only",
+   "option2": "$\\ce{LiAlD4}$ only",
+   "option3": "Mg, dry ether / $\\ce{D2O}$ only",
+   "option4": "Both $\\ce{LiAlD4}$ and Mg, dry ether / $\\ce{D2O}$",
+   "correct_option": "Both $\\ce{LiAlD4}$ and Mg, dry ether / $\\ce{D2O}$",
+   "difficulty_level": "Medium",
+   "question_tag": "JIPMER 2016",
+   "source": "JIPMER EG Unit-15 Q.17",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  }
+ ],
+ "payload": {
+  "NCU15004": {
+   "source": "NEET EG Unit-15 Q.2"
+  },
+  "NCU15003": {
+   "source": "NEET EG Unit-15 Q.3"
+  },
+  "NCU15006": {
+   "source": "NEET EG Unit-15 Q.4"
+  },
+  "NCU15012": {
+   "source": "NEET EG Unit-15 Q.5"
+  },
+  "NCU15005": {
+   "source": "NEET EG Unit-15 Q.7",
+   "question_tag": "NEET 2023"
+  },
+  "NCU15009": {
+   "source": "NEET EG Unit-15 Q.8"
+  },
+  "NCU15018": {
+   "source": "NEET EG Unit-15 Q.9"
+  },
+  "NCU15019": {
+   "source": "NEET EG Unit-15 Q.10"
+  },
+  "NCU15022": {
+   "source": "NEET EG Unit-15 Q.13"
+  },
+  "NCU15021": {
+   "source": "NEET EG Unit-15 Q.14"
+  },
+  "NCU15023": {
+   "source": "NEET EG Unit-15 Q.15"
+  },
+  "NCU15025": {
+   "source": "NEET EG Unit-15 Q.16"
+  },
+  "NCU15026": {
+   "source": "NEET EG Unit-15 Q.17"
+  },
+  "NCU15027": {
+   "source": "NEET EG Unit-15 Q.18"
+  },
+  "NCU15031": {
+   "source": "NEET EG Unit-15 Q.19"
+  },
+  "NCU15032": {
+   "source": "NEET EG Unit-15 Q.20"
+  },
+  "NCU15033": {
+   "source": "NEET EG Unit-15 Q.21"
+  },
+  "NCU15036": {
+   "source": "NEET EG Unit-15 Q.22"
+  },
+  "NCU15037": {
+   "source": "NEET EG Unit-15 Q.24"
+  },
+  "NCU15040": {
+   "source": "NEET EG Unit-15 Q.25"
+  },
+  "NCU15038": {
+   "source": "NEET EG Unit-15 Q.26"
+  },
+  "NCU15039": {
+   "source": "NEET EG Unit-15 Q.27"
+  },
+  "NCU15041": {
+   "source": "NEET EG Unit-15 Q.28"
+  },
+  "NCU15043": {
+   "source": "NEET EG Unit-15 Q.29"
+  },
+  "NCU15045": {
+   "source": "NEET EG Unit-15 Q.30"
+  },
+  "NCU15046": {
+   "source": "NEET EG Unit-15 Q.31"
+  },
+  "NCU15047": {
+   "source": "NEET EG Unit-15 Q.32"
+  },
+  "NCU15049": {
+   "source": "NEET EG Unit-15 Q.33"
+  },
+  "NCU15051": {
+   "source": "NEET EG Unit-15 Q.34"
+  },
+  "NCU15052": {
+   "source": "NEET EG Unit-15 Q.35"
+  },
+  "NCU15054": {
+   "source": "NEET EG Unit-15 Q.36"
+  },
+  "NCU15053": {
+   "source": "NEET EG Unit-15 Q.37"
+  },
+  "NCU15058": {
+   "source": "NEET EG Unit-15 Q.40"
+  },
+  "NCU15057": {
+   "source": "NEET EG Unit-15 Q.41"
+  },
+  "NCU15060": {
+   "source": "NEET EG Unit-15 Q.42"
+  },
+  "NCU15059": {
+   "source": "NEET EG Unit-15 Q.43"
+  },
+  "NCU15064": {
+   "source": "NEET EG Unit-15 Q.44"
+  },
+  "NCU15063": {
+   "source": "NEET EG Unit-15 Q.45"
+  },
+  "NCU15062": {
+   "source": "NEET EG Unit-15 Q.46"
+  },
+  "NCU15065": {
+   "source": "NEET EG Unit-15 Q.47"
+  },
+  "NCU15067": {
+   "source": "NEET EG Unit-15 Q.48"
+  },
+  "NCU15002": {
+   "source": "NEET EG Unit-15 Q.49"
+  },
+  "NCU15098": {
+   "source": "AIIMS EG Unit-15 Q.1"
+  },
+  "NCU15102": {
+   "source": "AIIMS EG Unit-15 Q.18",
+   "question_tag": "AIIMS 2012"
+  },
+  "NCU15100": {
+   "source": "AIIMS EG Unit-15 Q.19",
+   "question_tag": "AIIMS 2012",
+   "correct_option": "Assertion (A) is true but Reason (R) is false."
+  },
+  "NCU15068": {
+   "source": "AIIMS EG Unit-15 Q.20",
+   "question_tag": "AIIMS 2011"
+  },
+  "NCU15080": {
+   "source": "AIIMS EG Unit-15 Q.29"
+  },
+  "NCU15081": {
+   "source": "AIIMS EG Unit-15 Q.30"
+  },
+  "NCU15077": {
+   "source": "AIIMS EG Unit-15 Q.34",
+   "correct_option": "$\\ce{(CH3)2C=CH2}$"
+  },
+  "NCU15101": {
+   "source": "AIIMS EG Unit-15 Q.36"
+  },
+  "NCU15075": {
+   "source": "AIIMS EG Unit-15 Q.37",
+   "correct_option": "$\\ce{CH3COCH2CH2Br}$"
+  },
+  "NCU15076": {
+   "source": "AIIMS EG Unit-15 Q.38"
+  },
+  "NCU15078": {
+   "source": "JIPMER EG Unit-15 Q.6",
+   "question_tag": "JIPMER 2018",
+   "correct_option": "$\\ce{CH3CH2CH=CH2}$"
+  }
+ },
+ "old": {
+  "NCU15004": {
+   "source": "NEET Q.No. 4"
+  },
+  "NCU15003": {
+   "source": "NEET Q.No. 3"
+  },
+  "NCU15006": {
+   "source": "NEET Q.No. 6"
+  },
+  "NCU15012": {
+   "source": "NEET Q.No. 12"
+  },
+  "NCU15005": {
+   "source": "NEET Q.No. 5",
+   "question_tag": "NEET 2024"
+  },
+  "NCU15009": {
+   "source": "NEET Q.No. 9"
+  },
+  "NCU15018": {
+   "source": "NEET Q.No. 18"
+  },
+  "NCU15019": {
+   "source": "NEET Q.No. 19"
+  },
+  "NCU15022": {
+   "source": "NEET Q.No. 22"
+  },
+  "NCU15021": {
+   "source": "NEET Q.No. 21"
+  },
+  "NCU15023": {
+   "source": "NEET Q.No. 23"
+  },
+  "NCU15025": {
+   "source": "NEET Q.No. 25"
+  },
+  "NCU15026": {
+   "source": "NEET Q.No. 26"
+  },
+  "NCU15027": {
+   "source": "NEET Q.No. 27"
+  },
+  "NCU15031": {
+   "source": "NEET Q.No. 31"
+  },
+  "NCU15032": {
+   "source": "NEET Q.No. 32"
+  },
+  "NCU15033": {
+   "source": "NEET Q.No. 33"
+  },
+  "NCU15036": {
+   "source": "NEET Q.No. 36"
+  },
+  "NCU15037": {
+   "source": "NEET Q.No. 37"
+  },
+  "NCU15040": {
+   "source": "NEET Q.No. 40"
+  },
+  "NCU15038": {
+   "source": "NEET Q.No. 38"
+  },
+  "NCU15039": {
+   "source": "NEET Q.No. 39"
+  },
+  "NCU15041": {
+   "source": "NEET Q.No. 41"
+  },
+  "NCU15043": {
+   "source": "NEET Q.No. 43"
+  },
+  "NCU15045": {
+   "source": "NEET Q.No. 45"
+  },
+  "NCU15046": {
+   "source": "NEET Q.No. 46"
+  },
+  "NCU15047": {
+   "source": "NEET Q.No. 47"
+  },
+  "NCU15049": {
+   "source": "NEET Q.No. 49"
+  },
+  "NCU15051": {
+   "source": "NEET Q.No. 51"
+  },
+  "NCU15052": {
+   "source": "NEET Q.No. 52"
+  },
+  "NCU15054": {
+   "source": "NEET Q.No. 54"
+  },
+  "NCU15053": {
+   "source": "NEET Q.No. 53"
+  },
+  "NCU15058": {
+   "source": "NEET Q.No. 58"
+  },
+  "NCU15057": {
+   "source": "NEET Q.No. 57"
+  },
+  "NCU15060": {
+   "source": "NEET Q.No. 60"
+  },
+  "NCU15059": {
+   "source": "NEET Q.No. 59"
+  },
+  "NCU15064": {
+   "source": "NEET Q.No. 64"
+  },
+  "NCU15063": {
+   "source": "NEET Q.No. 63"
+  },
+  "NCU15062": {
+   "source": "NEET Q.No. 62"
+  },
+  "NCU15065": {
+   "source": "NEET Q.No. 65"
+  },
+  "NCU15067": {
+   "source": "NEET Q.No. 67"
+  },
+  "NCU15002": {
+   "source": "NEET Q.No. 2"
+  },
+  "NCU15098": {
+   "source": "AIIMS Q.No. 31"
+  },
+  "NCU15102": {
+   "source": "AIIMS Q.No. 35",
+   "question_tag": "AIIMS 2006"
+  },
+  "NCU15100": {
+   "source": "AIIMS Q.No. 33",
+   "question_tag": "AIIMS 2003",
+   "correct_option": "Both Assertion (A) and Reason (R) are true and Reason is the correct explanation of Assertion."
+  },
+  "NCU15068": {
+   "source": "AIIMS Q.No. 1",
+   "question_tag": "AIIMS 1994"
+  },
+  "NCU15080": {
+   "source": "AIIMS Q.No. 13"
+  },
+  "NCU15081": {
+   "source": "AIIMS Q.No. 14"
+  },
+  "NCU15077": {
+   "source": "AIIMS Q.No. 10",
+   "correct_option": "$\\ce{(CH3)3C-OCH3}$"
+  },
+  "NCU15101": {
+   "source": "AIIMS Q.No. 34"
+  },
+  "NCU15075": {
+   "source": "AIIMS Q.No. 8",
+   "correct_option": "$\\ce{CH3CH2CH2Br}$"
+  },
+  "NCU15076": {
+   "source": "AIIMS Q.No. 9"
+  },
+  "NCU15078": {
+   "source": "AIIMS Q.No. 11",
+   "question_tag": "AIIMS 2005",
+   "correct_option": "$\\ce{CH3CH=CHCH3}$"
+  }
+ },
+ "img": {
+  "NCU15320": {
+   "question_image": "n39_q.png"
+  },
+  "NCU15351": {
+   "question_image": "j8_q.png"
+  }
+ },
+ "expect": {
+  "NCU15": "NCU15313"
+ }
+}
