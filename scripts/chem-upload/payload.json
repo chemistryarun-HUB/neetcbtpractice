@@ -1,0 +1,955 @@
+{
+ "insert": [
+  {
+   "qid": "NCU05426",
+   "subject": "Chemistry",
+   "unit": "Unit 5 - Solutions",
+   "level": 3,
+   "topic": "Colligative properties and determination of molar mass : Relative lowering of vapour pressure, Elevation of boiling point, depression of freezing point Osmosis, Osmotic pressure, reverse osmosis Abnormal molar masses and van't Hoff factor",
+   "question": "Which amongst the following aqueous solution of electrolytes will have minimum elevation in boiling point? Choose the correct option:",
+   "option1": "0.05 M NaCl",
+   "option2": "0.1 M KCl",
+   "option3": "0.1 M $\\ce{MgSO4}$",
+   "option4": "1 M NaCl",
+   "correct_option": "0.05 M NaCl",
+   "difficulty_level": "Easy",
+   "question_tag": "NEET 2023",
+   "source": "NEET EG Unit-05 Q.10",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU05427",
+   "subject": "Chemistry",
+   "unit": "Unit 5 - Solutions",
+   "level": 2,
+   "topic": "Solubility of a solid in a liquid and gas in a liquid (Henry's law), Vapour pressure of liquid solutions, Raoult's law for binary solutions. Ideal and non-ideal solutions",
+   "question": "$K_H$ value for some gases at the same temperature 'T' are given:\nAr: 40.3 k bar; $\\ce{CO2}$: 1.67 k bar; HCHO: $1.83 \\times 10^{-5}$ k bar; $\\ce{CH4}$: 0.413 k bar\nwhere $K_H$ is Henry's Law constant in water. The order of their solubility in water is:",
+   "option1": "HCHO < $\\ce{CH4}$ < $\\ce{CO2}$ < Ar",
+   "option2": "Ar < $\\ce{CO2}$ < $\\ce{CH4}$ < HCHO",
+   "option3": "Ar < $\\ce{CH4}$ < $\\ce{CO2}$ < HCHO",
+   "option4": "HCHO < $\\ce{CO2}$ < $\\ce{CH4}$ < Ar",
+   "correct_option": "Ar < $\\ce{CO2}$ < $\\ce{CH4}$ < HCHO",
+   "difficulty_level": "Medium",
+   "question_tag": "NEET 2022",
+   "source": "NEET EG Unit-05 Q.11",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  },
+  {
+   "qid": "NCU05428",
+   "subject": "Chemistry",
+   "unit": "Unit 5 - Solutions",
+   "level": 3,
+   "topic": "Colligative properties and determination of molar mass : Relative lowering of vapour pressure, Elevation of boiling point, depression of freezing point Osmosis, Osmotic pressure, reverse osmosis Abnormal molar masses and van't Hoff factor",
+   "question": "Which of the following aqueous solution has minimum freezing point?",
+   "option1": "0.01 m NaCl",
+   "option2": "0.005 m $\\ce{C2H5OH}$",
+   "option3": "0.005 m $\\ce{MgI2}$",
+   "option4": "0.005 m $\\ce{MgSO4}$",
+   "correct_option": "0.01 m NaCl",
+   "difficulty_level": "Easy",
+   "question_tag": "AIPMT 1991",
+   "source": "NEET EG Unit-05 Q.66",
+   "question_type": "Single Choice MCQ",
+   "is_active": true,
+   "shuffle_options": false,
+   "is_published": false,
+   "medium": "en"
+  }
+ ],
+ "payload": {
+  "NCU05243": {
+   "question": "The Henry's law constant ($K_H$) values of three gases (A, B, C) in water are 145, $2 \\times 10^{-5}$ and 35 kbar respectively. The solubility of these gases in water follows the order:",
+   "option1": "B > C > A",
+   "option2": "A > C > B",
+   "option3": "A > B > C",
+   "option4": "B > A > C",
+   "correct_option": "B > C > A",
+   "source": "NEET EG Unit-05 Q.8"
+  },
+  "NCU05245": {
+   "question": "The correct option for the value of vapour pressure of a solution at 45 °C with benzene to octane in molar ratio 3 : 2 is:\n[At 45 °C vapour pressure of benzene is 280 mm Hg and that of octane is 420 mm Hg. Assume Ideal gas]",
+   "source": "NEET EG Unit-05 Q.13"
+  },
+  "NCU05247": {
+   "question": "Which of the following statements about the composition of the vapour over an ideal 1 : 1 molar mixture of benzene and toluene is correct? Assume that the temperature is constant at 25 °C.\n(Given, vapour pressure data at 25 °C, benzene = 12.8 kPa, toluene = 3.85 kPa)",
+   "source": "NEET EG Unit-05 Q.24",
+   "option1": "The vapour will contain a higher percentage of toluene"
+  },
+  "NCU05248": {
+   "question": "$p_A$ and $p_B$ are the vapour pressure of pure liquid components, A and B, respectively of an ideal binary solution. If $x_A$ represents the mole fraction of component A, the total pressure of the solution will be",
+   "source": "NEET EG Unit-05 Q.32",
+   "option1": "$p_A + x_A(p_B - p_A)$",
+   "option2": "$p_A + x_A(p_A - p_B)$",
+   "option3": "$p_B + x_A(p_B - p_A)$",
+   "option4": "$p_B + x_A(p_A - p_B)$",
+   "correct_option": "$p_B + x_A(p_A - p_B)$"
+  },
+  "NCU05249": {
+   "question": "Vapour pressure of chloroform ($\\ce{CHCl3}$) and dichloromethane ($\\ce{CH2Cl2}$) at 25 °C are 200 mm Hg and 41.5 mm Hg respectively. Vapour pressure of the solution obtained by mixing 25.5 g of $\\ce{CHCl3}$ and 40 g of $\\ce{CH2Cl2}$ at the same temperature will be (Molecular mass of $\\ce{CHCl3}$ = 119.5 u and molecular mass of $\\ce{CH2Cl2}$ = 85 u)",
+   "option1": "173.9 mm Hg",
+   "option2": "615.0 mm Hg",
+   "option3": "90.6 mm Hg",
+   "option4": "285.5 mm Hg",
+   "correct_option": "90.6 mm Hg",
+   "source": "NEET EG Unit-05 Q.31"
+  },
+  "NCU05250": {
+   "question": "A solution has a 1 : 4 mole ratio of pentane to hexane. The vapour pressures of the pure hydrocarbons at 20 °C are 440 mm Hg for pentane and 120 mm Hg for hexane. The mole fraction of pentane in the vapour phase would be",
+   "source": "NEET EG Unit-05 Q.46"
+  },
+  "NCU05251": {
+   "question": "The vapour pressure of two liquids P and Q are 80 and 60 torr, respectively. The total vapour pressure of solution obtained by mixing 3 mole of P and 2 mole of Q would be",
+   "source": "NEET EG Unit-05 Q.45"
+  },
+  "NCU05253": {
+   "source": "NEET EG Unit-05 Q.17",
+   "option1": "Benzene + Toluene",
+   "option2": "Acetone + Chloroform",
+   "option3": "Chloroethane + Bromoethane",
+   "option4": "Ethanol + Acetone",
+   "correct_option": "Ethanol + Acetone"
+  },
+  "NCU05254": {
+   "question": "For an ideal solution, the correct option is:",
+   "source": "NEET EG Unit-05 Q.19",
+   "option1": "$\\Delta_{\\text{mix}}V \\neq 0$ at constant T and P",
+   "option2": "$\\Delta_{\\text{mix}}H = 0$ at constant T and P",
+   "option3": "$\\Delta_{\\text{mix}}G = 0$ at constant T and P",
+   "option4": "$\\Delta_{\\text{mix}}S = 0$ at constant T and P",
+   "correct_option": "$\\Delta_{\\text{mix}}H = 0$ at constant T and P"
+  },
+  "NCU05255": {
+   "source": "NEET EG Unit-05 Q.20",
+   "option1": "Ethanol + Water",
+   "option2": "Acetone + Carbon disulphide",
+   "option3": "Heptane + Octane",
+   "option4": "Water + Nitric acid",
+   "correct_option": "Water + Nitric acid"
+  },
+  "NCU05256": {
+   "question": "Which of the following statements is correct regarding a solution of two components A and B exhibiting positive deviation from ideal behaviour?",
+   "source": "NEET EG Unit-05 Q.18",
+   "option2": "$\\Delta_{\\text{mix}}H = 0$ at constant T and P.",
+   "option3": "$\\Delta_{\\text{mix}}V = 0$ at constant T and P."
+  },
+  "NCU05257": {
+   "source": "NEET EG Unit-05 Q.23",
+   "option1": "$\\Delta H_{mix} = 0$",
+   "option2": "$\\Delta U_{mix} = 0$",
+   "option3": "$\\Delta P = P_{obs} - P_{\\text{calculated by Raoult's law}} = 0$",
+   "option4": "$\\Delta G_{mix} = 0$",
+   "correct_option": "$\\Delta G_{mix} = 0$"
+  },
+  "NCU05258": {
+   "question": "Which of them is not equal to zero for an ideal solution?",
+   "option1": "$\\Delta H_{mix}$",
+   "option2": "$\\Delta S_{mix}$",
+   "option3": "$\\Delta V_{mix}$",
+   "option4": "$\\Delta P = P_{observed} - P_{Raoult}$",
+   "correct_option": "$\\Delta S_{mix}$",
+   "source": "NEET EG Unit-05 Q.28"
+  },
+  "NCU05259": {
+   "source": "NEET EG Unit-05 Q.30",
+   "option1": "$\\Delta_{mix}V = 0$",
+   "option2": "$\\Delta_{mix}S = 0$",
+   "option3": "Obeyance to Raoult's Law",
+   "option4": "$\\Delta_{mix}H = 0$",
+   "correct_option": "$\\Delta_{mix}S = 0$"
+  },
+  "NCU05260": {
+   "question": "A solution of acetone in ethanol",
+   "source": "NEET EG Unit-05 Q.42",
+   "option1": "obeys Raoult's law",
+   "option2": "shows a negative deviation from Raoult's law",
+   "option3": "shows a positive deviation from Raoult's law",
+   "correct_option": "shows a positive deviation from Raoult's law"
+  },
+  "NCU05261": {
+   "question": "A solution containing components A and B follows Raoult's law",
+   "source": "NEET EG Unit-05 Q.49",
+   "option1": "A − B attraction force is greater than A − A and B − B",
+   "option2": "A − B attraction force is less than A − A and B − B",
+   "option3": "A − B attraction force remains same as A − A and B − B",
+   "option4": "volume of solution is different from sum of volume of solute and solvent.",
+   "correct_option": "A − B attraction force remains same as A − A and B − B"
+  },
+  "NCU05262": {
+   "question": "An ideal solution is formed when its components",
+   "source": "NEET EG Unit-05 Q.69",
+   "option1": "have no volume change on mixing",
+   "option2": "have no enthalpy change on mixing",
+   "option3": "have both the above characteristics",
+   "option4": "have high solubility",
+   "correct_option": "have both the above characteristics"
+  },
+  "NCU05263": {
+   "question": "All form ideal solution except",
+   "source": "NEET EG Unit-05 Q.68",
+   "option1": "$\\ce{C6H6}$ and $\\ce{C6H5CH3}$",
+   "option2": "$\\ce{C2H6}$ and $\\ce{C2H5I}$",
+   "option3": "$\\ce{C6H5Cl}$ and $\\ce{C6H5Br}$",
+   "option4": "$\\ce{C2H5I}$ and $\\ce{C2H5OH}$",
+   "correct_option": "$\\ce{C2H5I}$ and $\\ce{C2H5OH}$"
+  },
+  "NCU05264": {
+   "question": "Mass of glucose ($\\ce{C6H12O6}$) required to be dissolved to prepare one litre of its solution which is isotonic with 15 g L$^{-1}$ solution of urea ($\\ce{NH2CONH2}$) is (Given: Molar mass in g mol$^{-1}$ C: 12, H: 1, O: 16, N: 14)",
+   "source": "NEET EG Unit-05 Q.7"
+  },
+  "NCU05265": {
+   "question": "The plot of osmotic pressure ($\\Pi$) vs concentration (mol L$^{-1}$) for a solution gives a straight line with slope 25.73 L bar mol$^{-1}$. The temperature at which the osmotic pressure measurement is done is (Use R = 0.083 L bar mol$^{-1}$ K$^{-1}$)",
+   "source": "NEET EG Unit-05 Q.9",
+   "option1": "310 °C",
+   "option2": "25.73 °C",
+   "option3": "12.05 °C",
+   "option4": "37 °C",
+   "correct_option": "37 °C"
+  },
+  "NCU05266": {
+   "question": "The following solutions were prepared by dissolving 10 g of glucose ($\\ce{C6H12O6}$) in 250 mL of water ($P_1$), 10 g of urea ($\\ce{CH4N2O}$) in 250 mL of water ($P_2$) and 10 g of sucrose ($\\ce{C12H22O11}$) in 250 mL of water ($P_3$). The right option for the decreasing order of osmotic pressure of these solutions is:",
+   "source": "NEET EG Unit-05 Q.12",
+   "option1": "$P_2 > P_1 > P_3$",
+   "option2": "$P_1 > P_2 > P_3$",
+   "option3": "$P_2 > P_3 > P_1$",
+   "option4": "$P_3 > P_1 > P_2$",
+   "correct_option": "$P_2 > P_1 > P_3$"
+  },
+  "NCU05267": {
+   "question": "If 8 g of a non-electrolyte solute is dissolved in 114 g of n-octane to reduce its vapour pressure to 80%, the molar mass (in g mol$^{-1}$) of the solute is\n[Given that molar mass of n-octane is 114 g mol$^{-1}$]",
+   "source": "NEET EG Unit-05 Q.14"
+  },
+  "NCU05268": {
+   "question": "Isotonic solutions have same",
+   "source": "NEET EG Unit-05 Q.15"
+  },
+  "NCU05269": {
+   "question": "The freezing point depression constant ($K_f$) of benzene is 5.12 K kg mol$^{-1}$. The freezing point depression for the solution of molality 0.078 m containing a non-electrolyte solute in benzene is (rounded off upto two decimal places):",
+   "source": "NEET EG Unit-05 Q.16"
+  },
+  "NCU05270": {
+   "question": "If molality of the dilute solution is doubled, the value of molal depression constant ($K_f$) will be",
+   "source": "NEET EG Unit-05 Q.21"
+  },
+  "NCU05271": {
+   "question": "At 100 °C the vapour pressure of a solution of 6.5 g of a solute in 100 g water is 732 mm. If $K_b$ = 0.52, the boiling point of this solution will be",
+   "source": "NEET EG Unit-05 Q.25",
+   "option1": "100 °C",
+   "option2": "102 °C",
+   "option3": "103 °C",
+   "option4": "101 °C",
+   "correct_option": "101 °C"
+  },
+  "NCU05272": {
+   "question": "200 mL of an aqueous solution of a protein contains its 1.26 g. The osmotic pressure of this solution at 300 K is found to be $2.57 \\times 10^{-3}$ bar. The molar mass of protein will be (R = 0.083 L bar mol$^{-1}$ K$^{-1}$)",
+   "source": "NEET EG Unit-05 Q.34",
+   "option1": "51022 g mol$^{-1}$",
+   "option2": "122044 g mol$^{-1}$",
+   "option3": "31011 g mol$^{-1}$",
+   "option4": "61038 g mol$^{-1}$",
+   "correct_option": "61038 g mol$^{-1}$"
+  },
+  "NCU05273": {
+   "question": "A solution of sucrose (molar mass = 342 g mol$^{-1}$) has been prepared by dissolving 68.5 g of sucrose in 1000 g of water. The freezing point of the solution obtained will be ($K_f$ for water = 1.86 K kg mol$^{-1}$)",
+   "source": "NEET EG Unit-05 Q.38",
+   "option1": "−0.372 °C",
+   "option2": "−0.520 °C",
+   "option3": "+0.372 °C",
+   "option4": "−0.570 °C",
+   "correct_option": "−0.372 °C"
+  },
+  "NCU05274": {
+   "question": "A solution containing 10 g per dm$^3$ of urea (molecular mass = 60 g mol$^{-1}$) is isotonic with a 5% solution of a nonvolatile solute. The molecular mass of this nonvolatile solute is",
+   "source": "NEET EG Unit-05 Q.44",
+   "option1": "200 g mol$^{-1}$",
+   "option2": "250 g mol$^{-1}$",
+   "option3": "300 g mol$^{-1}$",
+   "option4": "350 g mol$^{-1}$",
+   "correct_option": "300 g mol$^{-1}$"
+  },
+  "NCU05275": {
+   "question": "1.00 g of a non-electrolyte solute (molar mass 250 g mol$^{-1}$) was dissolved in 51.2 g of benzene. If the freezing point depression constant, $K_f$ of benzene is 5.12 K kg mol$^{-1}$, the freezing point of benzene will be lowered by",
+   "source": "NEET EG Unit-05 Q.43"
+  },
+  "NCU05276": {
+   "question": "During osmosis, flow of water through a semipermeable membrane is",
+   "option1": "from solution having lower concentration only",
+   "option2": "from solution having higher concentration only",
+   "option3": "from both sides of semipermeable membrane with equal flow rates",
+   "correct_option": "from both sides of semipermeable membrane with unequal flow rates.",
+   "source": "NEET EG Unit-05 Q.41"
+  },
+  "NCU05277": {
+   "question": "A solution of urea (mol. mass 56 g mol$^{-1}$) boils at 100.18 °C at the atmospheric pressure. If $K_f$ and $K_b$ for water are 1.86 and 0.512 K kg mol$^{-1}$ respectively, the above solution will freeze at",
+   "source": "NEET EG Unit-05 Q.47",
+   "option1": "0.654 °C",
+   "option2": "−0.654 °C",
+   "option3": "6.54 °C",
+   "option4": "−6.54 °C",
+   "correct_option": "−0.654 °C"
+  },
+  "NCU05278": {
+   "question": "Camphor is often used in molecular mass determination because",
+   "source": "NEET EG Unit-05 Q.48",
+   "option1": "it is readily available",
+   "option2": "it has a very high cryoscopic constant",
+   "option3": "it is volatile",
+   "option4": "it is solvent for organic substances",
+   "correct_option": "it has a very high cryoscopic constant"
+  },
+  "NCU05279": {
+   "question": "A solution contains non volatile solute of molecular mass $M_2$. Which of the following can be used to calculate the molecular mass of solute in terms of osmotic pressure?",
+   "option1": "$M_2 = \\left(\\dfrac{m_2}{\\pi}\\right)VRT$",
+   "option2": "$M_2 = \\left(\\dfrac{m_2}{V}\\right)\\dfrac{RT}{\\pi}$",
+   "option3": "$M_2 = \\left(\\dfrac{m_2}{V}\\right)\\pi RT$",
+   "option4": "$M_2 = \\left(\\dfrac{m_2}{V}\\right)\\dfrac{\\pi}{RT}$",
+   "correct_option": "$M_2 = \\left(\\dfrac{m_2}{V}\\right)\\dfrac{RT}{\\pi}$",
+   "source": "NEET EG Unit-05 Q.50"
+  },
+  "NCU05280": {
+   "question": "Pure water can be obtained from sea water by",
+   "source": "NEET EG Unit-05 Q.51",
+   "option4": "sedimentation"
+  },
+  "NCU05281": {
+   "source": "NEET EG Unit-05 Q.52"
+  },
+  "NCU05282": {
+   "question": "If 0.15 g of solute, dissolved in 15 g of solvent, is boiled at a temperature higher by 0.216 °C, than that of the pure solvent, the molecular weight of the substance is (molal elevation constant for the solvent is 2.16 °C)",
+   "source": "NEET EG Unit-05 Q.54"
+  },
+  "NCU05283": {
+   "question": "The vapour pressure of benzene at a certain temperature is 640 mm of Hg. A non-volatile and non-electrolyte solid, weighing 2.175 g is added to 39.08 g of benzene. If the vapour pressure of the solution is 600 mm of Hg, what is the molecular weight of solid substance?",
+   "option1": "69.40",
+   "option2": "59.60",
+   "option4": "79.82",
+   "correct_option": "69.40",
+   "source": "NEET EG Unit-05 Q.53"
+  },
+  "NCU05284": {
+   "question": "The vapour pressure of a solvent decreased by 10 mm of mercury when a non-volatile solute was added to the solvent. The mole fraction of the solute in the solution is 0.2. What should be the mole fraction of the solvent if the decrease in the vapour pressure is to be 20 mm of mercury?",
+   "correct_option": "0.6",
+   "source": "NEET EG Unit-05 Q.55"
+  },
+  "NCU05285": {
+   "question": "A 5% solution of cane sugar (mol. wt. = 342) is isotonic with 1% solution of a substance X. The molecular weight of X is",
+   "source": "NEET EG Unit-05 Q.56"
+  },
+  "NCU05286": {
+   "question": "The vapour pressure of $\\ce{CCl4}$ at 25 °C is 143 mm Hg. If 0.5 g of a non-volatile solute (mol. weight = 65) is dissolved in 100 mL $\\ce{CCl4}$, the vapour pressure of the solution will be",
+   "source": "NEET EG Unit-05 Q.58"
+  },
+  "NCU05287": {
+   "question": "According to Raoult's law, the relative lowering of vapour pressure for a solution is equal to",
+   "source": "NEET EG Unit-05 Q.60",
+   "option4": "moles of solvent"
+  },
+  "NCU05288": {
+   "question": "If 0.1 M solution of glucose and 0.1 M solution of urea are placed on two sides of the semipermeable membrane to equal heights, then it will be correct to say that",
+   "source": "NEET EG Unit-05 Q.63",
+   "option1": "there will be no net movement across the membrane",
+   "option2": "glucose will flow towards urea solution",
+   "option3": "urea will flow towards glucose solution",
+   "option4": "water will flow from urea solution to glucose",
+   "correct_option": "there will be no net movement across the membrane"
+  },
+  "NCU05289": {
+   "source": "NEET EG Unit-05 Q.64"
+  },
+  "NCU05290": {
+   "question": "Blood cells retain their normal shape in solution which are",
+   "source": "NEET EG Unit-05 Q.65",
+   "option4": "equinormal to blood"
+  },
+  "NCU05291": {
+   "question": "The relative lowering of the vapour pressure is equal to the ratio between the number of",
+   "source": "NEET EG Unit-05 Q.67",
+   "option1": "solute molecules to the solvent molecules",
+   "option2": "solute molecules to the total molecules in the solution",
+   "option3": "solvent molecules to the total molecules in the solution",
+   "option4": "solvent molecules to the total number of ions of the solute",
+   "correct_option": "solute molecules to the total molecules in the solution"
+  },
+  "NCU05292": {
+   "question": "The van't Hoff factor (i) for a dilute aqueous solution of the strong electrolyte barium hydroxide is",
+   "source": "NEET EG Unit-05 Q.22"
+  },
+  "NCU05293": {
+   "question": "The boiling point of 0.2 mol kg$^{-1}$ solution of X in water is greater than equimolal solution of Y in water. Which one of the following statements is true in this case?",
+   "correct_option": "X is undergoing dissociation in water.",
+   "source": "NEET EG Unit-05 Q.26"
+  },
+  "NCU05294": {
+   "question": "Which one of the following electrolytes has the same value of van't Hoff factor (i) as that of $\\ce{Al2(SO4)3}$ (if all are 100% ionised)?",
+   "source": "NEET EG Unit-05 Q.27",
+   "option1": "$\\ce{K2SO4}$",
+   "option2": "$\\ce{K3[Fe(CN)6]}$",
+   "option3": "$\\ce{Al(NO3)3}$",
+   "option4": "$\\ce{K4[Fe(CN)6]}$",
+   "correct_option": "$\\ce{K4[Fe(CN)6]}$"
+  },
+  "NCU05295": {
+   "source": "NEET EG Unit-05 Q.29",
+   "option2": "$\\ce{C6H12O6}$",
+   "option3": "$\\ce{Al2(SO4)3}$",
+   "option4": "$\\ce{K2SO4}$",
+   "correct_option": "$\\ce{Al2(SO4)3}$"
+  },
+  "NCU05296": {
+   "question": "The freezing point depression constant for water is 1.86 °C m$^{-1}$. If 5.00 g $\\ce{Na2SO4}$ is dissolved in 45.0 g $\\ce{H2O}$, the freezing point is changed by −3.82 °C. Calculate the van't Hoff factor for $\\ce{Na2SO4}$.",
+   "source": "NEET EG Unit-05 Q.35"
+  },
+  "NCU05297": {
+   "question": "The van't Hoff factor i for a compound which undergoes dissociation in one solvent and association in other solvent is respectively",
+   "source": "NEET EG Unit-05 Q.36"
+  },
+  "NCU05298": {
+   "question": "A 0.1 molal aqueous solution of a weak acid is 30% ionized. If $K_f$ for water is 1.86 °C/m, the freezing point of the solution will be",
+   "source": "NEET EG Unit-05 Q.33",
+   "option1": "−0.18 °C",
+   "option2": "−0.54 °C",
+   "option3": "−0.36 °C",
+   "option4": "−0.24 °C",
+   "correct_option": "−0.24 °C"
+  },
+  "NCU05299": {
+   "source": "NEET EG Unit-05 Q.37",
+   "option2": "Addition of $\\ce{Na2SO4}$"
+  },
+  "NCU05300": {
+   "question": "A 0.0020 m aqueous solution of an ionic compound $\\ce{[Co(NH3)5(NO2)]Cl}$ freezes at −0.00732 °C. Number of moles of ions which 1 mol of ionic compound produces on being dissolved in water will be ($K_f$ = 1.86 °C/m)",
+   "source": "NEET EG Unit-05 Q.39"
+  },
+  "NCU05301": {
+   "question": "0.5 molal aqueous solution of a weak acid (HX) is 20% ionised. If $K_f$ for water is 1.86 K kg mol$^{-1}$, the lowering in freezing point of the solution is",
+   "source": "NEET EG Unit-05 Q.40",
+   "option3": "−0.56 K",
+   "option4": "−1.12 K"
+  },
+  "NCU05302": {
+   "source": "NEET EG Unit-05 Q.57",
+   "option2": "$\\ce{C12H22O11}$",
+   "option3": "$\\ce{Al2(SO4)3}$",
+   "option4": "$\\ce{C5H10O5}$",
+   "correct_option": "$\\ce{Al2(SO4)3}$"
+  },
+  "NCU05303": {
+   "question": "At 25 °C, the highest osmotic pressure is exhibited by 0.1 M solution of",
+   "source": "NEET EG Unit-05 Q.61",
+   "option1": "$\\ce{CaCl2}$",
+   "correct_option": "$\\ce{CaCl2}$"
+  },
+  "NCU05304": {
+   "question": "Which of the following salt has the same value of van't Hoff factor (i) as that of $\\ce{K3[Fe(CN)6]}$?",
+   "option1": "$\\ce{Al2(SO4)3}$",
+   "option3": "$\\ce{Al(NO3)3}$",
+   "option4": "$\\ce{Na2SO4}$",
+   "correct_option": "$\\ce{Al(NO3)3}$",
+   "source": "NEET EG Unit-05 Q.62"
+  },
+  "NCU05305": {
+   "question": "Match List-I (Example) with List-II (Type of Solution).\nChoose the correct answer from the options given below:",
+   "source": "NEET EG Unit-05 Q.5",
+   "mtc_label_a": "upper",
+   "mtc_label_b": "roman_upper",
+   "col_a1": "Humidity",
+   "col_a2": "Alloys",
+   "col_a3": "Amalgams",
+   "col_a4": "Smoke",
+   "col_b1": "Solid in solid",
+   "col_b2": "Liquid in gas",
+   "col_b3": "Solid in gas",
+   "col_b4": "Liquid in solid",
+   "question_type": "Match the Column"
+  },
+  "NCU05306": {
+   "source": "NEET EG Unit-05 Q.70",
+   "option2": "0.01 M $\\ce{KNO3}$",
+   "option3": "0.01 M $\\ce{Na2SO4}$",
+   "option4": "0.015 M $\\ce{C6H12O6}$",
+   "correct_option": "0.01 M $\\ce{Na2SO4}$"
+  },
+  "NCU05307": {
+   "source": "NEET EG Unit-05 Q.6"
+  },
+  "NCU05308": {
+   "question": "Identify the correct statements:\nA. The molality of 2.5 g of ethanoic acid (Molar mass: 60 g mol$^{-1}$) in 75 g of benzene solution is 0.556 m.\nB. The molarity of a solution containing 5 g of NaOH (molar mass: 40 g mol$^{-1}$) in 450 mL of solution is 0.278 M at 298 K.\nC. Aquatic species are more comfortable in cold water.\nD. The solubility of gas increases with decrease in pressure.\nE. For a binary mixture of A and B, the number of moles of A and B are $n_A$ and $n_B$ respectively. The mole fraction of B will be $x_B = \\dfrac{n_A}{n_A + n_B}$.\nChoose the correct answer from the options given below:",
+   "source": "NEET EG Unit-05 Q.3"
+  },
+  "NCU05309": {
+   "question": "Mixture of chloroform and acetone forms a solution with negative deviation from Raoult's law due to:",
+   "source": "NEET EG Unit-05 Q.4",
+   "option1": "Increase in escaping tendency of molecules of each component.",
+   "option2": "Formation of hydrogen bonding between acetone and chloroform",
+   "option3": "Stronger intermolecular forces between chloroform molecules than those between chloroform and acetone molecules.",
+   "option4": "Repulsive forces.",
+   "correct_option": "Formation of hydrogen bonding between acetone and chloroform"
+  },
+  "NCU05310": {
+   "question": "Consider the following statements about the solutions formed by mixing two liquids.\nA. An ideal solution thus formed obeys Raoult's law throughout the composition range.\nB. Mixture of chloroform and acetone shows negative deviation from Raoult's law.\nC. Mixture of aniline and phenol shows positive deviation from Raoult's law.\nChoose the correct statements from the options given below:",
+   "source": "NEET EG Unit-05 Q.1"
+  },
+  "NCU05311": {
+   "question": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): For an ideal solution formed by mixing liquids P and Q, $\\Delta_{\\text{mix}}H = 0$ and $\\Delta_{\\text{mix}}V = 0$\nReason (R): No interactions occur between P and Q\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+   "option1": "(A) is false but (R) is true",
+   "option2": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+   "option3": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+   "option4": "(A) is true but (R) is false",
+   "correct_option": "(A) is true but (R) is false",
+   "source": "NEET EG Unit-05 Q.2"
+  }
+ },
+ "old": {
+  "NCU05243": {
+   "question": "The Henry's law constant (KH) values of three gases (X, Y, Z) in water are 145, 2 × 10⁻⁵ and 35 kbar, respectively. The solubility of these gases in water follow the order:",
+   "option1": "Y > Z > X",
+   "option2": "X > Z > Y",
+   "option3": "X > Y > Z",
+   "option4": "Y > X > Z",
+   "correct_option": "Y > Z > X",
+   "source": "NEET PYQ, Q.No.11"
+  },
+  "NCU05245": {
+   "question": "The correct option for the value of vapour pressure of a solution at 45°C with benzene to octane in molar ratio 3:2 is:\r\n[At 45°C vapour pressure of benzene is 280 mm Hg and that of octane is 420 mm Hg. Assume ideal gas behaviour.]",
+   "source": "NEET PYQ, Q.No.13"
+  },
+  "NCU05247": {
+   "question": "Which of the following statements about the composition of the vapour over an ideal 1:1 molar mixture of benzene and toluene is correct? Assume that the temperature is constant at 25°C.\r\n(Given vapour pressure data at 25°C, benzene = 12.8 kPa, toluene = 3.85 kPa)",
+   "source": "NEET PYQ, Q.No.15",
+   "option1": "The vapour will contain a higher percentage of toluene."
+  },
+  "NCU05248": {
+   "question": "PA and PB are the vapour pressure of pure liquid components, A and B respectively of an ideal binary solution. If XA represents the mole fraction of component A, the total pressure of the solution will be:",
+   "source": "NEET PYQ, Q.No.16",
+   "option1": "PA + XA(PB - PA)",
+   "option2": "PA + XA(PA - PB)",
+   "option3": "PB + XA(PB - PA)",
+   "option4": "PB + XA(PA - PB)",
+   "correct_option": "PB + XA(PA - PB)"
+  },
+  "NCU05249": {
+   "question": "Vapour pressure of chloroform (CHCl₃) and dichloromethane (CH₂Cl₂) at 25°C are 200 mmHg and 415 mmHg respectively. Vapour pressure of the solution obtained by mixing 25.5 g of CHCl₃ and 40 g CH₂Cl₂ at the same temperature will be:\r\n(Molecular mass of CHCl₃ = 119.5 u and molecular mass of CH₂Cl₂ = 85 u)",
+   "option1": "173.9 mmHg",
+   "option2": "615.0 mmHg",
+   "option3": "347.9 mmHg",
+   "option4": "28.5 mmHg",
+   "correct_option": "347.9 mmHg",
+   "source": "NEET PYQ, Q.No.17"
+  },
+  "NCU05250": {
+   "question": "A solution has a 1:4 mole ratio of pentane to hexane. The vapour pressures of the pure hydrocarbons at 20°C are 440 mm Hg for pentane and 120 mm Hg for hexane. The mole fraction of pentane in the vapour phase would be:",
+   "source": "NEET PYQ, Q.No.18"
+  },
+  "NCU05251": {
+   "question": "The vapour pressure of two liquids P and Q are 80 and 60 torr respectively. The total vapour pressure of solution obtained by mixing 3 mole of P and 2 mol of Q would be:",
+   "source": "NEET PYQ, Q.No.19"
+  },
+  "NCU05253": {
+   "source": "NEET PYQ, Q.No.21",
+   "option1": "Benzene + toluene",
+   "option2": "Acetone + chloroform",
+   "option3": "Chloroethane + bromoethane",
+   "option4": "Ethanol + acetone",
+   "correct_option": "Ethanol + acetone"
+  },
+  "NCU05254": {
+   "question": "For the ideal solution, the correct option is:",
+   "source": "NEET PYQ, Q.No.22",
+   "option1": "Δₘᵢₓ V != 0 at constant T and P",
+   "option2": "Δₘᵢₓ H = 0 at constant T and P",
+   "option3": "Δₘᵢₓ G = 0 at constant T and P",
+   "option4": "Δₘᵢₓ S = 0 at constant T and P",
+   "correct_option": "Δₘᵢₓ H = 0 at constant T and P"
+  },
+  "NCU05255": {
+   "source": "NEET PYQ, Q.No.23",
+   "option1": "ethanol + water",
+   "option2": "acetone + carbon disulphide",
+   "option3": "heptane + octane",
+   "option4": "water + nitric acid",
+   "correct_option": "water + nitric acid"
+  },
+  "NCU05256": {
+   "question": "Which of the following statements is correct regarding a solution of two compounds A and B exhibiting positive deviation from ideal behaviour?",
+   "source": "NEET PYQ, Q.No.24",
+   "option2": "Δₘᵢₓ H = 0 at constant T and P.",
+   "option3": "Δₘᵢₓ V = 0 at constant T and P."
+  },
+  "NCU05257": {
+   "source": "NEET PYQ, Q.No.25",
+   "option1": "Δₘᵢₓ H = 0",
+   "option2": "Δₘᵢₓ U = 0",
+   "option3": "ΔP = P(obs.) - P(calculated by Raoult's law) = 0",
+   "option4": "Δₘᵢₓ G = 0",
+   "correct_option": "Δₘᵢₓ G = 0"
+  },
+  "NCU05258": {
+   "question": "Which one is not equal to zero for an ideal solution?",
+   "option1": "Δₘᵢₓ H",
+   "option2": "Δₘᵢₓ S",
+   "option3": "Δₘᵢₓ V",
+   "option4": "ΔP = P(observed) - P(Raoult)",
+   "correct_option": "Δₘᵢₓ S",
+   "source": "NEET PYQ, Q.No.26"
+  },
+  "NCU05259": {
+   "source": "NEET PYQ, Q.No.27",
+   "option1": "Δₘᵢₓ V = 0",
+   "option2": "Δₘᵢₓ S = 0",
+   "option3": "Obeyance to Raoult's law",
+   "option4": "Δₘᵢₓ H = 0",
+   "correct_option": "Δₘᵢₓ S = 0"
+  },
+  "NCU05260": {
+   "question": "A solution of acetone in ethanol:",
+   "source": "NEET PYQ, Q.No.28",
+   "option1": "obeys Raoult's law.",
+   "option2": "shows a negative deviation from Raoult's law.",
+   "option3": "shows a positive deviation from Raoult's law.",
+   "correct_option": "shows a positive deviation from Raoult's law."
+  },
+  "NCU05261": {
+   "question": "A solution containing components A and B follows Raoult's law if:",
+   "source": "NEET PYQ, Q.No.29",
+   "option1": "A - B attraction force is greater than A - A and B - B.",
+   "option2": "A - B attraction force is less than A - A and B - B.",
+   "option3": "A - B attraction force remains same as in A - A and B - B.",
+   "option4": "volume of the solution is different from the sum of volume of the solute and the solvent.",
+   "correct_option": "A - B attraction force remains same as in A - A and B - B."
+  },
+  "NCU05262": {
+   "question": "An ideal solution is formed when its components:",
+   "source": "NEET PYQ, Q.No.30",
+   "option1": "have no volume change on mixing.",
+   "option2": "have no enthalpy change on mixing.",
+   "option3": "have both the above characteristics.",
+   "option4": "have high solubility.",
+   "correct_option": "have both the above characteristics."
+  },
+  "NCU05263": {
+   "question": "All form ideal solution except:",
+   "source": "NEET PYQ, Q.No.31",
+   "option1": "C₆H₆ and C₆H₅CH₃",
+   "option2": "C₂H₆ and C₂H₅I",
+   "option3": "C₆H₅Cl and C₆H₅Br",
+   "option4": "C₂H₅I and C₂H₅OH",
+   "correct_option": "C₂H₅I and C₂H₅OH"
+  },
+  "NCU05264": {
+   "question": "Mass of glucose (C₆H₁₂O₆) required to be dissolved to prepare one litre of its solution which is isotonic with 15 g L⁻¹ solution of urea (NH₂CONH₂) is: (Given: Molar mass in g mol⁻¹ C: 12, H: 1, O: 16, N: 14)",
+   "source": "NEET PYQ, Q.No.32"
+  },
+  "NCU05265": {
+   "question": "The plot of osmotic pressure (π) vs concentration (mol L⁻¹) for a solution gives a straight line with slope 25.73 L bar mol⁻¹. The temperature at which the osmotic pressure measurement is done is: (Use R = 0.083 L bar mol⁻¹ K⁻¹)",
+   "source": "NEET PYQ, Q.No.33",
+   "option1": "310°C",
+   "option2": "25.73°C",
+   "option3": "12.05°C",
+   "option4": "37°C",
+   "correct_option": "37°C"
+  },
+  "NCU05266": {
+   "question": "The following solutions were prepared by dissolving 10 g of glucose (C₆H₁₂O₆) in 250 mL of water (P₁). 10 g of urea (CH₄N₂O) in 250 mL of water (P₂) and 10 g of sucrose (C₁₂H₂₂O₁₁) in 250 mL of water (P₃). The right option for the decreasing order of osmotic pressure of these solutions is:",
+   "source": "NEET PYQ, Q.No.34",
+   "option1": "P₂ > P₁ > P₃",
+   "option2": "P₁ > P₂ > P₃",
+   "option3": "P₂ > P₃ > P₁",
+   "option4": "P₃ > P₁ > P₂",
+   "correct_option": "P₂ > P₁ > P₃"
+  },
+  "NCU05267": {
+   "question": "If 8 g of a non-electrolyte solute is dissolved in 114 g of n-octane to reduce its vapour pressure to 80%, the molar mass (in g mol⁻¹) of the solute is: [Given that, molar mass of n-octane is 114 g mol⁻¹]",
+   "source": "NEET PYQ, Q.No.35"
+  },
+  "NCU05268": {
+   "question": "Isotonic solutions have same:",
+   "source": "NEET PYQ, Q.No.36"
+  },
+  "NCU05269": {
+   "question": "The freezing point depression constant (Kf) of benzene is 5.12 K kg mol⁻¹. The freezing point depression for the solution of molality 0.078 m containing a non-electrolyte solute in benzene is (rounded off upto two decimal places)",
+   "source": "NEET PYQ, Q.No.37"
+  },
+  "NCU05270": {
+   "question": "If molality of the dilute solution is doubled, the value of molal depression constant (Kf) will be:",
+   "source": "NEET PYQ, Q.No.38"
+  },
+  "NCU05271": {
+   "question": "At 100°C the vapour pressure of a solution of 6.5 g of a solute in 100 g water is 732 mm. If Kb = 5.52, the boiling point of this solution will be:",
+   "source": "NEET PYQ, Q.No.39",
+   "option1": "100°C",
+   "option2": "102°C",
+   "option3": "103°C",
+   "option4": "101°C",
+   "correct_option": "101°C"
+  },
+  "NCU05272": {
+   "question": "200 mL of an aqueous solution of a protein contains its 1.26 g. The osmotic pressure of this solution at 300 K is found to be 2.57 × 10⁻³ bar. The molar mass of protein will be: (R = 0.083 L bar mol⁻¹ K⁻¹)",
+   "source": "NEET PYQ, Q.No.40",
+   "option1": "51022 g mol⁻¹",
+   "option2": "122044 g mol⁻¹",
+   "option3": "31011 g mol⁻¹",
+   "option4": "61038 g mol⁻¹",
+   "correct_option": "61038 g mol⁻¹"
+  },
+  "NCU05273": {
+   "question": "A solution of sucrose (molar mass = 342 g mol⁻¹) has been prepared by dissolving 68.5 g of sucrose in 1000 g of water. The freezing point of the solution obtained will be:",
+   "source": "NEET PYQ, Q.No.41",
+   "option1": "-0.372°C",
+   "option2": "-0.520°C",
+   "option3": "+0.372°C",
+   "option4": "-0.570°C",
+   "correct_option": "-0.372°C"
+  },
+  "NCU05274": {
+   "question": "A solution containing 10 g per dm₃ of urea (molecular mass = 60 g mol⁻¹) is isotonic with a 5% solution of a non-volatile solute. The molecular mass of this non-volatile solute is:",
+   "source": "NEET PYQ, Q.No.42",
+   "option1": "200 g mol⁻¹",
+   "option2": "250 g mol⁻¹",
+   "option3": "300 g mol⁻¹",
+   "option4": "350 g mol⁻¹",
+   "correct_option": "300 g mol⁻¹"
+  },
+  "NCU05275": {
+   "question": "1.00 g of non-electrolyte solute (molar mass 250 g mol⁻¹) was dissolved in 51.2 g of benzene. If the freezing point depression constant, Kf of benzene is 5.12 K kg mol⁻¹, the freezing point of benzene will be lowered by:",
+   "source": "NEET PYQ, Q.No.43"
+  },
+  "NCU05276": {
+   "question": "During osmosis, flow of water through a semipermeable membrane is:",
+   "option1": "from the solution having lower concentration only.",
+   "option2": "from the solution having higher concentration only.",
+   "option3": "from both sides of semipermeable membrane with equal flow rates.",
+   "correct_option": "from the solution having higher concentration only.",
+   "source": "NEET PYQ, Q.No.44"
+  },
+  "NCU05277": {
+   "question": "A solution of urea (mol. mass 56 g mol⁻¹) boils at 100.18°C at the atmospheric pressure. If Kf and Kb for water are 1.86 and 0.512 K kg mol⁻¹ respectively, the above solution will freeze at:",
+   "source": "NEET PYQ, Q.No.45",
+   "option1": "0.654°C",
+   "option2": "-0.654°C",
+   "option3": "6.54°C",
+   "option4": "-6.54°C",
+   "correct_option": "-0.654°C"
+  },
+  "NCU05278": {
+   "question": "Camphor is often used in molecular mass determination because:",
+   "source": "NEET PYQ, Q.No.46",
+   "option1": "it is readily available.",
+   "option2": "it has very high cryoscopic constant.",
+   "option3": "it is volatile.",
+   "option4": "it is solvent for organic substances.",
+   "correct_option": "it has very high cryoscopic constant."
+  },
+  "NCU05279": {
+   "question": "A solution contains non-volatile solute of molecular mass M₂. Which of the following can be used to calculate the molecular mass of the solute in terms of the osmotic pressure? (Note: m₂ is the mass of the solute, V is the volume of the solution and π is the osmotic pressure.)",
+   "option1": "M₂ = (m₂/π) VRT",
+   "option2": "M₂ = (m₂/V) RT/π",
+   "option3": "M₂ = (m₂/V) π RT",
+   "option4": "M₂ = (m₂/V) π/RT",
+   "correct_option": "M₂ = (m₂/V) π RT",
+   "source": "NEET PYQ, Q.No.47"
+  },
+  "NCU05280": {
+   "question": "Pure water can be obtained from sea water by:",
+   "source": "NEET PYQ, Q.No.48",
+   "option4": "sedimentation."
+  },
+  "NCU05281": {
+   "source": "NEET PYQ, Q.No.49"
+  },
+  "NCU05282": {
+   "question": "If 0.15 g of solute, dissolved in 15 g of solvent, is boiled at a temperature higher by 0.216°C, than that of the pure solvent, the molecular weight of the substance is: (molal elevation constant for the solvent is 2.16°C)",
+   "source": "NEET PYQ, Q.No.50"
+  },
+  "NCU05283": {
+   "question": "The vapour pressure of benzene at a certain temperature is 640 mm of Hg. A non-volatile and non-electrolyte solid, weighing 2.175 g is added to 39.08 of benzene. The vapour pressure of the solution is 600 mm of Hg. What is the molecular weight of solid substance?",
+   "option1": "69.5",
+   "option2": "59.6",
+   "option4": "79.8",
+   "correct_option": "69.5",
+   "source": "NEET PYQ, Q.No.51"
+  },
+  "NCU05284": {
+   "question": "The vapour pressure of a solvent decreased by 10 mm in two columns of mercury when a non-volatile solute was added to the solvent. The mole fraction of the solute in the solution is 0.2. What should be the mole fraction of the solvent if the decrease in the vapour pressure is to be 20 mm of mercury?",
+   "correct_option": "0.4",
+   "source": "NEET PYQ, Q.No.52"
+  },
+  "NCU05285": {
+   "question": "A 5% solution of cane sugar (mol. wt. = 342) is isotonic with 1% solution of a substance X. The molecular weight of X is:",
+   "source": "NEET PYQ, Q.No.53"
+  },
+  "NCU05286": {
+   "question": "The vapour pressure of CCl₄ at 25°C is 143 mm Hg. If 0.5 g of a non-volatile solute (mol. weight = 65) is dissolved in 100 g CCl₄, the vapour pressure of the solution will be:",
+   "source": "NEET PYQ, Q.No.54"
+  },
+  "NCU05287": {
+   "question": "According to Raoult's law, the relative lowering of vapour pressure for a solution is equal to:",
+   "source": "NEET PYQ, Q.No.55",
+   "option4": "moles of solvent."
+  },
+  "NCU05288": {
+   "question": "If 0.1 M solution of glucose and 0.1 M solution of urea are placed on two sides of the semipermeable membrane to equal heights, then it will be correct to say that:",
+   "source": "NEET PYQ, Q.No.56",
+   "option1": "there will be no net movement across the membrane.",
+   "option2": "glucose will flow towards glucose solution.",
+   "option3": "urea will flow towards glucose solution.",
+   "option4": "water will flow from urea solution to glucose.",
+   "correct_option": "there will be no net movement across the membrane."
+  },
+  "NCU05289": {
+   "source": "NEET PYQ, Q.No.57"
+  },
+  "NCU05290": {
+   "question": "Blood cells retain their normal shape in solution which are:",
+   "source": "NEET PYQ, Q.No.58",
+   "option4": "equinormal to blood."
+  },
+  "NCU05291": {
+   "question": "The relative lowering of the vapour pressure is equal to the ratio between the number of:",
+   "source": "NEET PYQ, Q.No.59",
+   "option1": "solute molecules to the solvent molecules.",
+   "option2": "solute molecules to the total molecules in the solution.",
+   "option3": "solvent molecules to the total molecules in the solution.",
+   "option4": "solvent molecules to the total number of ions of the solute.",
+   "correct_option": "solute molecules to the total molecules in the solution."
+  },
+  "NCU05292": {
+   "question": "The van't Hoff factor (i) for a dilute aqueous solution of the strong electrolyte barium hydroxide is:",
+   "source": "NEET PYQ, Q.No.60"
+  },
+  "NCU05293": {
+   "question": "The boiling point of 0.2 mol kg⁻¹ solution of X in water is greater than equimolal solution of Y in water. Which one of the following statements is true in this case?",
+   "correct_option": "Molecular mass of X is less than the molecular mass of Y.",
+   "source": "NEET PYQ, Q.No.61"
+  },
+  "NCU05294": {
+   "question": "Which one of the following electrolytes has the same value of van't Hoff factor (i) as that of Al₂(SO₄)₃ (if all are 100% ionised)?",
+   "source": "NEET PYQ, Q.No.62",
+   "option1": "K₂SO₄",
+   "option2": "K₃[Fe(CN)₆]",
+   "option3": "Al(NO₃)₃",
+   "option4": "K₄[Fe(CN)₆]",
+   "correct_option": "K₄[Fe(CN)₆]"
+  },
+  "NCU05295": {
+   "source": "NEET PYQ, Q.No.63",
+   "option2": "C₆H₁₂O₆",
+   "option3": "Al₂(SO₄)₃",
+   "option4": "K₂SO₄",
+   "correct_option": "Al₂(SO₄)₃"
+  },
+  "NCU05296": {
+   "question": "The freezing point depression constant for water is -1.86°C m⁻¹. If 5.00 g Na₂SO₄ is dissolved in 45.0 g H₂O, the freezing point is changed by -3.82°C, calculate the van't Hoff factor for Na₂SO₄.",
+   "source": "NEET PYQ, Q.No.64"
+  },
+  "NCU05297": {
+   "question": "The van't Hoff factor, i for a compound which undergoes dissociation in one solvent and association in other solvent is respectively:",
+   "source": "NEET PYQ, Q.No.65"
+  },
+  "NCU05298": {
+   "question": "A 0.1 molal aqueous solution of a weak acid is 30% ionised. If Kf for water is 1.86°C/m, the freezing point of the solution will be:",
+   "source": "NEET PYQ, Q.No.66",
+   "option1": "-0.18°C",
+   "option2": "-0.54°C",
+   "option3": "-0.36°C",
+   "option4": "-0.24°C",
+   "correct_option": "-0.24°C"
+  },
+  "NCU05299": {
+   "source": "NEET PYQ, Q.No.67",
+   "option2": "Addition of Na₂SO₄"
+  },
+  "NCU05300": {
+   "question": "A 0.0020 m aqueous solution of an ionic compound CO(NH₃)₅(NO₂)Cl freezes at -0.00732°C. Number of moles of ions which 1 mol of ionic compound produces on being dissolved in water will be: (Kf = -1.86°C/m)",
+   "source": "NEET PYQ, Q.No.68"
+  },
+  "NCU05301": {
+   "question": "0.5 molal aqueous solution of a weak acid (HX) is 20% ionised. If Kf for water is 1.86 Kg mol⁻¹, the lowering in freezing point of the solution is:",
+   "source": "NEET PYQ, Q.No.69",
+   "option3": "-0.56 K",
+   "option4": "-1.12 K"
+  },
+  "NCU05302": {
+   "source": "NEET PYQ, Q.No.70",
+   "option2": "C₁₂H₂₂O₁₁",
+   "option3": "Al₂(SO₄)₃",
+   "option4": "C₅H₁₀O₅",
+   "correct_option": "Al₂(SO₄)₃"
+  },
+  "NCU05303": {
+   "question": "At 25°C, the highest osmotic pressure is exhibited by 0.1 M solution of:",
+   "source": "NEET PYQ, Q.No.71",
+   "option1": "CaCl₂",
+   "correct_option": "CaCl₂"
+  },
+  "NCU05304": {
+   "question": "Which one of the following salts will have the same value of van't Hoff factor (i) as that of K₄[Fe(CN)₆]?",
+   "option1": "Al₂(SO₄)₃",
+   "option3": "Al(NO₃)₃",
+   "option4": "Na₂SO₄",
+   "correct_option": "Al₂(SO₄)₃",
+   "source": "NEET PYQ, Q.No.72"
+  },
+  "NCU05305": {
+   "question": "Match List - I with List - II.\r\nList-I (Example): A. Humidity, B. Alloys, C. Amalgams, D. Smoke\r\nList-II (Type of Solution): I. Solid in solid, II. Liquid in gas, III. Solid in gas, IV. Liquid in solid\r\nChoose the correct answer from the options given below:",
+   "source": "NEET PYQ, Q.No.73",
+   "mtc_label_a": "num",
+   "mtc_label_b": "lower_pu",
+   "col_a1": null,
+   "col_a2": null,
+   "col_a3": null,
+   "col_a4": null,
+   "col_b1": null,
+   "col_b2": null,
+   "col_b3": null,
+   "col_b4": null,
+   "question_type": "Single Choice MCQ"
+  },
+  "NCU05306": {
+   "source": "NEET PYQ, Q.No.74",
+   "option2": "0.01 M KNO₃",
+   "option3": "0.01 M Na₂SO₄",
+   "option4": "0.015 M C₆H₁₂O₆",
+   "correct_option": "0.01 M Na₂SO₄"
+  },
+  "NCU05307": {
+   "source": "NEET PYQ, Q.No.75"
+  },
+  "NCU05308": {
+   "question": "Identify the correct statements :\r\nA. The molality of 2.5 g of ethanoic acid (Molar mass : 60 g mol⁻¹) in 75 g of benzene solution is 0.556 m.\r\nB. The molarity of a solution containing 5 g of NaOH (molar mass : 40 g mol⁻¹) in 450 mL of solution is 0.278 M at 298 K.\r\nC. Aquatic species are more comfortable in cold water.\r\nD. The solubility of gas increases with decrease in pressure.\r\nE. For a binary mixture of A and B, the number of moles of A and B are nA and nB respectively. The mole fraction of B will be xB = nA/(nA+nB).\r\nChoose the correct answer from the options given below :",
+   "source": "NEET PYQ, Q.No.76"
+  },
+  "NCU05309": {
+   "question": "Mixture of chloroform and acetone forms a solution with negative deviation from Raoult's law due to :",
+   "source": "NEET PYQ, Q.No.77",
+   "option1": "increase in escaping tendency of molecules of each component.",
+   "option2": "formation of hydrogen bonding between acetone and chloroform.",
+   "option3": "stronger intermolecular forces between chloroform molecules than those between chloroform and acetone molecules.",
+   "option4": "repulsive forces.",
+   "correct_option": "formation of hydrogen bonding between acetone and chloroform."
+  },
+  "NCU05310": {
+   "question": "Consider the following statements about the solutions formed by mixing two liquids.\r\nA. An ideal solution thus formed obeys Raoult's law throughout the composition range.\r\nB. Mixture of chloroform and acetone shows negative deviation from Raoult's law.\r\nC. Mixture of aniline and phenol shows positive deviation from Raoult's law.",
+   "source": "NEET PYQ, Q.No.78"
+  },
+  "NCU05311": {
+   "question": "Assertion A : For an ideal solution formed by mixing liquids P and Q, ΔₘᵢₓH = 0 and ΔₘᵢₓV = 0\r\nReason R : No interactions occur between P and Q.\r\nIn the light of the above statements, choose the most appropriate answer from the options given below.",
+   "option1": "A is not correct but R is correct",
+   "option2": "Both A and R are correct and R is the correct explanation of A",
+   "option3": "Both A and R are correct but R is NOT the correct explanation of A",
+   "option4": "A is correct but R is not correct",
+   "correct_option": "A is correct but R is not correct",
+   "source": "NEET PYQ, Q.No.79"
+  }
+ },
+ "img": {},
+ "expect": {
+  "NCU05": "NCU05425"
+ }
+}
