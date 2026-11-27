@@ -180,11 +180,20 @@ function resolveCorrectOption(label, option1, option2, option3, option4) {
   return resolveCorrectOptionValue(key, [option1, option2, option3, option4])
 }
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 100
 // Far quicker than localeCompare with options, which matters across the whole bank.
 const QID_ORDER = new Intl.Collator(undefined, { numeric: true })
 
-const SUBJECTS = ALL_SUBJECTS
+// The list always shows one subject (no "All Subjects": that pulled the whole
+// bank), with the subjects in alphabetical order.
+const SUBJECTS = [...ALL_SUBJECTS].sort()
+const LIST_SUBJECT_KEY = 'neetcbt_qb_subject'
+function savedListSubject() {
+  try { const s = localStorage.getItem(LIST_SUBJECT_KEY); if (s && isActiveSubject(s)) return s } catch { /* private mode */ }
+  return 'Chemistry'
+}
+// PostgREST or() filters split on commas and brackets, so those are dropped from a search.
+const searchTerm = s => s.trim().replace(/[,()"\\*%]/g, ' ').replace(/\s+/g, ' ').trim()
 
 export default function QuestionUploader({ uploadedBy }) {
   const [tab, setTab] = useState('list')
@@ -194,7 +203,11 @@ export default function QuestionUploader({ uploadedBy }) {
   const [form, setForm] = useState(BLANK)
   const [submitting, setSubmitting] = useState(false)
   const [search, setSearch] = useState('')
-  const [subjectFilter, setSubjectFilter] = useState('')
+  const [subjectFilter, setSubjectFilter] = useState(savedListSubject)
+  // Every matching question as a light row (id, qid, subject, unit, level) in
+  // list order. Only the current page's full rows are fetched into `questions`.
+  const [index, setIndex] = useState([])
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
   // English and Gujarati are separate banks, so the list always shows one of
@@ -235,11 +248,12 @@ export default function QuestionUploader({ uploadedBy }) {
 
   // `status` and `countOnly` let the status dropdown count each state with
   // exactly the same subject / medium / unit / level filters as the list.
-  function buildQuestionsQuery({ status = statusFilter, countOnly = false } = {}) {
+  function buildQuestionsQuery({ status = statusFilter, countOnly = false, columns = '*', term = '' } = {}) {
     let q = countOnly
       ? supabase.from('questions').select('id', { count: 'exact', head: true })
-      : supabase.from('questions').select('*')
+      : supabase.from('questions').select(columns)
     if (subjectFilter) q = q.eq('subject', subjectFilter)
+    if (term) q = q.or(['question', 'qid', 'question_tag', 'topic'].map(c => `${c}.ilike.*${term}*`).join(','))
     // English and Gujarati medium are separate banks.
     q = q.eq('medium', mediumFilter)
     // Filter by unit — Unit 11 keeps a loose match as a leftover safety net from
@@ -281,38 +295,53 @@ export default function QuestionUploader({ uploadedBy }) {
   // Changing subject then unit fires two loads; the first (a whole subject)
   // is slower and must not land on top of the second.
   const loadSeq = useRef(0)
-  async function loadQuestions() {
+  const pageSeq = useRef(0)
+  // Builds the light index of every matching question (a few KB per thousand),
+  // sorted unit-wise, level-wise, then by Q ID, then loads the first page.
+  async function loadQuestions({ keepPage = false } = {}) {
     const seq = ++loadSeq.current
     setLoading(true)
     setLoadingMore(false)
-    // Numeric unit order, then level, then qid — lets the admin scan the whole
-    // bank (or an unfiltered "all inactive" view) unit-by-unit and level-by-level
-    // at a glance, not just within one pre-selected unit.
-    const subjOrder = q => Math.max(0, ALL_SUBJECTS.indexOf(q.subject || 'Chemistry'))
-    const sorted = rows => rows.sort((a, b) => subjOrder(a) - subjOrder(b) || unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || QID_ORDER.compare(a.qid || '', b.qid || ''))
-    // Paginated — a single Supabase request caps at 1000 rows, which the bank
-    // has grown past, so an unfiltered/large result silently got truncated.
-    // The whole bank is about 14 MB: each page shows as it lands, so a tablet on
-    // ordinary Wi-Fi isn't left on "Loading..." for the lot.
+    const sorted = rows => rows.sort((a, b) => unitNumOf(a) - unitNumOf(b) || (a.level ?? 0) - (b.level ?? 0) || QID_ORDER.compare(a.qid || '', b.qid || ''))
+    const term = searchTerm(debouncedSearch)
+    const all = []
     for (let from = 0; ; from += 1000) {
-      const { data: page } = await buildQuestionsQuery().range(from, from + 999)
-      // A newer filter took over: stop here rather than fetch the rest for nothing.
+      const { data: rows, error } = await buildQuestionsQuery({ columns: 'id, qid, subject, unit, level', term }).range(from, from + 999)
       if (seq !== loadSeq.current) return
-      const rows = page || []
-      // Added to `prev`, not rebuilt from a local list: the table is usable while
-      // this runs, so a row edited meanwhile must keep its edit.
-      setQuestions(prev => sorted(from === 0 ? [...rows] : [...prev, ...rows]))
-      setLoading(false)
-      if (rows.length < 1000) break
-      setLoadingMore(true)
+      if (error) { toast.error(error.message); break }
+      all.push(...(rows || []))
+      if (!rows || rows.length < 1000) break
     }
+    const list = sorted(all)
+    setIndex(list)
+    const p = keepPage ? Math.min(page, Math.max(1, Math.ceil(list.length / PAGE_SIZE))) : 1
+    if (p !== page) setPage(p)
+    await loadPage(p, list)
+    if (seq === loadSeq.current) setLoading(false)
+  }
+
+  // Full rows for one page only, in the index's order.
+  async function loadPage(p, list = index) {
+    const seq = ++pageSeq.current
+    const ids = list.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE).map(r => r.id)
+    if (!ids.length) { setQuestions([]); return }
+    setLoadingMore(true)
+    const { data, error } = await supabase.from('questions').select('*').in('id', ids)
+    if (seq !== pageSeq.current) return
     setLoadingMore(false)
+    if (error) { toast.error(error.message); return }
+    const byId = new Map((data || []).map(q => [q.id, q]))
+    setQuestions(ids.map(id => byId.get(id)).filter(Boolean))
   }
 
   // Reset downstream filters and reload when parent filter changes
-  useEffect(() => { setUnitFilter(''); setLevelFilter('') }, [subjectFilter])
+  useEffect(() => {
+    setUnitFilter(''); setLevelFilter('')
+    try { localStorage.setItem(LIST_SUBJECT_KEY, subjectFilter) } catch { /* private mode */ }
+  }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
-  useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter, mediumFilter])
+  useEffect(() => { const id = setTimeout(() => setDebouncedSearch(search), 400); return () => clearTimeout(id) }, [search])
+  useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter, mediumFilter, debouncedSearch])
 
   // How many questions are in each state, for the status dropdown.
   const [statusCounts, setStatusCounts] = useState({})
@@ -627,7 +656,7 @@ export default function QuestionUploader({ uploadedBy }) {
       toast.success('Question added — publish its level to show it to students.', { duration: 6000 })
       setForm(BLANK)
       setManualSubject(''); setManualUnitId(''); setManualLevel('')
-      loadQuestions()
+      loadQuestions({ keepPage: true })
       refreshPendingCounts()
     } catch (err) {
       toast.error(err.message)
@@ -936,7 +965,7 @@ export default function QuestionUploader({ uploadedBy }) {
         parts.push('New questions are hidden from students until you publish their level.')
         toast.success(parts.join(' '), { duration: 9000 })
         setPendingUpload(null)
-        loadQuestions()
+        loadQuestions({ keepPage: true })
         refreshPendingCounts()
       }
     } catch (err) {
@@ -947,24 +976,18 @@ export default function QuestionUploader({ uploadedBy }) {
     }
   }
 
-  const filtered = questions.filter(q => {
-    const s = search.toLowerCase()
-    return !s ||
-      (q.question || '').toLowerCase().includes(s) ||
-      (q.qid || '').toLowerCase().includes(s) ||
-      (q.question_tag || '').toLowerCase().includes(s) ||
-      (q.topic || '').toLowerCase().includes(s)
-  })
+  // `filtered` is the whole matching list (light rows); the page shows its full rows.
+  const filtered = index
 
-  // Reset to page 1 when any filter/search changes
-  useEffect(() => { setPage(1) }, [search, unitFilter, levelFilter, mediumFilter, statusFilter])
-
-  // When a filter is active, show all results so nothing is hidden behind pages —
-  // includes a non-default status filter, since browsing "Inactive" is meant to
-  // show every inactive question across the bank at a glance, not 50 at a time.
-  const isFiltering = search.trim() !== '' || unitFilter !== '' || levelFilter !== '' || statusFilter === 'pending' || statusFilter === 'inactive'
-  const visibleQuestions = isFiltering ? filtered : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const visibleQuestions = questions
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  function goToPage(p) {
+    const next = Math.min(Math.max(1, p), Math.max(1, totalPages))
+    if (next === page) return
+    setPage(next)
+    loadPage(next)
+    document.querySelector('.table-wrap')?.scrollTo({ top: 0 })
+  }
 
   function openReview(q, startInEdit = false) {
     const i = visibleQuestions.findIndex(x => x.id === q.id)
@@ -1063,7 +1086,7 @@ export default function QuestionUploader({ uploadedBy }) {
                   onChange={e => setSearch(e.target.value)}
                 />
               </div>
-              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions{loadingMore ? ', loading more…' : ''}</span>
+              <span className="text-muted" style={{ whiteSpace: 'nowrap' }}>{filtered.length} questions{totalPages > 1 ? ` · page ${page} of ${totalPages}` : ''}{loadingMore ? ' · loading…' : ''}</span>
               {visibleQuestions.length > 0 && (
                 <button className="btn btn-primary btn-sm"
                   style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8125rem', padding: '0.3rem 0.7rem' }}
@@ -1083,7 +1106,6 @@ export default function QuestionUploader({ uploadedBy }) {
                 value={subjectFilter}
                 onChange={e => setSubjectFilter(e.target.value)}
               >
-                <option value="">All Subjects</option>
                 {SUBJECTS.map(s => (
                   <option key={s} value={s} disabled={!isActiveSubject(s)}>{s}{!isActiveSubject(s) ? ' (coming soon)' : ''}</option>
                 ))}
@@ -1134,15 +1156,15 @@ export default function QuestionUploader({ uploadedBy }) {
               )}
 
               {/* Reset filters link */}
-              {(subjectFilter || unitFilter || levelFilter) && (
+              {(unitFilter || levelFilter) && (
                 <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem', flexShrink: 0, whiteSpace: 'nowrap' }} title="Reset filters"
-                  onClick={() => { setSubjectFilter(''); setUnitFilter(''); setLevelFilter('') }}>
+                  onClick={() => { setUnitFilter(''); setLevelFilter('') }}>
                   ✕ Reset
                 </button>
               )}
 
               {/* Active / Inactive / Both — selecting Inactive or Both shows every
-                  matching question across the whole bank at once (see isFiltering),
+                  matching question of the subject (paged, 100 at a time),
                   grouped unit-wise then level-wise, so a mass of inactive questions
                   can be scanned at a glance instead of hunting unit by unit. */}
               <select
@@ -1303,16 +1325,18 @@ export default function QuestionUploader({ uploadedBy }) {
               </table>
             )}
             {!loading && !loadingMore && filtered.length === 0 && <div className="empty-state">No questions found</div>}
-            {!isFiltering && totalPages > 1 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderTop: '1px solid var(--gray-100)', fontSize: '0.875rem' }}>
-                <button className="btn btn-outline btn-sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>← Prev</button>
-                <span style={{ color: 'var(--gray-500)' }}>Page {page} of {totalPages} · {filtered.length} total</span>
-                <button className="btn btn-outline btn-sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next →</button>
-              </div>
-            )}
-            {isFiltering && filtered.length > 0 && (
-              <div style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', color: 'var(--gray-400)' }}>
-                {filtered.length} result{filtered.length !== 1 ? 's' : ''} — all shown
+            {!loading && totalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', padding: '0.75rem 1rem', borderTop: '1px solid var(--gray-100)', fontSize: '0.875rem' }}>
+                <button className="btn btn-outline btn-sm" onClick={() => goToPage(1)} disabled={page === 1}>« First</button>
+                <button className="btn btn-outline btn-sm" onClick={() => goToPage(page - 1)} disabled={page === 1}>← Prev</button>
+                <span style={{ color: 'var(--gray-500)' }}>
+                  Page <select className="form-control" style={{ display: 'inline-block', width: 'auto', padding: '0.15rem 0.4rem' }}
+                    value={page} onChange={e => goToPage(Number(e.target.value))} aria-label="Page">
+                    {Array.from({ length: totalPages }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
+                  </select> of {totalPages} · Q {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+                </span>
+                <button className="btn btn-outline btn-sm" onClick={() => goToPage(page + 1)} disabled={page === totalPages}>Next →</button>
+                <button className="btn btn-outline btn-sm" onClick={() => goToPage(totalPages)} disabled={page === totalPages}>Last »</button>
               </div>
             )}
           </div>
