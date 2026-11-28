@@ -1088,7 +1088,6 @@ export default function QuestionUploader({ uploadedBy }) {
           onTogglePublished={q => setPublished(q.id, q.is_published === false)}
           onSaved={row => patchQuestion(row.id, row)}
           startInEdit={reviewStartInEdit}
-          idOf={sourceFilter ? (item => item.no ? `${item.qid} · ${sourceFilter} Q.${item.no}` : item.qid) : undefined}
           numberOf={sourceFilter ? ((item, i) => item.no || (page - 1) * PAGE_SIZE + i + 1) : undefined}
         />
       )}
