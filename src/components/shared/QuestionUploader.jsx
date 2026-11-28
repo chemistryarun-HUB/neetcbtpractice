@@ -192,6 +192,25 @@ function savedListSubject() {
   try { const s = localStorage.getItem(LIST_SUBJECT_KEY); if (s && isActiveSubject(s)) return s } catch { /* private mode */ }
   return 'Chemistry'
 }
+// A source like "NEET EG Unit-15 Q.12", "NEET Unit-05 Q.No. 3", "NCERT Exercise
+// Q.No. 7.5" or "NCERT Exemplar Q.No. 72(a)" is a book plus a question number.
+// The book groups the questions; the number orders them (7.5 < 7.10, 72(a) < 72(b)).
+const NO_SOURCE = '(No source)'
+function splitSource(src) {
+  const s = (src || '').trim()
+  if (!s) return { book: NO_SOURCE, no: '' }
+  const m = /^(.*?)[\s,·-]*Q\.?\s*(?:No\.?\s*)?([0-9][0-9A-Za-z.()\-/]*)\s*$/i.exec(s)
+  return m && m[1] ? { book: m[1].trim(), no: m[2] } : { book: s, no: '' }
+}
+// Numbers in the source list that have no question (only for plain 1, 2, 3 numbering).
+function missingNumbers(nos) {
+  const ints = nos.map(n => (/^\d+$/.test(n) ? Number(n) : null))
+  if (!ints.length || ints.some(n => n == null)) return []
+  const have = new Set(ints)
+  const out = []
+  for (let n = 1; n <= Math.max(...ints); n++) if (!have.has(n)) out.push(n)
+  return out
+}
 // PostgREST or() filters split on commas and brackets, so those are dropped from a search.
 const searchTerm = s => s.trim().replace(/[,()"\\*%]/g, ' ').replace(/\s+/g, ' ').trim()
 
@@ -208,6 +227,8 @@ export default function QuestionUploader({ uploadedBy }) {
   // list order. Only the current page's full rows are fetched into `questions`.
   const [index, setIndex] = useState([])
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  // Review one source book in its own order ('' = all sources).
+  const [sourceFilter, setSourceFilter] = useState('')
   const [unitFilter, setUnitFilter] = useState('')   // unit id as string e.g. '11'
   const [levelFilter, setLevelFilter] = useState('')
   // English and Gujarati are separate banks, so the list always shows one of
@@ -306,22 +327,29 @@ export default function QuestionUploader({ uploadedBy }) {
     const term = searchTerm(debouncedSearch)
     const all = []
     for (let from = 0; ; from += 1000) {
-      const { data: rows, error } = await buildQuestionsQuery({ columns: 'id, qid, subject, unit, level', term }).range(from, from + 999)
+      const { data: rows, error } = await buildQuestionsQuery({ columns: 'id, qid, subject, unit, level, source', term }).range(from, from + 999)
       if (seq !== loadSeq.current) return
       if (error) { toast.error(error.message); break }
       all.push(...(rows || []))
       if (!rows || rows.length < 1000) break
     }
-    const list = sorted(all)
+    const list = sorted(all).map(r => ({ ...r, ...splitSource(r.source) }))
     setIndex(list)
-    const p = keepPage ? Math.min(page, Math.max(1, Math.ceil(list.length / PAGE_SIZE))) : 1
+    const shown = bySource(list, sourceFilter)
+    const p = keepPage ? Math.min(page, Math.max(1, Math.ceil(shown.length / PAGE_SIZE))) : 1
     if (p !== page) setPage(p)
-    await loadPage(p, list)
+    await loadPage(p, shown)
     if (seq === loadSeq.current) setLoading(false)
   }
 
-  // Full rows for one page only, in the index's order.
-  async function loadPage(p, list = index) {
+  // One source book, in its question-number order; or everything as it is.
+  function bySource(list, book) {
+    if (!book) return list
+    return list.filter(r => r.book === book).sort((a, b) => QID_ORDER.compare(a.no, b.no) || QID_ORDER.compare(a.qid || '', b.qid || ''))
+  }
+
+  // Full rows for one page only, in the list's order.
+  async function loadPage(p, list = filtered) {
     const seq = ++pageSeq.current
     const ids = list.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE).map(r => r.id)
     if (!ids.length) { setQuestions([]); return }
@@ -331,7 +359,8 @@ export default function QuestionUploader({ uploadedBy }) {
     setLoadingMore(false)
     if (error) { toast.error(error.message); return }
     const byId = new Map((data || []).map(q => [q.id, q]))
-    setQuestions(ids.map(id => byId.get(id)).filter(Boolean))
+    const meta = new Map(list.map(r => [r.id, r]))
+    setQuestions(ids.map(id => byId.get(id) && { ...byId.get(id), no: meta.get(id)?.no || '' }).filter(Boolean))
   }
 
   // Reset downstream filters and reload when parent filter changes
@@ -340,6 +369,16 @@ export default function QuestionUploader({ uploadedBy }) {
     try { localStorage.setItem(LIST_SUBJECT_KEY, subjectFilter) } catch { /* private mode */ }
   }, [subjectFilter])
   useEffect(() => { setLevelFilter('') }, [unitFilter])
+  // A source belongs to one subject and medium; a new one starts on all sources.
+  useEffect(() => { setSourceFilter('') }, [subjectFilter, mediumFilter])
+  // Picking a source just re-slices the index already in hand.
+  const firstSourceRun = useRef(true)
+  useEffect(() => {
+    if (firstSourceRun.current) { firstSourceRun.current = false; return }
+    setPage(1)
+    loadPage(1, bySource(index, sourceFilter))
+    document.querySelector('.table-wrap')?.scrollTo({ top: 0 })
+  }, [sourceFilter])
   useEffect(() => { const id = setTimeout(() => setDebouncedSearch(search), 400); return () => clearTimeout(id) }, [search])
   useEffect(() => { loadQuestions() }, [subjectFilter, unitFilter, levelFilter, statusFilter, mediumFilter, debouncedSearch])
 
@@ -977,7 +1016,20 @@ export default function QuestionUploader({ uploadedBy }) {
   }
 
   // `filtered` is the whole matching list (light rows); the page shows its full rows.
-  const filtered = index
+  const filtered = useMemo(() => bySource(index, sourceFilter), [index, sourceFilter])
+  // Source books in the current list, A-Z, with how many questions each has.
+  const sourceBooks = useMemo(() => {
+    const counts = new Map()
+    for (const r of index) counts.set(r.book, (counts.get(r.book) || 0) + 1)
+    return [...counts.entries()].sort((a, b) => (a[0] === NO_SOURCE) - (b[0] === NO_SOURCE) || QID_ORDER.compare(a[0], b[0]))
+  }, [index])
+  const sourceGaps = useMemo(() => (sourceFilter ? missingNumbers(filtered.map(r => r.no)) : []), [filtered, sourceFilter])
+  const sourceRepeats = useMemo(() => {
+    if (!sourceFilter) return []
+    const seen = new Map()
+    filtered.forEach(r => r.no && seen.set(r.no, (seen.get(r.no) || 0) + 1))
+    return [...seen.entries()].filter(([, n]) => n > 1).map(([no]) => no)
+  }, [filtered, sourceFilter])
 
   const visibleQuestions = questions
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
@@ -1036,6 +1088,8 @@ export default function QuestionUploader({ uploadedBy }) {
           onTogglePublished={q => setPublished(q.id, q.is_published === false)}
           onSaved={row => patchQuestion(row.id, row)}
           startInEdit={reviewStartInEdit}
+          idOf={sourceFilter ? (item => item.no ? `${item.qid} · ${sourceFilter} Q.${item.no}` : item.qid) : undefined}
+          numberOf={sourceFilter ? ((item, i) => item.no || (page - 1) * PAGE_SIZE + i + 1) : undefined}
         />
       )}
 
@@ -1155,10 +1209,23 @@ export default function QuestionUploader({ uploadedBy }) {
                 </select>
               )}
 
+              {/* Source — review one book / PDF in its own question order */}
+              <select
+                className="form-control"
+                style={{ width: 0, flex: '1.6 1 190px', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: sourceFilter ? 700 : 400, color: sourceFilter ? 'var(--primary-dark)' : undefined }}
+                value={sourceFilter}
+                onChange={e => setSourceFilter(e.target.value)}
+                aria-label="Source"
+                title="Review the questions of one source in its own Q number order"
+              >
+                <option value="">All Sources</option>
+                {sourceBooks.map(([book, n]) => <option key={book} value={book}>{book} ({n})</option>)}
+              </select>
+
               {/* Reset filters link */}
-              {(unitFilter || levelFilter) && (
+              {(unitFilter || levelFilter || sourceFilter) && (
                 <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.8rem', flexShrink: 0, whiteSpace: 'nowrap' }} title="Reset filters"
-                  onClick={() => { setUnitFilter(''); setLevelFilter('') }}>
+                  onClick={() => { setUnitFilter(''); setLevelFilter(''); setSourceFilter('') }}>
                   ✕ Reset
                 </button>
               )}
@@ -1183,11 +1250,22 @@ export default function QuestionUploader({ uploadedBy }) {
 
           {/* Taller than the shared 70vh default — this list is the whole point
               of the page, so it gets whatever the two header rows don't. */}
+          {sourceFilter && !loading && (
+            <div className="qb-source-bar">
+              <strong>{sourceFilter}</strong>
+              <span>{filtered.length} question{filtered.length !== 1 ? 's' : ''}, in source order</span>
+              {sourceGaps.length > 0
+                ? <span className="qb-source-gap">Missing Q {sourceGaps.slice(0, 30).join(', ')}{sourceGaps.length > 30 ? ` … (+${sourceGaps.length - 30} more)` : ''}</span>
+                : filtered.every(r => /^\d+$/.test(r.no)) && <span className="qb-source-ok">No missing numbers</span>}
+              {sourceRepeats.length > 0 && <span className="qb-source-gap">Repeated Q {sourceRepeats.slice(0, 20).join(', ')}</span>}
+            </div>
+          )}
           <div className="table-wrap" style={{ maxHeight: 'max(360px, calc(100vh - 250px))' }}>
             {loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div> : (
               <table>
                 <thead>
                   <tr>
+                    {sourceFilter && <th style={{ width: '64px', textAlign: 'center' }} title="Question number in the source">Src Q</th>}
                     <th style={{ width: '110px' }}>Q ID</th>
                     <th style={{ width: '120px' }}>Unit</th>
                     <th>Topic</th>
@@ -1210,9 +1288,9 @@ export default function QuestionUploader({ uploadedBy }) {
                     // scanned unit-by-unit and level-by-level in one view instead of
                     // having to pick one unit at a time.
                     const unitKey = `${q.subject}|${q.unit}`
-                    const showUnitHeader = !unitFilter && unitKey !== lastUnit
+                    const showUnitHeader = !sourceFilter && !unitFilter && unitKey !== lastUnit
                     if (showUnitHeader) { lastUnit = unitKey; lastLevel = null }
-                    const showLevelHeader = !levelFilter && (showUnitHeader || q.level !== lastLevel)
+                    const showLevelHeader = !sourceFilter && !levelFilter && (showUnitHeader || q.level !== lastLevel)
                     if (showLevelHeader) lastLevel = q.level
                     const unitCount = showUnitHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit).length : 0
                     const levelCount = showLevelHeader ? filtered.filter(x => x.subject === q.subject && x.unit === q.unit && x.level === q.level).length : 0
@@ -1275,6 +1353,9 @@ export default function QuestionUploader({ uploadedBy }) {
                           onClick={() => openReview(q)}
                           title="Click to review full screen"
                         >
+                          {sourceFilter && (
+                            <td style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.95rem', color: q.no ? 'var(--primary-dark)' : 'var(--gray-400)' }}>{q.no || '—'}</td>
+                          )}
                           <td>
                             <code style={{ fontSize: '0.75rem', textDecoration: isInactive ? 'line-through' : 'none', color: isInactive ? '#ef4444' : undefined }}>{q.qid}</code>
                             {isInactive && <span style={{ marginLeft: '0.35rem', fontSize: '0.65rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '3px', padding: '0 4px' }}>inactive</span>}
@@ -1301,7 +1382,12 @@ export default function QuestionUploader({ uploadedBy }) {
                             <span className={`badge badge-${(q.difficulty_level || '').toLowerCase()}`}>{q.difficulty_level}</span>
                           </td>
                           <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)' }}>{q.question_tag}</td>
-                          <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.source}>{q.source}</td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--gray-500)', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={q.source ? `${q.source}\nClick to review this source in its own order` : ''}>
+                            {q.source ? (
+                              <button type="button" className="qb-source-link"
+                                onClick={e => { e.stopPropagation(); setSourceFilter(splitSource(q.source).book) }}>{q.source}</button>
+                            ) : null}
+                          </td>
                           {/* Edit and the Active/Inactive toggle used to live here too —
                               moved out of the list row since both are one click away inside
                               the full-screen reviewer (its own Edit button, and the A key /
