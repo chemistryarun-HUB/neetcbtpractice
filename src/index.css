@@ -1109,3 +1109,11 @@ button.gx-ghost { font-family: inherit; cursor: pointer; }
   .op-subject-tab span { font-size: 0.8rem; }
   .op-subject-tab small { font-size: 0.66rem; }
 }
+
+/* Question Bank: one source reviewed in its own order */
+.qb-source-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.9rem; padding: 0.5rem 0.875rem; background: var(--primary-light); border-top: 1px solid var(--gray-200); font-size: 0.8125rem; color: var(--gray-700); }
+.qb-source-bar strong { color: var(--primary-dark); }
+.qb-source-gap { color: #b91c1c; font-weight: 600; }
+.qb-source-ok { color: #15803d; font-weight: 600; }
+.qb-source-link { border: none; background: none; padding: 0; font: inherit; color: var(--primary); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 2px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qb-source-link:hover { color: var(--primary-dark); text-decoration: underline; }
