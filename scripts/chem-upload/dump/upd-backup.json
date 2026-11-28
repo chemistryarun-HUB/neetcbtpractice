@@ -1,0 +1,3166 @@
+[
+ {
+  "qid": "NCU24001",
+  "source": "JEE(Main) MTG Halo Q.74",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU23262",
+  "source": "JEE(Main) MTG Halo Q.13",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28038",
+  "source": "JEE(Main) MTG Halo Q.66",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29029",
+  "source": "JEE(Main) MTG Halo Q.48",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29030",
+  "source": "JEE(Main) MTG Halo Q.53",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30011",
+  "source": "JEE(Main) MTG Halo Q.65",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30012",
+  "source": "JEE(Main) MTG Halo Q.68",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22195",
+  "source": "JEE(Main) MTG Halo Q.79",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29032",
+  "source": "JEE(Main) MTG Halo Q.72",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU24002",
+  "source": "JEE(Main) MTG Halo Q.77",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU24003",
+  "source": "JEE(Main) MTG Halo Q.92",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28040",
+  "source": "JEE(Main) MTG Halo Q.76",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28044",
+  "source": "JEE(Main) MTG Halo Q.88",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27036",
+  "source": "JEE(Main) MTG Halo Q.109",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28048",
+  "source": "JEE(Main) MTG Halo Q.102",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28049",
+  "source": "JEE(Main) MTG Halo Q.112",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28052",
+  "source": "JEE(Main) MTG Halo Q.115",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28053",
+  "source": "JEE(Main) MTG Halo Q.119",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29036",
+  "source": "JEE(Main) MTG Halo Q.105",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29038",
+  "source": "JEE(Main) MTG Halo Q.108",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30015",
+  "source": "JEE(Main) MTG Halo Q.95",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28057",
+  "source": "JEE(Main) MTG Halo Q.136",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28056",
+  "source": "JEE(Main) MTG Halo Q.135",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28061",
+  "source": "JEE(Main) MTG Halo Q.141",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28060",
+  "source": "JEE(Main) MTG Halo Q.140",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22197",
+  "source": "JEE(Main) MTG Halo Q.143",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28055",
+  "source": "JEE(Main) MTG Halo Q.128",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28064",
+  "source": "JEE(Main) MTG Halo Q.166",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29048",
+  "source": "JEE(Main) MTG Halo Q.145",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22200",
+  "source": "JEE(Main) MTG Halo Q.165",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22199",
+  "source": "JEE(Main) MTG Halo Q.164",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU26067",
+  "source": "JEE(Main) MTG Halo Q.167",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29050",
+  "source": "JEE(Main) MTG Halo Q.163",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28065",
+  "source": "JEE(Main) MTG Halo Q.168",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28071",
+  "source": "JEE(Main) MTG Halo Q.186",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28072",
+  "source": "JEE(Main) MTG Halo Q.187",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35028",
+  "source": "JEE(Main) MTG Halo Q.179",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22201",
+  "source": "JEE(Main) MTG Halo Q.169",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22203",
+  "source": "JEE(Main) MTG Halo Q.172",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28070",
+  "source": "JEE(Main) MTG Halo Q.185",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28075",
+  "source": "JEE(Main) MTG Halo Q.192",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22205",
+  "source": "JEE(Main) MTG Halo Q.191",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28074",
+  "source": "JEE(Main) MTG Halo Q.190",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU36098",
+  "source": "JEE(Main) MTG Halo Q.210",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36099",
+  "source": "JEE(Main) MTG Halo Q.211",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36100",
+  "source": "JEE(Main) MTG Halo Q.212",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36101",
+  "source": "JEE(Main) MTG Halo Q.213",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36102",
+  "source": "JEE(Main) MTG Halo Q.214",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36103",
+  "source": "JEE(Main) MTG Halo Q.215",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36104",
+  "source": "JEE(Main) MTG Halo Q.216",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36105",
+  "source": "JEE(Main) MTG Halo Q.217",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28018",
+  "source": "JEE(Main) MTG Halo Q.118",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25046",
+  "source": "JEE(Main) MTG Halo Q.4",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28067",
+  "source": "JEE(Main) MTG Halo Q.178",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU26064",
+  "source": "JEE(Main) MTG Halo Q.104",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28028",
+  "source": "JEE(Main) MTG Halo Q.44",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU21001",
+  "source": "JEE(Main) MTG Halo Q.9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU21002",
+  "source": "JEE(Main) MTG Halo Q.13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU23260",
+  "source": "JEE(Main) MTG Halo Q.14",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30003",
+  "source": "JEE(Main) MTG Halo Q.31",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28013",
+  "source": "JEE(Main) MTG Halo Q.61",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28014",
+  "source": "JEE(Main) MTG Halo Q.62",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29020",
+  "source": "JEE(Main) MTG Halo Q.51",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29041",
+  "source": "JEE(Main) MTG Halo Q.120",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29021",
+  "source": "JEE(Main) MTG Halo Q.75",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29022",
+  "source": "JEE(Main) MTG Halo Q.81",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30004",
+  "source": "JEE(Main) MTG Halo Q.93",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30010",
+  "source": "JEE(Main) MTG Halo Q.49",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22165",
+  "source": "JEE(Main) MTG Halo Q.133",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29023",
+  "source": "JEE(Main) MTG Halo Q.132",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22167",
+  "source": "JEE(Main) MTG Halo Q.153",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29025",
+  "source": "JEE(Main) MTG Halo Q.147",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29031",
+  "source": "JEE(Main) MTG Halo Q.55",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30005",
+  "source": "JEE(Main) MTG Halo Q.154",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU31003",
+  "source": "JEE(Main) MTG Halo Q.152",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28022",
+  "source": "JEE(Main) MTG Halo Q.148",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22202",
+  "source": "JEE(Main) MTG Halo Q.171",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29034",
+  "source": "JEE(Main) MTG Halo Q.98",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28066",
+  "source": "JEE(Main) MTG Halo Q.170",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35014",
+  "source": "JEE(Main) MTG Halo Q.15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35015",
+  "source": "JEE(Main) MTG Halo Q.16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28019",
+  "source": "JEE(Main) MTG Halo Q.131",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28017",
+  "source": "JEE(Main) MTG Halo Q.99",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28020",
+  "source": "JEE(Main) MTG Halo Q.134",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28021",
+  "source": "JEE(Main) MTG Halo Q.142",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28024",
+  "source": "JEE(Main) MTG Halo Q.182",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29027",
+  "source": "JEE(Main) MTG Halo Q.181",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30013",
+  "source": "JEE(Main) MTG Halo Q.73",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30006",
+  "source": "JEE(Main) MTG Halo Q.16",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU23263",
+  "source": "JEE(Main) MTG Halo Q.14",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU23261",
+  "source": "JEE(Main) MTG Halo Q.12",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26061",
+  "source": "JEE(Main) MTG Halo Q.25",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30008",
+  "source": "JEE(Main) MTG Halo Q.24",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22170",
+  "source": "JEE(Main) MTG Halo Q.27",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU25048",
+  "source": "JEE(Main) MTG Halo Q.28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27033",
+  "source": "JEE(Main) MTG Halo Q.80",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27029",
+  "source": "JEE(Main) MTG Halo Q.42",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28027",
+  "source": "JEE(Main) MTG Halo Q.46",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35017",
+  "source": "JEE(Main) MTG Halo Q.43",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28046",
+  "source": "JEE(Main) MTG Halo Q.97",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22204",
+  "source": "JEE(Main) MTG Halo Q.175",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36106",
+  "source": "JEE(Main) MTG Halo Q.218",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36107",
+  "source": "JEE(Main) MTG Halo Q.219",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28034",
+  "source": "JEE(Main) MTG Halo Q.56",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28043",
+  "source": "JEE(Main) MTG Halo Q.87",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28047",
+  "source": "JEE(Main) MTG Halo Q.100",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27034",
+  "source": "JEE(Main) MTG Halo Q.83",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30014",
+  "source": "JEE(Main) MTG Halo Q.82",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30018",
+  "source": "JEE(Main) MTG Halo Q.177",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29033",
+  "source": "JEE(Main) MTG Halo Q.89",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU23264",
+  "source": "JEE(Main) MTG Halo Q.32",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30019",
+  "source": "JEE(Main) MTG Halo Q.193",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU23307",
+  "source": "JEE(Main) MTG Halo Q.189",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU30009",
+  "source": "JEE(Main) MTG Halo Q.31",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22166",
+  "source": "JEE(Main) MTG Halo Q.151",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU21003",
+  "source": "JEE(Main) MTG Halo Q.32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28032",
+  "source": "JEE(Main) MTG Halo Q.52",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28023",
+  "source": "JEE(Main) MTG Halo Q.149",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28026",
+  "source": "JEE(Main) MTG Halo Q.8",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28029",
+  "source": "JEE(Main) MTG Halo Q.45",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28042",
+  "source": "JEE(Main) MTG Halo Q.85",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27037",
+  "source": "JEE(Main) MTG Halo Q.121",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27028",
+  "source": "JEE(Main) MTG Halo Q.17",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29035",
+  "source": "JEE(Main) MTG Halo Q.101",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15370",
+  "source": "JEE(Main) MTG Halo Q.7",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15376",
+  "source": "JEE(Main) MTG Halo Q.13",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15394",
+  "source": "JEE(Main) MTG Halo Q.31",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15388",
+  "source": "JEE(Main) MTG Halo Q.25",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15369",
+  "source": "JEE(Main) MTG Halo Q.6",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15389",
+  "source": "JEE(Main) MTG Halo Q.26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15377",
+  "source": "JEE(Main) MTG Halo Q.14",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15395",
+  "source": "JEE(Main) MTG Halo Q.32",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15372",
+  "source": "JEE(Main) MTG Halo Q.9",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15378",
+  "source": "JEE(Main) MTG Halo Q.15",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15391",
+  "source": "JEE(Main) MTG Halo Q.28",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15387",
+  "source": "JEE(Main) MTG Halo Q.24",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15390",
+  "source": "JEE(Main) MTG Halo Q.27",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15421",
+  "source": "JEE(Main) MTG Halo Q.58",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15409",
+  "source": "JEE(Main) MTG Halo Q.46",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15415",
+  "source": "JEE(Main) MTG Halo Q.52",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15427",
+  "source": "JEE(Main) MTG Halo Q.64",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15433",
+  "source": "JEE(Main) MTG Halo Q.70",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15410",
+  "source": "JEE(Main) MTG Halo Q.47",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15416",
+  "source": "JEE(Main) MTG Halo Q.53",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15406",
+  "source": "JEE(Main) MTG Halo Q.43",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15411",
+  "source": "JEE(Main) MTG Halo Q.48",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15424",
+  "source": "JEE(Main) MTG Halo Q.61",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15419",
+  "source": "JEE(Main) MTG Halo Q.56",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15430",
+  "source": "JEE(Main) MTG Halo Q.67",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15432",
+  "source": "JEE(Main) MTG Halo Q.69",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15441",
+  "source": "JEE(Main) MTG Halo Q.78",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15442",
+  "source": "JEE(Main) MTG Halo Q.79",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15448",
+  "source": "JEE(Main) MTG Halo Q.85",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15454",
+  "source": "JEE(Main) MTG Halo Q.91",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15460",
+  "source": "JEE(Main) MTG Halo Q.97",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15466",
+  "source": "JEE(Main) MTG Halo Q.103",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15444",
+  "source": "JEE(Main) MTG Halo Q.81",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15456",
+  "source": "JEE(Main) MTG Halo Q.93",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15439",
+  "source": "JEE(Main) MTG Halo Q.76",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15447",
+  "source": "JEE(Main) MTG Halo Q.84",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15449",
+  "source": "JEE(Main) MTG Halo Q.86",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15451",
+  "source": "JEE(Main) MTG Halo Q.88",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15469",
+  "source": "JEE(Main) MTG Halo Q.106",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15458",
+  "source": "JEE(Main) MTG Halo Q.95",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15464",
+  "source": "JEE(Main) MTG Halo Q.101",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15467",
+  "source": "JEE(Main) MTG Halo Q.104",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15468",
+  "source": "JEE(Main) MTG Halo Q.105",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15474",
+  "source": "JEE(Main) MTG Halo Q.111",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15480",
+  "source": "JEE(Main) MTG Halo Q.117",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15486",
+  "source": "JEE(Main) MTG Halo Q.123",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15492",
+  "source": "JEE(Main) MTG Halo Q.129",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15470",
+  "source": "JEE(Main) MTG Halo Q.107",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15476",
+  "source": "JEE(Main) MTG Halo Q.113",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15471",
+  "source": "JEE(Main) MTG Halo Q.108",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15478",
+  "source": "JEE(Main) MTG Halo Q.115",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15473",
+  "source": "JEE(Main) MTG Halo Q.110",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15487",
+  "source": "JEE(Main) MTG Halo Q.124",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15504",
+  "source": "JEE(Main) MTG Halo Q.141",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15514",
+  "source": "JEE(Main) MTG Halo Q.151",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15531",
+  "source": "JEE(Main) MTG Halo Q.168",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15481",
+  "source": "JEE(Main) MTG Halo Q.118",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15493",
+  "source": "JEE(Main) MTG Halo Q.130",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15499",
+  "source": "JEE(Main) MTG Halo Q.136",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15488",
+  "source": "JEE(Main) MTG Halo Q.125",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15490",
+  "source": "JEE(Main) MTG Halo Q.127",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15489",
+  "source": "JEE(Main) MTG Halo Q.126",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15505",
+  "source": "JEE(Main) MTG Halo Q.142",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15497",
+  "source": "JEE(Main) MTG Halo Q.134",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15503",
+  "source": "JEE(Main) MTG Halo Q.140",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15500",
+  "source": "JEE(Main) MTG Halo Q.137",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15494",
+  "source": "JEE(Main) MTG Halo Q.131",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15496",
+  "source": "JEE(Main) MTG Halo Q.133",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15506",
+  "source": "JEE(Main) MTG Halo Q.143",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15516",
+  "source": "JEE(Main) MTG Halo Q.153",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15511",
+  "source": "JEE(Main) MTG Halo Q.148",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15517",
+  "source": "JEE(Main) MTG Halo Q.154",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15529",
+  "source": "JEE(Main) MTG Halo Q.166",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15535",
+  "source": "JEE(Main) MTG Halo Q.172",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15541",
+  "source": "JEE(Main) MTG Halo Q.178",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15512",
+  "source": "JEE(Main) MTG Halo Q.149",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15510",
+  "source": "JEE(Main) MTG Halo Q.147",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15532",
+  "source": "JEE(Main) MTG Halo Q.169",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15538",
+  "source": "JEE(Main) MTG Halo Q.175",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15526",
+  "source": "JEE(Main) MTG Halo Q.163",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15530",
+  "source": "JEE(Main) MTG Halo Q.167",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15542",
+  "source": "JEE(Main) MTG Halo Q.179",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15527",
+  "source": "JEE(Main) MTG Halo Q.164",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15533",
+  "source": "JEE(Main) MTG Halo Q.170",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15539",
+  "source": "JEE(Main) MTG Halo Q.176",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15550",
+  "source": "JEE(Main) MTG Halo Q.187",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15551",
+  "source": "JEE(Main) MTG Halo Q.188",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15546",
+  "source": "JEE(Main) MTG Halo Q.183",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15552",
+  "source": "JEE(Main) MTG Halo Q.189",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15547",
+  "source": "JEE(Main) MTG Halo Q.184",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15553",
+  "source": "JEE(Main) MTG Halo Q.190",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15554",
+  "source": "JEE(Main) MTG Halo Q.191",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15548",
+  "source": "JEE(Main) MTG Halo Q.185",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15573",
+  "source": "JEE(Main) MTG Halo Q.210",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15579",
+  "source": "JEE(Main) MTG Halo Q.216",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU27032",
+  "source": "JEE(Main) MTG Halo Q.71",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27035",
+  "source": "JEE(Main) MTG Halo Q.106",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28012",
+  "source": "JEE(Main) MTG Halo Q.60",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15549",
+  "source": "JEE(Main) MTG Halo Q.186",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15555",
+  "source": "JEE(Main) MTG Halo Q.192",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15574",
+  "source": "JEE(Main) MTG Halo Q.211",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15575",
+  "source": "JEE(Main) MTG Halo Q.212",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15581",
+  "source": "JEE(Main) MTG Halo Q.218",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15576",
+  "source": "JEE(Main) MTG Halo Q.213",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15582",
+  "source": "JEE(Main) MTG Halo Q.219",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15577",
+  "source": "JEE(Main) MTG Halo Q.214",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU27031",
+  "source": "JEE(Main) MTG Halo Q.67",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28011",
+  "source": "JEE(Main) MTG Halo Q.7",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28035",
+  "source": "JEE(Main) MTG Halo Q.57",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15578",
+  "source": "JEE(Main) MTG Halo Q.215",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU21006",
+  "source": "JEE(Main) MTG Halo Q.6",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU25041",
+  "source": "JEE(Main) MTG Halo Q.11",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25044",
+  "source": "JEE(Main) MTG Halo Q.1",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15580",
+  "source": "JEE(Main) MTG Halo Q.217",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22169",
+  "source": "JEE(Main) MTG Halo Q.26",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22196",
+  "source": "JEE(Main) MTG Halo Q.110",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU21005",
+  "source": "JEE(Main) MTG Halo Q.5",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU24004",
+  "source": "JEE(Main) MTG Halo Q.103",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25049",
+  "source": "JEE(Main) MTG Halo Q.29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26058",
+  "source": "JEE(Main) MTG Halo Q.63",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26062",
+  "source": "JEE(Main) MTG Halo Q.40",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25045",
+  "source": "JEE(Main) MTG Halo Q.2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25052",
+  "source": "JEE(Main) MTG Halo Q.111",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25047",
+  "source": "JEE(Main) MTG Halo Q.10",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26059",
+  "source": "JEE(Main) MTG Halo Q.3",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26063",
+  "source": "JEE(Main) MTG Halo Q.78",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26066",
+  "source": "JEE(Main) MTG Halo Q.127",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU26065",
+  "source": "JEE(Main) MTG Halo Q.123",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27030",
+  "source": "JEE(Main) MTG Halo Q.41",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28016",
+  "source": "JEE(Main) MTG Halo Q.91",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28025",
+  "source": "JEE(Main) MTG Halo Q.183",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28031",
+  "source": "JEE(Main) MTG Halo Q.50",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28037",
+  "source": "JEE(Main) MTG Halo Q.64",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28015",
+  "source": "JEE(Main) MTG Halo Q.70",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28030",
+  "source": "JEE(Main) MTG Halo Q.47",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28033",
+  "source": "JEE(Main) MTG Halo Q.54",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28036",
+  "source": "JEE(Main) MTG Halo Q.59",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28039",
+  "source": "JEE(Main) MTG Halo Q.69",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28045",
+  "source": "JEE(Main) MTG Halo Q.96",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28051",
+  "source": "JEE(Main) MTG Halo Q.114",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28054",
+  "source": "JEE(Main) MTG Halo Q.124",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28041",
+  "source": "JEE(Main) MTG Halo Q.84",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28050",
+  "source": "JEE(Main) MTG Halo Q.113",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28073",
+  "source": "JEE(Main) MTG Halo Q.188",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35027",
+  "source": "JEE(Main) MTG Halo Q.176",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29037",
+  "source": "JEE(Main) MTG Halo Q.107",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29040",
+  "source": "JEE(Main) MTG Halo Q.117",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29043",
+  "source": "JEE(Main) MTG Halo Q.125",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29039",
+  "source": "JEE(Main) MTG Halo Q.116",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29042",
+  "source": "JEE(Main) MTG Halo Q.122",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29045",
+  "source": "JEE(Main) MTG Halo Q.129",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29044",
+  "source": "JEE(Main) MTG Halo Q.126",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29046",
+  "source": "JEE(Main) MTG Halo Q.130",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35020",
+  "source": "JEE(Main) MTG Halo Q.90",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35018",
+  "source": "JEE(Main) MTG Halo Q.58",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35021",
+  "source": "JEE(Main) MTG Halo Q.94",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35019",
+  "source": "JEE(Main) MTG Halo Q.86",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35022",
+  "source": "JEE(Main) MTG Halo Q.137",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28069",
+  "source": "JEE(Main) MTG Halo Q.184",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15534",
+  "source": "JEE(Main) MTG Halo Q.171",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15528",
+  "source": "JEE(Main) MTG Halo Q.165",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15453",
+  "source": "JEE(Main) MTG Halo Q.90",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15364",
+  "source": "JEE(Main) MTG Halo Q.1",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15365",
+  "source": "JEE(Main) MTG Halo Q.2",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15366",
+  "source": "JEE(Main) MTG Halo Q.3",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15374",
+  "source": "JEE(Main) MTG Halo Q.11",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15367",
+  "source": "JEE(Main) MTG Halo Q.4",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15375",
+  "source": "JEE(Main) MTG Halo Q.12",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15418",
+  "source": "JEE(Main) MTG Halo Q.55",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15425",
+  "source": "JEE(Main) MTG Halo Q.62",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15436",
+  "source": "JEE(Main) MTG Halo Q.73",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15371",
+  "source": "JEE(Main) MTG Halo Q.8",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15373",
+  "source": "JEE(Main) MTG Halo Q.10",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15379",
+  "source": "JEE(Main) MTG Halo Q.16",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15408",
+  "source": "JEE(Main) MTG Halo Q.45",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15380",
+  "source": "JEE(Main) MTG Halo Q.17",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15392",
+  "source": "JEE(Main) MTG Halo Q.29",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15407",
+  "source": "JEE(Main) MTG Halo Q.44",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15403",
+  "source": "JEE(Main) MTG Halo Q.40",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15404",
+  "source": "JEE(Main) MTG Halo Q.41",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15429",
+  "source": "JEE(Main) MTG Halo Q.66",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15455",
+  "source": "JEE(Main) MTG Halo Q.92",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15412",
+  "source": "JEE(Main) MTG Halo Q.49",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15413",
+  "source": "JEE(Main) MTG Halo Q.50",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15414",
+  "source": "JEE(Main) MTG Halo Q.51",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15445",
+  "source": "JEE(Main) MTG Halo Q.82",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15417",
+  "source": "JEE(Main) MTG Halo Q.54",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15420",
+  "source": "JEE(Main) MTG Halo Q.57",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15422",
+  "source": "JEE(Main) MTG Halo Q.59",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15423",
+  "source": "JEE(Main) MTG Halo Q.60",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15426",
+  "source": "JEE(Main) MTG Halo Q.63",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15428",
+  "source": "JEE(Main) MTG Halo Q.65",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15463",
+  "source": "JEE(Main) MTG Halo Q.100",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15431",
+  "source": "JEE(Main) MTG Halo Q.68",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15435",
+  "source": "JEE(Main) MTG Halo Q.72",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15437",
+  "source": "JEE(Main) MTG Halo Q.74",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15438",
+  "source": "JEE(Main) MTG Halo Q.75",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15450",
+  "source": "JEE(Main) MTG Halo Q.87",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15452",
+  "source": "JEE(Main) MTG Halo Q.89",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15459",
+  "source": "JEE(Main) MTG Halo Q.96",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15461",
+  "source": "JEE(Main) MTG Halo Q.98",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15479",
+  "source": "JEE(Main) MTG Halo Q.116",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15462",
+  "source": "JEE(Main) MTG Halo Q.99",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15465",
+  "source": "JEE(Main) MTG Halo Q.102",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15475",
+  "source": "JEE(Main) MTG Halo Q.112",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15515",
+  "source": "JEE(Main) MTG Halo Q.152",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15477",
+  "source": "JEE(Main) MTG Halo Q.114",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15495",
+  "source": "JEE(Main) MTG Halo Q.132",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15508",
+  "source": "JEE(Main) MTG Halo Q.145",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15482",
+  "source": "JEE(Main) MTG Halo Q.119",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15484",
+  "source": "JEE(Main) MTG Halo Q.121",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15485",
+  "source": "JEE(Main) MTG Halo Q.122",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15491",
+  "source": "JEE(Main) MTG Halo Q.128",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15544",
+  "source": "JEE(Main) MTG Halo Q.181",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15545",
+  "source": "JEE(Main) MTG Halo Q.182",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15556",
+  "source": "JEE(Main) MTG Halo Q.193",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15368",
+  "source": "JEE(Main) MTG Halo Q.5",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15443",
+  "source": "JEE(Main) MTG Halo Q.80",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15457",
+  "source": "JEE(Main) MTG Halo Q.94",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15472",
+  "source": "JEE(Main) MTG Halo Q.109",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15405",
+  "source": "JEE(Main) MTG Halo Q.42",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15434",
+  "source": "JEE(Main) MTG Halo Q.71",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15446",
+  "source": "JEE(Main) MTG Halo Q.83",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15440",
+  "source": "JEE(Main) MTG Halo Q.77",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15483",
+  "source": "JEE(Main) MTG Halo Q.120",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15498",
+  "source": "JEE(Main) MTG Halo Q.135",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15540",
+  "source": "JEE(Main) MTG Halo Q.177",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28058",
+  "source": "IIT MTG Halo Q.138",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU30017",
+  "source": "IIT MTG Halo Q.162",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35025",
+  "source": "IIT MTG Halo Q.173",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28078",
+  "source": "IIT MTG Halo Q.198",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29051",
+  "source": "IIT MTG Halo Q.199",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22206",
+  "source": "IIT MTG Halo Q.207",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29054",
+  "source": "IIT MTG Halo Q.205",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26068",
+  "source": "IIT MTG Halo Q.208",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29053",
+  "source": "IIT MTG Halo Q.204",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35016",
+  "source": "IIT MTG Halo Q.22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU25043",
+  "source": "IIT MTG Halo Q.39",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26057",
+  "source": "IIT MTG Halo Q.38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU21004",
+  "source": "IIT MTG Halo Q.37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29024",
+  "source": "IIT MTG Halo Q.144",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29026",
+  "source": "IIT MTG Halo Q.157",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU26056",
+  "source": "IIT MTG Halo Q.20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27026",
+  "source": "IIT MTG Halo Q.21",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27027",
+  "source": "IIT MTG Halo Q.21",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU30007",
+  "source": "IIT MTG Halo Q.22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU29028",
+  "source": "IIT MTG Halo Q.18",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU22168",
+  "source": "IIT MTG Halo Q.19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU26060",
+  "source": "IIT MTG Halo Q.20",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU25050",
+  "source": "IIT MTG Halo Q.30",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28062",
+  "source": "IIT MTG Halo Q.156",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36108",
+  "source": "IIT MTG Halo Q.221",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36110",
+  "source": "IIT MTG Halo Q.223",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU26069",
+  "source": "IIT MTG Halo Q.220",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22198",
+  "source": "IIT MTG Halo Q.161",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU22164",
+  "source": "IIT MTG Halo Q.19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29049",
+  "source": "IIT MTG Halo Q.155",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU35026",
+  "source": "IIT MTG Halo Q.174",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29052",
+  "source": "IIT MTG Halo Q.201",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28081",
+  "source": "IIT MTG Halo Q.209",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU21007",
+  "source": "IIT MTG Halo Q.23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU25042",
+  "source": "IIT MTG Halo Q.36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28063",
+  "source": "IIT MTG Halo Q.160",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28079",
+  "source": "IIT MTG Halo Q.202",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU36109",
+  "source": "IIT MTG Halo Q.222",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU27038",
+  "source": "IIT MTG Halo Q.194",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU27039",
+  "source": "IIT MTG Halo Q.200",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU30016",
+  "source": "IIT MTG Halo Q.159",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15382",
+  "source": "IIT MTG Halo Q.19",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15383",
+  "source": "IIT MTG Halo Q.20",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15397",
+  "source": "IIT MTG Halo Q.34",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15385",
+  "source": "IIT MTG Halo Q.22",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15386",
+  "source": "IIT MTG Halo Q.23",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15393",
+  "source": "IIT MTG Halo Q.30",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15402",
+  "source": "IIT MTG Halo Q.39",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15519",
+  "source": "IIT MTG Halo Q.156",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15525",
+  "source": "IIT MTG Halo Q.162",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15501",
+  "source": "IIT MTG Halo Q.138",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15507",
+  "source": "IIT MTG Halo Q.144",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15513",
+  "source": "IIT MTG Halo Q.150",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15502",
+  "source": "IIT MTG Halo Q.139",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15523",
+  "source": "IIT MTG Halo Q.160",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15509",
+  "source": "IIT MTG Halo Q.146",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15520",
+  "source": "IIT MTG Halo Q.157",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15524",
+  "source": "IIT MTG Halo Q.161",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15536",
+  "source": "IIT MTG Halo Q.173",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15537",
+  "source": "IIT MTG Halo Q.174",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15557",
+  "source": "IIT MTG Halo Q.194",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15564",
+  "source": "IIT MTG Halo Q.201",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15565",
+  "source": "IIT MTG Halo Q.202",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15566",
+  "source": "IIT MTG Halo Q.203",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15561",
+  "source": "IIT MTG Halo Q.198",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15567",
+  "source": "IIT MTG Halo Q.204",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15568",
+  "source": "IIT MTG Halo Q.205",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15569",
+  "source": "IIT MTG Halo Q.206",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15570",
+  "source": "IIT MTG Halo Q.207",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15583",
+  "source": "IIT MTG Halo Q.220",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15572",
+  "source": "IIT MTG Halo Q.209",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15584",
+  "source": "IIT MTG Halo Q.221",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU23308",
+  "source": "IIT MTG Halo Q.206",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28059",
+  "source": "IIT MTG Halo Q.139",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28080",
+  "source": "IIT MTG Halo Q.203",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": true
+ },
+ {
+  "qid": "NCU28077",
+  "source": "IIT MTG Halo Q.196",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU29047",
+  "source": "IIT MTG Halo Q.146",
+  "source_locked": false,
+  "content_locked": true,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35023",
+  "source": "IIT MTG Halo Q.150",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35024",
+  "source": "IIT MTG Halo Q.158",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28076",
+  "source": "IIT MTG Halo Q.195",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15396",
+  "source": "IIT MTG Halo Q.33",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15585",
+  "source": "IIT MTG Halo Q.222",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15398",
+  "source": "IIT MTG Halo Q.35",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15559",
+  "source": "IIT MTG Halo Q.196",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15586",
+  "source": "IIT MTG Halo Q.223",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15560",
+  "source": "IIT MTG Halo Q.197",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15399",
+  "source": "IIT MTG Halo Q.36",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15400",
+  "source": "IIT MTG Halo Q.37",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU35029",
+  "source": "IIT MTG Halo Q.197",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15562",
+  "source": "IIT MTG Halo Q.199",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15543",
+  "source": "IIT MTG Halo Q.180",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU28068",
+  "source": "IIT MTG Halo Q.180",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15384",
+  "source": "IIT MTG Halo Q.21",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15401",
+  "source": "IIT MTG Halo Q.38",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15518",
+  "source": "IIT MTG Halo Q.155",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15522",
+  "source": "IIT MTG Halo Q.159",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15571",
+  "source": "IIT MTG Halo Q.208",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15381",
+  "source": "IIT MTG Halo Q.18",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": true
+ },
+ {
+  "qid": "NCU15558",
+  "source": "IIT MTG Halo Q.195",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15521",
+  "source": "IIT MTG Halo Q.158",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ },
+ {
+  "qid": "NCU15563",
+  "source": "IIT MTG Halo Q.200",
+  "source_locked": false,
+  "content_locked": false,
+  "is_published": false
+ }
+]
